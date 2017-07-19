@@ -15,7 +15,7 @@ public class DataReporter : MonoBehaviour
  
 	void Start () 
 	{
-		
+		Debug.Log (UnityEPL.TestNativePluginFunction ());
 	}
 
 	void Update () 
