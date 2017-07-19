@@ -34,7 +34,7 @@ public class DataReporterEditor : Editor
 	{
 		lookAtPoint = serializedObject.FindProperty("lookAtPoint");
 	}
-	​
+
 	public override void OnInspectorGUI()
 	{
 		serializedObject.Update();
