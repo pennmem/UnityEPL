@@ -19,6 +19,17 @@ public class DataReporterEditor : Editor
 		currentTarget.reportingID = EditorGUILayout.TextField ("Reporting ID", currentTarget.reportingID);
 		if (GUILayout.Button("New unique ID"))
 			GenerateDefaultName();
+
+		currentTarget.reportTransform = EditorGUILayout.Toggle ("Report transform data", currentTarget.reportTransform);
+		if (currentTarget.reportTransform)
+		{
+			int input = EditorGUILayout.IntField ("Frames per transform report", currentTarget.framesPerTransformReport);
+			if (input > 0)
+				currentTarget.framesPerTransformReport = input;
+		}
+
+		currentTarget.reportEntersView = EditorGUILayout.Toggle("Report upon entering view", currentTarget.reportEntersView);
+		currentTarget.reportLeavesView = EditorGUILayout.Toggle ("Report upon leaving view", currentTarget.reportLeavesView);
 	}
 		
 	private void GenerateDefaultName()

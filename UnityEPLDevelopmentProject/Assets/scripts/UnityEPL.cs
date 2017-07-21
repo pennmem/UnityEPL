@@ -18,11 +18,4 @@ public static class UnityEPL
 
 	public static extern float TestNativePluginFunction ();
 
-	private static string participant = "No participant";
-
-	public static void SetParticipant(string participant_name)
-	{
-		participant = participant_name;
-	}
-
 }

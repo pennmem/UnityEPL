@@ -5,6 +5,11 @@ using UnityEngine;
 public class DataReporter : MonoBehaviour 
 {
 	public string reportingID = "Object ID not set.";
+	public bool reportTransform = true;
+	public int framesPerTransformReport = 60;
+	public bool reportEntersView = true;
+	public bool reportLeavesView = true;
+	//public 
 
 	void Awake()
 	{
