@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class DataReporter : MonoBehaviour 
 {
-	private string reportingID = "Object ID not set.";
+	public string reportingID = "Object ID not set.";
 
 	void Awake()
 	{
@@ -15,7 +15,6 @@ public class DataReporter : MonoBehaviour
 	void Start () 
 	{
 		Debug.Log (UnityEPL.TestNativePluginFunction ());
-		gameObject.SetActive (false);
 	}
 
 	void Update () 
