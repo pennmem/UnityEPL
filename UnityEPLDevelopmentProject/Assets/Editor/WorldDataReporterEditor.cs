@@ -1,21 +1,21 @@
 ﻿using UnityEditor;
 using UnityEngine;
 
-[CustomEditor(typeof(DataReporter))]
+[CustomEditor(typeof(WorldDataReporter))]
 [CanEditMultipleObjects]
-public class DataReporterEditor : Editor 
+public class WorldDataReporterEditor : Editor 
 {
 	void OnEnable()
 	{
-		DataReporter currentTarget = (DataReporter)target;
-		//give the DataReporter a unique ID if none has been set manually
+		WorldDataReporter currentTarget = (WorldDataReporter)target;
+		//give the WorldDataReporter a unique ID if none has been set manually
 		if (currentTarget.reportingID.Equals("Object ID not set."))
 			GenerateDefaultName ();
 	}
 
 	public override void OnInspectorGUI()
 	{
-		DataReporter currentTarget = (DataReporter)target;
+		WorldDataReporter currentTarget = (WorldDataReporter)target;
 		currentTarget.reportingID = EditorGUILayout.TextField ("Reporting ID", currentTarget.reportingID);
 		if (GUILayout.Button("New unique ID"))
 			GenerateDefaultName();
@@ -34,7 +34,7 @@ public class DataReporterEditor : Editor
 		
 	private void GenerateDefaultName()
 	{
-		DataReporter currentTarget = (DataReporter)target;
+		WorldDataReporter currentTarget = (WorldDataReporter)target;
 		currentTarget.reportingID = currentTarget.name + System.Guid.NewGuid();
 	}
 }

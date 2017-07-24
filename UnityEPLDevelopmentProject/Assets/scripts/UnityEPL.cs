@@ -17,5 +17,4 @@ public static class UnityEPL
 	#endif
 
 	public static extern float TestNativePluginFunction ();
-
 }
