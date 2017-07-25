@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+//reports on the world object which it is attached to.  currently only transform reporting is implemented.
 public class WorldDataReporter : DataReporter
 {
 	public string reportingID = "Object ID not set.";
@@ -10,7 +11,7 @@ public class WorldDataReporter : DataReporter
 	public bool reportEntersView = true;
 	public bool reportLeavesView = true;
  
-	void Start () 
+	void Start ()
 	{
 		Debug.Log (UnityEPL.TestNativePluginFunction ());
 	}

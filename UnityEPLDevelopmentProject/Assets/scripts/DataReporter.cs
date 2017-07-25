@@ -5,7 +5,10 @@ using UnityEngine;
 //this superclass implements an interface for retrieving behavioral events from a queue
 public abstract class DataReporter : MonoBehaviour 
 {
+
+	//this real world start time timestamp is currently of unknown accuraccy.
 	private static System.DateTime realWorldStartTime = System.DateTime.UtcNow;
+
 	protected System.Collections.Generic.Queue<DataPoint> eventQueue = new Queue<DataPoint>();
 
 	void Awake()
@@ -36,6 +39,7 @@ public abstract class DataReporter : MonoBehaviour
 		return dataPoints;
 	}
 
+	//this will be modified to use native OS functionality for increased accuracy
 	protected System.DateTime RealWorldFrameDisplayTime()
 	{
 		return realWorldStartTime.AddSeconds (Time.realtimeSinceStartup);

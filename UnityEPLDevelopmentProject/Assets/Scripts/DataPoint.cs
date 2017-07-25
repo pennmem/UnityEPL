@@ -13,7 +13,6 @@ public class DataPoint
 	{ get; }
 
 
-
 	public DataPoint(string newName, System.DateTime newTime, System.Collections.Generic.Dictionary<string, string> newDataDict)
 	{
 		name = newName;
