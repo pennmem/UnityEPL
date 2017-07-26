@@ -18,6 +18,12 @@ public class WorldDataReporter : DataReporter
 
 	void Update ()
 	{
+		CheckTransformReporting ();
+		CheckViewReporting ();
+	}
+
+	private void CheckTransformReporting()
+	{
 		if (Time.frameCount % framesPerTransformReport == 0)
 		{
 			System.Collections.Generic.Dictionary<string, string> transformDict = new System.Collections.Generic.Dictionary<string, string>();
@@ -32,5 +38,10 @@ public class WorldDataReporter : DataReporter
 			transformDict.Add ("scaleZ", transform.position.z.ToString ());
 			eventQueue.Enqueue (new DataPoint (gameObject.name + " transform", RealWorldFrameDisplayTime(), transformDict));
 		}
+	}
+
+	private void CheckViewReporting()
+	{
+
 	}
 }

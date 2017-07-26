@@ -16,10 +16,14 @@ public class WorldDataReporterEditor : Editor
 	public override void OnInspectorGUI()
 	{
 		WorldDataReporter currentTarget = (WorldDataReporter)target;
+
+		//Allow users to set ID manually
 		currentTarget.reportingID = EditorGUILayout.TextField ("Reporting ID", currentTarget.reportingID);
+		//or generate a default one
 		if (GUILayout.Button("New unique ID"))
 			GenerateDefaultName();
 
+		//provide selections for which data to report, and the frequency
 		currentTarget.reportTransform = EditorGUILayout.Toggle ("Report transform data", currentTarget.reportTransform);
 		if (currentTarget.reportTransform)
 		{
