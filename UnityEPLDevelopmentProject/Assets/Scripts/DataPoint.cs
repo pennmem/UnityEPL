@@ -5,31 +5,33 @@ using UnityEngine;
 //data about the event is currently stored in a dictionary
 public class DataPoint
 {
-	public string name
-	{ get; }
-	public System.DateTime time
+	public string type
 	{ get; }
 	public System.Collections.Generic.Dictionary<string, string> dataDict
 	{ get; }
+	public System.DateTime time
+	{ get; }
 
 
-	public DataPoint(string newName, System.DateTime newTime, System.Collections.Generic.Dictionary<string, string> newDataDict)
+	public DataPoint(string newType, System.DateTime newTime, System.Collections.Generic.Dictionary<string, string> newDataDict)
 	{
-		name = newName;
-		time = newTime;
+		type = newType;
 		dataDict = newDataDict;
+		time = newTime;
 	}
 
 
 	//hacky
 	public string ToJSON()
 	{
-		string JSONString = "{\"name\":\""+name+"\",\"time\":\""+time.ToString()+"\",\"dataDict\":{";
+		int unixTimestamp = (int)(System.DateTime.UtcNow.Subtract(new System.DateTime(1970, 1, 1))).TotalMilliseconds;
+		string JSONString = "{\"type\":\""+type+"\",\"dataDict\":{";
 		foreach (string key in dataDict.Keys)
 		{
 			JSONString = JSONString + "\""+key+"\":\""+dataDict[key]+"\",";
 		}
-		JSONString = JSONString + "}}";
+		JSONString = JSONString.Substring (0, JSONString.Length - 1);
+		JSONString = JSONString + "},\"time\":\""+unixTimestamp.ToString()+"\"}";
 		return JSONString;
 	}
 }

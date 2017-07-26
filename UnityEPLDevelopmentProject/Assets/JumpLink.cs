@@ -11,6 +11,4 @@ public class JumpLink : MonoBehaviour
 	{
 		jumper.velocity += new Vector3 (0, 7, 0);
 	}
-
-
 }
