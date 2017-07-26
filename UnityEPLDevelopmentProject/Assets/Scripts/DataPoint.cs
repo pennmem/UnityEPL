@@ -24,13 +24,13 @@ public class DataPoint
 	//hacky
 	public string ToJSON()
 	{
-		int unixTimestamp = (int)(System.DateTime.UtcNow.Subtract(new System.DateTime(1970, 1, 1))).TotalMilliseconds;
+		int unixTimestamp = (int)(System.DateTime.UtcNow.ToUniversalTime().Subtract(new System.DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc)).TotalMilliseconds);
 		string JSONString = "{\"type\":\""+type+"\",\"dataDict\":{";
 		foreach (string key in dataDict.Keys)
 		{
 			JSONString = JSONString + "\""+key+"\":\""+dataDict[key]+"\",";
 		}
-		JSONString = JSONString.Substring (0, JSONString.Length - 1);
+		if (dataDict.Count > 0) JSONString = JSONString.Substring (0, JSONString.Length - 1);
 		JSONString = JSONString + "},\"time\":\""+unixTimestamp.ToString()+"\"}";
 		return JSONString;
 	}
