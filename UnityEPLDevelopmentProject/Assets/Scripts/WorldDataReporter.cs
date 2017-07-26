@@ -8,18 +8,27 @@ public class WorldDataReporter : DataReporter
 	public string reportingID = "Object ID not set.";
 	public bool reportTransform = true;
 	public int framesPerTransformReport = 60;
-	public bool reportEntersView = true;
-	public bool reportLeavesView = true;
+	public bool reportEntersViewfield = true;
+	public bool reportLeavesViewfield = true;
+
+	private Dictionary<Camera, bool> camerasToInViewfield = new Dictionary<Camera, bool>();
  
 	void Start ()
 	{
 		Debug.Log (UnityEPL.TestNativePluginFunction ());
+
+		if ((reportEntersViewfield || reportLeavesViewfield) && GetComponent<Collider> () == null)
+		{
+			throw new UnityException ("You have selected enter/exit viewfield reporting for " + gameObject.name + " but there is no collider on the object." +
+									  "  This feature uses collision detection to compare the object's position with view bounds.  Please add a collider or " +
+									  "unselect viewfield enter/exit reporting.");
+		}
 	}
 
 	void Update ()
 	{
-		CheckTransformReporting ();
-		CheckViewReporting ();
+		if (reportTransform) CheckTransformReporting ();
+		if (reportEntersViewfield || reportLeavesViewfield) CheckViewfield ();
 	}
 
 	private void CheckTransformReporting()
@@ -40,8 +49,49 @@ public class WorldDataReporter : DataReporter
 		}
 	}
 
-	private void CheckViewReporting()
+	//untested accuraccy, requires collider
+	void CheckViewfield()
 	{
+		bool enteredViewfield = false;
+		bool leftViewfield = false;
 
+		Camera[] cameras = FindObjectsOfType<Camera> ();
+
+		foreach (Camera camera in cameras)
+		{
+			Plane[] frustrumPlanes = GeometryUtility.CalculateFrustumPlanes (camera);
+			Collider objectCollider = GetComponent<Collider> ();
+
+			bool inField = GeometryUtility.TestPlanesAABB (frustrumPlanes, objectCollider.bounds);
+			if (inField && (!camerasToInViewfield.ContainsKey (camera) || camerasToInViewfield [camera] == false)) 
+			{
+				camerasToInViewfield [camera] = true;
+				enteredViewfield = true;
+			} 
+			else if (!inField && camerasToInViewfield.ContainsKey (camera) && camerasToInViewfield [camera] == true)
+			{
+				camerasToInViewfield [camera] = false;
+				leftViewfield = true;
+			}
+
+			string eventName = "";
+
+
+			if (!(enteredViewfield || leftViewfield))
+				continue;
+			
+			Dictionary<string, string> dataDict = new Dictionary<string, string> ();
+			dataDict.Add ("camera", camera.name);
+			if (enteredViewfield && reportEntersViewfield)
+			{
+				eventName = gameObject.name + " enters viewfield";
+				eventQueue.Enqueue (new DataPoint (eventName, RealWorldFrameDisplayTime (), dataDict));
+			}
+			if (leftViewfield && reportLeavesViewfield)
+			{
+				eventName = gameObject.name + " leaves viewfield";
+				eventQueue.Enqueue (new DataPoint (eventName, RealWorldFrameDisplayTime (), dataDict));
+			}
+		}
 	}
 }

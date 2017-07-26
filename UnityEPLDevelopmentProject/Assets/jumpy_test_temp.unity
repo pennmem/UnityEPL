@@ -179,10 +179,10 @@ GameObject:
   m_Component:
   - component: {fileID: 173001780}
   - component: {fileID: 173001779}
-  - component: {fileID: 173001778}
   - component: {fileID: 173001777}
   - component: {fileID: 173001781}
   - component: {fileID: 173001782}
+  - component: {fileID: 173001778}
   m_Layer: 0
   m_Name: jumpy cube
   m_TagString: Untagged
@@ -283,8 +283,8 @@ MonoBehaviour:
   reportingID: jumpy cube75dea40c-06ae-4b78-8e02-7aedbbb39dd9
   reportTransform: 1
   framesPerTransformReport: 300
-  reportEntersView: 1
-  reportLeavesView: 1
+  reportEntersViewfield: 1
+  reportLeavesViewfield: 1
 --- !u!1 &296840984
 GameObject:
   m_ObjectHideFlags: 0

@@ -9,7 +9,7 @@ public class JumpLink : MonoBehaviour
 
 	public void DoJump()
 	{
-		jumper.velocity += new Vector3 (0, 3, 0);
+		jumper.velocity += new Vector3 (0, 7, 0);
 	}
 
 
