@@ -40,8 +40,9 @@ public abstract class DataReporter : MonoBehaviour
 	}
 
 	//this will be modified to use native OS functionality for increased accuracy
+	//changing time scale will break this!!
 	protected System.DateTime RealWorldFrameDisplayTime()
 	{
-		return realWorldStartTime.AddSeconds (Time.realtimeSinceStartup);
+		return realWorldStartTime.AddSeconds (Time.time);
 	}
 }

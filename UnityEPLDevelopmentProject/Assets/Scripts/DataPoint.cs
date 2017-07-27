@@ -24,7 +24,7 @@ public class DataPoint
 	//hacky
 	public string ToJSON()
 	{
-		int unixTimestamp = (int)(System.DateTime.UtcNow.ToUniversalTime().Subtract(new System.DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc)).TotalMilliseconds);
+		long unixTimestamp = (long)(System.DateTime.UtcNow.ToUniversalTime().Subtract(new System.DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc))).TotalMilliseconds;
 		string JSONString = "{\"type\":\""+type+"\",\"dataDict\":{";
 		foreach (string key in dataDict.Keys)
 		{

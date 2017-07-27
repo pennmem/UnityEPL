@@ -20,7 +20,7 @@ public class WorldDataReporter : DataReporter
 		if ((reportEntersView || reportLeavesView) && GetComponent<Collider> () == null)
 		{
 			throw new UnityException ("You have selected enter/exit viewfield reporting for " + gameObject.name + " but there is no collider on the object." +
-									  "  This feature uses collision detection to compare the object's position with view bounds.  Please add a collider or " +
+									  "  This feature uses collision detection to compare with camera bounds and other objects.  Please add a collider or " +
 									  "unselect viewfield enter/exit reporting.");
 		}
 	}
