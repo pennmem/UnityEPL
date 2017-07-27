@@ -8,8 +8,8 @@ public class WorldDataReporter : DataReporter
 	public string reportingID = "Object ID not set.";
 	public bool reportTransform = true;
 	public int framesPerTransformReport = 60;
-	public bool reportEntersViewfield = true;
-	public bool reportLeavesViewfield = true;
+	public bool reportEntersView = true;
+	public bool reportLeavesView = true;
 
 	private Dictionary<Camera, bool> camerasToInViewfield = new Dictionary<Camera, bool>();
  
@@ -17,7 +17,7 @@ public class WorldDataReporter : DataReporter
 	{
 		Debug.Log (UnityEPL.TestNativePluginFunction ());
 
-		if ((reportEntersViewfield || reportLeavesViewfield) && GetComponent<Collider> () == null)
+		if ((reportEntersView || reportLeavesView) && GetComponent<Collider> () == null)
 		{
 			throw new UnityException ("You have selected enter/exit viewfield reporting for " + gameObject.name + " but there is no collider on the object." +
 									  "  This feature uses collision detection to compare the object's position with view bounds.  Please add a collider or " +
@@ -28,7 +28,7 @@ public class WorldDataReporter : DataReporter
 	void Update ()
 	{
 		if (reportTransform) CheckTransformReporting ();
-		if (reportEntersViewfield || reportLeavesViewfield) CheckViewfield ();
+		if (reportEntersView || reportLeavesView) CheckView ();
 	}
 
 	private void CheckTransformReporting()
@@ -50,7 +50,7 @@ public class WorldDataReporter : DataReporter
 	}
 
 	//untested accuraccy, requires collider
-	void CheckViewfield()
+	void CheckView()
 	{
 		bool enteredViewfield = false;
 		bool leftViewfield = false;
@@ -62,13 +62,13 @@ public class WorldDataReporter : DataReporter
 			Plane[] frustrumPlanes = GeometryUtility.CalculateFrustumPlanes (camera);
 			Collider objectCollider = GetComponent<Collider> ();
 
-			bool inField = GeometryUtility.TestPlanesAABB (frustrumPlanes, objectCollider.bounds);
-			if (inField && (!camerasToInViewfield.ContainsKey (camera) || camerasToInViewfield [camera] == false)) 
+			bool inView = GeometryUtility.TestPlanesAABB (frustrumPlanes, objectCollider.bounds) && !Physics.Linecast (camera.transform.position, gameObject.transform.position);
+			if (inView && (!camerasToInViewfield.ContainsKey (camera) || camerasToInViewfield [camera] == false)) 
 			{
 				camerasToInViewfield [camera] = true;
 				enteredViewfield = true;
 			} 
-			else if (!inField && camerasToInViewfield.ContainsKey (camera) && camerasToInViewfield [camera] == true)
+			else if (!inView && camerasToInViewfield.ContainsKey (camera) && camerasToInViewfield [camera] == true)
 			{
 				camerasToInViewfield [camera] = false;
 				leftViewfield = true;
@@ -82,14 +82,14 @@ public class WorldDataReporter : DataReporter
 			
 			Dictionary<string, string> dataDict = new Dictionary<string, string> ();
 			dataDict.Add ("camera", camera.name);
-			if (enteredViewfield && reportEntersViewfield)
+			if (enteredViewfield && reportEntersView)
 			{
-				eventName = gameObject.name + " enters viewfield";
+				eventName = gameObject.name + " enters view";
 				eventQueue.Enqueue (new DataPoint (eventName, RealWorldFrameDisplayTime (), dataDict));
 			}
-			if (leftViewfield && reportLeavesViewfield)
+			if (leftViewfield && reportLeavesView)
 			{
-				eventName = gameObject.name + " leaves viewfield";
+				eventName = gameObject.name + " leaves view";
 				eventQueue.Enqueue (new DataPoint (eventName, RealWorldFrameDisplayTime (), dataDict));
 			}
 		}

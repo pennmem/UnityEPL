@@ -32,8 +32,8 @@ public class WorldDataReporterEditor : Editor
 				currentTarget.framesPerTransformReport = input;
 		}
 
-		currentTarget.reportEntersViewfield = EditorGUILayout.Toggle("Report upon entering view", currentTarget.reportEntersViewfield);
-		currentTarget.reportLeavesViewfield = EditorGUILayout.Toggle ("Report upon leaving view", currentTarget.reportLeavesViewfield);
+		currentTarget.reportEntersView = EditorGUILayout.Toggle("Report upon entering view", currentTarget.reportEntersView);
+		currentTarget.reportLeavesView = EditorGUILayout.Toggle ("Report upon leaving view", currentTarget.reportLeavesView);
 	}
 		
 	private void GenerateDefaultName()
