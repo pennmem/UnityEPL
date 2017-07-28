@@ -67,7 +67,7 @@ public class WorldDataReporter : DataReporter
 			{
 				camerasToInViewfield [camera] = true;
 				enteredViewfield = true;
-			} 
+			}
 			else if (!inView && camerasToInViewfield.ContainsKey (camera) && camerasToInViewfield [camera] == true)
 			{
 				camerasToInViewfield [camera] = false;

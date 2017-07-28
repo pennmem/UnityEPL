@@ -7,12 +7,15 @@ public abstract class DataReporter : MonoBehaviour
 {
 
 	//this real world start time timestamp is currently of unknown accuraccy.
-	private static System.DateTime realWorldStartTime = System.DateTime.UtcNow;
+	private static System.DateTime realWorldStartTime;
+	private static System.Diagnostics.Stopwatch gamewatch = new System.Diagnostics.Stopwatch();
 
 	protected System.Collections.Generic.Queue<DataPoint> eventQueue = new Queue<DataPoint>();
 
 	void Awake()
 	{
+		System.DateTime realWorldStartTime = System.DateTime.UtcNow;
+		gamewatch.Start ();
 		if (QualitySettings.vSyncCount == 0)
 			Debug.LogWarning ("vSync is off!  This will cause tearing, which will prevent meaningful reporting of frame-based time data.");
 	}
@@ -25,7 +28,7 @@ public abstract class DataReporter : MonoBehaviour
 	//UnityEPL users can use this to pull data points out manually on a per-reporter basis
 	public DataPoint[] ReadDataPoints(int count)
 	{
-		if (eventQueue.Count < count) 
+		if (eventQueue.Count < count)
 		{
 			throw new UnityException ("Not enough data points!  Check UnreadDataPointCount first.");
 		}
@@ -42,6 +45,11 @@ public abstract class DataReporter : MonoBehaviour
 	//this will be modified to use native OS functionality for increased accuracy
 	//changing time scale will break this!!
 	protected System.DateTime RealWorldFrameDisplayTime()
+	{
+		return realWorldStartTime.AddSeconds (Time.time);
+	}
+
+	protected System.DateTime RealWorldTime()
 	{
 		return realWorldStartTime.AddSeconds (Time.time);
 	}
