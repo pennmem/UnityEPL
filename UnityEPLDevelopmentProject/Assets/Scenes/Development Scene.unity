@@ -430,6 +430,46 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &874575872
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 874575874}
+  - component: {fileID: 874575873}
+  m_Layer: 0
+  m_Name: KeyLogger
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &874575873
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 874575872}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc02aa99eda484118b9b9999cec05ac7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &874575874
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 874575872}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.59876335, y: 2.1013346, z: -7.451187}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1223104868
 GameObject:
   m_ObjectHideFlags: 0
@@ -461,8 +501,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   reportingID: Cube2540a445-92df-4d84-92bd-a1dab6ca60ec
-  reportTransform: 1
-  framesPerTransformReport: 60
+  reportTransform: 0
+  framesPerTransformReport: 900
   reportEntersView: 1
   reportLeavesView: 1
 --- !u!23 &1223104870
@@ -772,5 +812,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   reportersToHandle:
+  - {fileID: 874575873}
   - {fileID: 1845532}
   - {fileID: 1223104869}

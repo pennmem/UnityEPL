@@ -1,9 +1,15 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 
 public class InputReporter : DataReporter
 {
+	void Awake()
+	{
+		
+	}
+
 	void OnGUI()
 	{
 		string type = "";
@@ -21,11 +27,9 @@ public class InputReporter : DataReporter
 			type = "mouse button press";
 			buttonName = thisEvent.button.ToString ();
 		}
-		if (thisEvent.isKey || thisEvent.isMouse) 
+		if (thisEvent.isKey || thisEvent.isMouse)
 		{
 			eventQueue.Enqueue (new DataPoint (type, RealWorldTime (), new Dictionary<string, string> (){ { type , buttonName } }));
 		}
 	}
-
-
 }

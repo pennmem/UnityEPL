@@ -7,15 +7,15 @@ public abstract class DataReporter : MonoBehaviour
 {
 
 	//this real world start time timestamp is currently of unknown accuraccy.
-	private static System.DateTime realWorldStartTime;
+	private static System.DateTime realWorldStartTime = System.DateTime.UtcNow;
 	private static System.Diagnostics.Stopwatch gamewatch = new System.Diagnostics.Stopwatch();
 
 	protected System.Collections.Generic.Queue<DataPoint> eventQueue = new Queue<DataPoint>();
 
 	void Awake()
 	{
-		System.DateTime realWorldStartTime = System.DateTime.UtcNow;
-		gamewatch.Start ();
+		if (!gamewatch.IsRunning)
+			gamewatch.Start ();
 		if (QualitySettings.vSyncCount == 0)
 			Debug.LogWarning ("vSync is off!  This will cause tearing, which will prevent meaningful reporting of frame-based time data.");
 	}
@@ -51,6 +51,6 @@ public abstract class DataReporter : MonoBehaviour
 
 	protected System.DateTime RealWorldTime()
 	{
-		return realWorldStartTime.AddSeconds (Time.time);
+		return realWorldStartTime.Add(gamewatch.Elapsed);
 	}
 }
