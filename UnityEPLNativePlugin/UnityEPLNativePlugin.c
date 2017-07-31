@@ -1,6 +1,7 @@
 #include "UnityEPLNativePlugin.h"
 
-float TestNativePluginFunction()
+float TestNativePluginFunctionC()
 {
 	return 3.0F;
 }
+

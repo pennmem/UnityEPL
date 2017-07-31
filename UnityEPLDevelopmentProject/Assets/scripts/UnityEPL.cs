@@ -16,5 +16,5 @@ public static class UnityEPL
 	[DllImport ("UnityEPLNativePlugin")]
 	#endif
 
-	public static extern float TestNativePluginFunction ();
+	public static extern float TestNativePluginFunctionCocoa ();
 }
