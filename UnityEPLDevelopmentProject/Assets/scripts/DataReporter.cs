@@ -6,8 +6,9 @@ using UnityEngine;
 public abstract class DataReporter : MonoBehaviour 
 {
 
-	//this real world start time timestamp is currently of unknown accuraccy.
 	private static System.DateTime realWorldStartTime = System.DateTime.UtcNow;
+
+	//this stopwatch is the ultimate reference for time according to the plugin
 	private static System.Diagnostics.Stopwatch gamewatch = new System.Diagnostics.Stopwatch();
 
 	protected System.Collections.Generic.Queue<DataPoint> eventQueue = new Queue<DataPoint>();

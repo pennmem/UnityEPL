@@ -6,9 +6,25 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <Cocoa/Cocoa.h>
 
-@interface UnityEPLCocoaPlugin : NSObject
+NSMutableArray * KeyCodeQueue;
+NSMutableArray * KeyTimestampQueue;
+NSMutableArray * MouseButtonQueue;
+NSMutableArray * MouseTimestampQueue;
 
-float TestNativePluginFunctionCocoa(void);
+double SetStartTime(void);
+
+int PopKeyKeycode(void);
+float PopKeyTimestamp(void);
+int CountKeyEvents(void);
+int PopMouseButton(void);
+float PopMouseTimestamp(void);
+int CountMouseEvents(void);
+
+
+@interface UnityEPLCocoaPlugin : NSResponder
+
+//handle events!!
 
 @end

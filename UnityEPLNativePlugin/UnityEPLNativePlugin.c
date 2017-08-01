@@ -4,4 +4,3 @@ float TestNativePluginFunctionC()
 {
 	return 3.0F;
 }
-
