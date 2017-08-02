@@ -13,7 +13,7 @@ NSMutableArray * KeyTimestampQueue;
 NSMutableArray * MouseButtonQueue;
 NSMutableArray * MouseTimestampQueue;
 
-double SetStartTime(void);
+double StartCocoaPlugin(void);
 
 int PopKeyKeycode(void);
 float PopKeyTimestamp(void);
@@ -25,6 +25,6 @@ int CountMouseEvents(void);
 
 @interface UnityEPLCocoaPlugin : NSResponder
 
-//handle events!!
+- (void) handleKeyEvent: (NSEvent *) theEvent;
 
 @end

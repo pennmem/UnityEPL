@@ -7,11 +7,10 @@
 
 #import "UnityEPLCocoaPlugin.h"
 
-@implementation UnityEPLCocoaPlugin
-
 //returns the current uptime in milliseconds
-//call this once in order to place nsevents on the c# stopwatch
-double MarkStartTime(void)
+//call this once in order to begin listening
+//for everns and place nsevents on the c# stopwatch
+double StartCocoaPlugin(void)
 {
     return [[NSProcessInfo processInfo] systemUptime] * 1000;
 }
@@ -55,6 +54,29 @@ int CountMouseEvents(void)
 {
     int mouseButtonCount = (int)[MouseButtonQueue count];
     return mouseButtonCount;
+}
+
+
+
+
+@implementation UnityEPLCocoaPlugin
+
+- (void)keyUp:(NSEvent *)theEvent
+{
+    [self handleKeyEvent:theEvent];
+}
+
+- (void)keyDown:(NSEvent *)theEvent
+{
+    [self handleKeyEvent:theEvent];
+}
+
+- (void)handleKeyEvent:(NSEvent *)theEvent
+{
+    int keyCode = [theEvent keyCode];
+    float time = [theEvent timestamp];
+    [KeyCodeQueue addObject: [NSNumber numberWithInt:keyCode]];
+    [KeyTimestampQueue addObject: [NSNumber numberWithFloat:time]];
 }
 
 @end

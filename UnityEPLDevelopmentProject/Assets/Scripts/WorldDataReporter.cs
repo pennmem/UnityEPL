@@ -15,7 +15,7 @@ public class WorldDataReporter : DataReporter
  
 	void Start ()
 	{
-		Debug.Log (UnityEPL.TestNativePluginFunctionCocoa ());
+		Debug.Log (UnityEPL.StartCocoaPlugin ().ToString("F"));
 
 		if ((reportEntersView || reportLeavesView) && GetComponent<Collider> () == null)
 		{
