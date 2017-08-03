@@ -5,11 +5,10 @@ using UnityEngine;
 //this superclass implements an interface for retrieving behavioral events from a queue
 public abstract class DataReporter : MonoBehaviour 
 {
-
 	private static System.DateTime realWorldStartTime = System.DateTime.UtcNow;
 
 	//this stopwatch is the ultimate reference for time according to the plugin
-	private static System.Diagnostics.Stopwatch gamewatch = new System.Diagnostics.Stopwatch();
+	public static System.Diagnostics.Stopwatch gamewatch = new System.Diagnostics.Stopwatch();
 
 	protected System.Collections.Generic.Queue<DataPoint> eventQueue = new Queue<DataPoint>();
 
@@ -50,8 +49,13 @@ public abstract class DataReporter : MonoBehaviour
 		return realWorldStartTime.AddSeconds (Time.time);
 	}
 
-	protected System.DateTime RealWorldTime()
+	protected System.DateTime RealWorldTimeStopwatch()
 	{
 		return realWorldStartTime.Add(gamewatch.Elapsed);
+	}
+
+	protected System.DateTime RealWorldTime()
+	{
+		return realWorldStartTime.Add (new System.TimeSpan(0, 0, 0, 0, Mathf.FloorToInt(Time.realtimeSinceStartup*1000)));
 	}
 }

@@ -25,6 +25,6 @@ int CountMouseEvents(void);
 
 @interface UnityEPLCocoaPlugin : NSResponder
 
-- (void) handleKeyEvent: (NSEvent *) theEvent;
+- (void) handleInputEvent: (NSEvent *) theEvent;
 
 @end

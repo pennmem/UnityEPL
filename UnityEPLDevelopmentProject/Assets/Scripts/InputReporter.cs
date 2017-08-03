@@ -5,31 +5,50 @@ using UnityEngine;
 
 public class InputReporter : DataReporter
 {
-	void Awake()
+
+	public bool reportKeyStrokes = false;
+	public bool reportMouseClicks = false;
+	public bool reportMousePosition = false;
+
+
+
+	void Update()
 	{
-		
+		Debug.Log (UnityEPL.CountKeyEvents ());
+		Debug.Log (UnityEPL.CountMouseEvents ());
 	}
 
-	void OnGUI()
-	{
-		string type = "";
-		string buttonName = "";
-		Event thisEvent = Event.current;
-		if (thisEvent.isKey)
-		{
-			type = "key press";
-			buttonName = thisEvent.keyCode.ToString ();
-			if (thisEvent.keyCode == KeyCode.None)
-				return;
-		}
-		if (thisEvent.isMouse)
-		{
-			type = "mouse button press";
-			buttonName = thisEvent.button.ToString ();
-		}
-		if (thisEvent.isKey || thisEvent.isMouse)
-		{
-			eventQueue.Enqueue (new DataPoint (type, RealWorldTime (), new Dictionary<string, string> (){ { type , buttonName } }));
-		}
-	}
+
+
+
+
+//	private Thread pollingThread;
+//
+//	private volatile bool stopPolling = false;
+//
+//	void Awake()
+//	{
+//		pollingThread = new Thread(InputPolling);
+//		pollingThread.Start ();
+//	}
+//
+//	private void CheckInput()
+//	{
+//		Debug.Log (gamewatch.Elapsed.TotalMilliseconds);
+//		if (UnityEngine.Input.GetKey(KeyCode.A) || UnityEngine.Input.GetKey(KeyCode.S))
+//			UnityEngine.Debug.Log (gamewatch.Elapsed.TotalMilliseconds);
+//	}
+//
+//	private void InputPolling()
+//	{
+//		while (!stopPolling)
+//			CheckInput ();
+//	}
+//
+//	void OnDestroy()
+//	{
+//		stopPolling = true;
+//	}
+
+
 }

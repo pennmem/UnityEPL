@@ -57,26 +57,63 @@ int CountMouseEvents(void)
 }
 
 
-
-
 @implementation UnityEPLCocoaPlugin
 
 - (void)keyUp:(NSEvent *)theEvent
 {
-    [self handleKeyEvent:theEvent];
+    [self handleInputEvent:theEvent];
 }
 
 - (void)keyDown:(NSEvent *)theEvent
 {
-    [self handleKeyEvent:theEvent];
+    [self handleInputEvent:theEvent];
 }
 
-- (void)handleKeyEvent:(NSEvent *)theEvent
+- (void)mouseUp:(NSEvent *)theEvent
+{
+    [self handleInputEvent:theEvent];
+}
+
+- (void)mouseDown:(NSEvent *)theEvent
+{
+    [self handleInputEvent:theEvent];
+}
+
+- (void)rightMouseUp:(NSEvent *)theEvent
+{
+    [self handleInputEvent:theEvent];
+}
+
+- (void)rightMouseDown:(NSEvent *)theEvent
+{
+    [self handleInputEvent:theEvent];
+}
+
+- (void)otherMouseUp:(NSEvent *)theEvent
+{
+    [self handleInputEvent:theEvent];
+}
+
+- (void)otherMouseDown:(NSEvent *)theEvent
+{
+    [self handleInputEvent:theEvent];
+}
+
+- (void)handleInputEvent:(NSEvent *)theEvent
 {
     int keyCode = [theEvent keyCode];
+    int mouseButton = (int)[theEvent buttonNumber];
     float time = [theEvent timestamp];
-    [KeyCodeQueue addObject: [NSNumber numberWithInt:keyCode]];
-    [KeyTimestampQueue addObject: [NSNumber numberWithFloat:time]];
+    if (mouseButton == 0)
+    {
+        [KeyCodeQueue addObject: [NSNumber numberWithInt:keyCode]];
+        [KeyTimestampQueue addObject: [NSNumber numberWithFloat:time]];
+    }
+    else
+    {
+        [MouseButtonQueue addObject: [NSNumber numberWithInt:mouseButton]];
+        [MouseTimestampQueue addObject: [NSNumber numberWithFloat:time]];
+    }
 }
 
 @end

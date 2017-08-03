@@ -5,16 +5,30 @@ using System.Runtime.InteropServices;
 public static class UnityEPL
 {
 
+	//iPhones require special DLLImport due to static linkage
+	//Add this to other external functions if adding iPhone support
 	#if UNITY_IPHONE
-	// On iOS plugins are statically linked into
-	// the executable, so we have to use __Internal as the
-	// library name.
 	[DllImport ("__Internal")]
 	#else
-	// Other platforms load plugins dynamically, so pass the name
-	// of the plugin's dynamic library.
 	[DllImport ("UnityEPLNativePlugin")]
 	#endif
-
 	public static extern double StartCocoaPlugin ();
+
+	[DllImport ("UnityEPLNativePlugin")]
+	public static extern int PopKeyKeycode();
+
+	[DllImport ("UnityEPLNativePlugin")]
+	public static extern float PopKeyTimestamp();
+
+	[DllImport ("UnityEPLNativePlugin")]
+	public static extern int CountKeyEvents();
+
+	[DllImport ("UnityEPLNativePlugin")]
+	public static extern int PopMouseButton();
+
+	[DllImport ("UnityEPLNativePlugin")]
+	public static extern float PopMouseTimestamp();
+
+	[DllImport ("UnityEPLNativePlugin")]
+	public static extern int CountMouseEvents();
 }
