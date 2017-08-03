@@ -21,10 +21,4 @@ int CountKeyEvents(void);
 int PopMouseButton(void);
 float PopMouseTimestamp(void);
 int CountMouseEvents(void);
-
-
-@interface UnityEPLCocoaPlugin : NSResponder
-
-- (void) handleInputEvent: (NSEvent *) theEvent;
-
-@end
+void handleInputEvent(NSEvent * theEvent);

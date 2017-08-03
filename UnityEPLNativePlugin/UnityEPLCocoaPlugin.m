@@ -12,6 +12,20 @@
 //for everns and place nsevents on the c# stopwatch
 double StartCocoaPlugin(void)
 {
+    [NSEvent addGlobalMonitorForEventsMatchingMask: (NSEventMaskKeyUp |
+                                                     NSEventMaskKeyDown |
+                                                     NSEventMaskLeftMouseUp |
+                                                     NSEventMaskRightMouseUp |
+                                                     NSEventMaskOtherMouseUp |
+                                                     NSEventMaskLeftMouseDown |
+                                                     NSEventMaskRightMouseDown |
+                                                     NSEventMaskOtherMouseDown)
+                                           handler: ^( NSEvent * handledEvent)
+         {
+             handleInputEvent(handledEvent);
+         }
+     ];
+    
     return [[NSProcessInfo processInfo] systemUptime] * 1000;
 }
 
@@ -56,54 +70,11 @@ int CountMouseEvents(void)
     return mouseButtonCount;
 }
 
-
-@implementation UnityEPLCocoaPlugin
-
-- (void)keyUp:(NSEvent *)theEvent
+void handleInputEvent (NSEvent * handledEvent)
 {
-    [self handleInputEvent:theEvent];
-}
-
-- (void)keyDown:(NSEvent *)theEvent
-{
-    [self handleInputEvent:theEvent];
-}
-
-- (void)mouseUp:(NSEvent *)theEvent
-{
-    [self handleInputEvent:theEvent];
-}
-
-- (void)mouseDown:(NSEvent *)theEvent
-{
-    [self handleInputEvent:theEvent];
-}
-
-- (void)rightMouseUp:(NSEvent *)theEvent
-{
-    [self handleInputEvent:theEvent];
-}
-
-- (void)rightMouseDown:(NSEvent *)theEvent
-{
-    [self handleInputEvent:theEvent];
-}
-
-- (void)otherMouseUp:(NSEvent *)theEvent
-{
-    [self handleInputEvent:theEvent];
-}
-
-- (void)otherMouseDown:(NSEvent *)theEvent
-{
-    [self handleInputEvent:theEvent];
-}
-
-- (void)handleInputEvent:(NSEvent *)theEvent
-{
-    int keyCode = [theEvent keyCode];
-    int mouseButton = (int)[theEvent buttonNumber];
-    float time = [theEvent timestamp];
+    int keyCode = [handledEvent keyCode];
+    int mouseButton = (int)[handledEvent buttonNumber];
+    float time = [handledEvent timestamp];
     if (mouseButton == 0)
     {
         [KeyCodeQueue addObject: [NSNumber numberWithInt:keyCode]];
@@ -115,5 +86,3 @@ int CountMouseEvents(void)
         [MouseTimestampQueue addObject: [NSNumber numberWithFloat:time]];
     }
 }
-
-@end

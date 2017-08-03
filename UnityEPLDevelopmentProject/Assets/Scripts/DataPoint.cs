@@ -46,7 +46,7 @@ public class DataPoint
 		if (last_milliseconds == 0)
 			last_milliseconds = milliseconds - 17;
 		double difference = milliseconds - last_milliseconds;
-		Debug.Log ("this frame: " + difference.ToString ());
+		Debug.Log ("difference from last: " + difference.ToString ());
 		sum += difference;
 		last_milliseconds = milliseconds;
 		count = count + 1;
