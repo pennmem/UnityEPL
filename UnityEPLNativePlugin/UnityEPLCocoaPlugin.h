@@ -8,11 +8,6 @@
 #import <Foundation/Foundation.h>
 #import <Cocoa/Cocoa.h>
 
-NSMutableArray * KeyCodeQueue;
-NSMutableArray * KeyTimestampQueue;
-NSMutableArray * MouseButtonQueue;
-NSMutableArray * MouseTimestampQueue;
-
 double StartCocoaPlugin(void);
 
 int PopKeyKeycode(void);

@@ -7,9 +7,13 @@
 
 #import "UnityEPLCocoaPlugin.h"
 
-NSView* view = nil;
+NSMutableArray * KeyCodeQueue;
+NSMutableArray * KeyTimestampQueue;
+NSMutableArray * MouseButtonQueue;
+NSMutableArray * MouseTimestampQueue;
 
-MouseInput * mouseInput = nil;
+NSView * view = nil;
+MouseInput * mouseInput =  nil;
 
 //returns the current uptime in milliseconds
 //call this once in order to begin listening
@@ -21,34 +25,12 @@ double StartCocoaPlugin(void)
     MouseButtonQueue = [NSMutableArray new];
     MouseTimestampQueue = [NSMutableArray new];
     
-    [NSEvent addGlobalMonitorForEventsMatchingMask: (NSEventMaskLeftMouseUp |
-                                                     NSEventMaskRightMouseUp |
-                                                     NSEventMaskOtherMouseUp |
-                                                     NSEventMaskLeftMouseDown |
-                                                     NSEventMaskRightMouseDown |
-                                                     NSEventMaskOtherMouseDown)
-                                           handler: ^( NSEvent * handledEvent)
-         {
-             handleMouseEvent(handledEvent);
-         }
-     ];
-    
-    [NSEvent addGlobalMonitorForEventsMatchingMask: (NSEventMaskKeyUp |
-                                                     NSEventMaskKeyDown)
-                                           handler: ^( NSEvent * handledEvent)
-         {
-             handleKeyboardEvent(handledEvent);
-         }
-     ];
-    
-    
     NSApplication* app = [NSApplication sharedApplication];
-    NSWindow* window = [app mainWindow];
+    NSWindow * window = [app mainWindow];
     view = [window contentView];
     
     mouseInput = [MouseInput alloc];
     [view setNextResponder:mouseInput];
-
     
     return [[NSProcessInfo processInfo] systemUptime] * 1000;
 }
@@ -107,9 +89,9 @@ void handleKeyboardEvent (NSEvent * handledEvent)
 {
     int keyCode = [handledEvent keyCode];
     float time = [handledEvent timestamp];
-    NSLog(@"keyboard event");
     [KeyCodeQueue addObject: [NSNumber numberWithInt:keyCode]];
     [KeyTimestampQueue addObject: [NSNumber numberWithFloat:time]];
+    NSLog(@"%f", (double)[MouseButtonQueue count]);
 }
 
 @implementation MouseInput
@@ -118,5 +100,41 @@ void handleKeyboardEvent (NSEvent * handledEvent)
 {
     handleMouseEvent(event);
 }
+
+- (void) mouseUp:(NSEvent *)event
+{
+    handleMouseEvent(event);
+}
+
+- (void) rightMouseDown:(NSEvent *)event
+{
+    handleMouseEvent(event);
+}
+
+- (void) rightMouseUp:(NSEvent *)event
+{
+    handleMouseEvent(event);
+}
+
+- (void) otherMouseDown:(NSEvent *)event
+{
+    handleMouseEvent(event);
+}
+
+- (void) otherMouseUp:(NSEvent *)event
+{
+    handleMouseEvent(event);
+}
+
+- (void) keyDown:(NSEvent *)event
+{
+    handleKeyboardEvent(event);
+}
+
+- (void) keyUp:(NSEvent *)event
+{
+    handleKeyboardEvent(event);
+}
+
 
 @end
