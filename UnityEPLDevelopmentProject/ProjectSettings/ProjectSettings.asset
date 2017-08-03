@@ -507,7 +507,7 @@ PlayerSettings:
   additionalIl2CppArgs: 
   scriptingRuntimeVersion: 0
   apiCompatibilityLevelPerPlatform:
-    Standalone: 3
+    Standalone: 1
   m_RenderingPath: 1
   m_MobileRenderingPath: 1
   metroPackageName: UnityEPL Development
@@ -594,7 +594,7 @@ PlayerSettings:
     ErrorHub: 0
     Hub: 0
   facebookSdkVersion: 7.9.4
-  apiCompatibilityLevel: 3
+  apiCompatibilityLevel: 2
   cloudProjectId: f75ad27f-5fd2-407c-ae41-e266b194aadf
   projectName: UnityEPL Development
   organizationId: milkshakeiii

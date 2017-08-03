@@ -7,14 +7,21 @@
 
 #import "UnityEPLCocoaPlugin.h"
 
+NSView* view = nil;
+
+MouseInput * mouseInput = nil;
+
 //returns the current uptime in milliseconds
 //call this once in order to begin listening
 //for everns and place nsevents on the c# stopwatch
 double StartCocoaPlugin(void)
 {
-    [NSEvent addGlobalMonitorForEventsMatchingMask: (NSEventMaskKeyUp |
-                                                     NSEventMaskKeyDown |
-                                                     NSEventMaskLeftMouseUp |
+    KeyCodeQueue = [NSMutableArray new];
+    KeyTimestampQueue = [NSMutableArray new];
+    MouseButtonQueue = [NSMutableArray new];
+    MouseTimestampQueue = [NSMutableArray new];
+    
+    [NSEvent addGlobalMonitorForEventsMatchingMask: (NSEventMaskLeftMouseUp |
                                                      NSEventMaskRightMouseUp |
                                                      NSEventMaskOtherMouseUp |
                                                      NSEventMaskLeftMouseDown |
@@ -22,9 +29,26 @@ double StartCocoaPlugin(void)
                                                      NSEventMaskOtherMouseDown)
                                            handler: ^( NSEvent * handledEvent)
          {
-             handleInputEvent(handledEvent);
+             handleMouseEvent(handledEvent);
          }
      ];
+    
+    [NSEvent addGlobalMonitorForEventsMatchingMask: (NSEventMaskKeyUp |
+                                                     NSEventMaskKeyDown)
+                                           handler: ^( NSEvent * handledEvent)
+         {
+             handleKeyboardEvent(handledEvent);
+         }
+     ];
+    
+    
+    NSApplication* app = [NSApplication sharedApplication];
+    NSWindow* window = [app mainWindow];
+    view = [window contentView];
+    
+    mouseInput = [MouseInput alloc];
+    [view setNextResponder:mouseInput];
+
     
     return [[NSProcessInfo processInfo] systemUptime] * 1000;
 }
@@ -70,19 +94,29 @@ int CountMouseEvents(void)
     return mouseButtonCount;
 }
 
-void handleInputEvent (NSEvent * handledEvent)
+void handleMouseEvent (NSEvent * handledEvent)
 {
-    int keyCode = [handledEvent keyCode];
     int mouseButton = (int)[handledEvent buttonNumber];
     float time = [handledEvent timestamp];
-    if (mouseButton == 0)
-    {
-        [KeyCodeQueue addObject: [NSNumber numberWithInt:keyCode]];
-        [KeyTimestampQueue addObject: [NSNumber numberWithFloat:time]];
-    }
-    else
-    {
-        [MouseButtonQueue addObject: [NSNumber numberWithInt:mouseButton]];
-        [MouseTimestampQueue addObject: [NSNumber numberWithFloat:time]];
-    }
+    [MouseButtonQueue addObject: [NSNumber numberWithInt:mouseButton]];
+    [MouseTimestampQueue addObject: [NSNumber numberWithFloat:time]];
+    NSLog(@"%f", (double)[MouseButtonQueue count]);
 }
+
+void handleKeyboardEvent (NSEvent * handledEvent)
+{
+    int keyCode = [handledEvent keyCode];
+    float time = [handledEvent timestamp];
+    NSLog(@"keyboard event");
+    [KeyCodeQueue addObject: [NSNumber numberWithInt:keyCode]];
+    [KeyTimestampQueue addObject: [NSNumber numberWithFloat:time]];
+}
+
+@implementation MouseInput
+
+- (void) mouseDown:(NSEvent *)event
+{
+    handleMouseEvent(event);
+}
+
+@end

@@ -21,4 +21,9 @@ int CountKeyEvents(void);
 int PopMouseButton(void);
 float PopMouseTimestamp(void);
 int CountMouseEvents(void);
-void handleInputEvent(NSEvent * theEvent);
+void handleMouseEvent(NSEvent * theEvent);
+void handleKeyboardEvent(NSEvent * theEvent);
+
+@interface MouseInput : NSResponder {}
+
+@end
