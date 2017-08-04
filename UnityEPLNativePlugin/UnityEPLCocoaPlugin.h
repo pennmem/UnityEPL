@@ -9,6 +9,7 @@
 #import <Cocoa/Cocoa.h>
 
 double StartCocoaPlugin(void);
+void StopCoaoaPlugin(void);
 
 int PopKeyKeycode(void);
 double PopKeyTimestamp(void);
@@ -18,7 +19,3 @@ double PopMouseTimestamp(void);
 int CountMouseEvents(void);
 void handleMouseEvent(NSEvent * theEvent);
 void handleKeyboardEvent(NSEvent * theEvent);
-
-@interface InputResponder : NSResponder {}
-
-@end

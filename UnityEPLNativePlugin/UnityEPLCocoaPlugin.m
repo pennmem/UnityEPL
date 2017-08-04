@@ -12,8 +12,8 @@ NSMutableArray * KeyTimestampQueue;
 NSMutableArray * MouseButtonQueue;
 NSMutableArray * MouseTimestampQueue;
 
-NSView * view = nil;
-InputResponder * inputResponder =  nil;
+NSObject * mouseHandler;
+NSObject * keyboardHandler;
 
 //returns the current uptime in milliseconds
 //call this once in order to begin listening
@@ -25,15 +25,37 @@ double StartCocoaPlugin(void)
     MouseButtonQueue = [NSMutableArray new];
     MouseTimestampQueue = [NSMutableArray new];
     
-    NSApplication* app = [NSApplication sharedApplication];
-    NSWindow * window = [app mainWindow];
-    view = [window contentView];
+    mouseHandler =
+    [NSEvent addLocalMonitorForEventsMatchingMask: (NSEventMaskLeftMouseUp |
+                                                    NSEventMaskRightMouseUp |
+                                                    NSEventMaskOtherMouseUp |
+                                                    NSEventMaskLeftMouseDown |
+                                                    NSEventMaskRightMouseDown |
+                                                    NSEventMaskOtherMouseDown)
+                                          handler: ^( NSEvent * handledEvent)
+     {
+         handleMouseEvent(handledEvent);
+         return handledEvent;
+     }
+     ];
+
+    keyboardHandler =
+    [NSEvent addLocalMonitorForEventsMatchingMask: (NSEventMaskKeyUp |
+                                                    NSEventMaskKeyDown)
+                                          handler: ^( NSEvent * handledEvent)
+     {
+         handleKeyboardEvent(handledEvent);
+         return handledEvent;
+     }
+     ];
     
-    inputResponder = [InputResponder alloc];
-    [window makeFirstResponder:view];
-    [view setNextResponder:inputResponder];
-    
-    return [[NSProcessInfo processInfo] systemUptime] * 1000;
+    return [[NSProcessInfo processInfo] systemUptime];
+}
+
+void StopCocoaPlugin()
+{
+    [NSEvent removeMonitor:mouseHandler];
+    [NSEvent removeMonitor:keyboardHandler];
 }
 
 
@@ -94,71 +116,3 @@ void handleKeyboardEvent (NSEvent * handledEvent)
     [KeyTimestampQueue addObject: [NSNumber numberWithFloat:time]];
     NSLog(@"%f", (double)[MouseButtonQueue count]);
 }
-
-@implementation InputResponder
-
-- (void) forwardInvocation:(NSInvocation *)anInvocation
-{
-    [anInvocation invokeWithTarget:_nextResponder];
-}
-
-- (BOOL) acceptsFirstResponder
-{
-    return YES;
-}
-
-- (BOOL) resignFirstResponder
-{
-    return NO;
-}
-
-- (void) mouseDown:(NSEvent *)event
-{
-    handleMouseEvent(event);
-    [self.nextResponder mouseDown:event];
-}
-
-- (void) mouseUp:(NSEvent *)event
-{
-    handleMouseEvent(event);
-    [self.nextResponder mouseUp:event];
-}
-
-- (void) rightMouseDown:(NSEvent *)event
-{
-    handleMouseEvent(event);
-    [self.nextResponder rightMouseDown:event];
-}
-
-- (void) rightMouseUp:(NSEvent *)event
-{
-    handleMouseEvent(event);
-    [self.nextResponder rightMouseUp:event];
-}
-
-- (void) otherMouseDown:(NSEvent *)event
-{
-    handleMouseEvent(event);
-    [self.nextResponder otherMouseDown:event];
-}
-
-- (void) otherMouseUp:(NSEvent *)event
-{
-    handleMouseEvent(event);
-    [self.nextResponder otherMouseUp:event];
-}
-
-- (void) keyDown:(NSEvent *)event
-{
-    handleKeyboardEvent(event);
-    [self.nextResponder keyDown:event];
-}
-
-- (void) keyUp:(NSEvent *)event
-{
-    handleKeyboardEvent(event);
-    [self.nextResponder keyUp:event];
-}
-
-
-@end

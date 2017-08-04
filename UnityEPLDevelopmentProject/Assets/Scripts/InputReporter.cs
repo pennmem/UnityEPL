@@ -15,6 +15,7 @@ public class InputReporter : DataReporter
 	void Update()
 	{
 		CollectMouseEvents ();
+		CollectKeyEvents ();
 	}
 
 	void CollectMouseEvents()
@@ -26,7 +27,20 @@ public class InputReporter : DataReporter
 			double timestamp = UnityEPL.PopMouseTimestamp ();
 			Dictionary<string, string> dataDict = new Dictionary<string, string> ();
 			dataDict.Add ("mouse button", mouseButton.ToString ());
-			eventQueue.Enqueue(new DataPoint("mouse button", OSXTimestampToTimestamp(timestamp), dataDict));
+			eventQueue.Enqueue(new DataPoint("mouse button up/down", OSXTimestampToTimestamp(timestamp), dataDict));
+		}
+	}
+
+	void CollectKeyEvents()
+	{
+		int eventCount = UnityEPL.CountKeyEvents ();
+		if (eventCount > 1)
+		{
+			int keyCode = UnityEPL.PopKeyKeycode ();
+			double timestamp = UnityEPL.PopKeyTimestamp ();
+			Dictionary<string, string> dataDict = new Dictionary<string, string> ();
+			dataDict.Add ("key code", keyCode.ToString ());
+			eventQueue.Enqueue(new DataPoint("key press/release", OSXTimestampToTimestamp(timestamp), dataDict));
 		}
 	}
 

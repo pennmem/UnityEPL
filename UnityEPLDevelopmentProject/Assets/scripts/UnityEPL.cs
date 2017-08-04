@@ -15,6 +15,9 @@ public static class UnityEPL
 	public static extern double StartCocoaPlugin ();
 
 	[DllImport ("UnityEPLNativePlugin")]
+	public static extern void StopCocoaPlugin ();
+
+	[DllImport ("UnityEPLNativePlugin")]
 	public static extern int PopKeyKeycode();
 
 	[DllImport ("UnityEPLNativePlugin")]
