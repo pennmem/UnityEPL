@@ -5,15 +5,19 @@ using UnityEngine;
 //this superclass implements an interface for retrieving behavioral events from a queue
 public abstract class DataReporter : MonoBehaviour 
 {
-	private static System.DateTime realWorldStartTime = System.DateTime.UtcNow;
+	private static System.DateTime realWorldStartTime;
 
 	//this stopwatch is the ultimate reference for time according to the plugin
 	public static System.Diagnostics.Stopwatch gamewatch = new System.Diagnostics.Stopwatch();
 
 	protected System.Collections.Generic.Queue<DataPoint> eventQueue = new Queue<DataPoint>();
+	protected double OSXstartTime;
 
 	void Awake()
 	{
+		System.DateTime realWorldStartTime = System.DateTime.UtcNow;
+		OSXstartTime = UnityEPL.StartCocoaPlugin ();
+
 		if (!gamewatch.IsRunning)
 			gamewatch.Start ();
 		if (QualitySettings.vSyncCount == 0)
@@ -56,6 +60,11 @@ public abstract class DataReporter : MonoBehaviour
 
 	protected System.DateTime RealWorldTime()
 	{
-		return realWorldStartTime.Add (new System.TimeSpan(0, 0, 0, 0, Mathf.FloorToInt(Time.realtimeSinceStartup*1000)));
+		return realWorldStartTime.Add (new System.TimeSpan(System.TimeSpan.TicksPerSecond * (long)Time.realtimeSinceStartup));
+	}
+
+	protected System.DateTime OSXTimestampToTimestamp(double OSXTimestamp)
+	{
+		return realWorldStartTime.Add (new System.TimeSpan((long)(System.TimeSpan.TicksPerSecond * OSXTimestamp)));
 	}
 }

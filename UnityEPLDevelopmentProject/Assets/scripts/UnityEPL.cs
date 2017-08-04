@@ -18,7 +18,7 @@ public static class UnityEPL
 	public static extern int PopKeyKeycode();
 
 	[DllImport ("UnityEPLNativePlugin")]
-	public static extern float PopKeyTimestamp();
+	public static extern double PopKeyTimestamp();
 
 	[DllImport ("UnityEPLNativePlugin")]
 	public static extern int CountKeyEvents();
@@ -27,7 +27,7 @@ public static class UnityEPL
 	public static extern int PopMouseButton();
 
 	[DllImport ("UnityEPLNativePlugin")]
-	public static extern float PopMouseTimestamp();
+	public static extern double PopMouseTimestamp();
 
 	[DllImport ("UnityEPLNativePlugin")]
 	public static extern int CountMouseEvents();

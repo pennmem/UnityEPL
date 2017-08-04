@@ -36,7 +36,8 @@ public class DataPoint
 		}
 		if (dataDict.Count > 0) JSONString = JSONString.Substring (0, JSONString.Length - 1);
 		JSONString = JSONString + "},\"time\":\""+unixTimestamp.ToString()+"\"}";
-		return JSONString;
+		//return JSONString;
+		return unixTimestamp.ToString();
 	}
 
 	private double TimeInMilliseconds()
@@ -56,6 +57,7 @@ public class DataPoint
 			count = 0;
 			sum = 0;
 		}
-		return milliseconds;
+		//return milliseconds
+		return difference;
 	}
 }

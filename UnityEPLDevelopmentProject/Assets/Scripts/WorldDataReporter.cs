@@ -15,8 +15,6 @@ public class WorldDataReporter : DataReporter
  
 	void Start ()
 	{
-		Debug.Log (UnityEPL.StartCocoaPlugin ().ToString("F"));
-
 		if ((reportEntersView || reportLeavesView) && GetComponent<Collider> () == null)
 		{
 			throw new UnityException ("You have selected enter/exit viewfield reporting for " + gameObject.name + " but there is no collider on the object." +

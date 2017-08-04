@@ -7,6 +7,8 @@ public class DataHandler : MonoBehaviour
 {
 	public DataReporter[] reportersToHandle;
 
+	public UnityEngine.UI.Text debugText;
+
 	void Update ()
 	{
 		foreach (DataReporter reporter in reportersToHandle) 
@@ -16,7 +18,7 @@ public class DataHandler : MonoBehaviour
 				DataPoint[] newPoints = reporter.ReadDataPoints (reporter.UnreadDataPointCount ());
 				foreach (DataPoint dataPoint in newPoints)
 				{
-					Debug.Log (dataPoint.ToJSON ());
+					debugText.text = dataPoint.ToJSON();
 				}
 			}
 		}

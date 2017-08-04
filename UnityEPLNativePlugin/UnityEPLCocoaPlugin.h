@@ -11,14 +11,14 @@
 double StartCocoaPlugin(void);
 
 int PopKeyKeycode(void);
-float PopKeyTimestamp(void);
+double PopKeyTimestamp(void);
 int CountKeyEvents(void);
 int PopMouseButton(void);
-float PopMouseTimestamp(void);
+double PopMouseTimestamp(void);
 int CountMouseEvents(void);
 void handleMouseEvent(NSEvent * theEvent);
 void handleKeyboardEvent(NSEvent * theEvent);
 
-@interface MouseInput : NSResponder {}
+@interface InputResponder : NSResponder {}
 
 @end

@@ -14,8 +14,20 @@ public class InputReporter : DataReporter
 
 	void Update()
 	{
-		Debug.Log (UnityEPL.CountKeyEvents ());
-		Debug.Log (UnityEPL.CountMouseEvents ());
+		CollectMouseEvents ();
+	}
+
+	void CollectMouseEvents()
+	{
+		int eventCount = UnityEPL.CountMouseEvents ();
+		if (eventCount > 1)
+		{
+			int mouseButton = UnityEPL.PopMouseButton ();
+			double timestamp = UnityEPL.PopMouseTimestamp ();
+			Dictionary<string, string> dataDict = new Dictionary<string, string> ();
+			dataDict.Add ("mouse button", mouseButton.ToString ());
+			eventQueue.Enqueue(new DataPoint("mouse button", OSXTimestampToTimestamp(timestamp), dataDict));
+		}
 	}
 
 
