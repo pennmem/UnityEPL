@@ -87,8 +87,8 @@ public abstract class DataReporter : MonoBehaviour
 
 	protected System.DateTime OSXTimestampToTimestamp(double OSXTimestamp)
 	{
-		Debug.Log (OSXStartTime);
-		Debug.Log (OSXTimestamp);
+//		Debug.Log (OSXStartTime);
+//		Debug.Log (OSXTimestamp);
 		return realWorldStartTime.Add (new System.TimeSpan((long)(System.TimeSpan.TicksPerSecond * (OSXTimestamp - OSXStartTime))));
 	}
 }

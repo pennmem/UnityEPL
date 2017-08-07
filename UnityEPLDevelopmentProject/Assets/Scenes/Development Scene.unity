@@ -233,7 +233,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Delegates:
-  - eventID: 0
+  - eventID: 2
     callback:
       m_PersistentCalls:
         m_Calls:
@@ -245,7 +245,7 @@ MonoBehaviour:
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
             m_IntArgument: 0
             m_FloatArgument: 0
-            m_StringArgument: mouse over important button
+            m_StringArgument: important button clicked
             m_BoolArgument: 0
           m_CallState: 2
       m_TypeName: UnityEngine.EventSystems.EventTrigger+TriggerEvent, UnityEngine.UI,
@@ -566,14 +566,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 1197243449}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 632c6dc073cc54c72a6755f5e111947b, type: 3}
+  m_Script: {fileID: 11500000, guid: 0bf0398ac0f42476681d03e21fa57605, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   reportersToHandle:
-  - {fileID: 874575873}
   - {fileID: 1845532}
+  - {fileID: 874575873}
   - {fileID: 1223104869}
-  debugText: {fileID: 1563464240}
 --- !u!4 &1197243451
 Transform:
   m_ObjectHideFlags: 0
