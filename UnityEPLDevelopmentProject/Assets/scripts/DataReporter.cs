@@ -10,19 +10,25 @@ public abstract class DataReporter : MonoBehaviour
 	//this stopwatch is the ultimate reference for time according to the plugin
 	public static System.Diagnostics.Stopwatch gamewatch = new System.Diagnostics.Stopwatch();
 
-	private static bool nativePluginRunning;
+	private static bool nativePluginRunning = false;
+	private static bool startTimeInitialized = false;
 
 	protected System.Collections.Generic.Queue<DataPoint> eventQueue = new Queue<DataPoint>();
-	protected double OSXStartTime;
+	protected static double OSXStartTime;
 
 	void Awake()
 	{
+		if (!startTimeInitialized) 
+		{
+			realWorldStartTime = System.DateTime.UtcNow;
+			startTimeInitialized = true;
+		}
 		if (!nativePluginRunning) 
 		{
-			System.DateTime realWorldStartTime = System.DateTime.UtcNow;
 			OSXStartTime = UnityEPL.StartCocoaPlugin ();
 			nativePluginRunning = true;
 		}
+
 	
 		if (!gamewatch.IsRunning)
 			gamewatch.Start ();
@@ -81,6 +87,8 @@ public abstract class DataReporter : MonoBehaviour
 
 	protected System.DateTime OSXTimestampToTimestamp(double OSXTimestamp)
 	{
+		Debug.Log (OSXStartTime);
+		Debug.Log (OSXTimestamp);
 		return realWorldStartTime.Add (new System.TimeSpan((long)(System.TimeSpan.TicksPerSecond * (OSXTimestamp - OSXStartTime))));
 	}
 }

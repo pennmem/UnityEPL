@@ -12,16 +12,11 @@ public class DataHandlerEditor : Editor
 
 	public override void OnInspectorGUI()
 	{
-		if (GUILayout.Button("Handle all reporters"))
-			AssignAllReporters();
-
-		base.OnInspectorGUI ();
-	}
-
-	private void AssignAllReporters()
-	{
 		DataHandler currentTarget = (DataHandler)target;
 
-		currentTarget.reportersToHandle = Resources.FindObjectsOfTypeAll<DataReporter> ();
+		if (GUILayout.Button("Handle all reporters"))
+			currentTarget.reportersToHandle = Resources.FindObjectsOfTypeAll<DataReporter> ();
+
+		base.OnInspectorGUI ();
 	}
 }

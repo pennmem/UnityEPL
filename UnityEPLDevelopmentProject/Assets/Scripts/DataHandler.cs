@@ -3,11 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 //make this a superclass or make a drop down of reporting options?
-public class DataHandler : MonoBehaviour 
+public abstract class DataHandler : MonoBehaviour 
 {
 	public DataReporter[] reportersToHandle;
-
-	public UnityEngine.UI.Text debugText;
 
 	void Update ()
 	{
@@ -16,11 +14,10 @@ public class DataHandler : MonoBehaviour
 			if (reporter.UnreadDataPointCount () > 0) 
 			{
 				DataPoint[] newPoints = reporter.ReadDataPoints (reporter.UnreadDataPointCount ());
-				foreach (DataPoint dataPoint in newPoints)
-				{
-					debugText.text = dataPoint.ToJSON();
-				}
+				HandleDataPoints (newPoints);
 			}
 		}
 	}
+
+	protected abstract void HandleDataPoints (DataPoint[] dataPoints);
 }
