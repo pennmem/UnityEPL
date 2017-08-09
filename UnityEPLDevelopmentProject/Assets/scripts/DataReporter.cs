@@ -45,7 +45,7 @@ public abstract class DataReporter : MonoBehaviour
 			nativePluginRunning = false;
 		}
 	}
- 
+
 	public int UnreadDataPointCount()
 	{
 		return eventQueue.Count;

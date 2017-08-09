@@ -4,6 +4,7 @@ using System.Runtime.InteropServices;
 
 public static class UnityEPL
 {
+	private static string[] participants = null;
 
 	//iPhones require special DLLImport due to static linkage
 	//Add this to other external functions if adding iPhone support
@@ -34,4 +35,33 @@ public static class UnityEPL
 
 	[DllImport ("UnityEPLNativePlugin")]
 	public static extern int CountMouseEvents();
+
+	public static void AddParticipant(string participant_ID)
+	{
+		string[] new_participants;
+		if (participants == null)
+		{	
+			new_participants = new string[] { participant_ID };
+		} 
+		else 
+		{
+			new_participants = new string[participants.Length + 1];
+			for (int i = 0; i < participants.Length; i++)
+			{
+				new_participants [i] = participants [i];
+			}
+			new_participants [participants.Length] = participant_ID;
+		}
+		participants = new_participants;
+	}
+
+	public static void ClearParticipants()
+	{
+		participants = null;
+	}
+
+	public static string[] GetParticipants()
+	{
+		return participants;
+	}
 }
