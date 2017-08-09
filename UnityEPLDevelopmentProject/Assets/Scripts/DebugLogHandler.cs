@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
+[AddComponentMenu("UnityEPL/Handlers/Debug Log Handler")]
 public class DebugLogHandler : DataHandler 
 {
 	protected override void HandleDataPoints(DataPoint[] dataPoints)

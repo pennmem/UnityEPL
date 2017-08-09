@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-//reports on the world object which it is attached to.  currently only transform reporting is implemented.
+[AddComponentMenu("UnityEPL/Reporters/World Data Reporter")]
 public class WorldDataReporter : DataReporter
 {
 	public string reportingID = "Object ID not set.";

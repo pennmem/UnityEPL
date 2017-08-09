@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[AddComponentMenu("UnityEPL/Reporters/UI Data Reporter")]
 public class UIDataReporter : DataReporter
 {
 	public void LogUIEvent(string name)

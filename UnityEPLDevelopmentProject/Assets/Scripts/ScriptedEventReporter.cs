@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[AddComponentMenu("UnityEPL/Reporters/Scripted Event Reporter")]
 public class ScriptedEventReporter : DataReporter
 {
 

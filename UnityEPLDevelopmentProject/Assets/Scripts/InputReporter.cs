@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
 
+[AddComponentMenu("UnityEPL/Reporters/Input Reporter")]
 public class InputReporter : DataReporter
 {
 
