@@ -60,7 +60,10 @@ public class WorldDataReporter : DataReporter
 			Plane[] frustrumPlanes = GeometryUtility.CalculateFrustumPlanes (camera);
 			Collider objectCollider = GetComponent<Collider> ();
 
-			bool inView = GeometryUtility.TestPlanesAABB (frustrumPlanes, objectCollider.bounds) && !Physics.Linecast (camera.transform.position, gameObject.transform.position);
+			RaycastHit lineOfSightHit;
+			Physics.Linecast (camera.transform.position, gameObject.transform.position, out lineOfSightHit);
+			bool lineOfSight = lineOfSightHit.collider.Equals (gameObject.GetComponent<Collider> ());
+			bool inView = GeometryUtility.TestPlanesAABB (frustrumPlanes, objectCollider.bounds) && lineOfSight;
 			if (inView && (!camerasToInViewfield.ContainsKey (camera) || camerasToInViewfield [camera] == false)) 
 			{
 				camerasToInViewfield [camera] = true;
