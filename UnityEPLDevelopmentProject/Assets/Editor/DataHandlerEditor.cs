@@ -15,7 +15,7 @@ public class DataHandlerEditor : Editor
 		DataHandler currentTarget = (DataHandler)target;
 
 		if (GUILayout.Button("Handle all reporters"))
-			currentTarget.reportersToHandle = Resources.FindObjectsOfTypeAll<DataReporter> ();
+			currentTarget.reportersToHandle = FindObjectsOfType<DataReporter> ();
 
 		base.OnInspectorGUI ();
 	}
