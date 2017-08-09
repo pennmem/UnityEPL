@@ -38,8 +38,11 @@ public class DataPoint
 		string JSONString = "{\"type\":\""+type+"\",\"data\":{";
 		foreach (string key in dataDict.Keys)
 		{
-			string value = dataDict [key];
-			JSONString = JSONString + "\""+key+"\":\""+value+"\",";
+			string valueString = dataDict [key];
+			double valueNumber;
+			if (!double.TryParse (valueString, out valueNumber))
+				valueString = "\"" + valueString + "\"";
+			JSONString = JSONString + "\""+key+"\":" + valueString + ",";
 		}
 		if (dataDict.Count > 0) JSONString = JSONString.Substring (0, JSONString.Length - 1);
 		JSONString = JSONString + "},\"time\":"+unixTimestamp.ToString()+"}";
