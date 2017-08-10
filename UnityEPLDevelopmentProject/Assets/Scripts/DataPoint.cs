@@ -24,6 +24,10 @@ public class DataPoint
 				newDataDict.Add ("participant " + (i + 1).ToString (), participants [i]);
 			}
 		}
+		if (UnityEPL.GetExperimentName () != null) 
+		{
+			newDataDict.Add ("experiment", UnityEPL.GetExperimentName ());
+		}
 
 		type = newType;
 		dataDict = newDataDict;

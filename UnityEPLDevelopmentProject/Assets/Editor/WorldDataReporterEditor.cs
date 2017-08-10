@@ -27,9 +27,11 @@ public class WorldDataReporterEditor : Editor
 		currentTarget.reportTransform = EditorGUILayout.Toggle ("Report transform data", currentTarget.reportTransform);
 		if (currentTarget.reportTransform)
 		{
+			EditorGUI.indentLevel++;
 			int input = EditorGUILayout.IntField ("Frames per transform report", currentTarget.framesPerTransformReport);
 			if (input > 0)
 				currentTarget.framesPerTransformReport = input;
+			EditorGUI.indentLevel--;
 		}
 
 		currentTarget.reportEntersView = EditorGUILayout.Toggle("Report upon entering view", currentTarget.reportEntersView);

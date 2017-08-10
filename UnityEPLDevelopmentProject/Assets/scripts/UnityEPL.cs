@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 public static class UnityEPL
 {
 	private static string[] participants = null;
+	private static string experiment = null;
 
 	//iPhones require special DLLImport due to static linkage
 	//Add this to other external functions if adding iPhone support
@@ -63,5 +64,15 @@ public static class UnityEPL
 	public static string[] GetParticipants()
 	{
 		return participants;
+	}
+
+	public static void SetExperimentName(string experimentName)
+	{
+		experiment = experimentName;
+	}
+
+	public static string GetExperimentName()
+	{
+		return experiment;
 	}
 }
