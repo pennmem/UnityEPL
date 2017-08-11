@@ -750,13 +750,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 1197243449}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0bf0398ac0f42476681d03e21fa57605, type: 3}
+  m_Script: {fileID: 11500000, guid: 17d89e96b72454e66ae192a0d543f267, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  reportersToHandle:
-  - {fileID: 1223104875}
-  - {fileID: 1845532}
-  - {fileID: 874575873}
+  reportersToHandle: []
+  outputFormat: 0
+  rootDirectory: /Users/solbergh/Desktop/data
+  useDirectoryStructure: 0
+  participantFirst: 0
+  writeAutomatically: 1
+  framesPerWrite: 30
 --- !u!4 &1197243451
 Transform:
   m_ObjectHideFlags: 0

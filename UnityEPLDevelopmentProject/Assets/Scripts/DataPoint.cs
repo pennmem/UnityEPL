@@ -53,6 +53,18 @@ public class DataPoint
 		return JSONString;
 	}
 
+	//unimplemented
+	public string ToSQL()
+	{
+		return "unimplemented";
+	}
+
+	//unimlemented
+	public string ToCSV()
+	{
+		return "unimplemented";
+	}
+
 	private double UnixTimeInMilliseconds()
 	{
 		double milliseconds = (double)(time.ToUniversalTime ().Subtract (new System.DateTime (1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc))).TotalMilliseconds;

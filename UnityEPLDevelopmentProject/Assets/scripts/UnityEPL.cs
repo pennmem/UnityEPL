@@ -63,6 +63,8 @@ public static class UnityEPL
 
 	public static string[] GetParticipants()
 	{
+		if (participants == null)
+			return new string[] { "unspecified_participant" };
 		return participants;
 	}
 
@@ -73,6 +75,8 @@ public static class UnityEPL
 
 	public static string GetExperimentName()
 	{
+		if (experiment == null)
+			return "unspecified_experiment";
 		return experiment;
 	}
 }

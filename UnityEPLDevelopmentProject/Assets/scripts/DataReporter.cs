@@ -14,7 +14,7 @@ public abstract class DataReporter : MonoBehaviour
 	private static bool startTimeInitialized = false;
 
 	protected System.Collections.Generic.Queue<DataPoint> eventQueue = new Queue<DataPoint>();
-	protected static double OSXStartTime;
+	protected static double OSStartTime;
 
 	void Awake()
 	{
@@ -25,7 +25,7 @@ public abstract class DataReporter : MonoBehaviour
 		}
 		if (!nativePluginRunning) 
 		{
-			OSXStartTime = UnityEPL.StartCocoaPlugin ();
+			OSStartTime = UnityEPL.StartCocoaPlugin ();
 			nativePluginRunning = true;
 		}
 
@@ -89,6 +89,11 @@ public abstract class DataReporter : MonoBehaviour
 	{
 //		Debug.Log (OSXStartTime);
 //		Debug.Log (OSXTimestamp);
-		return realWorldStartTime.Add (new System.TimeSpan((long)(System.TimeSpan.TicksPerSecond * (OSXTimestamp - OSXStartTime))));
+		return realWorldStartTime.Add (new System.TimeSpan((long)(System.TimeSpan.TicksPerSecond * (OSXTimestamp - OSStartTime))));
+	}
+
+	public static System.DateTime GetStartTime()
+	{
+		return realWorldStartTime;
 	}
 }

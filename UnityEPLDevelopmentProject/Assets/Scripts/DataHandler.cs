@@ -7,7 +7,7 @@ public abstract class DataHandler : MonoBehaviour
 {
 	public DataReporter[] reportersToHandle;
 
-	void Update ()
+	protected virtual void Update ()
 	{
 		foreach (DataReporter reporter in reportersToHandle) 
 		{

@@ -6,6 +6,7 @@ public class EditableExperiment : MonoBehaviour
 {
 	public TextDisplayer textDisplayer;
 
+
 	IEnumerator Start()
 	{
 		//this is a coroutine which can be used to display words via the text displayer
