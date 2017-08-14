@@ -99,8 +99,7 @@ public class WriteToDiskHandler : DataHandler
 			directory = System.IO.Path.Combine (directory, UnityEPL.GetExperimentName ());
 			directory = System.IO.Path.Combine (directory, string.Join ("", UnityEPL.GetParticipants ()));
 		}
-
-		Debug.Log (directory);
+			
 		System.IO.Directory.CreateDirectory (directory);
 
 		foreach (DataPoint dataPoint in waitingPoints)
