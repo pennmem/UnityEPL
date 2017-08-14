@@ -91,6 +91,7 @@ MonoBehaviour:
   pauseToggleKey: 32
   deactivateKey: 27
   videoPlayer: {fileID: 328937643129792720}
+  deactivateWhenFinished: 1
 --- !u!114 &114063125642147860
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -178,7 +179,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_TargetDisplay: 0
 --- !u!224 &224126303121770298
 RectTransform:
