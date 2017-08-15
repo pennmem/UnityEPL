@@ -6,7 +6,7 @@ public class WordListGenerator : MonoBehaviour
 {
 	public string[] unshuffled_words;
 
-	public string[,] GenerateLists(int randomSeed, int numberOfLists, int lengthOfEachList)
+	public string[,] GenerateLists(ushort randomSeed, int numberOfLists, int lengthOfEachList)
 	{
 		if ((numberOfLists * lengthOfEachList) > unshuffled_words.Length)
 			throw new UnityException("There aren't enough words for those parameters");

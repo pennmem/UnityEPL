@@ -14,6 +14,7 @@ public class WordListGeneratorEditor : Editor
 			string selected_path = EditorUtility.OpenFilePanel ("Select word list", "", "");
 			string[] words = System.IO.File.ReadAllLines (selected_path);
 			currentTarget.unshuffled_words = words;
+			EditorUtility.SetDirty (target);
 		}
 		GUILayout.Label ("Words loaded: " + currentTarget.unshuffled_words.Length.ToString ());
 	}

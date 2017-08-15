@@ -28,4 +28,14 @@ public class VideoControl : MonoBehaviour
 			gameObject.SetActive (false);
 		}
 	}
+
+	public void StartVideo ()
+	{
+		gameObject.SetActive (true);
+	}
+
+	public bool IsPlaying()
+	{
+		return gameObject.activeSelf;
+	}
 }
