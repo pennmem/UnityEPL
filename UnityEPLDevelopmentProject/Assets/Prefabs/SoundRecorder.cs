@@ -10,7 +10,7 @@ public class SoundRecorder : MonoBehaviour
 
 	public void StartRecording()
 	{
-		recording = Microphone.Start ("", true, 1, 44100);
+		recording = Microphone.Start ("", true, 30, 44100);
 	}
 
 	public void StopRecording()
