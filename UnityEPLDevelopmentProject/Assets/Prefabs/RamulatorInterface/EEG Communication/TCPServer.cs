@@ -18,7 +18,7 @@ using LitJson;
 
 public class TCPServer : MonoBehaviour
 {
-    Experiment exp { get { return Experiment.Instance; } }
+
 
 
     ThreadedServer myServer;
@@ -58,7 +58,7 @@ public class TCPServer : MonoBehaviour
 
     void Start()
     {
-        if (Config.isSYS3)
+//        if (Config.isSYS3)
         {
             RunServer();
         }
@@ -125,7 +125,7 @@ public class TCPServer : MonoBehaviour
 
     public void Log(long time, TCP_Config.EventType eventType)
     {
-        exp.eegLog.Log(time, exp.eegLog.GetFrameCount(), eventType.ToString());
+//        exp.eegLog.Log(time, exp.eegLog.GetFrameCount(), eventType.ToString());
     }
 
     public void SetState(TCP_Config.DefineStates state, bool isEnabled)
@@ -134,7 +134,7 @@ public class TCPServer : MonoBehaviour
         {
             if (myServer.isServerConnected)
             {
-                myServer.SendStateEvent(GameClock.SystemTime_Milliseconds, state.ToString(), isEnabled);
+				myServer.SendStateEvent(System.DateTime.Now.Millisecond, state.ToString(), isEnabled);
                 UnityEngine.Debug.Log("SET THE STATE FOR BIO-M FILE: " + state.ToString() + isEnabled.ToString());
             }
         }
@@ -146,7 +146,7 @@ public class TCPServer : MonoBehaviour
 		{
 			if (myServer.isServerConnected)
 			{
-				myServer.SendStateEventWithNum(GameClock.SystemTime_Milliseconds, state.ToString(), isEnabled,num);
+				myServer.SendStateEventWithNum(System.DateTime.Now.Millisecond, state.ToString(), isEnabled,num);
 				UnityEngine.Debug.Log("SET THE STATE FOR BIO-M FILE: " + state.ToString() + isEnabled.ToString() + num.ToString());
 			}
 		}
@@ -158,8 +158,8 @@ public class TCPServer : MonoBehaviour
         {
             if (myServer.isServerConnected)
             {
-				string data = "{\"trial\":" + trialNum.ToString () + "}";
-				myServer.SendTrialEvent (GameClock.SystemTime_Milliseconds, TCP_Config.EventType.TRIAL, null, trialNum.ToString());
+				//string data = "{\"trial\":" + trialNum.ToString () + "}";
+				myServer.SendTrialEvent (System.DateTime.Now.Millisecond, TCP_Config.EventType.TRIAL, null, trialNum.ToString());
 //				myServer.SendSimpleJSONEvent(GameClock.SystemTime_Milliseconds, TCP_Config.EventType.TRIAL, null,data);
             }
         }
@@ -211,12 +211,12 @@ public class ThreadedServer : ThreadedJob
     //int numClockAlignmentTries = 0;
     //const int timeBetweenClockAlignmentTriesMS = 500;//500; //half a second
     //const int maxNumClockAlignmentTries = 120; //for a total of 60 seconds of attempted alignment
-    string serverAppend = "@tcp://";
-    string port = ":5556";
-
-    string HostIPAddress = "127.0.0.1";
-    string clientAppend = ">tcp://";
-
+//    string serverAppend = "@tcp://";
+//    string port = ":5556";
+//
+//    string HostIPAddress = "127.0.0.1";
+//    string clientAppend = ">tcp://";
+//
 
 	//ZMQPlugin imports
 	[DllImport ("ZMQPlugin")]
@@ -237,7 +237,7 @@ public class ThreadedServer : ThreadedJob
 	public List<string> messagesToSend = new List<string> ();
 	string incompleteMessage = "";
 
-    int socketTimeoutMS = 500; // 500 milliseconds will be the time period within which socket messages will be exchanged
+//    int socketTimeoutMS = 500; // 500 milliseconds will be the time period within which socket messages will be exchanged
 
     public ThreadedServer()
     {
@@ -328,20 +328,20 @@ public class ThreadedServer : ThreadedJob
     public void SendInitMessages()
     {
         //define event
-        SendDefineEvent(GameClock.SystemTime_Milliseconds, TCP_Config.EventType.DEFINE, TCP_Config.GetDefineList());
+		SendDefineEvent(System.DateTime.Now.Millisecond, TCP_Config.EventType.DEFINE, TCP_Config.GetDefineList());
 
         //send name of this experiment
-        SendSimpleJSONEvent(GameClock.SystemTime_Milliseconds, TCP_Config.EventType.EXPNAME, null, TCP_Config.ExpName);
+		SendSimpleJSONEvent(System.DateTime.Now.Millisecond, TCP_Config.EventType.EXPNAME, null, TCP_Config.ExpName);
 
         //send exp version
-        SendSimpleJSONEvent(GameClock.SystemTime_Milliseconds, TCP_Config.EventType.VERSION, null, Config.VersionNumber);
+		SendSimpleJSONEvent(System.DateTime.Now.Millisecond, TCP_Config.EventType.VERSION, null, "undefined version");
 
         //send exp session
-		SendSessionEvent(GameClock.SystemTime_Milliseconds, TCP_Config.EventType.SESSION, TCP_Config.ExpName,Config.VersionNumber,TCP_Config.SubjectName,Experiment.sessionID);
+		SendSessionEvent(System.DateTime.Now.Millisecond, TCP_Config.EventType.SESSION, "undefined experiment", "undefined name", "undefined subject", -1);
 //        SendSimpleJSONEvent(GameClock.SystemTime_Milliseconds, TCP_Config.EventType.VERSION, null, Config_CoinTask.VersionNumber);
 
         //send subject ID
-		SendSimpleJSONEvent(GameClock.SystemTime_Milliseconds, TCP_Config.EventType.SUBJECTID, null, TCP_Config.SubjectName);
+		SendSimpleJSONEvent(System.DateTime.Now.Millisecond, TCP_Config.EventType.SUBJECTID, null, "undefined subject");
 
         //NO LONGER REQUEST ALIGNMENT HERE. START IENUMERATOR WHEN TASK IS ACTUALLY STARTING
         //align clocks //SHOULD THIS BE FINISHED BEFORE WE START SENDING HEARTBEATS? -- NO
@@ -352,7 +352,7 @@ public class ThreadedServer : ThreadedJob
 
 		//send READY message
 		UnityEngine.Debug.Log("sending ready message");
-		SendSimpleJSONEvent(GameClock.SystemTime_Milliseconds, TCP_Config.EventType.READY, null, null);
+		SendSimpleJSONEvent(System.DateTime.Now.Millisecond, TCP_Config.EventType.READY, null, null);
 
 
         //wait for "STARTED" message to be received
@@ -394,7 +394,7 @@ public class ThreadedServer : ThreadedJob
 
         isSynced = false;
 
-        SendSimpleJSONEvent(GameClock.SystemTime_Milliseconds, TCP_Config.EventType.ALIGNCLOCK, null, "");
+		SendSimpleJSONEvent(System.DateTime.Now.Millisecond, TCP_Config.EventType.ALIGNCLOCK, null, "");
         //SendSimpleJSONEvent(0, TCP_Config.EventType.ALIGNCLOCK, "0", ""); //JUST FOR DEBUGGING
         UnityEngine.Debug.Log("REQUESTING ALIGN CLOCK");
 
@@ -620,8 +620,8 @@ public class ThreadedServer : ThreadedJob
     public void DecodeJSONMessage(string jsonMessage)
     {
 
-        string dataContent = "";
-        int dataContentInt = 0;
+        //string dataContent = "";
+        //int dataContentInt = 0;
         string typeContent = "";
 
         JsonData messageData = JsonMapper.ToObject(jsonMessage);
@@ -656,7 +656,7 @@ public class ThreadedServer : ThreadedJob
                 break;
 
             case "TRIAL":
-                dataContentInt = (int)messageData["data"];
+                //dataContentInt = (int)messageData["data"];
                 break;
 
             case "DEFINE":
@@ -685,7 +685,7 @@ public class ThreadedServer : ThreadedJob
                 //for aux channels 0-9
                 for (int i = 0; i < 10; i++)
                 {
-                    SendSimpleJSONEvent(GameClock.SystemTime_Milliseconds, TCP_Config.EventType.SYNC, i.ToString(), null);
+				SendSimpleJSONEvent(System.DateTime.Now.Millisecond, TCP_Config.EventType.SYNC, i.ToString(), null);
                 }
                 break;
 
@@ -731,7 +731,7 @@ public class ThreadedServer : ThreadedJob
     long nextBeat = 0;
     long lastBeat = 0;
     long intervalMS = 1000;
-    long delta = 0; //is this ever used?
+//    long delta = 0; //is this ever used?
 
     void StartHeartbeatPoll()
     {
@@ -752,13 +752,13 @@ public class ThreadedServer : ThreadedJob
 
         if (hasSentFirstHeartbeat)
         {
-            long t1 = GameClock.SystemTime_Milliseconds;
+			long t1 = System.DateTime.Now.Millisecond;
 			UnityEngine.Debug.Log ("t1: " + t1.ToString () + " firstbeat: " + firstBeat.ToString () + " nextbeat: " + nextBeat.ToString ());
             if ((t1 - firstBeat) > nextBeat)
             {
                 //				UnityEngine.Debug.Log("HI HEARTBEAT");
                 nextBeat = nextBeat + intervalMS;
-                delta = t1 - lastBeat;
+                //delta = t1 - lastBeat;
                 lastBeat = t1;
 				UnityEngine.Debug.Log ("Sending heartbeat");
                 SendSimpleJSONEvent(lastBeat, TCP_Config.EventType.HEARTBEAT, null, intervalMS.ToString());
@@ -769,7 +769,7 @@ public class ThreadedServer : ThreadedJob
         else
         {
             UnityEngine.Debug.Log("HI FIRST HEARTBEAT");
-            firstBeat = GameClock.SystemTime_Milliseconds;
+			firstBeat = System.DateTime.Now.Millisecond;
             lastBeat = firstBeat;
             nextBeat = intervalMS;
             SendSimpleJSONEvent(lastBeat, TCP_Config.EventType.HEARTBEAT, null, intervalMS.ToString());

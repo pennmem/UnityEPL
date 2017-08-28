@@ -14,8 +14,8 @@ public class TCP_Config : MonoBehaviour {
 	public static char MSG_END = '}';
 
 	public static string ExpName { get { return GetExpName (); } }
-	public static string SubjectName = ExperimentSettings.currentSubject.name;
-
+//	public static string SubjectName = ExperimentSettings.currentSubject.name;
+//
 	public static float ClockAlignInterval = 60.0f; //this should happen about once a minute
 
 	public enum EventType {
@@ -48,30 +48,31 @@ public class TCP_Config : MonoBehaviour {
 		NO_STIM
 	}
 
-	public static SessionType sessionType { get { return GetSessionType (); } }
-
+//	public static SessionType sessionType { get { return GetSessionType (); } }
+//
 
 	void Start(){
 
 	}
 
 	static string GetExpName(){
-		return Config.BuildVersion.ToString ();
+		return "undefined name";
+//		return Config.BuildVersion.ToString ();
 	}
-	
-	public static SessionType GetSessionType(){
-		switch (Config.BuildVersion) {
-		case Config.Version.DBoy1:
-			return SessionType.NO_STIM;
-		case Config.Version.DBoy2:
-			return SessionType.CLOSED_STIM ;//could change back to openstim... just use closedstim for now
-		case Config.Version.DBoy3:
-			return SessionType.CLOSED_STIM;
-		}
-
-		return SessionType.NO_STIM;
-	}
-
+//	
+//	public static SessionType GetSessionType(){
+//		switch (Config.BuildVersion) {
+//		case Config.Version.DBoy1:
+//			return SessionType.NO_STIM;
+//		case Config.Version.DBoy2:
+//			return SessionType.CLOSED_STIM ;//could change back to openstim... just use closedstim for now
+//		case Config.Version.DBoy3:
+//			return SessionType.CLOSED_STIM;
+//		}
+//
+//		return SessionType.NO_STIM;
+//	}
+//
 	//fill in how you see fit!
 	public enum DefineStates
 	{
