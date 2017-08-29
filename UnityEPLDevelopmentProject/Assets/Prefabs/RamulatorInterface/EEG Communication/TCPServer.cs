@@ -18,6 +18,13 @@ using LitJson;
 
 public class TCPServer : MonoBehaviour
 {
+	public static float numSecondsBeforeAlignment = 10.0f;
+	public static float ClockAlignInterval = 60.0f; //this should happen about once a minute
+	public static int ConnectionPort = 8889; //8001 for Mac Pro Desktop communication
+	public const char MSG_START = '{';
+	public const char MSG_END = '}';
+
+
 	public enum EventType {
 		SUBJECTID,
 		EXPNAME,
@@ -82,11 +89,11 @@ public class TCPServer : MonoBehaviour
     //test clock alignment, every x seconds
     IEnumerator AlignClocks()
     {
-        yield return new WaitForSeconds(TCP_Config.numSecondsBeforeAlignment);
+        yield return new WaitForSeconds(TCPServer.numSecondsBeforeAlignment);
         while (true)
         {
             myServer.RequestClockAlignment();
-            yield return new WaitForSeconds(TCP_Config.ClockAlignInterval);
+            yield return new WaitForSeconds(TCPServer.ClockAlignInterval);
         }
     }
 
@@ -274,7 +281,7 @@ public class ThreadedServer : ThreadedJob
 	void InitControlPC()
 	{
 //		string address = "tcp://localhost:8889";
-		string address = "tcp://*:" + TCP_Config.ConnectionPort;
+		string address = "tcp://*:" + TCPServer.ConnectionPort;
 		int connectionStatus = ZMQConnect (address);
 		if (connectionStatus == 0)
 			PrintDebug("CONNECTED!");
@@ -566,15 +573,15 @@ public class ThreadedServer : ThreadedJob
             {
                 if (incompleteMessage != "")
                 {
-                    numOpenCharacter = incompleteMessage.Split(TCP_Config.MSG_START).Length - 1;
-                    numCloseCharacter = incompleteMessage.Split(TCP_Config.MSG_END).Length - 1;
+                    numOpenCharacter = incompleteMessage.Split(TCPServer.MSG_START).Length - 1;
+                    numCloseCharacter = incompleteMessage.Split(TCPServer.MSG_END).Length - 1;
                 }
 
-                if (individualCharacters[i] == TCP_Config.MSG_START)
+                if (individualCharacters[i] == TCPServer.MSG_START)
                 {
                     numOpenCharacter++;
                 }
-                else if (individualCharacters[i] == TCP_Config.MSG_END && numOpenCharacter > numCloseCharacter)
+                else if (individualCharacters[i] == TCPServer.MSG_END && numOpenCharacter > numCloseCharacter)
                 { //close character should never come before open character(s)
                     numCloseCharacter++;
                 }
