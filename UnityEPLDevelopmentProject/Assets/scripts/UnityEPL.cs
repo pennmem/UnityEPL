@@ -7,6 +7,7 @@ public static class UnityEPL
 	private static string[] participants = null;
 	private static string experiment = null;
 
+
 	//iPhones require special DLLImport due to static linkage
 	//Add this to other external functions if adding iPhone support
 	#if UNITY_IPHONE
@@ -78,5 +79,10 @@ public static class UnityEPL
 		if (experiment == null)
 			return "unspecified_experiment";
 		return experiment;
+	}
+		
+	public static double MillisecondsSinceTheEpoch()
+	{
+		return DataPoint.ConvertToMillisecondsSinceEpoch (DataReporter.RealWorldTime ());
 	}
 }

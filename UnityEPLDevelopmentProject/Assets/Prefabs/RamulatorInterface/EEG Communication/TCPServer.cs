@@ -18,7 +18,29 @@ using LitJson;
 
 public class TCPServer : MonoBehaviour
 {
-
+	public enum EventType {
+		SUBJECTID,
+		EXPNAME,
+		VERSION,
+		INFO,
+		CONTROL,
+		DEFINE,
+		SESSION,
+		PRACTICE,
+		TRIAL,
+		PHASE,
+		DISPLAYON,
+		DISPLAYOFF,
+		HEARTBEAT,
+		ALIGNCLOCK,
+		ABORT,
+		SYNC,
+		SYNCNP,
+		SYNCED,
+		READY,
+		STATE,
+		EXIT
+	}
 
 
     ThreadedServer myServer;
@@ -26,10 +48,6 @@ public class TCPServer : MonoBehaviour
     public bool canStartGame { get { return GetCanStartGame(); } }
 	public bool isPaired { get { return GetIsPaired (); } }
     SubscriberSocket myList;
-
-
-    //int QUEUE_SIZE = 20;  //Blocks if the queue is full
-
 
 
     //SINGLETON
@@ -58,10 +76,7 @@ public class TCPServer : MonoBehaviour
 
     void Start()
     {
-//        if (Config.isSYS3)
-        {
-            RunServer();
-        }
+		RunServer();
     }
 
     //test clock alignment, every x seconds
@@ -101,56 +116,33 @@ public class TCPServer : MonoBehaviour
                 StartCoroutine(AlignClocks());
                 myServer.SendInitMessages();
             }
-            //			string message = "";
-            //			string rcvd;
-            //
-            //			//	Debug.Log("Update");
-            //
-            //			while (myList.TryReceiveFrameString(out rcvd))
-            //			{
-            //				message = message + " - " + rcvd;
-            //				UnityEngine.Debug.Log(rcvd);
-            //		}
-            //DEBUGGING
-
-            //		if (Input.GetKeyDown (KeyCode.A)) {
-            //			myServer.isServerConnected = true;
-            //		}
-            //		if (Input.GetKeyDown (KeyCode.S)) {
-            //			myServer.canStartGame = true;
-            //		}
 
         }
     }
 
-    public void Log(long time, TCP_Config.EventType eventType)
-    {
-//        exp.eegLog.Log(time, exp.eegLog.GetFrameCount(), eventType.ToString());
-    }
-
-    public void SetState(TCP_Config.DefineStates state, bool isEnabled)
-    {
-        if (myServer != null)
-        {
-            if (myServer.isServerConnected)
-            {
-				myServer.SendStateEvent(System.DateTime.Now.Millisecond, state.ToString(), isEnabled);
-                UnityEngine.Debug.Log("SET THE STATE FOR BIO-M FILE: " + state.ToString() + isEnabled.ToString());
-            }
-        }
-    }
-
-	public void SetStateWithNum(TCP_Config.DefineStates state, bool isEnabled,int num)
-	{
-		if (myServer != null)
-		{
-			if (myServer.isServerConnected)
-			{
-				myServer.SendStateEventWithNum(System.DateTime.Now.Millisecond, state.ToString(), isEnabled,num);
-				UnityEngine.Debug.Log("SET THE STATE FOR BIO-M FILE: " + state.ToString() + isEnabled.ToString() + num.ToString());
-			}
-		}
-	}
+//    public void SetState(TCP_Config.DefineStates state, bool isEnabled)
+//    {
+//        if (myServer != null)
+//        {
+//            if (myServer.isServerConnected)
+//            {
+//				myServer.SendStateEvent(System.DateTime.Now.Millisecond, state.ToString(), isEnabled);
+//                UnityEngine.Debug.Log("SET THE STATE FOR BIO-M FILE: " + state.ToString() + isEnabled.ToString());
+//            }
+//        }
+//    }
+//
+//	public void SetStateWithNum(TCP_Config.DefineStates state, bool isEnabled,int num)
+//	{
+//		if (myServer != null)
+//		{
+//			if (myServer.isServerConnected)
+//			{
+//				myServer.SendStateEventWithNum(System.DateTime.Now.Millisecond, state.ToString(), isEnabled,num);
+//				UnityEngine.Debug.Log("SET THE STATE FOR BIO-M FILE: " + state.ToString() + isEnabled.ToString() + num.ToString());
+//			}
+//		}
+//	}
 
     public void SendTrialNum(int trialNum)
     {
@@ -159,7 +151,7 @@ public class TCPServer : MonoBehaviour
             if (myServer.isServerConnected)
             {
 				//string data = "{\"trial\":" + trialNum.ToString () + "}";
-				myServer.SendTrialEvent (System.DateTime.Now.Millisecond, TCP_Config.EventType.TRIAL, null, trialNum.ToString());
+				myServer.SendTrialEvent (System.DateTime.Now.Millisecond, TCPServer.EventType.TRIAL, null, trialNum.ToString());
 //				myServer.SendSimpleJSONEvent(GameClock.SystemTime_Milliseconds, TCP_Config.EventType.TRIAL, null,data);
             }
         }
@@ -187,8 +179,6 @@ public class TCPServer : MonoBehaviour
             UnityEngine.Debug.Log("Ended server.");
         }
     }
-
-
 }
 
 
@@ -327,35 +317,32 @@ public class ThreadedServer : ThreadedJob
 
     public void SendInitMessages()
     {
-        //define event
-		SendDefineEvent(System.DateTime.Now.Millisecond, TCP_Config.EventType.DEFINE, TCP_Config.GetDefineList());
+//        //define event
+//		SendDefineEvent(System.Convert.ToInt64(UnityEPL.MillisecondsSinceTheEpoch()), TCPServer.EventType.DEFINE, TCP_Config.GetDefineList());
+//
+//        //send name of this experiment
+//		SendSimpleJSONEvent(System.Convert.ToInt64(UnityEPL.MillisecondsSinceTheEpoch()), TCPServer.EventType.EXPNAME, null, TCP_Config.ExpName);
+//
+//        //send exp version
+//		SendSimpleJSONEvent(System.Convert.ToInt64(UnityEPL.MillisecondsSinceTheEpoch()), TCPServer.EventType.VERSION, null, "undefined version");
+//
 
-        //send name of this experiment
-		SendSimpleJSONEvent(System.DateTime.Now.Millisecond, TCP_Config.EventType.EXPNAME, null, TCP_Config.ExpName);
-
-        //send exp version
-		SendSimpleJSONEvent(System.DateTime.Now.Millisecond, TCP_Config.EventType.VERSION, null, "undefined version");
-
-        //send exp session
-		SendSessionEvent(System.DateTime.Now.Millisecond, TCP_Config.EventType.SESSION, "undefined experiment", "undefined name", "undefined subject", -1);
-//        SendSimpleJSONEvent(GameClock.SystemTime_Milliseconds, TCP_Config.EventType.VERSION, null, Config_CoinTask.VersionNumber);
+		//send exp session
+		SendSessionEvent(System.Convert.ToInt64(UnityEPL.MillisecondsSinceTheEpoch()), TCPServer.EventType.SESSION, "undefined experiment", "undefined name", "undefined subject", -1);
+		//SendSimpleJSONEvent(GameClock.SystemTime_Milliseconds, TCP_Config.EventType.VERSION, null, Config_CoinTask.VersionNumber);
 
         //send subject ID
-		SendSimpleJSONEvent(System.DateTime.Now.Millisecond, TCP_Config.EventType.SUBJECTID, null, "undefined subject");
-
-        //NO LONGER REQUEST ALIGNMENT HERE. START IENUMERATOR WHEN TASK IS ACTUALLY STARTING
-        //align clocks //SHOULD THIS BE FINISHED BEFORE WE START SENDING HEARTBEATS? -- NO
-        //RequestClockAlignment();
+		SendSimpleJSONEvent(System.Convert.ToInt64(UnityEPL.MillisecondsSinceTheEpoch()), TCPServer.EventType.SUBJECTID, null, "undefined subject");
 
         //start heartbeat
         StartHeartbeatPoll();
 
 		//send READY message
 		UnityEngine.Debug.Log("sending ready message");
-		SendSimpleJSONEvent(System.DateTime.Now.Millisecond, TCP_Config.EventType.READY, null, null);
+		SendSimpleJSONEvent(System.DateTime.Now.Millisecond, TCPServer.EventType.READY, null, null);
 
 
-        //wait for "STARTED" message to be received
+        // "STARTED" message to be received
     }
 
 
@@ -394,7 +381,7 @@ public class ThreadedServer : ThreadedJob
 
         isSynced = false;
 
-		SendSimpleJSONEvent(System.DateTime.Now.Millisecond, TCP_Config.EventType.ALIGNCLOCK, null, "");
+		SendSimpleJSONEvent(System.DateTime.Now.Millisecond, TCPServer.EventType.ALIGNCLOCK, null, "");
         //SendSimpleJSONEvent(0, TCP_Config.EventType.ALIGNCLOCK, "0", ""); //JUST FOR DEBUGGING
         UnityEngine.Debug.Log("REQUESTING ALIGN CLOCK");
 
@@ -460,7 +447,7 @@ public class ThreadedServer : ThreadedJob
         //		messagesToSend+=JsonMessageController.FormatSimpleJSONEvent (GameClock.SystemTime_Milliseconds,"MESSAGE","CONNECTED");
     }
 
-	public string SendTrialEvent(long systemTime, TCP_Config.EventType eventType, string auxNumber, string eventData)
+	public string SendTrialEvent(long systemTime, TCPServer.EventType eventType, string auxNumber, string eventData)
 	{
 		string jsonEventString = JsonMessageController.FormatJSONTrialEvent(systemTime, eventType.ToString(), auxNumber, eventData);
 
@@ -471,7 +458,7 @@ public class ThreadedServer : ThreadedJob
 		return jsonEventString;
 	}
 
-    public string SendSimpleJSONEvent(long systemTime, TCP_Config.EventType eventType, string auxNumber, string eventData)
+	public string SendSimpleJSONEvent(long systemTime, TCPServer.EventType eventType, string auxNumber, string eventData)
     {
 
         string jsonEventString = JsonMessageController.FormatSimpleJSONEvent(systemTime, eventType.ToString(), auxNumber, eventData);
@@ -483,7 +470,7 @@ public class ThreadedServer : ThreadedJob
         return jsonEventString;
     }
 
-    public string SendSimpleJSONEvent(long systemTime, TCP_Config.EventType eventType, string auxNumber, long eventData)
+	public string SendSimpleJSONEvent(long systemTime, TCPServer.EventType eventType, string auxNumber, long eventData)
     {
 
         string jsonEventString = JsonMessageController.FormatSimpleJSONEvent(systemTime, eventType.ToString(), auxNumber.ToString(), eventData);
@@ -495,7 +482,7 @@ public class ThreadedServer : ThreadedJob
         return jsonEventString;
     }
 
-	public string SendSessionEvent(long systemTime, TCP_Config.EventType eventType, string experimentName, string expVersion, string subjectID, int sessionNum)
+	public string SendSessionEvent(long systemTime, TCPServer.EventType eventType, string experimentName, string expVersion, string subjectID, int sessionNum)
     {
 
 		string jsonEventString = JsonMessageController.FormatJSONSessionEvent(systemTime,experimentName, expVersion, subjectID, sessionNum);
@@ -507,7 +494,7 @@ public class ThreadedServer : ThreadedJob
         return jsonEventString;
     }
 
-    public string SendDefineEvent(long systemTime, TCP_Config.EventType eventType, List<string> stateList)
+	public string SendDefineEvent(long systemTime, TCPServer.EventType eventType, List<string> stateList)
     {
 
         string jsonEventString = JsonMessageController.FormatJSONDefineEvent(systemTime, stateList);
@@ -642,15 +629,15 @@ public class ThreadedServer : ThreadedJob
                 //do nothing
                 break;
 
-		case "START":
-			UnityEngine.Debug.Log ("RECEIVED START MESSAGE");
+			case "START":
+				UnityEngine.Debug.Log ("RECEIVED START MESSAGE");
 				canStartGame = true;
 				break;
             
-		case "CONNECTED":
-			UnityEngine.Debug.Log ("connected received");
+			case "CONNECTED":
+				UnityEngine.Debug.Log ("connected received");
 				isPaired = true;
-                break;
+				break;
 
             case "SESSION":
                 break;
@@ -685,7 +672,7 @@ public class ThreadedServer : ThreadedJob
                 //for aux channels 0-9
                 for (int i = 0; i < 10; i++)
                 {
-				SendSimpleJSONEvent(System.DateTime.Now.Millisecond, TCP_Config.EventType.SYNC, i.ToString(), null);
+				SendSimpleJSONEvent(System.DateTime.Now.Millisecond, TCPServer.EventType.SYNC, i.ToString(), null);
                 }
                 break;
 
@@ -761,7 +748,7 @@ public class ThreadedServer : ThreadedJob
                 //delta = t1 - lastBeat;
                 lastBeat = t1;
 				UnityEngine.Debug.Log ("Sending heartbeat");
-                SendSimpleJSONEvent(lastBeat, TCP_Config.EventType.HEARTBEAT, null, intervalMS.ToString());
+				SendSimpleJSONEvent(lastBeat, TCPServer.EventType.HEARTBEAT, null, intervalMS.ToString());
 
                 //				EchoMessage ("CONNECTED");
             }
@@ -772,7 +759,7 @@ public class ThreadedServer : ThreadedJob
 			firstBeat = System.DateTime.Now.Millisecond;
             lastBeat = firstBeat;
             nextBeat = intervalMS;
-            SendSimpleJSONEvent(lastBeat, TCP_Config.EventType.HEARTBEAT, null, intervalMS.ToString());
+			SendSimpleJSONEvent(lastBeat, TCPServer.EventType.HEARTBEAT, null, intervalMS.ToString());
             hasSentFirstHeartbeat = true;
         }
     }

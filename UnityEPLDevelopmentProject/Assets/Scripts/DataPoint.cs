@@ -38,7 +38,7 @@ public class DataPoint
 	//hacky, unity core functionality doesn't include json serialization of dictionaries yet
 	public string ToJSON()
 	{
-		double unixTimestamp = UnixTimeInMilliseconds ();
+		double unixTimestamp = ConvertToMillisecondsSinceEpoch (time);
 		string JSONString = "{\"type\":\""+type+"\",\"data\":{";
 		foreach (string key in dataDict.Keys)
 		{
@@ -65,9 +65,9 @@ public class DataPoint
 		return "unimplemented";
 	}
 
-	private double UnixTimeInMilliseconds()
+	public static double ConvertToMillisecondsSinceEpoch(System.DateTime convertMe)
 	{
-		double milliseconds = (double)(time.ToUniversalTime ().Subtract (new System.DateTime (1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc))).TotalMilliseconds;
+		double milliseconds = (double)(convertMe.ToUniversalTime ().Subtract (new System.DateTime (1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc))).TotalMilliseconds;
 		return milliseconds;
 	}
 }
