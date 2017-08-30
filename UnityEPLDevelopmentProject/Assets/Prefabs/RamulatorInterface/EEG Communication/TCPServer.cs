@@ -50,7 +50,7 @@ public class TCPServer : MonoBehaviour
 	}
 
 
-    ThreadedServer myServer;
+    public ThreadedServer myServer;
     public bool isConnected { get { return GetIsConnected(); } }
     public bool canStartGame { get { return GetCanStartGame(); } }
 	public bool isPaired { get { return GetIsPaired (); } }
@@ -85,7 +85,6 @@ public class TCPServer : MonoBehaviour
     {
 		RunServer();
     }
-
     //test clock alignment, every x seconds
     IEnumerator AlignClocks()
     {
@@ -121,7 +120,7 @@ public class TCPServer : MonoBehaviour
             {
                 startedAlignClocks = true;
                 StartCoroutine(AlignClocks());
-                myServer.SendInitMessages();
+				//myServer.SendInitMessages();
             }
 
         }
@@ -322,7 +321,7 @@ public class ThreadedServer : ThreadedJob
     }
 
 
-    public void SendInitMessages()
+	public void SendInitMessages(int sessionNumber)
     {
 //        //define event
 //		SendDefineEvent(System.Convert.ToInt64(UnityEPL.MillisecondsSinceTheEpoch()), TCPServer.EventType.DEFINE, TCP_Config.GetDefineList());
@@ -335,18 +334,18 @@ public class ThreadedServer : ThreadedJob
 //
 
 		//send exp session
-		SendSessionEvent(System.Convert.ToInt64(UnityEPL.MillisecondsSinceTheEpoch()), TCPServer.EventType.SESSION, "undefined experiment", "undefined name", "undefined subject", -1);
+		//SendSessionEvent(System.Convert.ToInt64(UnityEPL.MillisecondsSinceTheEpoch()), TCPServer.EventType.SESSION, UnityEPL.GetExperimentName(), Application.version, UnityEPL.GetParticipants()[0], sessionNumber);
 		//SendSimpleJSONEvent(GameClock.SystemTime_Milliseconds, TCP_Config.EventType.VERSION, null, Config_CoinTask.VersionNumber);
 
-        //send subject ID
-		SendSimpleJSONEvent(System.Convert.ToInt64(UnityEPL.MillisecondsSinceTheEpoch()), TCPServer.EventType.SUBJECTID, null, "undefined subject");
-
+//        //send subject ID
+//		SendSimpleJSONEvent(System.Convert.ToInt64(UnityEPL.MillisecondsSinceTheEpoch()), TCPServer.EventType.SUBJECTID, null, "undefined subject");
+//
         //start heartbeat
         StartHeartbeatPoll();
 
-		//send READY message
-		UnityEngine.Debug.Log("sending ready message");
-		SendSimpleJSONEvent(System.DateTime.Now.Millisecond, TCPServer.EventType.READY, null, null);
+//		//send READY message
+//		UnityEngine.Debug.Log("sending ready message");
+//		SendSimpleJSONEvent(System.DateTime.Now.Millisecond, TCPServer.EventType.READY, null, null);
 
 
         // "STARTED" message to be received
@@ -489,17 +488,7 @@ public class ThreadedServer : ThreadedJob
         return jsonEventString;
     }
 
-	public string SendSessionEvent(long systemTime, TCPServer.EventType eventType, string experimentName, string expVersion, string subjectID, int sessionNum)
-    {
 
-		string jsonEventString = JsonMessageController.FormatJSONSessionEvent(systemTime,experimentName, expVersion, subjectID, sessionNum);
-
-        UnityEngine.Debug.Log(jsonEventString);
-
-		messagesToSend.Add(jsonEventString);
-
-        return jsonEventString;
-    }
 
 	public string SendDefineEvent(long systemTime, TCPServer.EventType eventType, List<string> stateList)
     {
@@ -534,6 +523,18 @@ public class ThreadedServer : ThreadedJob
 
         return jsonEventString;
     }
+
+	public string SendSessionEvent(long systemTime, TCPServer.EventType eventType, string experimentName, string expVersion, string subjectID, int sessionNum)
+	{
+
+		string jsonEventString = JsonMessageController.FormatJSONSessionEvent(systemTime,experimentName, expVersion, subjectID, sessionNum);
+
+		UnityEngine.Debug.Log(jsonEventString);
+
+		messagesToSend.Add(jsonEventString);
+
+		return jsonEventString;
+	}
 
     void CheckForMessages()
     {
