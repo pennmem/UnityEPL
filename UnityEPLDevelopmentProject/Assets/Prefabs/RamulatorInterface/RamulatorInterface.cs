@@ -1,6 +1,6 @@
 ﻿using System;
 //using System.Collections;
-//using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using UnityEngine;
 
@@ -9,30 +9,7 @@ public class RamulatorInterface : MonoBehaviour
 	public UnityEngine.UI.Text ramulatorWarningText;
 	public GameObject ramulatorWarning;
 
-	public enum EventType 
-	{
-		SUBJECTID,
-		EXPNAME,
-		VERSION,
-		INFO,
-		CONTROL,
-		DEFINE,
-		SESSION,
-		PRACTICE,
-		TRIAL,
-		PHASE,
-		DISPLAYON,
-		DISPLAYOFF,
-		HEARTBEAT,
-		ALIGNCLOCK,
-		ABORT,
-		SYNC,
-		SYNCNP,
-		SYNCED,
-		READY,
-		STATE,
-		EXIT
-	}
+	const float timeoutDelay = 5f;
 
 	[DllImport ("ZMQPlugin")]
 	private static extern int ZMQConnect(string hostAddress);
@@ -50,7 +27,7 @@ public class RamulatorInterface : MonoBehaviour
 	void Start ()
 	{
 		//test
-		BeginNewSession (0, 0);
+		BeginNewSession (0);
 	}
 	
 	// Update is called once per frame
@@ -59,33 +36,89 @@ public class RamulatorInterface : MonoBehaviour
 		
 	}
 
-	public void BeginNewSession(int sessionNumber, int trialNumber)
+	void OnDisable()
 	{
-		//Connect to ramulator
-		string address = "tcp://*:" + TCPServer.ConnectionPort;
+		ZMQClose ();
+	}
+
+	public void BeginNewSession(int sessionNumber)
+	{
+		//Connect to ramulator///////////////////////////////////////////////////////////////////
+		string address = "tcp://*:8889";
 		int connectionStatus = ZMQConnect (address);
 		if (connectionStatus == 0)
 			Debug.Log("CONNECTED!");
 		else
 			Debug.Log("CANNOT CONNECT");
+		
 
 
-		//SendSessionEvent(System.Convert.ToInt64(UnityEPL.MillisecondsSinceTheEpoch()), TCPServer.EventType.SESSION, UnityEPL.GetExperimentName(), Application.version, UnityEPL.GetParticipants()[0], sessionNumber);
+
+		//SendSessionEvent//////////////////////////////////////////////////////////////////////
+		System.Collections.Generic.Dictionary<string, string> sessionData = new Dictionary<string, string>();
+		sessionData.Add ("name", UnityEPL.GetExperimentName ());
+		sessionData.Add ("version", Application.version);
+		sessionData.Add ("subject", UnityEPL.GetParticipants () [0]);
+		sessionData.Add ("session_number", sessionNumber.ToString());
+		DataPoint sessionDataPoint = new DataPoint ("SESSION", DataReporter.RealWorldTime (), sessionData);
+		SendMessageToRamulator (sessionDataPoint.ToJSON ());
 
 
+
+
+		//Block until start received////////////////////////////////////////////////////////////
 		ramulatorWarning.SetActive (true);
 		ramulatorWarningText.text = "Waiting on Ramulator";
-		//!!HERE: block until I receive a start message
+
+		DateTime startTime = DataReporter.RealWorldTime ();
+
+		string ramulatorMessage = "none";
+		while (ramulatorMessage.Equals("none"))
+		{
+			ramulatorMessage = Marshal.PtrToStringAnsi (ZMQReceive ());
+			if (DataReporter.RealWorldTime () > startTime.AddSeconds (timeoutDelay))
+				throw new UnityException ("Ramulator didn't respond within the timeout delay.");
+		}
+		Debug.Log("received: " + ramulatorMessage);
+
 		ramulatorWarning.SetActive(false);
 
 
+
+
+		//Begin Heartbeats///////////////////////////////////////////////////////////////////////
 		InvokeRepeating ("SendHeartbeat", 0, 1);
 
-		//myServer.SendTrialEvent (System.DateTime.Now.Millisecond, TCPServer.EventType.TRIAL, null, trialNumber);
+
+
+
 	}
 
-	void SendHeartbeat()
+	public void BeginNewTrial(int trialNumber)
 	{
-		//SendSimpleJSONEvent(lastBeat, TCPServer.EventType.HEARTBEAT, null, intervalMS.ToString());
+		System.Collections.Generic.Dictionary<string, string> sessionData = new Dictionary<string, string>();
+		sessionData.Add ("trial", trialNumber.ToString());
+		DataPoint sessionDataPoint = new DataPoint ("TRIAL", DataReporter.RealWorldTime (), sessionData);
+		SendMessageToRamulator (sessionDataPoint.ToJSON ());
+	}
+
+	private void SendHeartbeat()
+	{
+		DataPoint sessionDataPoint = new DataPoint ("HEARTBEAT", DataReporter.RealWorldTime (), null);
+		SendMessageToRamulator (sessionDataPoint.ToJSON ());
+	}
+
+	private void SetState(string stateName, bool stateToggle)
+	{
+		System.Collections.Generic.Dictionary<string, string> sessionData = new Dictionary<string, string>();
+		sessionData.Add ("name", stateName);
+		sessionData.Add ("value",  stateToggle.ToString());
+		DataPoint sessionDataPoint = new DataPoint ("STATE", DataReporter.RealWorldTime (), sessionData);
+		SendMessageToRamulator (sessionDataPoint.ToJSON ());
+	}
+
+	private void SendMessageToRamulator(string message)
+	{
+		ZMQSend (message, message.Length);
 	}
 }
