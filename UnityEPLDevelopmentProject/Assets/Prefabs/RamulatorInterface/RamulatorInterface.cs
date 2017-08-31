@@ -1,8 +1,10 @@
 ﻿using System;
-//using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using System.Text;
 using UnityEngine;
+using NetMQ;
 
 public class RamulatorInterface : MonoBehaviour
 {
@@ -11,23 +13,15 @@ public class RamulatorInterface : MonoBehaviour
 
 	const float timeoutDelay = 5f;
 
-	[DllImport ("ZMQPlugin")]
-	private static extern int ZMQConnect(string hostAddress);
+	private NetMQ.Sockets.PairSocket zmqSocket;
 
-	[DllImport ("ZMQPlugin")]
-	private static extern IntPtr ZMQReceive();
-
-	[DllImport ("ZMQPlugin")]
-	private static extern void ZMQSend(string message,int length);
-
-	[DllImport ("ZMQPlugin")]
-	private static extern void ZMQClose();
+	private const string address = "tcp://*:8889";
 
 	// Use this for initialization
 	void Start ()
 	{
 		//test
-		BeginNewSession (0);
+		StartCoroutine(BeginNewSession (0));
 	}
 	
 	// Update is called once per frame
@@ -36,22 +30,17 @@ public class RamulatorInterface : MonoBehaviour
 		
 	}
 
-	void OnDisable()
+	void OnApplicationQuit()
 	{
-		ZMQClose ();
+		NetMQConfig.Cleanup();
 	}
 
-	public void BeginNewSession(int sessionNumber)
+	public IEnumerator BeginNewSession(int sessionNumber)
 	{
 		//Connect to ramulator///////////////////////////////////////////////////////////////////
-		string address = "tcp://*:8889";
-		int connectionStatus = ZMQConnect (address);
-		if (connectionStatus == 0)
-			Debug.Log("CONNECTED!");
-		else
-			Debug.Log("CANNOT CONNECT");
-		
-
+		zmqSocket = new NetMQ.Sockets.PairSocket ();
+		zmqSocket.Bind (address);
+		Debug.Log ("socket bound");
 
 
 		//SendSessionEvent//////////////////////////////////////////////////////////////////////
@@ -65,30 +54,22 @@ public class RamulatorInterface : MonoBehaviour
 
 
 
-
 		//Block until start received////////////////////////////////////////////////////////////
 		ramulatorWarning.SetActive (true);
 		ramulatorWarningText.text = "Waiting on Ramulator";
-
-		DateTime startTime = DataReporter.RealWorldTime ();
-
-		string ramulatorMessage = "none";
-		while (ramulatorMessage.Equals("none"))
-		{
-			ramulatorMessage = Marshal.PtrToStringAnsi (ZMQReceive ());
-			if (DataReporter.RealWorldTime () > startTime.AddSeconds (timeoutDelay))
-				throw new UnityException ("Ramulator didn't respond within the timeout delay.");
-		}
-		Debug.Log("received: " + ramulatorMessage);
-
+		yield return null;
+		string receivedMessage;
+		bool timedOut = zmqSocket.TryReceiveFrameString(new System.TimeSpan(0, 0, 5), out receivedMessage);
+		if (receivedMessage != null)
+			Debug.Log ("received: " + receivedMessage.ToString ());
+		else
+			Debug.Log ("Timed out waiting for Ramulator");
 		ramulatorWarning.SetActive(false);
-
 
 
 
 		//Begin Heartbeats///////////////////////////////////////////////////////////////////////
 		InvokeRepeating ("SendHeartbeat", 0, 1);
-
 
 
 
@@ -119,6 +100,7 @@ public class RamulatorInterface : MonoBehaviour
 
 	private void SendMessageToRamulator(string message)
 	{
-		ZMQSend (message, message.Length);
+		bool wouldNotHaveBlocked = zmqSocket.TrySendFrame(message, more: false);
+		Debug.Log ("Tried to send a message.  WouldNotHaveBlocked: " + wouldNotHaveBlocked.ToString());
 	}
 }
