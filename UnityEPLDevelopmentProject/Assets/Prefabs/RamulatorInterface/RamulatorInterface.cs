@@ -32,6 +32,7 @@ public class RamulatorInterface : MonoBehaviour
 
 	void OnApplicationQuit()
 	{
+		zmqSocket.Close ();
 		NetMQConfig.Cleanup();
 	}
 
