@@ -11,11 +11,6 @@ public class WriteToDiskHanderEditor : DataHandlerEditor
 
 		WriteToDiskHandler currentTarget = (WriteToDiskHandler)target;
 
-		//where to write to disk
-		currentTarget.SetRootDirectory (EditorGUILayout.TextField ("Root ouput directory", currentTarget.GetRootDirectory()));
-		if (GUILayout.Button ("Select directory"))
-			currentTarget.SetRootDirectory(EditorUtility.OpenFolderPanel ("Select directory", "", ""));
-
 		//should I create directories for you
 		currentTarget.SetUseDirectoryStructure (EditorGUILayout.Toggle ("Use automatic directory structure", currentTarget.UseDirectoryStructure()));
 		if (currentTarget.UseDirectoryStructure ())

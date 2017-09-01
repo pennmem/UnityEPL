@@ -6,7 +6,7 @@ public static class UnityEPL
 {
 	private static string[] participants = null;
 	private static string experiment = null;
-
+	private static string dataPath = null;
 
 	//iPhones require special DLLImport due to static linkage
 	//Add this to other external functions if adding iPhone support
@@ -84,5 +84,23 @@ public static class UnityEPL
 	public static double MillisecondsSinceTheEpoch()
 	{
 		return DataPoint.ConvertToMillisecondsSinceEpoch (DataReporter.RealWorldTime ());
+	}
+
+	public static string GetDataPath ()
+	{
+		if (dataPath == null && Application.isEditor)
+		{
+			return System.IO.Path.GetFullPath ("~/Desktop/data");
+		}
+		else if (dataPath == null)
+		{
+			return System.IO.Path.GetFullPath (".");
+		}
+		return dataPath;
+	}
+
+	public static void SetDataPath(string newDataPath)
+	{
+		dataPath = newDataPath;
 	}
 }

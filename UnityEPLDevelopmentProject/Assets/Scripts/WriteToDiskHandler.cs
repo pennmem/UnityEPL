@@ -10,14 +10,10 @@ public class WriteToDiskHandler : DataHandler
 
 	[HideInInspector]
 	[SerializeField]
-	private string rootDirectory = System.IO.Path.GetFullPath(".");
-	[HideInInspector]
-	[SerializeField]
 	private bool useDirectoryStructure = false;
 	[HideInInspector]
 	[SerializeField]
 	private bool participantFirst = false;
-
 	[HideInInspector]
 	[SerializeField]
 	private bool writeAutomatically = true;
@@ -27,14 +23,6 @@ public class WriteToDiskHandler : DataHandler
 
 	private System.Collections.Generic.List<DataPoint> waitingPoints = new System.Collections.Generic.List<DataPoint>();
 
-	public void SetRootDirectory(string newPath)
-	{ 
-		rootDirectory = newPath;
-	}
-	public string GetRootDirectory()
-	{
-		return rootDirectory;
-	}
 	public void SetUseDirectoryStructure(bool newUse)
 	{
 		useDirectoryStructure = newUse;
@@ -87,7 +75,7 @@ public class WriteToDiskHandler : DataHandler
 
 	public void DoWrite()
 	{
-		string directory = rootDirectory;
+		string directory = UnityEPL.GetDataPath();
 		string filePath = System.IO.Path.Combine (directory, "unnamed.file");
 		if (ParticipantFirst () && UseDirectoryStructure()) 
 		{
