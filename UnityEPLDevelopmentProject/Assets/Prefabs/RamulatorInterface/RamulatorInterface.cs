@@ -20,8 +20,7 @@ public class RamulatorInterface : MonoBehaviour
 	// Use this for initialization
 	void Start ()
 	{
-		//test
-		StartCoroutine(BeginNewSession (0));
+		
 	}
 	
 	// Update is called once per frame
@@ -32,7 +31,8 @@ public class RamulatorInterface : MonoBehaviour
 
 	void OnApplicationQuit()
 	{
-		zmqSocket.Close ();
+		if (zmqSocket != null)
+			zmqSocket.Close ();
 		NetMQConfig.Cleanup();
 	}
 
@@ -78,19 +78,15 @@ public class RamulatorInterface : MonoBehaviour
 
 	public void BeginNewTrial(int trialNumber)
 	{
+		if (zmqSocket == null)
+			throw new Exception ("Please begin a session before beginning trials");
 		System.Collections.Generic.Dictionary<string, string> sessionData = new Dictionary<string, string>();
 		sessionData.Add ("trial", trialNumber.ToString());
 		DataPoint sessionDataPoint = new DataPoint ("TRIAL", DataReporter.RealWorldTime (), sessionData);
 		SendMessageToRamulator (sessionDataPoint.ToJSON ());
 	}
 
-	private void SendHeartbeat()
-	{
-		DataPoint sessionDataPoint = new DataPoint ("HEARTBEAT", DataReporter.RealWorldTime (), null);
-		SendMessageToRamulator (sessionDataPoint.ToJSON ());
-	}
-
-	private void SetState(string stateName, bool stateToggle)
+	public void SetState(string stateName, bool stateToggle)
 	{
 		System.Collections.Generic.Dictionary<string, string> sessionData = new Dictionary<string, string>();
 		sessionData.Add ("name", stateName);
@@ -98,7 +94,13 @@ public class RamulatorInterface : MonoBehaviour
 		DataPoint sessionDataPoint = new DataPoint ("STATE", DataReporter.RealWorldTime (), sessionData);
 		SendMessageToRamulator (sessionDataPoint.ToJSON ());
 	}
-
+		
+	private void SendHeartbeat()
+	{
+		DataPoint sessionDataPoint = new DataPoint ("HEARTBEAT", DataReporter.RealWorldTime (), null);
+		SendMessageToRamulator (sessionDataPoint.ToJSON ());
+	}
+		
 	private void SendMessageToRamulator(string message)
 	{
 		bool wouldNotHaveBlocked = zmqSocket.TrySendFrame(message, more: false);
