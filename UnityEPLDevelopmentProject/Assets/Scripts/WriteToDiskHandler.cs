@@ -88,7 +88,7 @@ public class WriteToDiskHandler : DataHandler
 	public void DoWrite()
 	{
 		string directory = rootDirectory;
-		string filePath = directory + "unnamed.file";
+		string filePath = System.IO.Path.Combine (directory, "unnamed.file");
 		if (ParticipantFirst () && UseDirectoryStructure()) 
 		{
 			directory = System.IO.Path.Combine (directory, string.Join ("", UnityEPL.GetParticipants ()));
