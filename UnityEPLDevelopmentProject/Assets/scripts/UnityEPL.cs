@@ -42,9 +42,9 @@ public static class UnityEPL
 	{
 		string[] new_participants;
 		if (participants == null)
-		{	
+		{
 			new_participants = new string[] { participant_ID };
-		} 
+		}
 		else 
 		{
 			new_participants = new string[participants.Length + 1];
@@ -90,7 +90,7 @@ public static class UnityEPL
 	{
 		if (dataPath == null && Application.isEditor)
 		{
-			return System.IO.Path.GetFullPath ("~/Desktop/data");
+			return System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal);
 		}
 		else if (dataPath == null)
 		{
