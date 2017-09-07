@@ -11,7 +11,7 @@ public class RamulatorInterface : MonoBehaviour
 	public UnityEngine.UI.Text ramulatorWarningText;
 	public GameObject ramulatorWarning;
 
-	const float timeoutDelay = 5f;
+	const int timeoutDelay = 20;
 
 	private NetMQ.Sockets.PairSocket zmqSocket;
 
@@ -60,7 +60,7 @@ public class RamulatorInterface : MonoBehaviour
 		ramulatorWarningText.text = "Waiting on Ramulator";
 		yield return null;
 		string receivedMessage;
-		bool timedOut = zmqSocket.TryReceiveFrameString(new System.TimeSpan(0, 0, 5), out receivedMessage);
+		zmqSocket.TryReceiveFrameString(new System.TimeSpan(0, 0, timeoutDelay), out receivedMessage);
 		if (receivedMessage != null)
 			Debug.Log ("received: " + receivedMessage.ToString ());
 		else

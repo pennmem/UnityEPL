@@ -88,15 +88,19 @@ public static class UnityEPL
 
 	public static string GetDataPath ()
 	{
-		if (dataPath == null && Application.isEditor)
+		if (dataPath != null)
+			return dataPath;
+
+		string defaultRoot = "";
+		if (Application.isEditor)
 		{
-			return System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal);
+			defaultRoot = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Desktop);
 		}
-		else if (dataPath == null)
+		else
 		{
-			return System.IO.Path.GetFullPath (".");
+			defaultRoot = System.IO.Path.GetFullPath (".");
 		}
-		return dataPath;
+		return System.IO.Path.Combine(defaultRoot, "UnityEPLData");
 	}
 
 	public static void SetDataPath(string newDataPath)

@@ -188,6 +188,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   textDisplayer: {fileID: 114487739435193272}
+  soundRecorder: {fileID: 0}
+  videoPlayer: {fileID: 0}
+  pauseKey: 112
+  pauseIndicator: {fileID: 0}
 --- !u!114 &114924137073979980
 MonoBehaviour:
   m_ObjectHideFlags: 1
