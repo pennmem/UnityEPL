@@ -59,13 +59,24 @@ public class RamulatorInterface : MonoBehaviour
 		ramulatorWarning.SetActive (true);
 		ramulatorWarningText.text = "Waiting on Ramulator";
 		yield return null;
-		string receivedMessage;
-		zmqSocket.TryReceiveFrameString(new System.TimeSpan(0, 0, timeoutDelay), out receivedMessage);
-		if (receivedMessage != null)
-			Debug.Log ("received: " + receivedMessage.ToString ());
-		else
-			Debug.Log ("Timed out waiting for Ramulator");
-		ramulatorWarning.SetActive(false);
+		string receivedMessage = "";
+		while (!receivedMessage.Contains ("START"))
+		{
+			zmqSocket.TryReceiveFrameString (new System.TimeSpan (0, 0, timeoutDelay), out receivedMessage);
+			if (receivedMessage == null)
+			{
+				Debug.Log ("Timed out waiting for Ramulator");
+				ramulatorWarningText.text = "Ramulator not connected";
+				break;
+			}
+			else
+			{
+				Debug.Log ("received: " + receivedMessage.ToString ());
+				ramulatorWarning.SetActive (false);
+			}
+		}
+
+		
 
 
 
@@ -86,11 +97,13 @@ public class RamulatorInterface : MonoBehaviour
 		SendMessageToRamulator (sessionDataPoint.ToJSON ());
 	}
 
-	public void SetState(string stateName, bool stateToggle)
+	public void SetState(string stateName, bool stateToggle, IronPython.Runtime.PythonDictionary extraData)
 	{
 		System.Collections.Generic.Dictionary<string, string> sessionData = new Dictionary<string, string>();
 		sessionData.Add ("name", stateName);
 		sessionData.Add ("value",  stateToggle.ToString());
+		foreach (string key in extraData.Keys)
+			sessionData.Add (key, extraData [key] == null ? "" : extraData [key].ToString());
 		DataPoint sessionDataPoint = new DataPoint ("STATE", DataReporter.RealWorldTime (), sessionData);
 		SendMessageToRamulator (sessionDataPoint.ToJSON ());
 	}
@@ -104,6 +117,6 @@ public class RamulatorInterface : MonoBehaviour
 	private void SendMessageToRamulator(string message)
 	{
 		bool wouldNotHaveBlocked = zmqSocket.TrySendFrame(message, more: false);
-		Debug.Log ("Tried to send a message.  WouldNotHaveBlocked: " + wouldNotHaveBlocked.ToString());
+		Debug.Log ("Tried to send a message: " + message + " \nWouldNotHaveBlocked: " + wouldNotHaveBlocked.ToString());
 	}
 }
