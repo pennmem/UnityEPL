@@ -7,6 +7,7 @@ public static class UnityEPL
 	private static string[] participants = null;
 	private static string experiment = null;
 	private static string dataPath = null;
+	private static int sessionNumber = -1;
 
 	//iPhones require special DLLImport due to static linkage
 	//Add this to other external functions if adding iPhone support
@@ -100,11 +101,22 @@ public static class UnityEPL
 		{
 			defaultRoot = System.IO.Path.GetFullPath (".");
 		}
-		return System.IO.Path.Combine(defaultRoot, "UnityEPLData");
+		defaultRoot = System.IO.Path.Combine(defaultRoot, "UnityEPLData");
+
+		string directory = System.IO.Path.Combine (defaultRoot, UnityEPL.GetExperimentName ());
+		directory = System.IO.Path.Combine (directory, string.Join ("", UnityEPL.GetParticipants ()));
+		if (sessionNumber != -1)
+			directory = System.IO.Path.Combine (directory, "session_" + sessionNumber.ToString());
+		return directory;
 	}
 
 	public static void SetDataPath(string newDataPath)
 	{
 		dataPath = newDataPath;
+	}
+
+	public static void SetSessionNumber(int newSessionNumber)
+	{
+		sessionNumber = newSessionNumber;
 	}
 }

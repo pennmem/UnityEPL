@@ -45,7 +45,11 @@ public class DataPoint
 			string valueString = dataDict [key];
 			double valueNumber;
 			bool valueBool;
-			if (!double.TryParse (valueString, out valueNumber) && !bool.TryParse(valueString, out valueBool))
+			if (double.TryParse (valueString, out valueNumber))
+				;
+			else if (bool.TryParse (valueString, out valueBool))
+				valueString = valueString.ToLower ();
+			else
 				valueString = "\"" + valueString + "\"";
 			JSONString = JSONString + "\""+key+"\":" + valueString + ",";
 		}

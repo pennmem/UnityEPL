@@ -22,7 +22,7 @@ public class InputReporter : DataReporter
 	void CollectMouseEvents()
 	{
 		int eventCount = UnityEPL.CountMouseEvents ();
-		if (eventCount > 1)
+		if (eventCount >= 1)
 		{
 			int mouseButton = UnityEPL.PopMouseButton ();
 			double timestamp = UnityEPL.PopMouseTimestamp ();
@@ -35,7 +35,7 @@ public class InputReporter : DataReporter
 	void CollectKeyEvents()
 	{
 		int eventCount = UnityEPL.CountKeyEvents ();
-		if (eventCount > 1)
+		if (eventCount >= 1)
 		{
 			int keyCode = UnityEPL.PopKeyKeycode ();
 			double timestamp = UnityEPL.PopKeyTimestamp ();

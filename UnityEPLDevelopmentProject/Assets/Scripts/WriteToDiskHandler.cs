@@ -10,12 +10,6 @@ public class WriteToDiskHandler : DataHandler
 
 	[HideInInspector]
 	[SerializeField]
-	private bool useDirectoryStructure = false;
-	[HideInInspector]
-	[SerializeField]
-	private bool participantFirst = false;
-	[HideInInspector]
-	[SerializeField]
 	private bool writeAutomatically = true;
 	[HideInInspector]
 	[SerializeField]
@@ -23,22 +17,6 @@ public class WriteToDiskHandler : DataHandler
 
 	private System.Collections.Generic.List<DataPoint> waitingPoints = new System.Collections.Generic.List<DataPoint>();
 
-	public void SetUseDirectoryStructure(bool newUse)
-	{
-		useDirectoryStructure = newUse;
-	}
-	public void SetParticipantFirst(bool isFirst)
-	{
-		participantFirst = isFirst;
-	}
-	public bool UseDirectoryStructure()
-	{
-		return useDirectoryStructure;
-	}
-	public bool ParticipantFirst()
-	{
-		return participantFirst;
-	}
 
 	public void SetWriteAutomatically(bool newAutomatically)
 	{
@@ -58,8 +36,6 @@ public class WriteToDiskHandler : DataHandler
 		return framesPerWrite;
 	}
 
-
-
 	protected override void Update()
 	{
 		base.Update ();
@@ -76,19 +52,8 @@ public class WriteToDiskHandler : DataHandler
 	public void DoWrite()
 	{
 		string directory = UnityEPL.GetDataPath();
-		string filePath = System.IO.Path.Combine (directory, "unnamed.file");
-		if (ParticipantFirst () && UseDirectoryStructure()) 
-		{
-			directory = System.IO.Path.Combine (directory, string.Join ("", UnityEPL.GetParticipants ()));
-			directory = System.IO.Path.Combine (directory, UnityEPL.GetExperimentName ());
-		} 
-		else if (UseDirectoryStructure())
-		{
-			directory = System.IO.Path.Combine (directory, UnityEPL.GetExperimentName ());
-			directory = System.IO.Path.Combine (directory, string.Join ("", UnityEPL.GetParticipants ()));
-		}
-			
 		System.IO.Directory.CreateDirectory (directory);
+		string filePath = System.IO.Path.Combine (directory, "unnamed_file");
 
 		foreach (DataPoint dataPoint in waitingPoints)
 		{

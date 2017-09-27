@@ -7,15 +7,14 @@ public class SoundRecorder : MonoBehaviour
 	private AudioClip recording;
 
 	//using the system's default device
-	public void StartRecording(int secondsLength)
+	public void StartRecording(int secondsMaxLength)
 	{
-		recording = Microphone.Start ("", true, secondsLength, 44100);
+		recording = Microphone.Start ("", true, secondsMaxLength, 44100);
 	}
 
-	public void StopRecording()
+	public void StopRecording(string outputFilePath)
 	{
 		Microphone.End ("");
-		string filePath = System.IO.Path.Combine (UnityEPL.GetDataPath(), "Recording" + System.DateTime.Now.Ticks);
-		SavWav.Save (filePath, recording);
+		SavWav.Save (outputFilePath, recording);
 	}
 }
