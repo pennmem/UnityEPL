@@ -32,7 +32,7 @@ double StartCocoaPlugin(void)
                                                     NSEventMaskLeftMouseDown |
                                                     NSEventMaskRightMouseDown |
                                                     NSEventMaskOtherMouseDown)
-                                          handler: ^( NSEvent * handledEvent)
+                                          handler: ^NSEvent* (NSEvent* handledEvent)
      {
          handleMouseEvent(handledEvent);
          return handledEvent;
@@ -42,7 +42,7 @@ double StartCocoaPlugin(void)
     keyboardHandler =
     [NSEvent addLocalMonitorForEventsMatchingMask: (NSEventMaskKeyUp |
                                                     NSEventMaskKeyDown)
-                                          handler: ^( NSEvent * handledEvent)
+                                          handler: ^NSEvent* (NSEvent* handledEvent)
      {
          handleKeyboardEvent(handledEvent);
          return handledEvent;
