@@ -96,7 +96,7 @@ public class RamulatorInterface : MonoBehaviour
 			{
 				ramulatorWarningText.text = errorMessage;
 				Debug.LogWarning ("Timed out waiting for ramulator");
-				break;
+				yield break;
 			}
 			yield return null;
 		}
@@ -113,13 +113,10 @@ public class RamulatorInterface : MonoBehaviour
 		SendMessageToRamulator (sessionDataPoint.ToJSON ());
 	}
 
-	public void SetState(string stateName, bool stateToggle, IronPython.Runtime.PythonDictionary extraData)
+	public void SetState(string stateName, bool stateToggle, System.Collections.Generic.Dictionary<string, string> sessionData)
 	{
-		System.Collections.Generic.Dictionary<string, string> sessionData = new Dictionary<string, string>();
 		sessionData.Add ("name", stateName);
 		sessionData.Add ("value",  stateToggle.ToString());
-		foreach (string key in extraData.Keys)
-			sessionData.Add (key, extraData [key] == null ? "" : extraData [key].ToString());
 		DataPoint sessionDataPoint = new DataPoint ("STATE", DataReporter.RealWorldTime (), sessionData);
 		SendMessageToRamulator (sessionDataPoint.ToJSON ());
 	}
@@ -133,6 +130,6 @@ public class RamulatorInterface : MonoBehaviour
 	private void SendMessageToRamulator(string message)
 	{
 		bool wouldNotHaveBlocked = zmqSocket.TrySendFrame(message, more: false);
-		//Debug.Log ("Tried to send a message: " + message + " \nWouldNotHaveBlocked: " + wouldNotHaveBlocked.ToString());
+		Debug.Log ("Tried to send a message: " + message + " \nWouldNotHaveBlocked: " + wouldNotHaveBlocked.ToString());
 	}
 }

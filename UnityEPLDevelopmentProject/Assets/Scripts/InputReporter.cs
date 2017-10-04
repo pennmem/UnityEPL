@@ -15,8 +15,12 @@ public class InputReporter : DataReporter
 
 	void Update()
 	{
-		CollectMouseEvents ();
-		CollectKeyEvents ();
+		if (reportMouseClicks)
+			CollectMouseEvents ();
+		if (reportKeyStrokes)
+			CollectKeyEvents ();
+		if (reportMousePosition)
+			CollectMousePosition ();
 	}
 
 	void CollectMouseEvents()
@@ -45,7 +49,12 @@ public class InputReporter : DataReporter
 		}
 	}
 
-
+	void CollectMousePosition()
+	{
+		Dictionary<string, string> dataDict = new Dictionary<string, string> ();
+		dataDict.Add ("mouse position", Input.mousePosition.ToString());
+		eventQueue.Enqueue(new DataPoint("key press/release", DataReporter.RealWorldTime(), dataDict));
+	}
 
 
 

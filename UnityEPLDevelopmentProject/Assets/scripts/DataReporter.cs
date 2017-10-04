@@ -15,12 +15,12 @@ public abstract class DataReporter : MonoBehaviour
 
 	void Awake()
 	{
-		if (!startTimeInitialized) 
+		if (!startTimeInitialized)
 		{
 			realWorldStartTime = System.DateTime.UtcNow;
 			startTimeInitialized = true;
 		}
-		if (!nativePluginRunning) 
+		if (!nativePluginRunning)
 		{
 			OSStartTime = UnityEPL.StartCocoaPlugin ();
 			nativePluginRunning = true;

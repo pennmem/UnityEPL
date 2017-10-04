@@ -15,7 +15,7 @@ public class WriteToDiskHandler : DataHandler
 	[SerializeField]
 	private int framesPerWrite = 30;
 
-	private System.Collections.Generic.List<DataPoint> waitingPoints = new System.Collections.Generic.List<DataPoint>();
+	private System.Collections.Generic.Queue<DataPoint> waitingPoints = new System.Collections.Generic.Queue<DataPoint>();
 
 
 	public void SetWriteAutomatically(bool newAutomatically)
@@ -46,7 +46,8 @@ public class WriteToDiskHandler : DataHandler
 
 	protected override void HandleDataPoints(DataPoint[] dataPoints)
 	{
-		waitingPoints.AddRange (dataPoints);
+		foreach (DataPoint dataPoint in dataPoints)
+			waitingPoints.Enqueue (dataPoint);
 	}
 
 	public void DoWrite()
@@ -55,8 +56,9 @@ public class WriteToDiskHandler : DataHandler
 		System.IO.Directory.CreateDirectory (directory);
 		string filePath = System.IO.Path.Combine (directory, "unnamed_file");
 
-		foreach (DataPoint dataPoint in waitingPoints)
+		while (waitingPoints.Count > 0)
 		{
+			DataPoint dataPoint = waitingPoints.Dequeue ();
 			string writeMe = "unrecognized type";
 			string extensionlessFileName = DataReporter.GetStartTime ().ToString("yyyy-MM-dd HH mm ss");
 			switch (outputFormat)
