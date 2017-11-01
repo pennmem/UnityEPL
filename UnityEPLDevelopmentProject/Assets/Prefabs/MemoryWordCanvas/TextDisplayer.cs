@@ -35,7 +35,7 @@ public class TextDisplayer : MonoBehaviour
 		}
 		Dictionary<string, string> dataDict = new Dictionary<string, string> ();
 		dataDict.Add ("displayed text", text);
-		wordEventReporter.ReportScriptedEvent (description, dataDict, 1);
+		wordEventReporter.ReportScriptedEvent (description, dataDict, 0);
 	}
 
 	public void ClearText()
@@ -44,7 +44,7 @@ public class TextDisplayer : MonoBehaviour
 		{
 			textElement.text = "";
 		}
-		wordEventReporter.ReportScriptedEvent ("text display cleared", new Dictionary<string, string> (), 1);
+		wordEventReporter.ReportScriptedEvent ("text display cleared", new Dictionary<string, string> (), 0);
 	}
 
 	public void ChangeColor(Color newColor)

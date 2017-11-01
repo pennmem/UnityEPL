@@ -17,4 +17,9 @@ public class SoundRecorder : MonoBehaviour
 		Microphone.End ("");
 		SavWav.Save (outputFilePath, recording);
 	}
+
+	public AudioClip GetLastClip()
+	{
+		return recording;
+	}
 }

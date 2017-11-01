@@ -60,7 +60,7 @@ public class WriteToDiskHandler : DataHandler
 		{
 			DataPoint dataPoint = waitingPoints.Dequeue ();
 			string writeMe = "unrecognized type";
-			string extensionlessFileName = DataReporter.GetStartTime ().ToString("yyyy-MM-dd HH mm ss");
+			string extensionlessFileName = "session";//DataReporter.GetStartTime ().ToString("yyyy-MM-dd HH mm ss");
 			switch (outputFormat)
 			{
 				case FORMAT.CSV:

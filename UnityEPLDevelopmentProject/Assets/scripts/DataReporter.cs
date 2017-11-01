@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 //this superclass implements an interface for retrieving behavioral events from a queue
-public abstract class DataReporter : MonoBehaviour 
+public abstract class DataReporter : MonoBehaviour
 {
 	private static System.DateTime realWorldStartTime;
 
@@ -11,13 +11,16 @@ public abstract class DataReporter : MonoBehaviour
 	private static bool startTimeInitialized = false;
 
 	protected System.Collections.Generic.Queue<DataPoint> eventQueue = new Queue<DataPoint>();
-	protected static double OSStartTime;
+
+	private static double OSStartTime;
+	private static float unityTimeStartTime;
 
 	void Awake()
 	{
 		if (!startTimeInitialized)
 		{
 			realWorldStartTime = System.DateTime.UtcNow;
+			unityTimeStartTime = Time.realtimeSinceStartup;
 			startTimeInitialized = true;
 		}
 		if (!nativePluginRunning)
@@ -65,18 +68,21 @@ public abstract class DataReporter : MonoBehaviour
 	//TODO: Get the frame display time in a way unaffected by time scale?
 	protected System.DateTime RealWorldFrameDisplayTime()
 	{
-		return realWorldStartTime.AddSeconds (Time.time);
+		double secondsSinceUnityStart = Time.unscaledTime - unityTimeStartTime;
+		return GetStartTime().AddSeconds(secondsSinceUnityStart);
 	}
 
 	protected System.DateTime OSXTimestampToTimestamp(double OSXTimestamp)
 	{
-		return realWorldStartTime.Add (new System.TimeSpan((long)(System.TimeSpan.TicksPerSecond * (OSXTimestamp - OSStartTime))));
+		double secondsSinceOSStart = OSXTimestamp - OSStartTime;
+		return GetStartTime().AddSeconds (secondsSinceOSStart);
 	}
 
 
 	public static System.DateTime RealWorldTime()
 	{
-		return realWorldStartTime.Add (new System.TimeSpan(System.TimeSpan.TicksPerSecond * (long)Time.realtimeSinceStartup));
+		double secondsSinceUnityStart = Time.realtimeSinceStartup - unityTimeStartTime;
+		return GetStartTime().AddSeconds(secondsSinceUnityStart);
 	}
 
 

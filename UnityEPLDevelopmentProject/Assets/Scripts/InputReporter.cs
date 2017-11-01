@@ -10,7 +10,8 @@ public class InputReporter : DataReporter
 	public bool reportKeyStrokes = false;
 	public bool reportMouseClicks = false;
 	public bool reportMousePosition = false;
-
+	private Dictionary<int, bool> keyDownStates = new Dictionary<int, bool> ();
+	private Dictionary<int, bool> mouseDownStates = new Dictionary<int, bool> ();
 
 
 	void Update()
@@ -30,8 +31,12 @@ public class InputReporter : DataReporter
 		{
 			int mouseButton = UnityEPL.PopMouseButton ();
 			double timestamp = UnityEPL.PopMouseTimestamp ();
+			bool downState;
+			mouseDownStates.TryGetValue (mouseButton, out downState);
+			mouseDownStates [mouseButton] = !downState;
 			Dictionary<string, string> dataDict = new Dictionary<string, string> ();
 			dataDict.Add ("mouse button", mouseButton.ToString ());
+			dataDict.Add ("is pressed", mouseDownStates [mouseButton].ToString());
 			eventQueue.Enqueue(new DataPoint("mouse button up/down", OSXTimestampToTimestamp(timestamp), dataDict));
 		}
 	}
@@ -43,8 +48,12 @@ public class InputReporter : DataReporter
 		{
 			int keyCode = UnityEPL.PopKeyKeycode ();
 			double timestamp = UnityEPL.PopKeyTimestamp ();
+			bool downState;
+			keyDownStates.TryGetValue (keyCode, out downState);
+			keyDownStates [keyCode] = !downState;
 			Dictionary<string, string> dataDict = new Dictionary<string, string> ();
 			dataDict.Add ("key code", keyCode.ToString ());
+			dataDict.Add ("is pressed", keyDownStates [keyCode].ToString());
 			eventQueue.Enqueue(new DataPoint("key press/release", OSXTimestampToTimestamp(timestamp), dataDict));
 		}
 	}

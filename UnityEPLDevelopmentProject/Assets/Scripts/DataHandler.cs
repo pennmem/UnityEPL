@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-//make this a superclass or make a drop down of reporting options?
 public abstract class DataHandler : MonoBehaviour 
 {
 	public DataReporter[] reportersToHandle;

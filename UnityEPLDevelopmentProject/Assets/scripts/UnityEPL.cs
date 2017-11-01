@@ -87,10 +87,13 @@ public static class UnityEPL
 		return DataPoint.ConvertToMillisecondsSinceEpoch (DataReporter.RealWorldTime ());
 	}
 
-	public static string GetDataPath ()
+	public static string GetParticipantFolder()
 	{
 		if (dataPath != null)
+		{
+			Debug.LogWarning ("You have already set a non-default data path.  Returning that instead.");
 			return dataPath;
+		}
 
 		string defaultRoot = "";
 		if (Application.isEditor)
@@ -105,6 +108,15 @@ public static class UnityEPL
 
 		string directory = System.IO.Path.Combine (defaultRoot, UnityEPL.GetExperimentName ());
 		directory = System.IO.Path.Combine (directory, string.Join ("", UnityEPL.GetParticipants ()));
+		return directory;
+	}
+
+	public static string GetDataPath ()
+	{
+		if (dataPath != null)
+			return dataPath;
+
+		string directory = GetParticipantFolder ();
 		if (sessionNumber != -1)
 			directory = System.IO.Path.Combine (directory, "session_" + sessionNumber.ToString());
 		return directory;

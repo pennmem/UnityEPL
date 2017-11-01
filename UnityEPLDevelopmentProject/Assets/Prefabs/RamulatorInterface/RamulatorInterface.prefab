@@ -20,6 +20,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4722822286672226}
   - component: {fileID: 114094435386673154}
+  - component: {fileID: 114855649418581950}
   m_Layer: 0
   m_Name: RamulatorInterface
   m_TagString: Untagged
@@ -139,6 +140,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ramulatorWarningText: {fileID: 114064497860765404}
   ramulatorWarning: {fileID: 1208679839693834}
+  scriptedEventReporter: {fileID: 114855649418581950}
 --- !u!114 &114277812315673730
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -203,6 +205,17 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
+--- !u!114 &114855649418581950
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1115639702827174}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f180c8d2d8e804d2ca402600895da790, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!222 &222575817158575258
 CanvasRenderer:
   m_ObjectHideFlags: 1
