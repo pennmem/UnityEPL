@@ -5,8 +5,8 @@ using UnityEngine;
 [AddComponentMenu("UnityEPL/Reporters/UI Data Reporter")]
 public class UIDataReporter : DataReporter
 {
-	public void LogUIEvent(string name)
-	{
-		eventQueue.Enqueue(new DataPoint(name, RealWorldFrameDisplayTime(), new Dictionary<string, string>()));
-	}
+    public void LogUIEvent(string name)
+    {
+        eventQueue.Enqueue(new DataPoint(name, RealWorldFrameDisplayTime(), new Dictionary<string, string>()));
+    }
 }

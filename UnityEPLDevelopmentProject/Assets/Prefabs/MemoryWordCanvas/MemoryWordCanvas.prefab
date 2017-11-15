@@ -38,7 +38,6 @@ GameObject:
   - component: {fileID: 224376631077867538}
   - component: {fileID: 222078752232503458}
   - component: {fileID: 114266094678627528}
-  - component: {fileID: 114056415274263692}
   m_Layer: 5
   m_Name: Stimulus
   m_TagString: Untagged
@@ -56,7 +55,6 @@ GameObject:
   - component: {fileID: 224825250016658084}
   - component: {fileID: 222446910527148890}
   - component: {fileID: 114611085595257780}
-  - component: {fileID: 114955654637364740}
   m_Layer: 5
   m_Name: Pause text
   m_TagString: Untagged
@@ -129,18 +127,6 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
---- !u!114 &114056415274263692
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1518305524060620}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e953a612378b646aab6fbbef7379b6c0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  textElement: {fileID: 114266094678627528}
 --- !u!114 &114176289682581468
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -302,19 +288,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d215bd4fc191489fb20630dd04588b2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ramulatorInterface: {fileID: 0}
   textDisplayer: {fileID: 114487739435193272}
-  soundRecorder: {fileID: 0}
-  videoPlayer: {fileID: 0}
-  countdownVideoPlayer: {fileID: 0}
-  pauseKey: 0
-  pauseIndicator: {fileID: 1800808155648862}
-  scriptedEventReporter: {fileID: 114924137073979980}
-  highBeep: {fileID: 0}
-  lowBeep: {fileID: 0}
-  lowerBeep: {fileID: 0}
-  microphoneTestMessage: {fileID: 1885532220077830}
-  microphoneTestPlayback: {fileID: 0}
 --- !u!114 &114924137073979980
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -324,17 +298,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f180c8d2d8e804d2ca402600895da790, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &114955654637364740
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1800808155648862}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7bffa86de3ab5441fb7d1b933838e98e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!222 &222078752232503458
@@ -446,7 +409,7 @@ RectTransform:
   m_GameObject: {fileID: 1867217279982840}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 224464771732933280}
   m_Father: {fileID: 0}

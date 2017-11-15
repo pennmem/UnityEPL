@@ -3,10 +3,10 @@ using UnityEngine;
 
 [CustomEditor(typeof(SoundRecorder))]
 [CanEditMultipleObjects]
-public class SoundRecorderEditor : Editor 
+public class SoundRecorderEditor : Editor
 {
-	public override void OnInspectorGUI()
-	{
-		base.OnInspectorGUI ();
-	}
+    public override void OnInspectorGUI()
+    {
+        base.OnInspectorGUI();
+    }
 }

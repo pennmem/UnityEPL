@@ -3,23 +3,23 @@ using UnityEngine;
 
 [CustomEditor(typeof(DataHandler))]
 [CanEditMultipleObjects]
-public class DataHandlerEditor : Editor 
+public class DataHandlerEditor : Editor
 {
-	void OnEnable()
-	{
-	
-	}
+    void OnEnable()
+    {
 
-	public override void OnInspectorGUI()
-	{
-		DataHandler currentTarget = (DataHandler)target;
+    }
 
-		if (GUILayout.Button ("Handle all reporters")) 
-		{
-			currentTarget.reportersToHandle = FindObjectsOfType<DataReporter> ();
-			UnityEditor.SceneManagement.EditorSceneManager.MarkSceneDirty(UnityEngine.SceneManagement.SceneManager.GetActiveScene());
-		}
+    public override void OnInspectorGUI()
+    {
+        DataHandler currentTarget = (DataHandler)target;
 
-		base.OnInspectorGUI ();
-	}
+        if (GUILayout.Button("Handle all reporters"))
+        {
+            currentTarget.reportersToHandle = FindObjectsOfType<DataReporter>();
+            UnityEditor.SceneManagement.EditorSceneManager.MarkSceneDirty(UnityEngine.SceneManagement.SceneManager.GetActiveScene());
+        }
+
+        base.OnInspectorGUI();
+    }
 }
