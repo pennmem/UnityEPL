@@ -39,6 +39,10 @@ public static class UnityEPL
     [DllImport("UnityEPLNativePlugin")]
     public static extern int CountMouseEvents();
 
+    /// <summary>
+    /// Adds the given string as the name of a current participant.  Output is separated into folders for each participant combination.  Participant names are also included in output logs.
+    /// </summary>
+    /// <param name="participant_ID">Participant identifier.</param>
     public static void AddParticipant(string participant_ID)
     {
         string[] new_participants;
@@ -58,11 +62,18 @@ public static class UnityEPL
         participants = new_participants;
     }
 
+    /// <summary>
+    /// Clears the current participants.  The default of "unspecified_participant" will then be used if no more participants are specified.
+    /// </summary>
     public static void ClearParticipants()
     {
         participants = null;
     }
 
+    /// <summary>
+    /// Returns an array of all the current participants.
+    /// </summary>
+    /// <returns>The participants.</returns>
     public static string[] GetParticipants()
     {
         if (participants == null)
@@ -70,11 +81,19 @@ public static class UnityEPL
         return participants;
     }
 
+    /// <summary>
+    /// Sets the name of the experiment.  Output is separated into folders for each experiment.  The current experiment name is also included in output logs.
+    /// </summary>
+    /// <param name="experimentName">Experiment name.</param>
     public static void SetExperimentName(string experimentName)
     {
         experiment = experimentName;
     }
 
+    /// <summary>
+    /// Gets the name of the experiment.
+    /// </summary>
+    /// <returns>The experiment name.</returns>
     public static string GetExperimentName()
     {
         if (experiment == null)
@@ -87,6 +106,12 @@ public static class UnityEPL
         return DataPoint.ConvertToMillisecondsSinceEpoch(DataReporter.RealWorldTime());
     }
 
+    /// <summary>
+    /// Gets the data output folder for the current experiment and participant.
+    /// 
+    /// The default output folder is the folder where the application is running, plus /data/experiment/participant/session_#/session.json.  If you have already overridden the default, however, this will throw a warning and return your specified path.
+    /// </summary>
+    /// <returns>The participant folder.</returns>
     public static string GetParticipantFolder()
     {
         if (dataPath != null)
@@ -111,6 +136,10 @@ public static class UnityEPL
         return directory;
     }
 
+    /// <summary>
+    /// Gets the file path to the current output log.
+    /// </summary>
+    /// <returns>The data path.</returns>
     public static string GetDataPath()
     {
         if (dataPath != null)
@@ -122,11 +151,21 @@ public static class UnityEPL
         return directory;
     }
 
+    /// <summary>
+    /// Sets a new data path for the output log.  This will override the default.
+    /// </summary>
+    /// <param name="newDataPath">New data path.</param>
     public static void SetDataPath(string newDataPath)
     {
         dataPath = newDataPath;
     }
 
+    /// <summary>
+    /// Sets the session number.  The session number is used to organize output into folders on a per participant basis.
+    /// 
+    /// The default output folder is the folder where the application is running, plus /data/experiment/participant/session_#/session.json  If no session is specified, however, no session folder will be created and data will be output directly into the participant folder.
+    /// </summary>
+    /// <param name="newSessionNumber">New session number.</param>
     public static void SetSessionNumber(int newSessionNumber)
     {
         sessionNumber = newSessionNumber;
