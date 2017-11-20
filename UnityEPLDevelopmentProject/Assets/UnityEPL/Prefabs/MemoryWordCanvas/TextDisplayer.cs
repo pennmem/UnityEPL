@@ -38,6 +38,8 @@ public class TextDisplayer : MonoBehaviour
     {
         for (int i = 0; i < textElements.Length; i++)
             textElements[i].color = originalColors[i];
+        if (wordEventReporter != null)
+            wordEventReporter.ReportScriptedEvent("restore original text color", new Dictionary<string, object>());
     }
 
     /// <summary>
@@ -55,10 +57,10 @@ public class TextDisplayer : MonoBehaviour
         {
             textElement.text = text;
         }
-        Dictionary<string, string> dataDict = new Dictionary<string, string>();
+        Dictionary<string, object> dataDict = new Dictionary<string, object>();
         dataDict.Add("displayed text", text);
         if (wordEventReporter != null)
-            wordEventReporter.ReportScriptedEvent(description, dataDict, 0);
+            wordEventReporter.ReportScriptedEvent(description, dataDict);
     }
 
     /// <summary>
@@ -71,7 +73,7 @@ public class TextDisplayer : MonoBehaviour
             textElement.text = "";
         }
         if (wordEventReporter != null)
-            wordEventReporter.ReportScriptedEvent("text display cleared", new Dictionary<string, string>(), 0);
+            wordEventReporter.ReportScriptedEvent("text display cleared", new Dictionary<string, object>(), 0);
     }
 
     /// <summary>
@@ -84,10 +86,10 @@ public class TextDisplayer : MonoBehaviour
         {
             textElement.color = newColor;
         }
-        Dictionary<string, string> dataDict = new Dictionary<string, string>();
+        Dictionary<string, object> dataDict = new Dictionary<string, object>();
         dataDict.Add("new color", newColor.ToString());
         if (wordEventReporter != null)
-            wordEventReporter.ReportScriptedEvent("text color changed", dataDict, 0);
+            wordEventReporter.ReportScriptedEvent("text color changed", dataDict);
     }
 
     /// <summary>

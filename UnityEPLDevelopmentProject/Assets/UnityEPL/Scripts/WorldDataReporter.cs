@@ -33,16 +33,16 @@ public class WorldDataReporter : DataReporter
     {
         if (Time.frameCount % framesPerTransformReport == 0)
         {
-            System.Collections.Generic.Dictionary<string, string> transformDict = new System.Collections.Generic.Dictionary<string, string>();
-            transformDict.Add("positionX", transform.position.x.ToString());
-            transformDict.Add("positionY", transform.position.y.ToString());
-            transformDict.Add("positionZ", transform.position.z.ToString());
-            transformDict.Add("rotationX", transform.position.x.ToString());
-            transformDict.Add("rotationY", transform.position.y.ToString());
-            transformDict.Add("rotationZ", transform.position.z.ToString());
-            transformDict.Add("scaleX", transform.position.x.ToString());
-            transformDict.Add("scaleY", transform.position.y.ToString());
-            transformDict.Add("scaleZ", transform.position.z.ToString());
+            System.Collections.Generic.Dictionary<string, object> transformDict = new System.Collections.Generic.Dictionary<string, object>();
+            transformDict.Add("positionX", transform.position.x);
+            transformDict.Add("positionY", transform.position.y);
+            transformDict.Add("positionZ", transform.position.z);
+            transformDict.Add("rotationX", transform.position.x);
+            transformDict.Add("rotationY", transform.position.y);
+            transformDict.Add("rotationZ", transform.position.z);
+            transformDict.Add("scaleX", transform.position.x);
+            transformDict.Add("scaleY", transform.position.y);
+            transformDict.Add("scaleZ", transform.position.z);
             eventQueue.Enqueue(new DataPoint(gameObject.name + " transform", RealWorldFrameDisplayTime(), transformDict));
         }
     }
@@ -81,7 +81,7 @@ public class WorldDataReporter : DataReporter
             if (!(enteredViewfield || leftViewfield))
                 continue;
 
-            Dictionary<string, string> dataDict = new Dictionary<string, string>();
+            Dictionary<string, object> dataDict = new Dictionary<string, object>();
             dataDict.Add("camera", camera.name);
             if (enteredViewfield && reportEntersView)
             {

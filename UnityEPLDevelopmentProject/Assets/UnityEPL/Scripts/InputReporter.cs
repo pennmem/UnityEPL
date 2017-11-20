@@ -34,9 +34,9 @@ public class InputReporter : DataReporter
             bool downState;
             mouseDownStates.TryGetValue(mouseButton, out downState);
             mouseDownStates[mouseButton] = !downState;
-            Dictionary<string, string> dataDict = new Dictionary<string, string>();
-            dataDict.Add("mouse button", mouseButton.ToString());
-            dataDict.Add("is pressed", mouseDownStates[mouseButton].ToString());
+            Dictionary<string, object> dataDict = new Dictionary<string, object>();
+            dataDict.Add("mouse button", mouseButton);
+            dataDict.Add("is pressed", mouseDownStates[mouseButton]);
             eventQueue.Enqueue(new DataPoint("mouse button up/down", OSXTimestampToTimestamp(timestamp), dataDict));
         }
     }
@@ -51,17 +51,17 @@ public class InputReporter : DataReporter
             bool downState;
             keyDownStates.TryGetValue(keyCode, out downState);
             keyDownStates[keyCode] = !downState;
-            Dictionary<string, string> dataDict = new Dictionary<string, string>();
-            dataDict.Add("key code", keyCode.ToString());
-            dataDict.Add("is pressed", keyDownStates[keyCode].ToString());
+            Dictionary<string, object> dataDict = new Dictionary<string, object>();
+            dataDict.Add("key code", keyCode);
+            dataDict.Add("is pressed", keyDownStates[keyCode]);
             eventQueue.Enqueue(new DataPoint("key press/release", OSXTimestampToTimestamp(timestamp), dataDict));
         }
     }
 
     void CollectMousePosition()
     {
-        Dictionary<string, string> dataDict = new Dictionary<string, string>();
-        dataDict.Add("mouse position", Input.mousePosition.ToString());
+        Dictionary<string, object> dataDict = new Dictionary<string, object>();
+        dataDict.Add("mouse position", Input.mousePosition);
         eventQueue.Enqueue(new DataPoint("key press/release", DataReporter.RealWorldTime(), dataDict));
     }
 

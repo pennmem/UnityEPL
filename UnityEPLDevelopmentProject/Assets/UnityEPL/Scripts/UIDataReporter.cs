@@ -7,6 +7,6 @@ public class UIDataReporter : DataReporter
 {
     public void LogUIEvent(string name)
     {
-        eventQueue.Enqueue(new DataPoint(name, RealWorldFrameDisplayTime(), new Dictionary<string, string>()));
+        eventQueue.Enqueue(new DataPoint(name, RealWorldFrameDisplayTime(), new Dictionary<string, object>()));
     }
 }

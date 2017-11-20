@@ -7,15 +7,15 @@ public class DataPoint
 {
     public string type
     { get; }
-    public System.Collections.Generic.Dictionary<string, string> dataDict
+    public System.Collections.Generic.Dictionary<string, object> dataDict
     { get; }
     public System.DateTime time
     { get; }
 
-    public DataPoint(string newType, System.DateTime newTime, System.Collections.Generic.Dictionary<string, string> newDataDict)
+    public DataPoint(string newType, System.DateTime newTime, System.Collections.Generic.Dictionary<string, object> newDataDict)
     {
         if (newDataDict == null)
-            newDataDict = new System.Collections.Generic.Dictionary<string, string>();
+            newDataDict = new System.Collections.Generic.Dictionary<string, object>();
         string[] participants = UnityEPL.GetParticipants();
         if (participants != null)
         {
@@ -46,33 +46,35 @@ public class DataPoint
         string JSONString = "{\"type\":\"" + type + "\",\"data\":{";
         foreach (string key in dataDict.Keys)
         {
-            string valueString;
+            string value = dataDict[key].ToString();
+
+            string valueJSONString;
             double valueNumber;
             bool valueBool;
 
-            if (dataDict[key].Length > 2 && dataDict[key][0].Equals('(') && dataDict[key][dataDict[key].Length - 1].Equals(')')) //tuples
+            if (value.Length > 2 && value[0].Equals('(') && value[value.Length - 1].Equals(')')) //tuples
             {
-                char[] charArray = dataDict[key].ToCharArray();
+                char[] charArray = value.ToCharArray();
                 charArray[0] = '[';
                 charArray[charArray.Length - 1] = ']';
                 if (charArray[charArray.Length - 2].Equals(','))
                     charArray[charArray.Length - 2] = ' ';
-                valueString = new string(charArray);
+                valueJSONString = new string(charArray);
             }
-            else if ((dataDict[key].Length > 1 && dataDict[key][0].Equals('{') && dataDict[key][dataDict[key].Length - 1].Equals('}')) ||
-                     (double.TryParse(dataDict[key], out valueNumber))) //embedded json or numbers
+            else if ((value.Length > 1 && value[0].Equals('{') && value[value.Length - 1].Equals('}')) ||
+                     (double.TryParse(value, out valueNumber))) //embedded json or numbers
             {
-                valueString = dataDict[key];
+                valueJSONString = value;
             }
-            else if (bool.TryParse(dataDict[key], out valueBool)) //bools
+            else if (bool.TryParse(value, out valueBool)) //bools
             {
-                valueString = dataDict[key].ToLower();
+                valueJSONString = value.ToLower();
             }
             else //everything else is a string
             {
-                valueString = "\"" + dataDict[key] + "\"";
+                valueJSONString = "\"" + value + "\"";
             }
-            JSONString = JSONString + "\"" + key + "\":" + valueString + ",";
+            JSONString = JSONString + "\"" + key + "\":" + valueJSONString + ",";
         }
         if (dataDict.Count > 0) JSONString = JSONString.Substring(0, JSONString.Length - 1);
         JSONString = JSONString + "},\"time\":" + unixTimestamp.ToString() + "}";

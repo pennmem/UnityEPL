@@ -6,7 +6,7 @@ using UnityEngine;
 public class WriteToDiskHandler : DataHandler
 {
     //more output formats may be added in the future
-    public enum FORMAT { JSON };
+    public enum FORMAT { JSON_LINES, JSON };
     public FORMAT outputFormat;
 
     [HideInInspector]
@@ -64,6 +64,10 @@ public class WriteToDiskHandler : DataHandler
             string extensionlessFileName = "session";//DataReporter.GetStartTime ().ToString("yyyy-MM-dd HH mm ss");
             switch (outputFormat)
             {
+                case FORMAT.JSON_LINES:
+                    writeMe = dataPoint.ToJSON();
+                    filePath = System.IO.Path.Combine(directory, extensionlessFileName + ".jsonl");
+                    break;
                 case FORMAT.JSON:
                     writeMe = dataPoint.ToJSON();
                     filePath = System.IO.Path.Combine(directory, extensionlessFileName + ".json");
