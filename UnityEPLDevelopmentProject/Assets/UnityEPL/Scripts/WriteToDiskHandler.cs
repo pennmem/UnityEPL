@@ -53,12 +53,12 @@ public class WriteToDiskHandler : DataHandler
 
     public void DoWrite()
     {
-        string directory = UnityEPL.GetDataPath();
-        System.IO.Directory.CreateDirectory(directory);
-        string filePath = System.IO.Path.Combine(directory, "unnamed_file");
-
         while (waitingPoints.Count > 0)
         {
+            string directory = UnityEPL.GetDataPath();
+            System.IO.Directory.CreateDirectory(directory);
+            string filePath = System.IO.Path.Combine(directory, "unnamed_file");
+
             DataPoint dataPoint = waitingPoints.Dequeue();
             string writeMe = "unrecognized type";
             string extensionlessFileName = "session";//DataReporter.GetStartTime ().ToString("yyyy-MM-dd HH mm ss");
