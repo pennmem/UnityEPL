@@ -6,7 +6,7 @@ using UnityEngine;
 public class WriteToDiskHandler : DataHandler
 {
     //more output formats may be added in the future
-    public enum FORMAT { JSON_LINES, JSON };
+    public enum FORMAT { JSON_LINES };
     public FORMAT outputFormat;
 
     [HideInInspector]
@@ -67,10 +67,6 @@ public class WriteToDiskHandler : DataHandler
                 case FORMAT.JSON_LINES:
                     writeMe = dataPoint.ToJSON();
                     filePath = System.IO.Path.Combine(directory, extensionlessFileName + ".jsonl");
-                    break;
-                case FORMAT.JSON:
-                    writeMe = dataPoint.ToJSON();
-                    filePath = System.IO.Path.Combine(directory, extensionlessFileName + ".json");
                     break;
             }
             System.IO.File.AppendAllText(filePath, writeMe + System.Environment.NewLine);
