@@ -10,9 +10,11 @@ public class InputReporter : DataReporter
     public bool reportKeyStrokes = false;
     public bool reportMouseClicks = false;
     public bool reportMousePosition = false;
+    public int framesPerMousePositionReport = 60;
     private Dictionary<int, bool> keyDownStates = new Dictionary<int, bool>();
     private Dictionary<int, bool> mouseDownStates = new Dictionary<int, bool>();
 
+    private int lastMousePositionReportFrame;
 
     void Update()
     {
@@ -20,80 +22,82 @@ public class InputReporter : DataReporter
             CollectMouseEvents();
         if (reportKeyStrokes)
             CollectKeyEvents();
-        if (reportMousePosition)
+        if (reportMousePosition && Time.frameCount - lastMousePositionReportFrame > framesPerMousePositionReport)
             CollectMousePosition();
     }
 
     void CollectMouseEvents()
     {
-        int eventCount = UnityEPL.CountMouseEvents();
-        if (eventCount >= 1)
+        if (IsMacOS())
         {
-            int mouseButton = UnityEPL.PopMouseButton();
-            double timestamp = UnityEPL.PopMouseTimestamp();
-            bool downState;
-            mouseDownStates.TryGetValue(mouseButton, out downState);
-            mouseDownStates[mouseButton] = !downState;
-            Dictionary<string, object> dataDict = new Dictionary<string, object>();
-            dataDict.Add("mouse button", mouseButton);
-            dataDict.Add("is pressed", mouseDownStates[mouseButton]);
-            eventQueue.Enqueue(new DataPoint("mouse button up/down", OSXTimestampToTimestamp(timestamp), dataDict));
+            int eventCount = UnityEPL.CountMouseEvents();
+            if (eventCount >= 1)
+            {
+                int mouseButton = UnityEPL.PopMouseButton();
+                double timestamp = UnityEPL.PopMouseTimestamp();
+                bool downState;
+                mouseDownStates.TryGetValue(mouseButton, out downState);
+                mouseDownStates[mouseButton] = !downState;
+                ReportMouse(mouseButton, mouseDownStates[mouseButton], OSXTimestampToTimestamp(timestamp));
+            }
         }
+    }
+
+    private void ReportMouse(int mouseButton, bool pressed, System.DateTime timestamp)
+    {
+        Dictionary<string, object> dataDict = new Dictionary<string, object>();
+        dataDict.Add("key code", mouseButton);
+        dataDict.Add("is pressed", pressed);
+        eventQueue.Enqueue(new DataPoint("mouse press/release", timestamp, dataDict));
     }
 
     void CollectKeyEvents()
     {
-        int eventCount = UnityEPL.CountKeyEvents();
-        if (eventCount >= 1)
+        if (IsMacOS())
         {
-            int keyCode = UnityEPL.PopKeyKeycode();
-            double timestamp = UnityEPL.PopKeyTimestamp();
-            bool downState;
-            keyDownStates.TryGetValue(keyCode, out downState);
-            keyDownStates[keyCode] = !downState;
-            Dictionary<string, object> dataDict = new Dictionary<string, object>();
-            dataDict.Add("key code", keyCode);
-            dataDict.Add("is pressed", keyDownStates[keyCode]);
-            eventQueue.Enqueue(new DataPoint("key press/release", OSXTimestampToTimestamp(timestamp), dataDict));
+            int eventCount = UnityEPL.CountKeyEvents();
+            if (eventCount >= 1)
+            {
+                int keyCode = UnityEPL.PopKeyKeycode();
+                double timestamp = UnityEPL.PopKeyTimestamp();
+                bool downState;
+                keyDownStates.TryGetValue(keyCode, out downState);
+                keyDownStates[keyCode] = !downState;
+                ReportKey(keyCode, keyDownStates[keyCode], OSXTimestampToTimestamp(timestamp));
+            }
         }
+        else
+        {
+            foreach (KeyCode keyCode in System.Enum.GetValues(typeof(KeyCode)))
+            {
+                if (Input.GetKeyDown(keyCode))
+                {
+                    ReportKey((int)keyCode, true, DataReporter.RealWorldTime());
+                }
+                if (Input.GetKeyUp(keyCode))
+                {
+                    ReportKey((int)keyCode, false, DataReporter.RealWorldTime());
+                }
+            }
+        }
+    }
+
+    private void ReportKey(int keyCode, bool pressed, System.DateTime timestamp)
+    {
+        Dictionary<string, object> dataDict = new Dictionary<string, object>();
+        dataDict.Add("key code", keyCode);
+        dataDict.Add("is pressed", pressed);
+        string label = "key press/release";
+        if (!IsMacOS())
+            label = "key/mouse press/release";
+        eventQueue.Enqueue(new DataPoint(label, timestamp, dataDict));
     }
 
     void CollectMousePosition()
     {
         Dictionary<string, object> dataDict = new Dictionary<string, object>();
-        dataDict.Add("mouse position", Input.mousePosition);
-        eventQueue.Enqueue(new DataPoint("key press/release", DataReporter.RealWorldTime(), dataDict));
+        dataDict.Add("position", Input.mousePosition);
+        eventQueue.Enqueue(new DataPoint("mouse position", DataReporter.RealWorldTime(), dataDict));
+        lastMousePositionReportFrame = Time.frameCount;
     }
-
-
-
-    //	private Thread pollingThread;
-    //
-    //	private volatile bool stopPolling = false;
-    //
-    //	void Awake()
-    //	{
-    //		pollingThread = new Thread(InputPolling);
-    //		pollingThread.Start ();
-    //	}
-    //
-    //	private void CheckInput()
-    //	{
-    //		Debug.Log (gamewatch.Elapsed.TotalMilliseconds);
-    //		if (UnityEngine.Input.GetKey(KeyCode.A) || UnityEngine.Input.GetKey(KeyCode.S))
-    //			UnityEngine.Debug.Log (gamewatch.Elapsed.TotalMilliseconds);
-    //	}
-    //
-    //	private void InputPolling()
-    //	{
-    //		while (!stopPolling)
-    //			CheckInput ();
-    //	}
-    //
-    //	void OnDestroy()
-    //	{
-    //		stopPolling = true;
-    //	}
-
-
 }

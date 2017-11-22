@@ -15,6 +15,11 @@ public abstract class DataReporter : MonoBehaviour
     private static double OSStartTime;
     private static float unityTimeStartTime;
 
+    protected bool IsMacOS()
+    {
+        return Application.platform == RuntimePlatform.OSXEditor || Application.platform == RuntimePlatform.OSXPlayer;
+    }
+
     void Awake()
     {
         if (!startTimeInitialized)
@@ -23,7 +28,8 @@ public abstract class DataReporter : MonoBehaviour
             unityTimeStartTime = Time.realtimeSinceStartup;
             startTimeInitialized = true;
         }
-        if (!nativePluginRunning)
+
+        if (IsMacOS() && !nativePluginRunning)
         {
             OSStartTime = UnityEPL.StartCocoaPlugin();
             nativePluginRunning = true;
@@ -35,7 +41,7 @@ public abstract class DataReporter : MonoBehaviour
 
     void OnDestroy()
     {
-        if (nativePluginRunning)
+        if (IsMacOS() && nativePluginRunning)
         {
             UnityEPL.StopCocoaPlugin();
             nativePluginRunning = false;
