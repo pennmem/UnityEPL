@@ -4,4 +4,6 @@ This scene demonstrates the usage of the WorldEventReporter and InputReporter co
 
 Please note that InputReporter is currently more accurate on MacOS than on other platforms.
 
-Please refer to the documentations for the above listed classes and functions for more information.  Documentation is available here: https://github.com/pennmem/UnityEPL
+Please refer to the documentations for the above listed classes and functions for more information.  Documentation is available here: https://pennmem.github.io/UnityEPL
+
+Here is the github page for this project:  https://github.com/pennmem/UnityEPL
