@@ -5,12 +5,9 @@ using UnityEngine;
 //data about the event is currently stored in a dictionary
 public class DataPoint
 {
-    public string type
-    { get; }
-    public System.Collections.Generic.Dictionary<string, object> dataDict
-    { get; }
-    public System.DateTime time
-    { get; }
+    private string type;
+    private System.Collections.Generic.Dictionary<string, object> dataDict;
+    private System.DateTime time;
 
     public DataPoint(string newType, System.DateTime newTime, System.Collections.Generic.Dictionary<string, object> newDataDict)
     {
