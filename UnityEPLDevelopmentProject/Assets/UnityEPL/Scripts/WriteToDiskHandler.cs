@@ -51,6 +51,11 @@ public class WriteToDiskHandler : DataHandler
             waitingPoints.Enqueue(dataPoint);
     }
 
+    /// <summary>
+    /// Writes data from the waitingPoints queue to disk.  The waitingPoints queue will be automatically updated whenever reporters report data.
+    /// 
+    /// DoWrite() will also be automatically be called periodically according to the settings in the component inspector window, but you can invoke this manually if desired.
+    /// </summary>
     public void DoWrite()
     {
         while (waitingPoints.Count > 0)
