@@ -73,7 +73,7 @@ public class TextDisplayer : MonoBehaviour
             textElement.text = "";
         }
         if (wordEventReporter != null)
-            wordEventReporter.ReportScriptedEvent("text display cleared", new Dictionary<string, object>(), 0);
+            wordEventReporter.ReportScriptedEvent("text display cleared", new Dictionary<string, object>());
     }
 
     /// <summary>

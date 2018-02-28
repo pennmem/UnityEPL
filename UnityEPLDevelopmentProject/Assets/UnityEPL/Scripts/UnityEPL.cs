@@ -170,4 +170,9 @@ public static class UnityEPL
     {
         sessionNumber = newSessionNumber;
     }
+
+    public static int GetSessionNumber()
+    {
+        return sessionNumber;
+    }
 }

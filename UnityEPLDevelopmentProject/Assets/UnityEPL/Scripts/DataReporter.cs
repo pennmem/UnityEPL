@@ -1,16 +1,17 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 using UnityEngine;
 
 //this superclass implements an interface for retrieving behavioral events from a queue
 public abstract class DataReporter : MonoBehaviour
 {
     private static System.DateTime realWorldStartTime;
+    private static System.Diagnostics.Stopwatch stopwatch;
 
     private static bool nativePluginRunning = false;
     private static bool startTimeInitialized = false;
 
-    protected System.Collections.Generic.Queue<DataPoint> eventQueue = new Queue<DataPoint>();
+    protected System.Collections.Concurrent.ConcurrentQueue<DataPoint> eventQueue = new ConcurrentQueue<DataPoint>();
 
     private static double OSStartTime;
     private static float unityTimeStartTime;
@@ -26,6 +27,8 @@ public abstract class DataReporter : MonoBehaviour
         {
             realWorldStartTime = System.DateTime.UtcNow;
             unityTimeStartTime = Time.realtimeSinceStartup;
+            stopwatch = new System.Diagnostics.Stopwatch();
+            stopwatch.Start();
             startTimeInitialized = true;
         }
 
@@ -76,7 +79,13 @@ public abstract class DataReporter : MonoBehaviour
         DataPoint[] dataPoints = new DataPoint[count];
         for (int i = 0; i < count; i++)
         {
-            dataPoints[i] = eventQueue.Dequeue();
+            bool dequeued = false;
+            while (!dequeued)
+            {
+                DataPoint readPoint;
+                dequeued = eventQueue.TryDequeue(out readPoint);
+                dataPoints[i] = readPoint;
+            }
         }
 
         return dataPoints;
@@ -104,6 +113,10 @@ public abstract class DataReporter : MonoBehaviour
         return GetStartTime().AddSeconds(secondsSinceUnityStart);
     }
 
+    public static System.DateTime ThreadsafeTime()
+    {
+        return GetStartTime().Add(stopwatch.Elapsed);
+    }
 
     public static System.DateTime GetStartTime()
     {

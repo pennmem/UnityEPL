@@ -29,21 +29,26 @@ public class WorldDataReporter : DataReporter
         if (reportEntersView || reportLeavesView) CheckView();
     }
 
+    public void DoReport(System.Collections.Generic.Dictionary<string, object> extraData = null)
+    {
+        System.Collections.Generic.Dictionary<string, object> transformDict = new System.Collections.Generic.Dictionary<string, object>(extraData);
+        transformDict.Add("positionX", transform.position.x);
+        transformDict.Add("positionY", transform.position.y);
+        transformDict.Add("positionZ", transform.position.z);
+        transformDict.Add("rotationX", transform.position.x);
+        transformDict.Add("rotationY", transform.position.y);
+        transformDict.Add("rotationZ", transform.position.z);
+        transformDict.Add("scaleX", transform.position.x);
+        transformDict.Add("scaleY", transform.position.y);
+        transformDict.Add("scaleZ", transform.position.z);
+        eventQueue.Enqueue(new DataPoint(gameObject.name + " transform", RealWorldFrameDisplayTime(), transformDict));
+    }
+
     private void CheckTransformReporting()
     {
         if (Time.frameCount % framesPerTransformReport == 0)
         {
-            System.Collections.Generic.Dictionary<string, object> transformDict = new System.Collections.Generic.Dictionary<string, object>();
-            transformDict.Add("positionX", transform.position.x);
-            transformDict.Add("positionY", transform.position.y);
-            transformDict.Add("positionZ", transform.position.z);
-            transformDict.Add("rotationX", transform.position.x);
-            transformDict.Add("rotationY", transform.position.y);
-            transformDict.Add("rotationZ", transform.position.z);
-            transformDict.Add("scaleX", transform.position.x);
-            transformDict.Add("scaleY", transform.position.y);
-            transformDict.Add("scaleZ", transform.position.z);
-            eventQueue.Enqueue(new DataPoint(gameObject.name + " transform", RealWorldFrameDisplayTime(), transformDict));
+            DoReport();
         }
     }
 

@@ -6,15 +6,13 @@ using UnityEngine;
 public class ScriptedEventReporter : DataReporter
 {
 
-    public void ReportScriptedEvent(string type, Dictionary<string, object> dataDict, int frameDelay = 0)
+    public void ReportScriptedEvent(string type, Dictionary<string, object> dataDict)
     {
-        StartCoroutine(ReportScriptedEventCoroutine(type, dataDict, frameDelay));
+        eventQueue.Enqueue(new DataPoint(type, RealWorldFrameDisplayTime(), dataDict));
     }
 
-    private IEnumerator ReportScriptedEventCoroutine(string type, Dictionary<string, object> dataDict, int frameDelay)
+    public void ReportOutOfThreadScriptedEvent(string type, Dictionary<string, object> dataDict)
     {
-        for (int i = 0; i < frameDelay; i++)
-            yield return null;
-        eventQueue.Enqueue(new DataPoint(type, RealWorldFrameDisplayTime(), dataDict));
+        eventQueue.Enqueue(new DataPoint(type, ThreadsafeTime(), dataDict));
     }
 }
