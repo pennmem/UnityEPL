@@ -1,4 +1,6 @@
-﻿//	Copyright (c) 2012 Calvin Rien
+﻿//  Modified slightly for UnityEPL by Henry Solberg.
+//
+//	Copyright (c) 2012 Calvin Rien
 //        http://the.darktable.com
 //
 //	This software is provided 'as-is', without any express or implied warranty. In
