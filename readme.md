@@ -43,5 +43,23 @@ Similar to scripted event reporter, but its LogUIEvent method accepts only a str
 
 ![alt text](https://github.com/pennmem/UnityEPL/blob/master/images/handlers.png "UnityEPL data handlers")
 
+After you have added reporters to your project to select what data you want to collect, use handlers to put the data somewhere for your future analysis.  Currently there are only two options: DebugLog and WriteToDisk.
+
+Every handler handles some subset of your reporters.  Each reporter should only be handled once.  You can click and drag reporters individually into the "reporters to handle" field shown above.  You can also click the "handle all reporters" button to easily have one handler handle all reporters.
+
+### DebugLog
+
+When reporters handled by debug log report data, the debug log handle simply writes the data to the Unity log.  This is useful for editor mode and debugging.  If deployed to an executable, this handler will write Unity's "player log" for the application. (https://docs.unity3d.com/Manual/LogFiles.html)
+
+### WriteToDiskHandler.
+
+This will write your data to UnityEPL's data folder.  The default output folder is the folder where the application is running, plus /data/experiment/participant/session_#/session.json . If no session is specified, however, no session folder will be created and data will be output directly into the participant folder.  The methods of the static UnityEPL class can be used to change this output path.  See "full documentation" below.
+
+Currently, only jsonl output formatting is provided.  Jsonl output can be easily read by data analysis platforms.  For example, the following python code will load in a jsonl file into a pandas data scince dataframe:
+>import pandas
+>file_path = "/Path/to/your/data/session.jsonl"
+>dataframe = pandas.read_json(path_or_buf=file_path, lines=True)
+
+
 # Full documentation
 
