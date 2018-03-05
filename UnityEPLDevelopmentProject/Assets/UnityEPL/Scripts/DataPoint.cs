@@ -9,6 +9,18 @@ public class DataPoint
     private System.Collections.Generic.Dictionary<string, object> dataDict;
     private System.DateTime time;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="T:DataPoint"/> class.  This represents a piece of data that you might want to keep about your project.
+    /// 
+    /// "Type" is a short description of the data.  Time is the time when the datapoint occured (or was collected, if it's a continuous event).
+    /// 
+    /// dataDict contains the actual data that you might want to analyze later.  Each element of the data is a key-value pair, the key representing its name.
+    /// The value can be any C# object.  If the datapoint is written to disk using a WirteToDiskHandler, the handler will try to deduce an appropriate way of
+    /// serializing the object.  This is easy for strings, integers, booleans, etc., but for other objects the object's ToString method might be used as a fallback.
+    /// </summary>
+    /// <param name="newType">New type.</param>
+    /// <param name="newTime">New time.</param>
+    /// <param name="newDataDict">New data dict.</param>
     public DataPoint(string newType, System.DateTime newTime, System.Collections.Generic.Dictionary<string, object> newDataDict)
     {
         if (newDataDict == null)

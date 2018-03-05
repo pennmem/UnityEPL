@@ -26,7 +26,10 @@ public class InputReporter : DataReporter
             CollectMousePosition();
     }
 
-    void CollectMouseEvents()
+    /// <summary>
+    /// Collects the mouse events for MacOS.  For other platforms, mouse events are included in key events.
+    /// </summary>
+    private void CollectMouseEvents()
     {
         if (IsMacOS())
         {
@@ -51,7 +54,12 @@ public class InputReporter : DataReporter
         eventQueue.Enqueue(new DataPoint("mouse press/release", timestamp, dataDict));
     }
 
-    void CollectKeyEvents()
+    /// <summary>
+    /// Collects the key events.  Except in MacOS, this includes mouse events, which are part of Unity's KeyCode enum.
+    /// 
+    /// In MacOS, UnityEPL uses a native plugin to achieve higher accuracy timestamping.
+    /// </summary>
+    private void CollectKeyEvents()
     {
         if (IsMacOS())
         {
@@ -93,7 +101,7 @@ public class InputReporter : DataReporter
         eventQueue.Enqueue(new DataPoint(label, timestamp, dataDict));
     }
 
-    void CollectMousePosition()
+    private void CollectMousePosition()
     {
         Dictionary<string, object> dataDict = new Dictionary<string, object>();
         dataDict.Add("position", Input.mousePosition);
