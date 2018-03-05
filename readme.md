@@ -53,7 +53,7 @@ When reporters handled by debug log report data, the debug log handle simply wri
 
 ### WriteToDiskHandler.
 
-This will write your data to UnityEPL's data folder.  The default output folder is the folder where the application is running, plus /data/experiment/participant/session_#/session.json . If no session is specified, however, no session folder will be created and data will be output directly into the participant folder.  The methods of the static UnityEPL class can be used to change this output path.  See "full documentation" below.
+This will write your data to UnityEPL's data folder.  The default output folder is the folder where the application is running, plus /data/experiment/participant/session_#/session.json . If no session is specified, however, no session folder will be created and data will be output directly into the participant folder.  The methods of the static UnityEPL class can be used to change this output path.  See "UnityEPL optional methods" below.
 
 Currently, only jsonl output formatting is provided.  Jsonl output can be easily read by data analysis platforms.  For example, the following python code will load in a jsonl file into a pandas data scince dataframe:
 ``` python
@@ -62,5 +62,40 @@ file_path = "/Path/to/your/data/session.jsonl"
 dataframe = pandas.read_json(path_or_buf=file_path, lines=True)
 ```
 
-# Full documentation
+# UnityEPL optional methods
 
+The static class named "UnityEPL" provides optional methods for further managing your data and your experiment.  Although UnityEPL will function without any of these methods being called, you probably want to at least call "AddParticipant" so that your data is not reported under "unspecified participant."
+
+## AddParticipant
+One parameter: participant_ID, a string
+
+Adds the given string as the name of a current participant.  Output is separated into folders for each
+    
+## ClearParticipants
+Clears the current participants.  The default of "unspecified_participant" will then be used if no more participants are specified.
+
+## GetParticipants
+Returns an array of all the current participants.  This will always have at least "unspecified participant" as an entry.
+
+## SetExperimentName
+One parameter: expirmentName, a string
+
+Sets the name of the experiment.  Output is separated into folders for each experiment.  The current experiment name is also included in output logs.
+
+## GetParticipantFolder
+The default output folder is the folder where the application is running, plus /data/experiment/participant/session_#/session.json.  If you have already overridden the default, however, this will throw a warning and return your specified path.
+
+## GetDataPath
+Gets the data output path. The default output folder is the folder where the application is running, plus /data/experiment/participant/session_#/session.json . If no session is specified, however, no session folder will be created and data will be output directly into the participant folder.
+
+## SetDataPath
+One parameter: newDataPath, a string
+
+Sets a new data path for the output log.  This will override the default.
+
+## SetSessionNumber
+One parameter: newSessionNumber, an int
+
+Sets the session number.  The session number is used to organize output into folders on a per participant basis.
+
+The default output folder is the folder where the application is running, plus /data/experiment/participant/session_#/session.json . If no session is specified, however, no session folder will be created and data will be output directly into the participant folder.
