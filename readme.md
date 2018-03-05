@@ -11,13 +11,19 @@ In the "Add Component" dropdown, select "UnityEPL," then "Handler" or "Reporter.
 
 ## Reporters
 
-![alt text](https://github.com/pennmem/UnityEPL/blob/master/images/reporters.png "UnityEPL reporters")
+![alt text](https://github.com/pennmem/UnityEPL/blob/master/images/reporters.png "UnityEPL data reporters")
 
 There are currently four reporters, each for collecting a different type of data about your project.
 
 ### WorldDataReporter
 
-The world data reporter is for recording the position of Unity3D objects that exist inside the 2D or 3D simulation.  Put the component on the object whose world position you are concerned with.  Configure the data reporting parameters according to your preferences by editing the component in the inspector window as described in the full documentation below.
+The world data reporter is for recording the position of Unity3D objects that exist inside the 2D or 3D simulation.  Put the component on the object whose world position you are concerned with.  Configure the data reporting parameters according to your preferences by editing the component in the inspector window.
+
+The following parameters are available:
+1. Report transform data. Whether or not to report the data contained in the objects transform component (position, rotation, and scale).
+2. Frames per transform report.  If reporting transform data is desired, how many frames to wait between each report.  Disabled if report transform data is unchecked.
+3. Report upon entering view.  If checked, an event will be logged whenever this object becomes visible to the player.  Please note that this includes children of the object, and uses Unity's renderer.isVisible member, so is affected by, for example, shadows.  More information here: (https://docs.unity3d.com/ScriptReference/Renderer-isVisible.html)
+4. Report upon leaving view.  The counterpart to report upon entering view.
 
 ### InputReporter
 
@@ -35,7 +41,7 @@ Similar to scripted event reporter, but its LogUIEvent method accepts only a str
 
 ## Handlers
 
+![alt text](https://github.com/pennmem/UnityEPL/blob/master/images/handlers.png "UnityEPL data handlers")
+
 # Full documentation
 
-
-# Example projects
