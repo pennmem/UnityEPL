@@ -66,34 +66,34 @@ dataframe = pandas.read_json(path_or_buf=file_path, lines=True)
 
 The static class named "UnityEPL" provides optional methods for further managing your data and your experiment.  Although UnityEPL will function without any of these methods being called, you probably want to at least call "AddParticipant" so that your data is not reported under "unspecified participant."
 
-## AddParticipant
+#### UnityEPL.AddParticipant
 One parameter: participant_ID, a string
 
 Adds the given string as the name of a current participant.  Output is separated into folders for each
     
-## ClearParticipants
+#### UnityEPL.ClearParticipants
 Clears the current participants.  The default of "unspecified_participant" will then be used if no more participants are specified.
 
-## GetParticipants
+#### UnityEPL.GetParticipants
 Returns an array of all the current participants.  This will always have at least "unspecified participant" as an entry.
 
-## SetExperimentName
+#### UnityEPL.SetExperimentName
 One parameter: expirmentName, a string
 
 Sets the name of the experiment.  Output is separated into folders for each experiment.  The current experiment name is also included in output logs.
 
-## GetParticipantFolder
+#### UnityEPL.GetParticipantFolder
 The default output folder is the folder where the application is running, plus /data/experiment/participant/session_#/session.json.  If you have already overridden the default, however, this will throw a warning and return your specified path.
 
-## GetDataPath
+#### UnityEPL.GetDataPath
 Gets the data output path. The default output folder is the folder where the application is running, plus /data/experiment/participant/session_#/session.json . If no session is specified, however, no session folder will be created and data will be output directly into the participant folder.
 
-## SetDataPath
+#### UnityEPL.SetDataPath
 One parameter: newDataPath, a string
 
 Sets a new data path for the output log.  This will override the default.
 
-## SetSessionNumber
+#### UnityEPL.SetSessionNumber
 One parameter: newSessionNumber, an int
 
 Sets the session number.  The session number is used to organize output into folders on a per participant basis.
