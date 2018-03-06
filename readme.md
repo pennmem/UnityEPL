@@ -5,7 +5,7 @@ There are two types of components: reporters and handlers.  Reporters allow you 
 
 To add either type of component, select a game object in the object heierarchy (the left panel in the default Unity3D layout).  Then, select "Add Component" in the inspector (the right panel in the default Unity3D layout.)
 
-<img src="{{ site.baseurl }}/images/add_component.png">
+<img src="https://github.com/pennmem/UnityEPL/blob/master/images/add_component.png">
 
 In the "Add Component" dropdown, select "UnityEPL," then "Handler" or "Reporter."  You will then be able to configure the component.
 
