@@ -5,13 +5,13 @@ There are two types of components: reporters and handlers.  Reporters allow you 
 
 To add either type of component, select a game object in the object heierarchy (the left panel in the default Unity3D layout).  Then, select "Add Component" in the inspector (the right panel in the default Unity3D layout.)
 
-<img src="/images/add_component.png" alt="UnityEPL data reporters" title="UnityEPL data reporters" />
+<img src="{{ site.baseurl }}/images/add_component.png" alt="Adding a UnityEPL component" title="Adding a UnityEPL component" />
 
 In the "Add Component" dropdown, select "UnityEPL," then "Handler" or "Reporter."  You will then be able to configure the component.
 
 ## Reporters
 
-![alt text](https://github.com/pennmem/UnityEPL/blob/master/images/reporters.png "UnityEPL data reporters")
+<img src="{{ site.baseurl }}/images/reporters.png" alt="UnityEPL data reporters" title="UnityEPL data reporters" />
 
 There are currently four reporters, each for collecting a different type of data about your project.
 
@@ -35,13 +35,13 @@ The scripted event reporter allows you to report custom events from your own scr
 
 ### UIDataReporter
 
-![alt text](https://github.com/pennmem/UnityEPL/blob/master/images/uidatareporter.png "UnityEPL UIDataReporter usage")
+<img src="{{ site.baseurl }}/images/uidatareporter.png" alt="UnityEPL UIDataReporter usage" title="UnityEPL UIDataReporter usage" />
 
 Similar to scripted event reporter, but its LogUIEvent method accepts only a string, so that you can subscribe it to Unity UI buttons in order to automatically report button clicks.
 
 ## Handlers
 
-![alt text](https://github.com/pennmem/UnityEPL/blob/master/images/handlers.png "UnityEPL data handlers")
+<img src="{{ site.baseurl }}/images/handlers.png" alt="UnityEPL data handlers" title="UnityEPL data handlers" />
 
 After you have added reporters to your project to select what data you want to collect, use handlers to put the data somewhere for your future analysis.  Currently there are only two options: DebugLog and WriteToDisk.
 
