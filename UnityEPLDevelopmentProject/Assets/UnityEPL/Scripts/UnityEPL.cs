@@ -138,6 +138,8 @@ public static class UnityEPL
 
     /// <summary>
     /// Gets the file path to the current output log.
+    /// 
+    /// The default output folder is the folder where the application is running, plus /data/experiment/participant/session_#/session.json . If no session is specified, however, no session folder will be created and data will be output directly into the participant folder.
     /// </summary>
     /// <returns>The data path.</returns>
     public static string GetDataPath()
