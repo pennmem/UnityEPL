@@ -46,9 +46,9 @@ public class SoundRecorder : MonoBehaviour
 
         isRecording = false;
 
-        int recordingLength = Mathf.CeilToInt(Time.unscaledTime - startTime);
+        float recordingLength = Time.unscaledTime - startTime;
 
-        int outputLength = SAMPLE_RATE * recordingLength;
+        int outputLength = Mathf.RoundToInt(SAMPLE_RATE * recordingLength);
         AudioClip croppedClip = AudioClip.Create("cropped recording", outputLength, 1, SAMPLE_RATE, false);
 
         float[] saveData = new float[outputLength];
@@ -85,7 +85,7 @@ public class SoundRecorder : MonoBehaviour
 
     void OnApplicationQuit()
     {
-        if (recording)
+        if (isRecording)
             StopRecording();
     }
 }
