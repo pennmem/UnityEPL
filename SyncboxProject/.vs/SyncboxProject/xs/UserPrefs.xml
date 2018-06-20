@@ -1,0 +1,17 @@
+﻿<Properties StartupConfiguration="{AFB823D1-D264-EF1A-4CB7-C5F1D5A6C0A9}|">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Prefabs/Syncbox/Syncbox.cs">
+    <Files>
+      <File FileName="Assets/Prefabs/Syncbox/Syncbox.cs" Line="63" Column="78" />
+      <File FileName="Assets/Prefabs/Syncbox/FreiburgSyncbox.cs" Line="12" Column="59" />
+      <File FileName="Assets/UnityEPL/Scripts/DataReporter.cs" Line="96" Column="1" />
+      <File FileName="Assets/UnityEPL/Scripts/ScriptedEventReporter.cs" Line="13" Column="17" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.ItemProperties.SyncboxProject PreferredExecutionTarget="Unity.Editor" />
+  <MultiItemStartupConfigurations />
+</Properties>

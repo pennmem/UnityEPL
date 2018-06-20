@@ -1,0 +1,4 @@
+sceneSetups:
+- path: Assets/PlainSyncbox.unity
+  isLoaded: 1
+  isActive: 1
