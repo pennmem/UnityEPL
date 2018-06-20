@@ -1191,7 +1191,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   reportKeyStrokes: 1
   reportMouseClicks: 1
-  reportMousePosition: 1
+  reportMousePosition: 0
   framesPerMousePositionReport: 60
 --- !u!4 &1620143701
 Transform:
@@ -1559,6 +1559,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2002785096}
   - component: {fileID: 2002785097}
+  - component: {fileID: 2002785098}
   m_Layer: 0
   m_Name: DataHandler
   m_TagString: Untagged
@@ -1590,9 +1591,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 17d89e96b72454e66ae192a0d543f267, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  reportersToHandle:
-  - {fileID: 1425841541}
-  - {fileID: 1620143700}
+  reportersToHandle: []
   outputFormat: 0
   writeAutomatically: 1
   framesPerWrite: 30
+--- !u!114 &2002785098
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2002785095}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0bf0398ac0f42476681d03e21fa57605, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  reportersToHandle:
+  - {fileID: 1425841541}
+  - {fileID: 1620143700}

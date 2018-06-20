@@ -11,12 +11,22 @@ public class WorldDataReporter : DataReporter
     public bool reportEntersView = true;
     public bool reportLeavesView = true;
 
-    private bool wasLastVisible = false;
+    private Dictionary<Camera, bool> camerasToInViewfield = new Dictionary<Camera, bool>();
 
     void Update()
     {
         if (reportTransform) CheckTransformReporting();
         if (reportEntersView || reportLeavesView) CheckView();
+    }
+
+    void Start()
+    {
+        if ((reportEntersView || reportLeavesView) && GetComponent<Collider>() == null)
+        {
+            throw new UnityException("You have selected enter/exit viewfield reporting for " + gameObject.name + " but there is no collider on the object." +
+                                      "  This feature uses collision detection to compare with camera bounds and other objects.  Please add a collider or " +
+                                      "unselect viewfield enter/exit reporting.");
+        }
     }
 
     public void DoReport(System.Collections.Generic.Dictionary<string, object> extraData = null)
@@ -45,32 +55,52 @@ public class WorldDataReporter : DataReporter
         }
     }
 
-    private void CheckView()
+    //untested accuraccy, requires collider
+    void CheckView()
     {
-        bool isVisible = IsVisible();
-        string eventName = "unnamed event";
-        if (isVisible == true && wasLastVisible == false && reportEntersView)
-        {
-            eventName = reportingID + " enters view";
-            eventQueue.Enqueue(new DataPoint(eventName, RealWorldFrameDisplayTime(), new Dictionary<string, object>() { { "object reporting id", reportingID } }));
-        }
-        if (isVisible == false && wasLastVisible == true && reportLeavesView)
-        {
-            eventName = reportingID + " leaves view";
-            eventQueue.Enqueue(new DataPoint(eventName, RealWorldFrameDisplayTime(), new Dictionary<string, object>() { { "object reporting id", reportingID } }));
-        }
-        wasLastVisible = isVisible;
-    }
+        bool enteredViewfield = false;
+        bool leftViewfield = false;
 
-    private bool IsVisible()
-    {
-        bool thisIsVisible = false;
-        Renderer[] renderers = GetComponentsInChildren<Renderer>();
-        List<bool> renderesVisible = new List<bool>();
-        foreach (Renderer theRenderer in renderers)
-            renderesVisible.Add(theRenderer.isVisible);
-        foreach (bool isVisible in renderesVisible)
-            thisIsVisible |= isVisible;
-        return thisIsVisible;
+        Camera[] cameras = FindObjectsOfType<Camera>();
+
+        foreach (Camera thisCamera in cameras)
+        {
+            Plane[] frustrumPlanes = GeometryUtility.CalculateFrustumPlanes(thisCamera);
+            Collider objectCollider = GetComponent<Collider>();
+
+            RaycastHit lineOfSightHit;
+            Physics.Linecast(thisCamera.transform.position, gameObject.transform.position, out lineOfSightHit);
+            bool lineOfSight = lineOfSightHit.collider.Equals(gameObject.GetComponent<Collider>());
+            bool inView = GeometryUtility.TestPlanesAABB(frustrumPlanes, objectCollider.bounds) && lineOfSight;
+            if (inView && (!camerasToInViewfield.ContainsKey(thisCamera) || camerasToInViewfield[thisCamera] == false))
+            {
+                camerasToInViewfield[thisCamera] = true;
+                enteredViewfield = true;
+            }
+            else if (!inView && camerasToInViewfield.ContainsKey(thisCamera) && camerasToInViewfield[thisCamera] == true)
+            {
+                camerasToInViewfield[thisCamera] = false;
+                leftViewfield = true;
+            }
+
+            string eventName = "";
+
+
+            if (!(enteredViewfield || leftViewfield))
+                continue;
+
+            Dictionary<string, object> dataDict = new Dictionary<string, object>();
+            dataDict.Add("camera", thisCamera.name);
+            if (enteredViewfield && reportEntersView)
+            {
+                eventName = gameObject.name + " enters view";
+                eventQueue.Enqueue(new DataPoint(eventName, RealWorldFrameDisplayTime(), dataDict));
+            }
+            if (leftViewfield && reportLeavesView)
+            {
+                eventName = gameObject.name + " leaves view";
+                eventQueue.Enqueue(new DataPoint(eventName, RealWorldFrameDisplayTime(), dataDict));
+            }
+        }
     }
 }
