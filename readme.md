@@ -1,3 +1,5 @@
+(This document is best viewed at https://pennmem.github.io/UnityEPL/ .)
+
 # UnityEPL Overview
 UnityEPL (Unity Experiment Programming Library) can help researchers and scientists easily collect data from their Unity3D projects.  To use UnityEPL, all you need to do is download the asset from the asset store or this repositority, import it, and add two components to objects in your Unity3D scene.
 
