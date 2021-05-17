@@ -1,0 +1,7 @@
+#!/bin/bash
+
+TEST="Uniformity"
+INCLUDES="stubsRepWordGenerator.cs ../RepWordGenerator.cs"
+
+mcs Test"$TEST".cs $INCLUDES -d:TESTING &&
+mono Test"$TEST".exe

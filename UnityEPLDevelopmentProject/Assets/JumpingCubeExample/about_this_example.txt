@@ -1,9 +1,0 @@
-In this example experiment, participants are presented with a cube and prompted to press the spacebar to make the cube jump.
-
-This scene demonstrates the usage of the WorldEventReporter and InputReporter components.  The WorldEventReporter is attached to world objects and can report their transform position and when the leave and exit view.  The InputReporter component can be placed anywhere and reports on user input events.  Both reporters should be dragged to a handler (or the "handle all reporters" button should be pressed on a handler).  Then the data gathered by the reporters can be written to disk or printed to the debug log.
-
-Please note that InputReporter is currently more accurate on MacOS than on other platforms.
-
-Please refer to the documentations for the above listed classes and functions for more information.  Documentation is available here: https://pennmem.github.io/UnityEPL
-
-Here is the github page for this project:  https://github.com/pennmem/UnityEPL

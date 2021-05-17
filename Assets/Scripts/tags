@@ -1,0 +1,644 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_OUTPUT_EXCMD	mixed	/number, pattern, mixed, or combineV2/
+!_TAG_OUTPUT_FILESEP	slash	/slash or backslash/
+!_TAG_OUTPUT_MODE	u-ctags	/u-ctags or e-ctags/
+!_TAG_PATTERN_LENGTH_LIMIT	96	/0 for no limit/
+!_TAG_PROC_CWD	/Users/jbruska/Code/UnityEPL-FR/Assets/Scripts/	//
+!_TAG_PROGRAM_AUTHOR	Universal Ctags Team	//
+!_TAG_PROGRAM_NAME	Universal Ctags	/Derived from Exuberant Ctags/
+!_TAG_PROGRAM_URL	https://ctags.io/	/official site/
+!_TAG_PROGRAM_VERSION	5.9.0	/397bcff/
+Add	Experiments/ExperimentState.cs	/^    virtual public void Add(T item) {$/;"	m	class:Timeline
+Add	Experiments/RepWordGenerator.cs	/^  public override void Add(WordStim word_stim) {$/;"	m	class:StimWordList
+Add	Experiments/RepWordGenerator.cs	/^  public void Add(string word, bool stim=false) {$/;"	m	class:StimWordList
+AddRange	Experiments/ExperimentState.cs	/^    virtual public void AddRange(IEnumerable<T> new_items) {$/;"	m	class:Timeline
+AddReporter	DataManagement/DataHandler.cs	/^    public void AddReporter(DataReporter add) {$/;"	m	class:DataHandler
+AnyKey	Experiments/ExperimentBase.cs	/^    protected bool AnyKey(InputHandler handler, KeyMsg msg) {$/;"	m	class:ExperimentBase
+Assert	Experiments/RepWordGenerator.cs	/^  private void Assert(int i) {$/;"	m	class:BoundedInt	file:
+AssignRandomStim	Experiments/RepWordGenerator.cs	/^  public static void AssignRandomStim(RepWordList rw) {$/;"	m	class:RepWordGenerator
+Awake	DataManagement/DataReporter.cs	/^    void Awake()$/;"	m	class:DataReporter	file:
+Awake	DataManagement/InputReporter.cs	/^    void Awake() {$/;"	m	class:InputReporter	file:
+Awake	GUI/ExperimentSelection.cs	/^    void Awake()$/;"	m	class:ExperimentSelection	file:
+Awake	GUI/LaunchExperiment.cs	/^    void Awake() {$/;"	m	class:LaunchExperiment	file:
+Awake	GUI/ParticipantSelection.cs	/^    void Awake() {$/;"	m	class:ParticipantSelection	file:
+Awake	InterfaceManager.cs	/^    protected  void Awake()$/;"	m	class:InterfaceManager
+BeginNewSession	Networking/RamulatorInterface.cs	/^    public IEnumerator BeginNewSession(int sessionNumber)$/;"	m	class:RamulatorInterface
+BeginNewTrial	Networking/RamulatorInterface.cs	/^    public void BeginNewTrial(int trialNumber)$/;"	m	class:RamulatorInterface
+BoundedInt	Experiments/RepWordGenerator.cs	/^  public BoundedInt(int limit_, string message_) {$/;"	m	class:BoundedInt
+BoundedInt	Experiments/RepWordGenerator.cs	/^public class BoundedInt {$/;"	c
+BuildInfo	BuildInfo.cs	/^public class BuildInfo : MonoBehaviour {$/;"	c
+Callback	Testing/TestEventLoop.cs	/^    public static void Callback(Action callback) {$/;"	m	class:TestingEventLoop
+CallbackFunction	Testing/TestEventLoop.cs	/^    public static void CallbackFunction() {$/;"	m	class:TestingEventLoop
+CallbackFunction	Testing/TestEventLoop.cs	/^    public static void CallbackFunction(string arg) {$/;"	m	class:TestingEventLoop
+CallbackWithArgument	Testing/TestEventLoop.cs	/^    public static void CallbackWithArgument(Action<string> callback, string arg) {$/;"	m	class:TestingEventLoop
+CancelRead	Networking/ElememInterface.cs	/^    public void CancelRead() {$/;"	m	class:HostPCListener
+CastToStatic	Configuration/FlexibleConfig.cs	/^    public static dynamic CastToStatic(JObject cfg) {$/;"	m	class:FlexibleConfig
+Change	HighPrecisionTimer.cs	/^    public bool Change(Int32 _dueTime, Int32 _period) {$/;"	m	class:HighPrecisionTimer
+ChangeSetting	InterfaceManager.cs	/^    public void ChangeSetting(string setting, dynamic value) {$/;"	m	class:InterfaceManager
+CheckTransformReport	DataManagement/WorldDataReporter.cs	/^    private void CheckTransformReport()$/;"	m	class:WorldDataReporter	file:
+CheckViewReport	DataManagement/WorldDataReporter.cs	/^    private void CheckViewReport()$/;"	m	class:WorldDataReporter	file:
+CleanSlate	Experiments/ExperimentBase.cs	/^    protected void CleanSlate() {$/;"	m	class:ExperimentBase
+Clear	Experiments/ExperimentState.cs	/^    virtual public void Clear() {$/;"	m	class:Timeline
+Clear	Experiments/RepWordGenerator.cs	/^  public override void Clear() {$/;"	m	class:StimWordList
+ClearRepeatingEvent	EventHandling/EventQueue.cs	/^    public void ClearRepeatingEvent(RepeatingEvent thisEvent) {$/;"	m	class:EventQueue
+ClearText	InterfaceManager.cs	/^    public void ClearText() {$/;"	m	class:InterfaceManager
+ClearTitle	InterfaceManager.cs	/^    public void ClearTitle() {$/;"	m	class:InterfaceManager
+CollectKeyEvents	DataManagement/InputReporter.cs	/^    private void CollectKeyEvents()$/;"	m	class:InputReporter	file:
+CollectMousePosition	DataManagement/InputReporter.cs	/^    private void CollectMousePosition()$/;"	m	class:InputReporter	file:
+ConfigPath	Configuration/FileManager.cs	/^    public string ConfigPath() {$/;"	m	class:FileManager
+ConfirmStart	Experiments/ExperimentBase.cs	/^    protected void ConfirmStart(StateMachine state) {$/;"	m	class:ExperimentBase
+Connect	Networking/ElememInterface.cs	/^    public abstract void Connect();$/;"	m	class:IHostPC
+Connect	Networking/ElememInterface.cs	/^    public override void Connect() {$/;"	m	class:ElememInterface
+Connect	Networking/RamulatorInterface.cs	/^    public override void Connect() {$/;"	m	class:RamulatorWrapper
+Contains	Experiments/ExperimentState.cs	/^    virtual public bool Contains(T item) {$/;"	m	class:Timeline
+Contains	Experiments/RepWordGenerator.cs	/^  public override bool Contains(WordStim item) {$/;"	m	class:StimWordList
+ConvertToMillisecondsSinceEpoch	DataManagement/DataPoint.cs	/^    public static double ConvertToMillisecondsSinceEpoch(System.DateTime convertMe)$/;"	m	class:DataPoint
+CopyTo	Experiments/ExperimentState.cs	/^    virtual public void CopyTo(T[] array, int index) {$/;"	m	class:Timeline
+CopyTo	Experiments/RepWordGenerator.cs	/^  public override void CopyTo(WordStim[] array, int arrayIndex) {$/;"	m	class:StimWordList
+CoroutineToEvent	EventHandling/CoroutineToEvent.cs	/^public class CoroutineToEvent {$/;"	c
+Count	Experiments/ExperimentState.cs	/^    public virtual int Count {get { return items.Count; } }$/;"	p	class:Timeline
+Count	Experiments/RepWordGenerator.cs	/^  public override int Count {$/;"	p	class:StimWordList
+CountdownVideo	Experiments/ExperimentBase.cs	/^    protected void CountdownVideo(StateMachine state) {$/;"	m	class:ExperimentBase
+CreateExperiment	Configuration/FileManager.cs	/^    public void CreateExperiment() {$/;"	m	class:FileManager
+CreateParticipant	Configuration/FileManager.cs	/^    public void CreateParticipant() {$/;"	m	class:FileManager
+CreateSession	Configuration/FileManager.cs	/^    public void CreateSession() {$/;"	m	class:FileManager
+CurrentSession	Configuration/FileManager.cs	/^    public int CurrentSession(string participant) {$/;"	m	class:FileManager
+DataHandler	DataManagement/DataHandler.cs	/^public abstract class DataHandler : MonoBehaviour$/;"	c
+DataPoint	DataManagement/DataPoint.cs	/^    public DataPoint(string newType, System.DateTime newTime, System.Collections.Generic.Diction/;"	m	class:DataPoint
+DataPoint	DataManagement/DataPoint.cs	/^public class DataPoint$/;"	c
+DataReporter	DataManagement/DataReporter.cs	/^public abstract class DataReporter : MonoBehaviour$/;"	c
+Date	BuildInfo.cs	/^    public static System.DateTime Date() {$/;"	m	class:BuildInfo
+DebugLogHandler	DataManagement/DebugLogHandler.cs	/^public class DebugLogHandler : DataHandler$/;"	c
+DecreaseSessionNumber	GUI/ParticipantSelection.cs	/^    public void DecreaseSessionNumber()$/;"	m	class:ParticipantSelection
+DecrementState	Experiments/ExperimentState.cs	/^    override public bool DecrementState() {$/;"	m	class:LoopTimeline
+DecrementState	Experiments/ExperimentState.cs	/^    public void DecrementState() {$/;"	m	class:StateMachine
+DecrementState	Experiments/ExperimentState.cs	/^    virtual public bool DecrementState() {$/;"	m	class:Timeline
+Disconnect	Networking/ElememInterface.cs	/^    public abstract void Disconnect();$/;"	m	class:IHostPC
+Disconnect	Networking/ElememInterface.cs	/^    public override void Disconnect() {$/;"	m	class:ElememInterface
+Disconnect	Networking/RamulatorInterface.cs	/^    public override void Disconnect() {$/;"	m	class:RamulatorWrapper
+Disconnect	Networking/RamulatorInterface.cs	/^    public void Disconnect() {$/;"	m	class:RamulatorInterface
+Dispose	HighPrecisionTimer.cs	/^    public void Dispose()$/;"	m	class:HighPrecisionTimer
+Dispose	HighPrecisionTimer.cs	/^   public void Dispose()$/;"	m	class:WorkItemState
+Do	EventHandling/EventLoop.cs	/^    public override void Do(IEventBase thisEvent) {$/;"	m	class:EventLoop
+Do	EventHandling/EventQueue.cs	/^    public virtual void Do(IEventBase thisEvent) {$/;"	m	class:EventQueue
+Do	EventHandling/Messages.cs	/^    protected void Do(MessageEvent<T> msg) {$/;"	m	class:MessageHandler
+Do	EventHandling/Messages.cs	/^    public override void Do(T msg) {$/;"	m	class:MessageTreeNode
+Do	EventHandling/Messages.cs	/^    public virtual void Do(T msg) {$/;"	m	class:MessageHandler
+Do	InterfaceManager.cs	/^    public  void Do(IEventBase thisEvent) {$/;"	m	class:InterfaceManager
+DoIn	EventHandling/EventQueue.cs	/^    public virtual void DoIn(IEventBase thisEvent, int delay) {$/;"	m	class:EventQueue
+DoIn	InterfaceManager.cs	/^    public  void DoIn(IEventBase thisEvent, int delay) {$/;"	m	class:InterfaceManager
+DoLatencyCheck	Networking/ElememInterface.cs	/^    private void DoLatencyCheck() {$/;"	m	class:ElememInterface	file:
+DoLaunchExperiment	GUI/LaunchExperiment.cs	/^    public void DoLaunchExperiment()$/;"	m	class:LaunchExperiment
+DoRepeating	EventHandling/EventLoop.cs	/^    public override void DoRepeating(RepeatingEvent thisEvent) {$/;"	m	class:EventLoop
+DoRepeating	EventHandling/EventQueue.cs	/^    public virtual void DoRepeating(IEventBase thisEvent, int iterations, int delay, int interva/;"	m	class:EventQueue
+DoRepeating	EventHandling/EventQueue.cs	/^    public virtual void DoRepeating(RepeatingEvent thisEvent) {$/;"	m	class:EventQueue
+DoRepeating	InterfaceManager.cs	/^    public  void DoRepeating(IEventBase thisEvent, int iterations, int delay, int interval) {$/;"	m	class:InterfaceManager
+DoReport	DataManagement/DataReporter.cs	/^    public void DoReport(System.Collections.Generic.Dictionary<string, object> extraData = null)$/;"	m	class:DataReporter
+DoSyncBoxTest	GUI/LaunchExperiment.cs	/^    public void DoSyncBoxTest() {$/;"	m	class:LaunchExperiment
+DoTransformReport	DataManagement/WorldDataReporter.cs	/^    public void DoTransformReport(System.Collections.Generic.Dictionary<string, object> extraDat/;"	m	class:WorldDataReporter
+DoWrite	DataManagement/WriteToDiskHandler.cs	/^    public void DoWrite()$/;"	m	class:WriteToDiskHandler
+ElememInterface	Networking/ElememInterface.cs	/^    public ElememInterface(InterfaceManager _im) {$/;"	m	class:ElememInterface
+ElememInterface	Networking/ElememInterface.cs	/^public class ElememInterface : IHostPC $/;"	c
+Encoding	Experiments/ExperimentBase.cs	/^    protected void Encoding(WordStim word, int index) {$/;"	m	class:ExperimentBase
+Encoding	Experiments/RepFRExperiment.cs	/^  protected void Encoding(StateMachine state) {$/;"	m	class:RepFRExperiment
+EncodingDelay	Experiments/RepFRExperiment.cs	/^  protected void EncodingDelay(StateMachine state) {$/;"	m	class:RepFRExperiment
+EndPracticeTrial	Experiments/RepFRExperiment.cs	/^  protected void EndPracticeTrial(StateMachine state) {$/;"	m	class:RepFRExperiment
+EndTrial	Experiments/RepFRExperiment.cs	/^  protected void EndTrial(StateMachine state) {$/;"	m	class:RepFRExperiment
+EnumeratorExtensions	Experiments/RepWordGenerator.cs	/^public static class EnumeratorExtensions$/;"	c
+ErrorNotification	ErrorNotification.cs	/^public static class ErrorNotification {$/;"	c
+ErrorPopup	ErrorNotification.cs	/^public class ErrorPopup : MonoBehaviour {$/;"	c
+EventAction	EventHandling/EventQueue.cs	/^    protected Action EventAction;$/;"	f	class:EventBase
+EventBase	EventHandling/EventQueue.cs	/^    public EventBase(Action thisAction) {$/;"	m	class:EventBase
+EventBase	EventHandling/EventQueue.cs	/^    public EventBase(Action<T, U, V, W> thisAction, T t, U u, V v, W w) : base(() =>thisAction(t/;"	m	class:EventBase
+EventBase	EventHandling/EventQueue.cs	/^    public EventBase(Action<T, U, V> thisAction, T t, U u, V v) : base(() => thisAction(t, u, v)/;"	m	class:EventBase
+EventBase	EventHandling/EventQueue.cs	/^    public EventBase(Action<T, U> thisAction, T t, U u) : base(() => thisAction(t, u)) {}$/;"	m	class:EventBase
+EventBase	EventHandling/EventQueue.cs	/^    public EventBase(Action<T> thisAction, T t) : base(() => thisAction(t)) {}$/;"	m	class:EventBase
+EventBase	EventHandling/EventQueue.cs	/^public class EventBase : IEventBase {$/;"	c
+EventBase	EventHandling/EventQueue.cs	/^public class EventBase<T, U, V, W> : EventBase {$/;"	c
+EventBase	EventHandling/EventQueue.cs	/^public class EventBase<T, U, V> : EventBase {$/;"	c
+EventBase	EventHandling/EventQueue.cs	/^public class EventBase<T, U> : EventBase {$/;"	c
+EventBase	EventHandling/EventQueue.cs	/^public class EventBase<T> : EventBase {$/;"	c
+EventLoop	EventHandling/EventLoop.cs	/^    public EventLoop()$/;"	m	class:EventLoop
+EventLoop	EventHandling/EventLoop.cs	/^public class EventLoop : EventQueue {$/;"	c
+EventQueue	EventHandling/EventQueue.cs	/^    public EventQueue() {$/;"	m	class:EventQueue
+EventQueue	EventHandling/EventQueue.cs	/^public class EventQueue {$/;"	c
+ExperimentBase	Experiments/ExperimentBase.cs	/^    public ExperimentBase(InterfaceManager _manager) {$/;"	m	class:ExperimentBase
+ExperimentBase	Experiments/ExperimentBase.cs	/^public abstract class ExperimentBase : EventLoop {$/;"	c
+ExperimentPath	Configuration/FileManager.cs	/^    public string ExperimentPath() {$/;"	m	class:FileManager
+ExperimentRoot	Configuration/FileManager.cs	/^    public virtual string ExperimentRoot() {$/;"	m	class:FileManager
+ExperimentSelection	GUI/ExperimentSelection.cs	/^public class ExperimentSelection : MonoBehaviour$/;"	c
+ExperimentTimeline	Experiments/ExperimentState.cs	/^    public ExperimentTimeline(List<Action<StateMachine>> states, bool reset_on_load = false) : b/;"	m	class:ExperimentTimeline
+ExperimentTimeline	Experiments/ExperimentState.cs	/^public class ExperimentTimeline : Timeline<Action<StateMachine>> {$/;"	c
+ExperimentUpdated	GUI/ParticipantSelection.cs	/^    public void ExperimentUpdated() {$/;"	m	class:ParticipantSelection
+FORMAT	DataManagement/WriteToDiskHandler.cs	/^    public enum FORMAT { JSON_LINES };$/;"	g	class:WriteToDiskHandler
+FileManager	Configuration/FileManager.cs	/^    public FileManager(InterfaceManager _manager) {$/;"	m	class:FileManager
+FileManager	Configuration/FileManager.cs	/^public class FileManager {$/;"	c
+FinalRecall	Experiments/ExperimentBase.cs	/^    protected void FinalRecall(string wavPath) {$/;"	m	class:ExperimentBase
+FinalRecall	Experiments/ltpRepFRExperiment.cs	/^  protected void FinalRecall(StateMachine state) {$/;"	m	class:ltpRepFRExperiment
+FinalRecallInstructions	Experiments/ltpRepFRExperiment.cs	/^  protected void FinalRecallInstructions(StateMachine state) {$/;"	m	class:ltpRepFRExperiment
+FindParticipants	GUI/ParticipantSelection.cs	/^    public void FindParticipants()$/;"	m	class:ParticipantSelection
+FinishExperiment	Experiments/ExperimentBase.cs	/^    public void FinishExperiment(StateMachine state) {$/;"	m	class:ExperimentBase
+FlexibleConfig	Configuration/FlexibleConfig.cs	/^public class FlexibleConfig {$/;"	c
+Generate	Experiments/RepWordGenerator.cs	/^  public static StimWordList Generate($/;"	m	class:RepWordGenerator
+GenerateDefaultName	DataManagement/DataReporter.cs	/^    private void GenerateDefaultName()$/;"	m	class:DataReporter	file:
+GenerateSession	Experiments/RepFRExperiment.cs	/^  public RepFRSession GenerateSession() {$/;"	m	class:RepFRExperiment
+GenerateSession	Testing/subsetTestRepFRExperiment.cs	/^  public RepFRSession GenerateSession() {$/;"	m	class:RepFRExperiment
+Get	Experiments/RepWordGenerator.cs	/^  public List<String> Get(int amount) {$/;"	m	class:RandomSubset
+Get	Testing/subsetTestRepFRExperiment.cs	/^  public List<String> Get(int amount) {$/;"	m	class:RandomSubset
+GetEnumerator	Experiments/ExperimentState.cs	/^    virtual public IEnumerator<T> GetEnumerator() {$/;"	m	class:Timeline
+GetEnumerator	Experiments/RepWordGenerator.cs	/^  public override IEnumerator<WordStim> GetEnumerator() {$/;"	m	class:StimWordList
+GetFramesPerWrite	DataManagement/WriteToDiskHandler.cs	/^    public int GetFramesPerWrite()$/;"	m	class:WriteToDiskHandler
+GetListIndex	Experiments/RepFRExperiment.cs	/^  public int GetListIndex() {$/;"	m	class:RepFRSession
+GetReadStream	Networking/ElememInterface.cs	/^    public NetworkStream GetReadStream() {$/;"	m	class:ElememInterface
+GetSerialPos	Experiments/RepFRExperiment.cs	/^  public int GetSerialPos() {$/;"	m	class:RepFRSession
+GetSetting	InterfaceManager.cs	/^    public  dynamic GetSetting(string setting) {$/;"	m	class:InterfaceManager
+GetStartTime	DataManagement/DataReporter.cs	/^    public static System.DateTime GetStartTime()$/;"	m	class:DataReporter
+GetState	Experiments/ExperimentState.cs	/^    public Action<StateMachine> GetState() {$/;"	m	class:StateMachine
+GetState	Experiments/ExperimentState.cs	/^    public T GetState() {$/;"	m	class:Timeline
+GetStateMachine	Experiments/ExperimentBase.cs	/^    public abstract StateMachine GetStateMachine();$/;"	m	class:ExperimentBase
+GetStateMachine	Experiments/RepFRExperiment.cs	/^  public override StateMachine GetStateMachine() {$/;"	m	class:RepFRExperiment
+GetStateMachine	Experiments/ltpRepFRExperiment.cs	/^  public override StateMachine GetStateMachine() {$/;"	m	class:ltpRepFRExperiment
+GetTimeline	Experiments/ExperimentState.cs	/^    private ExperimentTimeline GetTimeline(string timeline) {$/;"	m	class:StateMachine	file:
+GetWord	Experiments/RepFRExperiment.cs	/^  public WordStim GetWord() {$/;"	m	class:RepFRSession
+GetWordList	Configuration/FileManager.cs	/^    public string GetWordList() {$/;"	m	class:FileManager
+GetWriteStream	Networking/ElememInterface.cs	/^    public NetworkStream GetWriteStream() {$/;"	m	class:ElememInterface
+HandleDataPoints	DataManagement/DataHandler.cs	/^    protected abstract void HandleDataPoints(DataPoint[] dataPoints);$/;"	m	class:DataHandler
+HandleDataPoints	DataManagement/DebugLogHandler.cs	/^    protected override void HandleDataPoints(DataPoint[] dataPoints)$/;"	m	class:DebugLogHandler
+HandleDataPoints	DataManagement/WriteToDiskHandler.cs	/^    protected override void HandleDataPoints(DataPoint[] dataPoints)$/;"	m	class:WriteToDiskHandler
+HandleMessage	Networking/ElememInterface.cs	/^    public abstract void HandleMessage(NetMsg msg);$/;"	m	class:IHostPC
+HandleMessage	Networking/ElememInterface.cs	/^    public override void HandleMessage(NetMsg msg) {$/;"	m	class:ElememInterface
+HandleMessage	Networking/RamulatorInterface.cs	/^    public override void HandleMessage(NetMsg msg) {$/;"	m	class:RamulatorWrapper
+Heartbeat	Networking/ElememInterface.cs	/^    private void Heartbeat()$/;"	m	class:ElememInterface	file:
+HighPrecisionTimer	HighPrecisionTimer.cs	/^    public HighPrecisionTimer(System.Threading.WaitCallback _callback, object _stateInfo, Int32 /;"	m	class:HighPrecisionTimer
+HighPrecisionTimer	HighPrecisionTimer.cs	/^public class HighPrecisionTimer : IDisposable$/;"	c
+HighResolutionDateTime	HighResolutionDateTime.cs	/^public static class HighResolutionDateTime $/;"	c
+HostPCListener	Networking/ElememInterface.cs	/^    public HostPCListener(IHostPC host) : base(host, host.HandleMessage) {$/;"	m	class:HostPCListener
+HostPCListener	Networking/ElememInterface.cs	/^public class HostPCListener : MessageHandler<NetMsg> {$/;"	c
+IEventBase	EventHandling/EventQueue.cs	/^public interface IEventBase {$/;"	i
+IHostPC	Networking/ElememInterface.cs	/^public abstract class IHostPC : EventLoop {$/;"	c
+IncreaseSessionNumber	GUI/ParticipantSelection.cs	/^    public void IncreaseSessionNumber()$/;"	m	class:ParticipantSelection
+IncrementState	Experiments/ExperimentState.cs	/^    override public bool IncrementState() {$/;"	m	class:LoopTimeline
+IncrementState	Experiments/ExperimentState.cs	/^    public void IncrementState() {$/;"	m	class:StateMachine
+IncrementState	Experiments/ExperimentState.cs	/^    virtual public bool IncrementState() {$/;"	m	class:Timeline
+IndexOf	Experiments/ExperimentState.cs	/^    virtual public int IndexOf(T item) {$/;"	m	class:Timeline
+InputHandler	EventHandling/InputHandler.cs	/^    public InputHandler(EventQueue host, Func<InputHandler, KeyMsg, bool> action) {$/;"	m	class:InputHandler
+InputHandler	EventHandling/InputHandler.cs	/^public class InputHandler : MessageTreeNode<KeyMsg> {$/;"	c
+InputReporter	DataManagement/InputReporter.cs	/^public class InputReporter : DataReporter {$/;"	c
+Insert	Experiments/ExperimentState.cs	/^    virtual public void Insert(int index, T item) {$/;"	m	class:Timeline
+Insert	Experiments/RepWordGenerator.cs	/^  public override void Insert(int index, WordStim word_stim) {$/;"	m	class:StimWordList
+Insert	Experiments/RepWordGenerator.cs	/^  public void Insert(int index, string word, bool stim=false) {$/;"	m	class:StimWordList
+InterfaceManager	InterfaceManager.cs	/^public class InterfaceManager : MonoBehaviour $/;"	c
+InterfaceManager	Testing/stubsRepWordGenerator.cs	/^class InterfaceManager {$/;"	c
+IntroductionPrompt	Experiments/RepFRExperiment.cs	/^  protected void IntroductionPrompt(StateMachine state) {$/;"	m	class:RepFRExperiment
+IntroductionVideo	Experiments/ExperimentBase.cs	/^    protected void IntroductionVideo(StateMachine state) {$/;"	m	class:ExperimentBase
+Invoke	EventHandling/EventQueue.cs	/^    public virtual void Invoke() {$/;"	m	class:EventBase
+Invoke	EventHandling/EventQueue.cs	/^    public void Invoke() {$/;"	m	class:RepeatingEvent
+Invoke	EventHandling/EventQueue.cs	/^    void Invoke();$/;"	m	interface:IEventBase
+IsListening	Networking/ElememInterface.cs	/^    public bool IsListening() {$/;"	m	class:HostPCListener
+IsMacOS	DataManagement/DataReporter.cs	/^    protected bool IsMacOS()$/;"	m	class:DataReporter
+IsNumeric	DataManagement/DataPoint.cs	/^    private static bool IsNumeric(Type type)$/;"	m	class:DataPoint	file:
+IsNumeric	DataManagement/DataPoint.cs	/^    private static bool IsNumeric(object obj)$/;"	m	class:DataPoint	file:
+IsReadOnly	Experiments/ExperimentState.cs	/^    public virtual bool IsReadOnly { get { return false; } }$/;"	p	class:Timeline
+IsReadOnly	Experiments/RepWordGenerator.cs	/^  public override bool IsReadOnly { get { return false; } }$/;"	p	class:StimWordList
+JSON_LINES	DataManagement/WriteToDiskHandler.cs	/^    public enum FORMAT { JSON_LINES };$/;"	e	enum:WriteToDiskHandler.FORMAT	file:
+JTypeConversion	Configuration/FlexibleConfig.cs	/^    public static Type JTypeConversion(int t) {$/;"	m	class:FlexibleConfig
+Key	EventHandling/InputHandler.cs	/^    public void Key(string key, bool pressed) {$/;"	m	class:InputHandler
+Key	InterfaceManager.cs	/^    public void Key(string key, bool pressed) {$/;"	m	class:InterfaceManager
+KeyAction	Experiments/ExperimentBase.cs	/^using KeyAction = System.Func<InputHandler, KeyMsg, bool>;$/;"	t	file:
+KeyLookup	Configuration/KeyTable.cs	/^public static class KeyLookup {$/;"	c
+KeyMsg	EventHandling/InputHandler.cs	/^    public KeyMsg(string key, bool down) {$/;"	m	struct:KeyMsg
+KeyMsg	EventHandling/InputHandler.cs	/^public struct KeyMsg {$/;"	s
+LaunchExperiment	GUI/LaunchExperiment.cs	/^public class LaunchExperiment : MonoBehaviour$/;"	c
+LaunchExperiment	InterfaceManager.cs	/^    public void LaunchExperiment() {$/;"	m	class:InterfaceManager
+LaunchLauncher	InterfaceManager.cs	/^    public void LaunchLauncher() {$/;"	m	class:InterfaceManager
+Listen	Networking/ElememInterface.cs	/^    public async Task<NetMsg> Listen(NetworkStream stream) {$/;"	m	class:HostPCListener
+LoadExperimentConfig	InterfaceManager.cs	/^    public void LoadExperimentConfig(string name) {$/;"	m	class:InterfaceManager
+LoadFromText	Configuration/FlexibleConfig.cs	/^    public static dynamic LoadFromText(string json) {$/;"	m	class:FlexibleConfig
+LoadParticipant	GUI/ParticipantSelection.cs	/^    public void LoadParticipant()$/;"	m	class:ParticipantSelection
+LoadSession	GUI/ParticipantSelection.cs	/^    public void LoadSession()$/;"	m	class:ParticipantSelection
+LoadState	Experiments/ExperimentBase.cs	/^    public virtual StateMachine LoadState(string participant, int session) {$/;"	m	class:ExperimentBase
+LogExperimentInfo	InterfaceManager.cs	/^    protected void LogExperimentInfo() {$/;"	m	class:InterfaceManager
+LogUIEvent	DataManagement/UIDataReporter.cs	/^    public void LogUIEvent(string name)$/;"	m	class:UIDataReporter
+Loop	EventHandling/EventLoop.cs	/^    protected void Loop(object token) {$/;"	m	class:EventLoop
+LoopOrContinue	Experiments/ExperimentBase.cs	/^    protected bool LoopOrContinue(InputHandler handler, KeyMsg msg) {$/;"	m	class:ExperimentBase
+LoopTimeline	Experiments/ExperimentState.cs	/^    public LoopTimeline(List<Action<StateMachine>> states, bool reset_on_load = false) : base(st/;"	m	class:LoopTimeline
+LoopTimeline	Experiments/ExperimentState.cs	/^public class LoopTimeline : ExperimentTimeline {$/;"	c
+Main	Testing/TestEventLoop.cs	/^    public static void Main() {$/;"	m	class:TestingEventLoop
+Main	Testing/TestRepFRExperiment.cs	/^  public static void Main() {$/;"	m	class:TestingRepFR
+Main	Testing/TestRepWordGenerator.cs	/^  public static void Main() {$/;"	m	class:TestingRepWord
+Main	Testing/TestUniformity.cs	/^    public static void Main() {$/;"	m	class:TestUniformity
+MainLoop	Experiments/RepFRExperiment.cs	/^  protected void MainLoop(StateMachine state) {$/;"	m	class:RepFRExperiment
+MakeRun	Experiments/RepFRExperiment.cs	/^  public RepFRRun MakeRun(RandomSubset subset_gen, bool enc_stim,$/;"	m	class:RepFRExperiment
+MakeRun	Testing/subsetTestRepFRExperiment.cs	/^  public RepFRRun MakeRun(RandomSubset subset_gen, bool enc_stim,$/;"	m	class:RepFRExperiment
+MessageEvent	EventHandling/Messages.cs	/^    public MessageEvent(Action<T> action, T msg) : base(action, msg) {$/;"	m	class:MessageEvent
+MessageEvent	EventHandling/Messages.cs	/^public class MessageEvent<T> : EventBase<T> {$/;"	c
+MessageHandler	EventHandling/Messages.cs	/^    public MessageHandler() {}$/;"	m	class:MessageHandler
+MessageHandler	EventHandling/Messages.cs	/^    public MessageHandler(EventQueue host, Action<T> action) {$/;"	m	class:MessageHandler
+MessageHandler	EventHandling/Messages.cs	/^public class MessageHandler<T> {$/;"	c
+MessageTreeNode	EventHandling/Messages.cs	/^    protected MessageTreeNode() {}$/;"	m	class:MessageTreeNode
+MessageTreeNode	EventHandling/Messages.cs	/^    public MessageTreeNode(EventQueue host, Func<MessageTreeNode<T>, T, bool> action) {$/;"	m	class:MessageTreeNode
+MessageTreeNode	EventHandling/Messages.cs	/^public class MessageTreeNode<T> : MessageHandler<T> {$/;"	c
+MicTestPrompt	Experiments/ExperimentBase.cs	/^    protected void MicTestPrompt(StateMachine state) {$/;"	m	class:ExperimentBase
+MicrophoneTest	Experiments/RepFRExperiment.cs	/^  protected void MicrophoneTest(StateMachine state) {$/;"	m	class:RepFRExperiment
+NetMsg	Networking/ElememInterface.cs	/^    public NetMsg(string msg, DateTime time) {$/;"	m	struct:NetMsg
+NetMsg	Networking/ElememInterface.cs	/^public struct NetMsg {$/;"	s
+NextList	Experiments/RepFRExperiment.cs	/^  public bool NextList() {$/;"	m	class:RepFRSession
+NextListPrompt	Experiments/RepFRExperiment.cs	/^  protected void NextListPrompt(StateMachine state) {$/;"	m	class:RepFRExperiment
+NextPracticeListPrompt	Experiments/RepFRExperiment.cs	/^  protected void NextPracticeListPrompt(StateMachine state) {$/;"	m	class:RepFRExperiment
+NextWord	Experiments/RepFRExperiment.cs	/^  public bool NextWord() {$/;"	m	class:RepFRSession
+NoArguments	Testing/TestEventLoop.cs	/^    public static void NoArguments() {$/;"	m	class:TestingEventLoop
+Notify	ErrorNotification.cs	/^    public static void Notify(Exception e) {$/;"	m	class:ErrorNotification
+Notify	InterfaceManager.cs	/^    public  void Notify(Exception e) {$/;"	m	class:InterfaceManager
+Notify	InterfaceManager.cs	/^    public  void Notify(Exception e, int duration) {$/;"	m	class:InterfaceManager
+OSStartTime	DataManagement/DataReporter.cs	/^    protected static double OSStartTime;$/;"	f	class:DataReporter
+OSXKeyCodes	Configuration/KeyTable.cs	/^static Dictionary<int, string> OSXKeyCodes = new Dictionary<int, string> {$/;"	f	class:KeyLookup	file:
+OSXTimestampToTimestamp	DataManagement/DataReporter.cs	/^    protected System.DateTime OSXTimestampToTimestamp(double OSXTimestamp)$/;"	m	class:DataReporter
+OnApplicationQuit	Networking/RamulatorInterface.cs	/^    void OnApplicationQuit()$/;"	m	class:RamulatorInterface	file:
+OnDisable	DataManagement/DataReporter.cs	/^    protected virtual void OnDisable() $/;"	m	class:DataReporter
+OnDisable	GUI/TextResizer.cs	/^    void OnDisable()$/;"	m	class:TextResizer	file:
+OnDisable	InterfaceManager.cs	/^    void OnDisable() {$/;"	m	class:InterfaceManager	file:
+OnEnable	DataManagement/DataReporter.cs	/^    protected virtual void OnEnable() {$/;"	m	class:DataReporter
+OnEnable	GUI/TextResizer.cs	/^    void OnEnable()$/;"	m	class:TextResizer	file:
+OnGUI	ErrorNotification.cs	/^    void OnGUI() {$/;"	m	class:ErrorPopup	file:
+OnText	GUI/TextResizer.cs	/^    void OnText(string text)$/;"	m	class:TextResizer	file:
+Orientation	Experiments/ExperimentBase.cs	/^    protected void Orientation(StateMachine state) {$/;"	m	class:ExperimentBase
+ParseBuffer	Networking/ElememInterface.cs	/^    private bool ParseBuffer(int bytesRead, out NetMsg msgResult) {$/;"	m	class:HostPCListener	file:
+ParticipantPath	Configuration/FileManager.cs	/^    public string ParticipantPath() {$/;"	m	class:FileManager
+ParticipantPath	Configuration/FileManager.cs	/^    public string ParticipantPath(string participant) {$/;"	m	class:FileManager
+ParticipantSelected	GUI/ParticipantSelection.cs	/^    public void ParticipantSelected()$/;"	m	class:ParticipantSelection
+ParticipantSelection	GUI/ParticipantSelection.cs	/^public class ParticipantSelection : MonoBehaviour$/;"	c
+Pause	EventHandling/EventQueue.cs	/^    public void Pause(bool pause) {$/;"	m	class:EventQueue
+Pause	EventHandling/EventQueue.cs	/^    public void Pause(bool pause) {$/;"	m	class:RepeatingEvent
+PauseBeforeRecall	Experiments/RepFRExperiment.cs	/^  protected void PauseBeforeRecall(StateMachine state) {$/;"	m	class:RepFRExperiment
+PopTimeline	Experiments/ExperimentState.cs	/^    public void PopTimeline() {$/;"	m	class:StateMachine
+Practice	Experiments/RepFRExperiment.cs	/^  protected void Practice(StateMachine state) {$/;"	m	class:RepFRExperiment
+Print2DJaggedArray	Testing/TestUniformity.cs	/^    static public void Print2DJaggedArray(int[][] A)$/;"	m	class:TestUniformity
+Process	EventHandling/EventQueue.cs	/^    public bool Process() {$/;"	m	class:EventQueue
+Propagate	EventHandling/Messages.cs	/^    private void Propagate(T msg) {$/;"	m	class:MessageTreeNode	file:
+PushTimeline	Experiments/ExperimentState.cs	/^    public void PushTimeline(string timeline) {$/;"	m	class:StateMachine
+QueuePoint	DataManagement/DataHandler.cs	/^    public void QueuePoint(DataPoint data) {$/;"	m	class:DataHandler
+Quit	Experiments/ExperimentBase.cs	/^    protected virtual void Quit() {$/;"	m	class:ExperimentBase
+Quit	InterfaceManager.cs	/^    public  void Quit() {$/;"	m	class:InterfaceManager
+QuitOrContinue	Experiments/ExperimentBase.cs	/^    protected bool QuitOrContinue(InputHandler handler, KeyMsg msg) {$/;"	m	class:ExperimentBase
+QuitPrompt	Experiments/ExperimentBase.cs	/^    protected void QuitPrompt(StateMachine state) {$/;"	m	class:ExperimentBase
+RamulatorInterface	Networking/RamulatorInterface.cs	/^public class RamulatorInterface : MonoBehaviour$/;"	c
+RamulatorWrapper	Networking/RamulatorInterface.cs	/^    public RamulatorWrapper(InterfaceManager _manager) {$/;"	m	class:RamulatorWrapper
+RamulatorWrapper	Networking/RamulatorInterface.cs	/^public class RamulatorWrapper : IHostPC {$/;"	c
+RandomSubset	Experiments/RepWordGenerator.cs	/^  public RandomSubset(List<String> source_words) {$/;"	m	class:RandomSubset
+RandomSubset	Experiments/RepWordGenerator.cs	/^public class RandomSubset {$/;"	c
+RandomSubset	Testing/subsetTestRepFRExperiment.cs	/^  public RandomSubset(List<String> source_words) {$/;"	m	class:RandomSubset
+RandomSubset	Testing/subsetTestRepFRExperiment.cs	/^public class RandomSubset {$/;"	c
+ReadDataPoints	DataManagement/DataReporter.cs	/^    public DataPoint[] ReadDataPoints(int count)$/;"	m	class:DataReporter
+ReadWordpool	Experiments/RepFRExperiment.cs	/^  public List<string> ReadWordpool() {$/;"	m	class:RepFRExperiment
+Recall	Experiments/ExperimentBase.cs	/^    protected void Recall(string wavPath) {$/;"	m	class:ExperimentBase
+Recall	Experiments/RepFRExperiment.cs	/^  protected void Recall(StateMachine state) {$/;"	m	class:RepFRExperiment
+RecallPrompt	Experiments/ExperimentBase.cs	/^    protected void RecallPrompt(StateMachine state) {$/;"	m	class:ExperimentBase
+ReceiveHeartbeat	Networking/RamulatorInterface.cs	/^    private void ReceiveHeartbeat()$/;"	m	class:RamulatorInterface	file:
+RecordTest	Experiments/ExperimentBase.cs	/^    protected void RecordTest(StateMachine state) {$/;"	m	class:ExperimentBase
+RegisterChild	EventHandling/Messages.cs	/^    public void RegisterChild(MessageTreeNode<T> child) {$/;"	m	class:MessageTreeNode
+RegisterKeyHandler	InterfaceManager.cs	/^    public void RegisterKeyHandler(Action<string, bool> handler) {$/;"	m	class:InterfaceManager
+Remove	Experiments/ExperimentState.cs	/^    virtual public bool Remove(T item) {$/;"	m	class:Timeline
+Remove	Experiments/RepWordGenerator.cs	/^  public override bool Remove(WordStim item) {$/;"	m	class:StimWordList
+RemoveAt	Experiments/ExperimentState.cs	/^    virtual public void RemoveAt(int index) {$/;"	m	class:Timeline
+RemoveReporter	DataManagement/DataHandler.cs	/^    public void RemoveReporter(DataReporter remove) {$/;"	m	class:DataHandler
+RepCnt	Experiments/RepWordGenerator.cs	/^  public RepCnt(int new_rep, int new_count) {$/;"	m	class:RepCnt
+RepCnt	Experiments/RepWordGenerator.cs	/^  public RepCounts RepCnt(int rep, int count) {$/;"	m	class:RepCounts
+RepCnt	Experiments/RepWordGenerator.cs	/^public class RepCnt {$/;"	c
+RepCounts	Experiments/RepWordGenerator.cs	/^  public RepCounts() { }$/;"	m	class:RepCounts
+RepCounts	Experiments/RepWordGenerator.cs	/^  public RepCounts(int rep, int count) {$/;"	m	class:RepCounts
+RepCounts	Experiments/RepWordGenerator.cs	/^public class RepCounts : List<RepCnt> {$/;"	c
+RepFRExperiment	Experiments/RepFRExperiment.cs	/^  public RepFRExperiment(InterfaceManager _manager) : base(_manager) {$/;"	m	class:RepFRExperiment
+RepFRExperiment	Experiments/RepFRExperiment.cs	/^public class RepFRExperiment : ExperimentBase {$/;"	c
+RepFRExperiment	Testing/subsetTestRepFRExperiment.cs	/^  public RepFRExperiment(List<string> source_word_list) {$/;"	m	class:RepFRExperiment
+RepFRExperiment	Testing/subsetTestRepFRExperiment.cs	/^public class RepFRExperiment {$/;"	c
+RepFRRun	Experiments/RepFRExperiment.cs	/^  public RepFRRun(StimWordList encoding_list, StimWordList recall_list,$/;"	m	class:RepFRRun
+RepFRRun	Experiments/RepFRExperiment.cs	/^public class RepFRRun {$/;"	c
+RepFRRun	Testing/subsetTestRepFRExperiment.cs	/^  public RepFRRun(StimWordList encoding_list, StimWordList recall_list,$/;"	m	class:RepFRRun
+RepFRRun	Testing/subsetTestRepFRExperiment.cs	/^public class RepFRRun {$/;"	c
+RepFRSession	Experiments/RepFRExperiment.cs	/^public class RepFRSession : Timeline<RepFRRun> {$/;"	c
+RepFRSession	Testing/subsetTestRepFRExperiment.cs	/^public class RepFRSession : List<RepFRRun> {$/;"	c
+RepWordGenerator	Experiments/RepWordGenerator.cs	/^class RepWordGenerator {$/;"	c
+RepWordList	Experiments/RepWordGenerator.cs	/^  public RepWordList(List<string> word_list, int repeats_=1,$/;"	m	class:RepWordList
+RepWordList	Experiments/RepWordGenerator.cs	/^  public RepWordList(int repeats_=1) {$/;"	m	class:RepWordList
+RepWordList	Experiments/RepWordGenerator.cs	/^class RepWordList : StimWordList {$/;"	c
+RepeatMicTest	Experiments/RepFRExperiment.cs	/^  protected void RepeatMicTest(StateMachine state) {$/;"	m	class:RepFRExperiment
+RepeatOrContinue	Experiments/ExperimentBase.cs	/^    protected bool RepeatOrContinue(InputHandler handler, KeyMsg msg) {$/;"	m	class:ExperimentBase
+RepeatVideo	Experiments/RepFRExperiment.cs	/^  protected void RepeatVideo(StateMachine state) {$/;"	m	class:RepFRExperiment
+RepeatingCall	Testing/TestEventLoop.cs	/^    public static void RepeatingCall() {$/;"	m	class:TestingEventLoop
+RepeatingEvent	EventHandling/EventQueue.cs	/^    public RepeatingEvent(Action _action, int _iterations, int _delay,$/;"	m	class:RepeatingEvent
+RepeatingEvent	EventHandling/EventQueue.cs	/^    public RepeatingEvent(IEventBase originalEvent, int _iterations, int _delay, int _interval,$/;"	m	class:RepeatingEvent
+RepeatingEvent	EventHandling/EventQueue.cs	/^public class RepeatingEvent : IEventBase {$/;"	c
+ReportBeepPlayed	Experiments/ExperimentBase.cs	/^    protected void ReportBeepPlayed(string beep, string duration) {$/;"	m	class:ExperimentBase
+ReportDistractor	Experiments/ExperimentBase.cs	/^    private void ReportDistractor(string type, bool correct, string problem, string answer)$/;"	m	class:ExperimentBase	file:
+ReportEvent	Experiments/ExperimentBase.cs	/^    protected void ReportEvent(string type, Dictionary<string, object> data) {$/;"	m	class:ExperimentBase
+ReportEvent	InterfaceManager.cs	/^    public  void ReportEvent(string type, Dictionary<string, object> data) {$/;"	m	class:InterfaceManager
+ReportEvent	InterfaceManager.cs	/^    public  void ReportEvent(string type, Dictionary<string, object> data, DateTime time) {$/;"	m	class:InterfaceManager
+ReportKey	DataManagement/InputReporter.cs	/^    private void ReportKey(int keyCode, bool pressed, System.DateTime timestamp)$/;"	m	class:InputReporter	file:
+ReportMessage	Networking/ElememInterface.cs	/^    private void ReportMessage(NetMsg msg, bool sent)$/;"	m	class:ElememInterface	file:
+ReportMessage	Networking/RamulatorInterface.cs	/^    private void ReportMessage(string message, bool sent)$/;"	m	class:RamulatorInterface	file:
+ReportScriptedEvent	DataManagement/ScriptedEventReporter.cs	/^    public void ReportScriptedEvent(string type, Dictionary<string, object> dataDict)$/;"	m	class:ScriptedEventReporter
+ReportScriptedEvent	DataManagement/ScriptedEventReporter.cs	/^    public void ReportScriptedEvent(string type, Dictionary<string, object> dataDict, System.Dat/;"	m	class:ScriptedEventReporter
+ResetSyncBoxButton	GUI/LaunchExperiment.cs	/^    public void ResetSyncBoxButton() {$/;"	m	class:LaunchExperiment
+Rest	Experiments/RepFRExperiment.cs	/^  protected void Rest(StateMachine state) {$/;"	m	class:RepFRExperiment
+Run	Experiments/ExperimentBase.cs	/^    public void Run() {$/;"	m	class:ExperimentBase
+Running	EventHandling/EventQueue.cs	/^    public bool Running() {$/;"	m	class:EventQueue
+SIZE_WHEN_NOT	GUI/TextResizer.cs	/^    private const int SIZE_WHEN_NOT = 300;$/;"	f	class:TextResizer	file:
+SIZE_WHEN_SENTENCE	GUI/TextResizer.cs	/^    private const int SIZE_WHEN_SENTENCE = 60;$/;"	f	class:TextResizer	file:
+SYSTEM_CONFIG	InterfaceManager.cs	/^    const string SYSTEM_CONFIG = "config.json";$/;"	f	class:InterfaceManager	file:
+SaveState	Experiments/ExperimentBase.cs	/^    public virtual void SaveState() {$/;"	m	class:ExperimentBase
+SaveState	Experiments/RepFRExperiment.cs	/^  public override void SaveState() {$/;"	m	class:RepFRExperiment
+ScriptedEventReporter	DataManagement/ScriptedEventReporter.cs	/^public class ScriptedEventReporter : DataReporter$/;"	c
+SendAndWait	Networking/ElememInterface.cs	/^    public abstract JObject SendAndWait(string type, Dictionary<string, object> data, $/;"	m	class:IHostPC
+SendAndWait	Networking/ElememInterface.cs	/^    public override JObject SendAndWait(string type, Dictionary<string, object> data,$/;"	m	class:ElememInterface
+SendAndWait	Networking/RamulatorInterface.cs	/^    public override JObject SendAndWait(string type, Dictionary<string, object> data, $/;"	m	class:RamulatorWrapper
+SendHeartbeat	Networking/RamulatorInterface.cs	/^    private void SendHeartbeat()$/;"	m	class:RamulatorInterface	file:
+SendHostPCMessage	Experiments/ExperimentBase.cs	/^    protected void SendHostPCMessage(string type, Dictionary<string, object> data) {$/;"	m	class:ExperimentBase
+SendHostPCMessage	InterfaceManager.cs	/^    public  void SendHostPCMessage(string message, Dictionary<string, object> data) {$/;"	m	class:InterfaceManager
+SendMathMessage	Networking/RamulatorInterface.cs	/^    public void SendMathMessage(string problem, string response, int responseTimeMs, bool correc/;"	m	class:RamulatorInterface
+SendMessage	Networking/ElememInterface.cs	/^    public abstract void SendMessage(string type, Dictionary<string, object> data);$/;"	m	class:IHostPC
+SendMessage	Networking/ElememInterface.cs	/^    public override void SendMessage(string type, Dictionary<string, object> data) {$/;"	m	class:ElememInterface
+SendMessage	Networking/RamulatorInterface.cs	/^    public override void SendMessage(string type, Dictionary<string, object> data) {$/;"	m	class:RamulatorWrapper
+SendMessageToRamulator	Networking/RamulatorInterface.cs	/^    public void SendMessageToRamulator(string message)$/;"	m	class:RamulatorInterface
+SessionPath	Configuration/FileManager.cs	/^    public string SessionPath() {$/;"	m	class:FileManager
+SessionPath	Configuration/FileManager.cs	/^    public string SessionPath(string participant, int session) {$/;"	m	class:FileManager
+Set	HighResolutionDateTime.cs	/^    public static void Set() {$/;"	m	class:HighResolutionDateTime
+SetAction	EventHandling/InputHandler.cs	/^    public virtual void SetAction(Func<InputHandler, KeyMsg, bool> action) {$/;"	m	class:InputHandler
+SetAction	EventHandling/Messages.cs	/^    public virtual void SetAction(Func<MessageTreeNode<T>, T, bool> action) {$/;"	m	class:MessageTreeNode
+SetExperiment	GUI/ExperimentSelection.cs	/^    public void SetExperiment()$/;"	m	class:ExperimentSelection
+SetFramesPerWrite	DataManagement/WriteToDiskHandler.cs	/^    public void SetFramesPerWrite(int newFrames)$/;"	m	class:WriteToDiskHandler
+SetHostPCStatus	InterfaceManager.cs	/^    public  void SetHostPCStatus(string status) {$/;"	m	class:InterfaceManager
+SetState	Networking/RamulatorInterface.cs	/^    public void SetState(string stateName, bool stateToggle, System.Collections.Generic.Dictiona/;"	m	class:RamulatorInterface
+SetStim	Experiments/RepWordGenerator.cs	/^  public void SetStim(int index, bool state=true) {$/;"	m	class:RepWordList
+SetTimer	EventHandling/EventQueue.cs	/^    private void SetTimer() {$/;"	m	class:RepeatingEvent	file:
+SetWriteAutomatically	DataManagement/WriteToDiskHandler.cs	/^    public void SetWriteAutomatically(bool newAutomatically)$/;"	m	class:WriteToDiskHandler
+ShowText	InterfaceManager.cs	/^    public void ShowText(string tag, string text) {$/;"	m	class:InterfaceManager
+ShowText	InterfaceManager.cs	/^    public void ShowText(string tag, string text, string color) {$/;"	m	class:InterfaceManager
+ShowTitle	InterfaceManager.cs	/^    public void ShowTitle(string tag, string text) {$/;"	m	class:InterfaceManager
+ShowVideo	InterfaceManager.cs	/^    public void ShowVideo(string video, bool skippable, Action callback) {$/;"	m	class:InterfaceManager
+Shuffle	Experiments/RepWordGenerator.cs	/^  public static List<T> Shuffle<T>(IList<T> list) {$/;"	m	class:RepWordGenerator
+SpacingScore	Experiments/RepWordGenerator.cs	/^  public static double SpacingScore(List<int> perm,$/;"	m	class:RepWordGenerator
+Spinner	HighPrecisionTimer.cs	/^    private void Spinner(object stateInfo)$/;"	m	class:HighPrecisionTimer	file:
+SpreadWords	Experiments/RepWordGenerator.cs	/^  public static StimWordList SpreadWords($/;"	m	class:RepWordGenerator
+Start	BuildInfo.cs	/^    void Start() {$/;"	m	class:BuildInfo	file:
+Start	DataManagement/DataHandler.cs	/^    public void Start() {$/;"	m	class:DataHandler
+Start	DataManagement/WorldDataReporter.cs	/^    void Start()$/;"	m	class:WorldDataReporter	file:
+Start	EventHandling/EventLoop.cs	/^    public void Start(){$/;"	m	class:EventLoop
+Start	GUI/TextResizer.cs	/^    void Start()$/;"	m	class:TextResizer	file:
+Start	InterfaceManager.cs	/^    void Start()$/;"	m	class:InterfaceManager	file:
+StartCoroutine	EventHandling/CoroutineToEvent.cs	/^    public static void StartCoroutine(IEnumerator coroutine, EventQueue queue) {$/;"	m	class:CoroutineToEvent
+StartTrial	Experiments/RepFRExperiment.cs	/^  protected virtual void StartTrial(StateMachine state) {$/;"	m	class:RepFRExperiment
+StartTrial	Experiments/ltpRepFRExperiment.cs	/^  protected override void StartTrial(StateMachine state) {$/;"	m	class:ltpRepFRExperiment
+StateMachine	Experiments/ExperimentState.cs	/^    public StateMachine(dynamic currentSession) : base() {$/;"	m	class:StateMachine
+StateMachine	Experiments/ExperimentState.cs	/^public class StateMachine : Dictionary<string, ExperimentTimeline> {$/;"	c
+StimCheck	Testing/TestRepFRExperiment.cs	/^  public static void StimCheck(bool stim_state, StimWordList wordlst) {$/;"	m	class:TestingRepFR
+StimCheck	Testing/TestRepWordGenerator.cs	/^  public static void StimCheck(bool stim_state, StimWordList wordlst) {$/;"	m	class:TestingRepWord
+StimWordList	Experiments/RepWordGenerator.cs	/^  public StimWordList() {$/;"	m	class:StimWordList
+StimWordList	Experiments/RepWordGenerator.cs	/^  public StimWordList(List<WordStim> word_stim_list, double score=Double.NaN) {$/;"	m	class:StimWordList
+StimWordList	Experiments/RepWordGenerator.cs	/^  public StimWordList(List<string> word_list, List<bool> stim_list = null, double score=Double.N/;"	m	class:StimWordList
+StimWordList	Experiments/RepWordGenerator.cs	/^public class StimWordList : Timeline<WordStim> {$/;"	c
+Stop	EventHandling/EventLoop.cs	/^    public void Stop(){$/;"	m	class:EventLoop
+Stop	EventHandling/EventQueue.cs	/^    public void Stop() {$/;"	m	class:RepeatingEvent
+StopCoroutine	EventHandling/CoroutineToEvent.cs	/^    public static void StopCoroutine() {$/;"	m	class:CoroutineToEvent
+StopTimers	EventHandling/EventLoop.cs	/^    public void StopTimers() {$/;"	m	class:EventLoop
+System.Collections.IEnumerable.GetEnumerator	Experiments/ExperimentState.cs	/^    IEnumerator System.Collections.IEnumerable.GetEnumerator() {$/;"	m	class:Timeline	file:
+TestSyncbox	InterfaceManager.cs	/^    public void TestSyncbox(Action callback) {$/;"	m	class:InterfaceManager
+TestUniformity	Testing/TestUniformity.cs	/^class TestUniformity {$/;"	c
+TestingEventLoop	Testing/TestEventLoop.cs	/^public class TestingEventLoop {$/;"	c
+TestingRepFR	Testing/TestRepFRExperiment.cs	/^class TestingRepFR {$/;"	c
+TestingRepWord	Testing/TestRepWordGenerator.cs	/^class TestingRepWord {$/;"	c
+TextResizer	GUI/TextResizer.cs	/^public class TextResizer : MonoBehaviour$/;"	c
+TimeStamp	DataManagement/DataReporter.cs	/^    public static System.DateTime TimeStamp()$/;"	m	class:DataReporter
+Timeline	Experiments/ExperimentState.cs	/^    public Timeline(IEnumerable<T> states, $/;"	m	class:Timeline
+Timeline	Experiments/ExperimentState.cs	/^    public Timeline(bool reset_on_load = false) {$/;"	m	class:Timeline
+Timeline	Experiments/ExperimentState.cs	/^public class Timeline<T> : IList<T> { \/\/: IDeserializationCallback {$/;"	c
+ToEnumerable	Experiments/RepWordGenerator.cs	/^    public static IEnumerable<T> ToEnumerable<T>(this IEnumerator<T> enumerator)$/;"	m	class:EnumeratorExtensions
+ToJSON	DataManagement/DataPoint.cs	/^    public string ToJSON()$/;"	m	class:DataPoint
+ToString	BuildInfo.cs	/^    public static string ToString(string format=null) {$/;"	m	class:BuildInfo
+ToString	Experiments/RepWordGenerator.cs	/^  public override string ToString() {$/;"	m	class:StimWordList
+ToString	Experiments/RepWordGenerator.cs	/^  public override string ToString() {$/;"	m	class:WordStim
+TotalWords	Experiments/RepWordGenerator.cs	/^  public int TotalWords() {$/;"	m	class:RepCounts
+UIDataReporter	DataManagement/UIDataReporter.cs	/^public class UIDataReporter : DataReporter$/;"	c
+UnRegisterChild	EventHandling/Messages.cs	/^    public void UnRegisterChild(MessageTreeNode<T> child) {$/;"	m	class:MessageTreeNode
+UniformKLDivergence	Testing/TestUniformity.cs	/^    public static double UniformKLDivergence(int[] measured, double qx) {$/;"	m	class:TestUniformity
+UniqueWords	Experiments/RepWordGenerator.cs	/^  public int UniqueWords() {$/;"	m	class:RepCounts
+UnreadDataPointCount	DataManagement/DataReporter.cs	/^    public int UnreadDataPointCount()$/;"	m	class:DataReporter
+Update	DataManagement/DataHandler.cs	/^    protected virtual void Update()$/;"	m	class:DataHandler
+Update	DataManagement/InputReporter.cs	/^    void Update()$/;"	m	class:InputReporter	file:
+Update	DataManagement/WorldDataReporter.cs	/^    void Update()$/;"	m	class:WorldDataReporter	file:
+Update	DataManagement/WriteToDiskHandler.cs	/^    protected override void Update()$/;"	m	class:WriteToDiskHandler
+Update	GUI/LaunchExperiment.cs	/^    void Update()$/;"	m	class:LaunchExperiment	file:
+Update	GUI/ParticipantSelection.cs	/^    void Update() {$/;"	m	class:ParticipantSelection	file:
+Update	InterfaceManager.cs	/^    void Update()$/;"	m	class:InterfaceManager	file:
+UpdateTexts	GUI/ParticipantSelection.cs	/^    public void UpdateTexts()$/;"	m	class:ParticipantSelection
+UtcNow	HighResolutionDateTime.cs	/^    public static DateTime UtcNow$/;"	p	class:HighResolutionDateTime
+ValueToString	DataManagement/DataPoint.cs	/^    public string ValueToString(dynamic value) {$/;"	m	class:DataPoint
+Version	BuildInfo.cs	/^    public static System.Version Version() {$/;"	m	class:BuildInfo
+WaitForKey	Experiments/ExperimentBase.cs	/^    protected void WaitForKey(string tag, string prompt, Func<InputHandler, KeyMsg, bool> handle/;"	m	class:ExperimentBase
+WaitForKey	Experiments/ExperimentBase.cs	/^    protected void WaitForKey(string tag, string prompt, string key) {$/;"	m	class:ExperimentBase
+WaitForMessage	Networking/RamulatorInterface.cs	/^    private IEnumerator WaitForMessage(string containingString, string errorMessage)$/;"	m	class:RamulatorInterface	file:
+WaitForResearcher	Experiments/ltpRepFRExperiment.cs	/^  protected void WaitForResearcher(StateMachine state) {$/;"	m	class:ltpRepFRExperiment
+WaitForTime	Experiments/ExperimentBase.cs	/^    protected void WaitForTime(int milliseconds) {$/;"	m	class:ExperimentBase
+WordStim	Experiments/RepWordGenerator.cs	/^  public WordStim(string new_word, bool new_stim = false) {$/;"	m	class:WordStim
+WordStim	Experiments/RepWordGenerator.cs	/^public class WordStim {$/;"	c
+WorkItemState	HighPrecisionTimer.cs	/^   public WorkItemState(Int32 _dueTime, Int32 _period, CancellationToken _cancel)$/;"	m	class:WorkItemState
+WorkItemState	HighPrecisionTimer.cs	/^public class WorkItemState : IDisposable$/;"	c
+WorldDataReporter	DataManagement/WorldDataReporter.cs	/^public class WorldDataReporter : DataReporter$/;"	c
+WriteAutomatically	DataManagement/WriteToDiskHandler.cs	/^    public bool WriteAutomatically()$/;"	m	class:WriteToDiskHandler
+WriteLstFile	Experiments/RepFRExperiment.cs	/^  public void WriteLstFile(StimWordList list, int index) {$/;"	m	class:RepFRExperiment
+WriteToDiskHandler	DataManagement/WriteToDiskHandler.cs	/^public class WriteToDiskHandler : DataHandler$/;"	c
+WriteToText	Configuration/FlexibleConfig.cs	/^    public static void WriteToText(dynamic data, string filename) {$/;"	m	class:FlexibleConfig
+_instance	InterfaceManager.cs	/^    private static InterfaceManager _instance;$/;"	f	class:InterfaceManager	file:
+_startTime	HighResolutionDateTime.cs	/^    private static long _startTime = DateTime.UtcNow.Ticks;$/;"	f	class:HighResolutionDateTime	file:
+_startTimestamp	HighResolutionDateTime.cs	/^    private static long _startTimestamp = Stopwatch.GetTimestamp();$/;"	f	class:HighResolutionDateTime	file:
+action	EventHandling/Messages.cs	/^    new protected Func<MessageTreeNode<T>, T, bool> action;$/;"	f	class:MessageTreeNode
+action	EventHandling/Messages.cs	/^    protected Action<T> action;$/;"	f	class:MessageHandler
+active	EventHandling/Messages.cs	/^    public volatile bool active = true;$/;"	f	class:MessageTreeNode
+address	Networking/RamulatorInterface.cs	/^    private const string address = "tcp:\/\/*:8889";$/;"	f	class:RamulatorInterface	file:
+blank_words	Experiments/RepFRExperiment.cs	/^  protected List<string> blank_words;$/;"	f	class:RepFRExperiment
+blank_words	Testing/subsetTestRepFRExperiment.cs	/^  protected List<string> blank_words;$/;"	f	class:RepFRExperiment
+buffer	Networking/ElememInterface.cs	/^    Byte[] buffer; $/;"	f	class:HostPCListener	file:
+bufferSize	Networking/ElememInterface.cs	/^    const Int32 bufferSize = 2048;$/;"	f	class:HostPCListener	file:
+callback	HighPrecisionTimer.cs	/^    private System.Threading.WaitCallback callback;$/;"	f	class:HighPrecisionTimer	file:
+callbackState	HighPrecisionTimer.cs	/^    private object callbackState;$/;"	f	class:HighPrecisionTimer	file:
+camerasToInViewfield	DataManagement/WorldDataReporter.cs	/^    private Dictionary<Camera, bool> camerasToInViewfield = new Dictionary<Camera, bool>();$/;"	f	class:WorldDataReporter	file:
+cancel	HighPrecisionTimer.cs	/^    public CancellationToken cancel { get; }$/;"	p	class:WorkItemState
+cantGoPrompt	GUI/LaunchExperiment.cs	/^    public GameObject cantGoPrompt;$/;"	f	class:LaunchExperiment
+children	EventHandling/Messages.cs	/^    protected List<MessageTreeNode<T>> children = new List<MessageTreeNode<T>>();$/;"	f	class:MessageTreeNode
+count	Experiments/RepWordGenerator.cs	/^  public int count;$/;"	f	class:RepCnt
+currentSession	Experiments/ExperimentState.cs	/^    public dynamic currentSession;$/;"	f	class:StateMachine
+currentSession	Experiments/RepFRExperiment.cs	/^  protected RepFRSession currentSession;$/;"	f	class:RepFRExperiment
+currentSession	Testing/subsetTestRepFRExperiment.cs	/^  protected RepFRSession currentSession;$/;"	f	class:RepFRExperiment
+dataDict	DataManagement/DataPoint.cs	/^    private System.Collections.Generic.Dictionary<string, object> dataDict;$/;"	f	class:DataPoint	file:
+delay	EventHandling/EventQueue.cs	/^    private int delay;$/;"	f	class:RepeatingEvent	file:
+down	EventHandling/InputHandler.cs	/^    public bool down;$/;"	f	struct:KeyMsg
+dueTime	HighPrecisionTimer.cs	/^    public Int32 dueTime { get; }$/;"	p	class:WorkItemState
+elemem	Networking/ElememInterface.cs	/^    private TcpClient elemem;$/;"	f	class:ElememInterface	file:
+encoding	Experiments/RepFRExperiment.cs	/^  public StimWordList encoding;$/;"	f	class:RepFRRun
+encoding	Testing/subsetTestRepFRExperiment.cs	/^  public StimWordList encoding;$/;"	f	class:RepFRRun
+encoding_stim	Testing/subsetTestRepFRExperiment.cs	/^  public bool encoding_stim;$/;"	f	class:RepFRRun
+eventQueue	DataManagement/DataHandler.cs	/^    protected System.Collections.Concurrent.ConcurrentQueue<DataPoint> eventQueue = new Concurre/;"	f	class:DataHandler
+eventQueue	DataManagement/DataReporter.cs	/^    protected System.Collections.Concurrent.ConcurrentQueue<DataPoint> eventQueue = new Concurre/;"	f	class:DataReporter
+eventQueue	EventHandling/EventQueue.cs	/^    public ConcurrentQueue<IEventBase> eventQueue;$/;"	f	class:EventQueue
+eventRepeats	Testing/TestEventLoop.cs	/^    public static int eventRepeats = 0;$/;"	f	class:TestingEventLoop
+eventsPerFrame	InterfaceManager.cs	/^    private int eventsPerFrame;$/;"	f	class:InterfaceManager	file:
+exp	InterfaceManager.cs	/^    private ExperimentBase exp;$/;"	f	class:InterfaceManager	file:
+experimentConfig	InterfaceManager.cs	/^    public ConcurrentDictionary<string, dynamic> experimentConfig = null;$/;"	f	class:InterfaceManager
+experimentUpdated	GUI/ParticipantSelection.cs	/^    private bool experimentUpdated = false;$/;"	f	class:ParticipantSelection	file:
+fileManager	InterfaceManager.cs	/^    public FileManager fileManager;$/;"	f	class:InterfaceManager
+flag	EventHandling/EventQueue.cs	/^    public readonly ManualResetEventSlim flag;$/;"	f	class:RepeatingEvent
+flag	HighPrecisionTimer.cs	/^    public ManualResetEventSlim flag { get; }$/;"	p	class:WorkItemState
+format	BuildInfo.cs	/^    public string format = "g";    \/\/ see: https:\/\/msdn.microsoft.com\/en-us\/library\/az4se/;"	f	class:BuildInfo
+framesPerMousePositionReport	DataManagement/InputReporter.cs	/^    public int framesPerMousePositionReport = 60;$/;"	f	class:InputReporter
+framesPerTransformReport	DataManagement/WorldDataReporter.cs	/^    public int framesPerTransformReport = 30;$/;"	f	class:WorldDataReporter
+framesPerViewReport	DataManagement/WorldDataReporter.cs	/^    public int framesPerViewReport = 30;$/;"	f	class:WorldDataReporter
+framesPerWrite	DataManagement/WriteToDiskHandler.cs	/^    private int framesPerWrite = 30;$/;"	f	class:WriteToDiskHandler	file:
+get	Configuration/KeyTable.cs	/^public static string get(int code, bool isOSX=true) {$/;"	m	class:KeyLookup
+greyedLaunchButton	GUI/LaunchExperiment.cs	/^    public UnityEngine.GameObject greyedLaunchButton;$/;"	f	class:LaunchExperiment
+heartbeatCount	Networking/ElememInterface.cs	/^    private int heartbeatCount = 0;$/;"	f	class:ElememInterface	file:
+heartbeatTimeout	Networking/ElememInterface.cs	/^    int heartbeatTimeout = 8000; \/\/ TODO: pull value from configuration$/;"	f	class:ElememInterface	file:
+highBeep	InterfaceManager.cs	/^    public AudioSource highBeep;$/;"	f	class:InterfaceManager
+host	EventHandling/Messages.cs	/^    protected EventQueue host;$/;"	f	class:MessageHandler
+hostPC	InterfaceManager.cs	/^    public IHostPC hostPC;$/;"	f	class:InterfaceManager
+i	Experiments/RepWordGenerator.cs	/^  public int i {$/;"	p	class:BoundedInt
+i_	Experiments/RepWordGenerator.cs	/^  private int i_;$/;"	f	class:BoundedInt	file:
+id	DataManagement/DataPoint.cs	/^    private static volatile int id = 0;$/;"	f	class:DataPoint	file:
+im	DataManagement/DataHandler.cs	/^    protected InterfaceManager im;$/;"	f	class:DataHandler
+im	InterfaceManager.cs	/^    public static implicit operator EventQueue(InterfaceManager im) => im.mainEvents;$/;"	f	class:InterfaceManager
+im	Networking/ElememInterface.cs	/^    public InterfaceManager im;$/;"	f	class:ElememInterface
+index	Experiments/ExperimentState.cs	/^    public int index;$/;"	f	class:Timeline
+index	Experiments/RepWordGenerator.cs	/^  protected int index;$/;"	f	class:RandomSubset
+index	Testing/subsetTestRepFRExperiment.cs	/^  protected int index;$/;"	f	class:RandomSubset
+inputHandler	Experiments/ExperimentBase.cs	/^    protected InputHandler inputHandler;$/;"	f	class:ExperimentBase
+inputHandler	InterfaceManager.cs	/^    public InputHandler inputHandler;$/;"	f	class:InterfaceManager
+interval	EventHandling/EventQueue.cs	/^    private int interval;$/;"	f	class:RepeatingEvent	file:
+isComplete	Experiments/ExperimentState.cs	/^    public bool isComplete {get; set; } = false;$/;"	p	class:StateMachine
+isValidParticipant	Configuration/FileManager.cs	/^    public bool isValidParticipant(string code) {$/;"	m	class:FileManager
+isValidParticipant	GUI/LaunchExperiment.cs	/^    private bool isValidParticipant(string name)$/;"	m	class:LaunchExperiment	file:
+items	Experiments/ExperimentState.cs	/^    protected List<T> items = new List<T>();$/;"	f	class:Timeline
+iterations	EventHandling/EventQueue.cs	/^    private int iterations;$/;"	f	class:RepeatingEvent	file:
+key	EventHandling/InputHandler.cs	/^    public string key;$/;"	f	struct:KeyMsg
+keyDownStates	DataManagement/InputReporter.cs	/^    private Dictionary<int, bool> keyDownStates = new Dictionary<int, bool>();$/;"	f	class:InputReporter	file:
+lastMousePositionReportFrame	DataManagement/InputReporter.cs	/^    private int lastMousePositionReportFrame;$/;"	f	class:InputReporter	file:
+launchButton	GUI/LaunchExperiment.cs	/^    public UnityEngine.GameObject launchButton;$/;"	f	class:LaunchExperiment
+limit	Experiments/RepWordGenerator.cs	/^  private int limit;$/;"	f	class:BoundedInt	file:
+listNumberText	GUI/ParticipantSelection.cs	/^    public UnityEngine.UI.Text listNumberText;$/;"	f	class:ParticipantSelection
+listener	Networking/ElememInterface.cs	/^    private HostPCListener listener;$/;"	f	class:ElememInterface	file:
+loadingButton	GUI/LaunchExperiment.cs	/^    public UnityEngine.GameObject loadingButton;$/;"	f	class:LaunchExperiment
+locker	HighPrecisionTimer.cs	/^    private object locker = new Object();$/;"	f	class:HighPrecisionTimer	file:
+lowBeep	InterfaceManager.cs	/^    public AudioSource lowBeep;$/;"	f	class:InterfaceManager
+lowerBeep	InterfaceManager.cs	/^    public AudioSource lowerBeep;$/;"	f	class:InterfaceManager
+ltpRepFRExperiment	Experiments/ltpRepFRExperiment.cs	/^  public ltpRepFRExperiment(InterfaceManager _manager) : base(_manager) {}$/;"	m	class:ltpRepFRExperiment
+ltpRepFRExperiment	Experiments/ltpRepFRExperiment.cs	/^public class ltpRepFRExperiment : RepFRExperiment {$/;"	c
+mainEvents	InterfaceManager.cs	/^    private EventQueue mainEvents = new EventQueue();$/;"	f	class:InterfaceManager	file:
+mainThread	ErrorNotification.cs	/^    public static InterfaceManager mainThread = null;$/;"	f	class:ErrorNotification
+manager	Configuration/FileManager.cs	/^    InterfaceManager manager;$/;"	f	class:FileManager	file:
+manager	DataManagement/InputReporter.cs	/^    private InterfaceManager manager;$/;"	f	class:InputReporter	file:
+manager	Experiments/ExperimentBase.cs	/^    public InterfaceManager manager;$/;"	f	class:ExperimentBase
+manager	GUI/ExperimentSelection.cs	/^    public InterfaceManager manager;$/;"	f	class:ExperimentSelection
+manager	GUI/LaunchExperiment.cs	/^    public InterfaceManager manager;$/;"	f	class:LaunchExperiment
+manager	GUI/ParticipantSelection.cs	/^    InterfaceManager manager;$/;"	f	class:ParticipantSelection	file:
+manager	Networking/RamulatorInterface.cs	/^    InterfaceManager manager;$/;"	f	class:RamulatorWrapper	file:
+manager	Networking/RamulatorInterface.cs	/^    public InterfaceManager manager;$/;"	f	class:RamulatorInterface
+maxIterations	EventHandling/EventQueue.cs	/^    private readonly int maxIterations;$/;"	f	class:RepeatingEvent	file:
+message	Experiments/RepWordGenerator.cs	/^  private string message;$/;"	f	class:BoundedInt	file:
+messageBuffer	Networking/ElememInterface.cs	/^    string messageBuffer = "";$/;"	f	class:HostPCListener	file:
+messageTimeout	Networking/ElememInterface.cs	/^    int messageTimeout = 1000;$/;"	f	class:ElememInterface	file:
+microphoneTestMessage	Experiments/ExperimentBase.cs	/^    public GameObject microphoneTestMessage; \/\/ set in editor$/;"	f	class:ExperimentBase
+mouseDownStates	DataManagement/InputReporter.cs	/^    private Dictionary<int, bool> mouseDownStates = new Dictionary<int, bool>();$/;"	f	class:InputReporter	file:
+msg	EventHandling/Messages.cs	/^    public T msg;$/;"	f	class:MessageEvent
+msg	Networking/ElememInterface.cs	/^    public string msg;$/;"	f	struct:NetMsg
+nativePluginRunning	DataManagement/DataReporter.cs	/^    protected volatile static bool nativePluginRunning = false;$/;"	f	class:DataReporter
+nextListNumber	GUI/ParticipantSelection.cs	/^    public static int nextListNumber = 0;$/;"	f	class:ParticipantSelection
+nextSessionNumber	GUI/ParticipantSelection.cs	/^    public static int nextSessionNumber = 0;$/;"	f	class:ParticipantSelection
+onKey	InterfaceManager.cs	/^    private ConcurrentQueue<Action<string, bool>> onKey;$/;"	f	class:InterfaceManager	file:
+onSceneLoaded	InterfaceManager.cs	/^    void onSceneLoaded(Scene scene, LoadSceneMode mode) $/;"	m	class:InterfaceManager	file:
+originalAnchorMax	GUI/TextResizer.cs	/^    private Vector2 originalAnchorMax;$/;"	f	class:TextResizer	file:
+originalAnchorMin	GUI/TextResizer.cs	/^    private Vector2 originalAnchorMin;$/;"	f	class:TextResizer	file:
+outputFormat	DataManagement/WriteToDiskHandler.cs	/^    public FORMAT outputFormat;$/;"	f	class:WriteToDiskHandler
+participantNameInput	GUI/LaunchExperiment.cs	/^    public UnityEngine.UI.InputField participantNameInput;$/;"	f	class:LaunchExperiment
+participantNameInput	GUI/ParticipantSelection.cs	/^    public UnityEngine.UI.InputField participantNameInput;$/;"	f	class:ParticipantSelection
+period	HighPrecisionTimer.cs	/^    public Int32 period { get; }$/;"	p	class:WorkItemState
+peripheralInput	InterfaceManager.cs	/^    public InputReporter peripheralInput;$/;"	f	class:InterfaceManager
+playback	InterfaceManager.cs	/^    public AudioSource playback;$/;"	f	class:InterfaceManager
+queue	EventHandling/EventQueue.cs	/^    private EventQueue queue;$/;"	f	class:RepeatingEvent	file:
+quitKey	InterfaceManager.cs	/^    private static string quitKey = "Escape"; \/\/ escape to quit$/;"	f	class:InterfaceManager	file:
+ramulator	InterfaceManager.cs	/^    public RamulatorInterface ramulator;$/;"	f	class:InterfaceManager
+realWorldStartTime	DataManagement/DataReporter.cs	/^    private static System.DateTime realWorldStartTime;$/;"	f	class:DataReporter	file:
+recall	Experiments/RepFRExperiment.cs	/^  public StimWordList recall;$/;"	f	class:RepFRRun
+recall	Testing/subsetTestRepFRExperiment.cs	/^  public StimWordList recall;$/;"	f	class:RepFRRun
+recall_stim	Testing/subsetTestRepFRExperiment.cs	/^  public bool recall_stim;$/;"	f	class:RepFRRun
+recorder	InterfaceManager.cs	/^    public SoundRecorder recorder;$/;"	f	class:InterfaceManager
+rep	Experiments/RepWordGenerator.cs	/^  public int rep;$/;"	f	class:RepCnt
+rep_counts	Experiments/RepFRExperiment.cs	/^  protected RepCounts rep_counts = null;$/;"	f	class:RepFRExperiment
+rep_counts	Testing/subsetTestRepFRExperiment.cs	/^  protected RepCounts rep_counts = null;$/;"	f	class:RepFRExperiment
+repeatingEventID	EventHandling/EventQueue.cs	/^    protected int repeatingEventID = 0;$/;"	f	class:EventQueue
+repeatingEvents	EventHandling/EventQueue.cs	/^    protected List<RepeatingEvent> repeatingEvents = new List<RepeatingEvent>();$/;"	f	class:EventQueue
+repeats	Experiments/RepWordGenerator.cs	/^  public int repeats;$/;"	f	class:RepWordList
+reportKeyStrokes	DataManagement/InputReporter.cs	/^    public bool reportKeyStrokes = true;$/;"	f	class:InputReporter
+reportMouseClicks	DataManagement/InputReporter.cs	/^    public bool reportMouseClicks = false;$/;"	f	class:InputReporter
+reportMousePosition	DataManagement/InputReporter.cs	/^    public bool reportMousePosition = false;$/;"	f	class:InputReporter
+reportTo	DataManagement/DataReporter.cs	/^    public DataHandler reportTo;$/;"	f	class:DataReporter
+reportTransform	DataManagement/WorldDataReporter.cs	/^    public bool reportTransform = true;$/;"	f	class:WorldDataReporter
+reportView	DataManagement/WorldDataReporter.cs	/^    public bool reportView = true;$/;"	f	class:WorldDataReporter
+reportersToHandle	DataManagement/DataHandler.cs	/^    protected List<DataReporter> reportersToHandle = new List<DataReporter>();$/;"	f	class:DataHandler
+reportingID	DataManagement/DataReporter.cs	/^    public string reportingID = "Object ID not set.";$/;"	f	class:DataReporter
+reset_on_load	Experiments/ExperimentState.cs	/^    protected bool reset_on_load;$/;"	f	class:Timeline
+rnd	InterfaceManager.cs	/^    public static ThreadLocal<System.Random> rnd = new ThreadLocal<System.Random>(() => new Syst/;"	f	class:InterfaceManager
+rnd	Testing/stubsRepWordGenerator.cs	/^  public static ThreadLocal<System.Random> rnd = ThreadLocal<System.Random>(() => new System.Ran/;"	f	class:InterfaceManager
+running	EventHandling/EventQueue.cs	/^    protected volatile bool running = true;$/;"	f	class:EventQueue
+score	Experiments/RepWordGenerator.cs	/^  public double score {$/;"	p	class:StimWordList
+score_	Experiments/RepWordGenerator.cs	/^  protected double score_;$/;"	f	class:StimWordList
+scriptedInput	InterfaceManager.cs	/^    public ScriptedEventReporter scriptedInput;$/;"	f	class:InterfaceManager
+sessionNumberText	GUI/ParticipantSelection.cs	/^    public UnityEngine.UI.Text sessionNumberText;$/;"	f	class:ParticipantSelection
+shuffled	Experiments/RepWordGenerator.cs	/^  protected List<String> shuffled;$/;"	f	class:RandomSubset
+shuffled	Testing/subsetTestRepFRExperiment.cs	/^  protected List<String> shuffled;$/;"	f	class:RandomSubset
+source_words	Experiments/RepFRExperiment.cs	/^  protected List<string> source_words;$/;"	f	class:RepFRExperiment
+source_words	Testing/subsetTestRepFRExperiment.cs	/^  protected List<string> source_words;$/;"	f	class:RepFRExperiment
+startTime	EventHandling/EventQueue.cs	/^    private DateTime startTime;$/;"	f	class:RepeatingEvent	file:
+startTimeInitialized	DataManagement/DataReporter.cs	/^    private static bool startTimeInitialized = false;$/;"	f	class:DataReporter	file:
+stateMachine	Experiments/ExperimentBase.cs	/^    protected StateMachine stateMachine;$/;"	f	class:ExperimentBase
+stim	Experiments/RepWordGenerator.cs	/^  public bool stim;$/;"	f	class:WordStim
+stims	Experiments/RepWordGenerator.cs	/^  public IList<bool> stims {$/;"	p	class:StimWordList
+stims_	Experiments/RepWordGenerator.cs	/^  protected List<bool> stims_;$/;"	f	class:StimWordList
+stopwatch	DataManagement/DataReporter.cs	/^    private static System.Diagnostics.Stopwatch stopwatch;$/;"	f	class:DataReporter	file:
+sw	HighPrecisionTimer.cs	/^    public Stopwatch sw { get; }$/;"	p	class:WorkItemState
+syncBox	InterfaceManager.cs	/^    public NonUnitySyncbox syncBox;$/;"	f	class:InterfaceManager
+syncButton	GUI/LaunchExperiment.cs	/^    public UnityEngine.GameObject syncButton;$/;"	f	class:LaunchExperiment
+systemConfig	InterfaceManager.cs	/^    public ConcurrentDictionary<string, dynamic> systemConfig = null;$/;"	f	class:InterfaceManager
+textDisplayer	InterfaceManager.cs	/^    public TextDisplayer textDisplayer;$/;"	f	class:InterfaceManager
+textElement	GUI/TextResizer.cs	/^    public UnityEngine.UI.Text textElement;$/;"	f	class:TextResizer
+thisEvent	EventHandling/EventQueue.cs	/^    private IEventBase thisEvent;$/;"	f	class:RepeatingEvent	file:
+thisID	DataManagement/DataPoint.cs	/^    private int thisID;$/;"	f	class:DataPoint	file:
+time	DataManagement/DataPoint.cs	/^    private System.DateTime time;$/;"	f	class:DataPoint	file:
+time	Networking/ElememInterface.cs	/^    public DateTime time;$/;"	f	struct:NetMsg
+timelines	Experiments/ExperimentState.cs	/^    protected Stack<string> timelines = new Stack<string>();$/;"	f	class:StateMachine
+timeoutDelay	Networking/RamulatorInterface.cs	/^    const int timeoutDelay = 150;$/;"	f	class:RamulatorInterface	file:
+timer	EventHandling/EventQueue.cs	/^    private Timer timer;$/;"	f	class:RepeatingEvent	file:
+toAdd	DataManagement/DataHandler.cs	/^    protected ConcurrentQueue<DataReporter> toAdd = new ConcurrentQueue<DataReporter>();$/;"	f	class:DataHandler
+toRemove	DataManagement/DataHandler.cs	/^    protected ConcurrentQueue<DataReporter> toRemove = new ConcurrentQueue<DataReporter>();$/;"	f	class:DataHandler
+tokenSource	EventHandling/EventLoop.cs	/^    private CancellationTokenSource tokenSource;$/;"	f	class:EventLoop	file:
+tokenSource	HighPrecisionTimer.cs	/^    private CancellationTokenSource tokenSource = new CancellationTokenSource();$/;"	f	class:HighPrecisionTimer	file:
+tokenSource	Networking/ElememInterface.cs	/^    CancellationTokenSource tokenSource;$/;"	f	class:HostPCListener	file:
+type	DataManagement/DataPoint.cs	/^    private string type;$/;"	f	class:DataPoint	file:
+uiInput	InterfaceManager.cs	/^    public UIDataReporter uiInput;$/;"	f	class:InterfaceManager
+unique_words_per_list	Experiments/RepFRExperiment.cs	/^  protected int unique_words_per_list;$/;"	f	class:RepFRExperiment
+unityTimeStartTime	DataManagement/DataReporter.cs	/^    private static float unityTimeStartTime;$/;"	f	class:DataReporter	file:
+unreceivedHeartbeats	Networking/RamulatorInterface.cs	/^    private int unreceivedHeartbeats = 0;$/;"	f	class:RamulatorInterface	file:
+unreceivedHeartbeatsToQuit	Networking/RamulatorInterface.cs	/^    const int unreceivedHeartbeatsToQuit = 8;$/;"	f	class:RamulatorInterface	file:
+videoControl	InterfaceManager.cs	/^    public VideoControl videoControl;$/;"	f	class:InterfaceManager
+voiceActity	InterfaceManager.cs	/^    public VoiceActivityDetection voiceActity;$/;"	f	class:InterfaceManager
+wait	EventHandling/EventLoop.cs	/^    protected ManualResetEventSlim wait;$/;"	f	class:EventLoop
+waitingPoints	DataManagement/WriteToDiskHandler.cs	/^    private System.Collections.Generic.Queue<DataPoint> waitingPoints = new System.Collections.G/;"	f	class:WriteToDiskHandler	file:
+warning	InterfaceManager.cs	/^    public GameObject warning;$/;"	f	class:InterfaceManager
+windowRect	ErrorNotification.cs	/^    public Rect windowRect;$/;"	f	class:ErrorPopup
+word	Experiments/RepWordGenerator.cs	/^  public string word;$/;"	f	class:WordStim
+words	Experiments/RepWordGenerator.cs	/^  public IList<string> words {$/;"	p	class:StimWordList
+words_	Experiments/RepWordGenerator.cs	/^  protected List<string> words_;$/;"	f	class:StimWordList
+words_per_list	Experiments/RepFRExperiment.cs	/^  protected int words_per_list;$/;"	f	class:RepFRExperiment
+words_per_list	Testing/subsetTestRepFRExperiment.cs	/^  protected int words_per_list;$/;"	f	class:RepFRExperiment
+workState	HighPrecisionTimer.cs	/^    private WorkItemState workState;$/;"	f	class:HighPrecisionTimer	file:
+writeAutomatically	DataManagement/WriteToDiskHandler.cs	/^    private bool writeAutomatically = true;$/;"	f	class:WriteToDiskHandler	file:
+zmqSocket	Networking/RamulatorInterface.cs	/^    private NetMQ.Sockets.PairSocket zmqSocket;$/;"	f	class:RamulatorInterface	file:
+~ElememInterface	Networking/ElememInterface.cs	/^    ~ElememInterface() {$/;"	m	class:ElememInterface	file:
+~EventLoop	EventHandling/EventLoop.cs	/^    ~EventLoop()$/;"	m	class:EventLoop	file:

@@ -1,0 +1,10 @@
+{
+    "isTest": false,
+    "launcherScene": "Startup",
+    "eventsPerFrame": 5,
+    "frameRate": 300,
+    "vSync": 1,
+    "syncBoxTestLength": 5000,
+    "ip": "192.168.137.1",
+    "port": 8889
+}

@@ -1,7 +1,0 @@
-In this example experiment, participants are presented with a series of color/word stimuli reminiscent of the classic Stroop test.
-
-The StroopExperiment class demonstrates how to use UnityEPL.AddParticipant(), UnityEPL.SetExperimentName(), TextDisplayer, and, most importantly, ScriptedEventReporter.
-
-Please refer to the documentations for the above listed classes and functions for more information.  Documentation is available here: https://pennmem.github.io/UnityEPL
-
-Here is the github page for this project:  https://github.com/pennmem/UnityEPL

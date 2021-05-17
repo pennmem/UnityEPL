@@ -1,0 +1,5 @@
+Drag the prefab into your project to enable VAD.  Press "a" to view a window which will allow you to adjust the threshhold for what counts as speech.
+
+Modify the VoiceActivityDetection.speakingTheshold public field in the Uniy editor to change the default threshold value.
+
+Call DoVAD(true) to turn VAD on and DoVAD(false) to turn it off.
