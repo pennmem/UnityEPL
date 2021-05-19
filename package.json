@@ -1,0 +1,21 @@
+{
+  "name": "com.upenn.cml.unity_epl",
+  "version": "4.0.0",
+  "displayName": "UnityEPL",
+  "description": "UnityEPL (Unity Experiment Programming Library) can help researchers and scientists easily collect data from their Unity3D projects",
+  "unity": "2019.1",
+  "unityRelease": "0b5",
+  "dependencies": {
+ },
+ "keywords": [
+    "Kahana",
+    "Memory",
+    "Research",
+    "Science"
+  ],
+  "author": {
+    "name": "James Bruska",
+    "email": "jbruska@sas.upenn.edu",
+    "url": "http://memory.psych.upenn.edu/Main_Page"
+  }
+}
