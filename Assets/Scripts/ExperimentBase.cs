@@ -3,21 +3,22 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-//public abstract class ExperimentBase2 : EventLoop2 {
-public class ExperimentBase2 : EventLoop2 {
-    protected States states;
+public abstract class ExperimentBase2 : EventLoop2 {
+    protected InterfaceManager2 manager;
+
+    public ExperimentBase2(InterfaceManager2 manager) {
+        this.manager = manager;
+    }
 
     protected IEnumerator OuterEnumerator() {
         Debug.Log(1);
         yield return 1;
+        //yield return DoBlocking(InnerEnumerator());
         var inner = DoGet<int>(InnerEnumerator());
         yield return inner;
         Debug.Log("DoGet: " + inner.Current);
-        //yield return DoGet(InnerEnumerator());
-        //yield return DoBlocking(InnerEnumerator());
-        //yield return InnerEnumerator();
-        Debug.Log(4);
-        yield return 4;
+        Debug.Log(6);
+        yield return 6;
     }
 
     protected IEnumerator InnerEnumerator() {
@@ -29,10 +30,10 @@ public class ExperimentBase2 : EventLoop2 {
     }
 
     protected IEnumerator InnerInnerEnumerator() {
-        Debug.Log(8);
-        yield return 8;
-        Debug.Log(9);
-        yield return 9;
+        Debug.Log(4);
+        yield return 4;
+        Debug.Log(5);
+        yield return 5;
     }
 
     protected IEnumerator A() {
@@ -42,26 +43,22 @@ public class ExperimentBase2 : EventLoop2 {
         yield return "b";
     }
 
-    public ExperimentBase2() {
-        states = GenStates();
-
+    public void Run() {
         Start();
+        Do(RunEnumerator());
+    } 
 
-        foreach (var stateEvent in states) {
-            Console.WriteLine(stateEvent());
-            Do(stateEvent());
+    protected IEnumerator RunEnumerator() {
+        var states = MainStates();
+        while (states.MoveNext()) {
+            var stateEvent = states.Current;
+            yield return DoBlocking(stateEvent);
         }
     }
 
-    public States GenStates() {
-        var s1 = new States() {
-            A,
-            A,
-        };
-
-        return new States() {
-            s1,
-            OuterEnumerator,
-        };
+    public IEnumerator s1() {
+        yield return A();
     }
+
+    public abstract IEnumerator<IEnumerator> MainStates();
 }
