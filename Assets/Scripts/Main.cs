@@ -126,6 +126,8 @@ public class Main : MonoBehaviour
         testEventLoop.DelayedTriggerKeyPress(default);
         KeyMsg keyMsg = await testEventLoop.WaitOnKey(default);
         Debug.Log("Start - WaitOnKey: " + keyMsg.key);
+        await Task.Delay(2000);
+        testEventLoop.DelayedGet();
     }
 
     // Update is called once per frame
@@ -169,10 +171,10 @@ public class TestEventLoop : EventLoop4 {
         });
     }
     async Task DelayedStopHelper() {
-        Debug.Log("ThreadID - Cancel: " + Thread.CurrentThread.ManagedThreadId + " " + DateTime.Now);
+        Debug.Log("DelayedStop: " + Thread.CurrentThread.ManagedThreadId + " " + DateTime.Now);
         await InterfaceManager2.Delay(2000);
-        Debug.Log("ThreadID - Cancel: " + Thread.CurrentThread.ManagedThreadId + " " + DateTime.Now);
-        cts.Cancel();
+        Debug.Log("DelayedStop: " + Thread.CurrentThread.ManagedThreadId + " " + DateTime.Now);
+        Stop();
     }
 
     public Task<int> DelayedGet() {
@@ -181,11 +183,46 @@ public class TestEventLoop : EventLoop4 {
         });
     }
     async Task<int> DelayedGetHelper() {
+        Debug.Log("DelayedGet: " + Thread.CurrentThread.ManagedThreadId + " " + DateTime.Now);
         await InterfaceManager2.Delay(3000);
+        Debug.Log("DelayedGet: " + Thread.CurrentThread.ManagedThreadId + " " + DateTime.Now);
         return 5;
     }
 }
 
+// TODO: JPB: This may be able to cancel current running tasks
+//            This would require replacing the standard task scheduler with a SingleThreadTaskScheduler
+//            Not sure how this would affect unity, because it would be on its thread...
+#if UNITY_WEBGL && !UNITY_EDITOR // System.Threading
+public class EventLoop4 {
+    protected bool isStopped = false;
+
+    public EventLoop4() {}
+
+    ~EventLoop4() {
+        Stop();
+    }
+
+    protected void Do(Func<Task> func) {
+        if (isStopped) throw new OperationCanceledException();
+        func();
+    }
+
+    protected Task DoWaitFor(Func<Task> func) {
+        if (isStopped) throw new OperationCanceledException();
+        return func();
+    }
+
+    protected Task<T> DoGet<T>(Func<Task<T>> func) {
+        if (isStopped) throw new OperationCanceledException();
+        return func();
+    }
+
+    public void Stop() {
+        isStopped = true;
+    }
+}
+#else
 public class EventLoop4 {
     protected SingleThreadTaskScheduler scheduler;
     protected CancellationTokenSource cts = new CancellationTokenSource();
@@ -212,9 +249,11 @@ public class EventLoop4 {
 
     public void Stop() {
         cts.Cancel();
-        Task.Factory.StartNew(() => {}, cts.Token, TaskCreationOptions.DenyChildAttach, scheduler);
+        Task.Factory.StartNew(() => { }, cts.Token, TaskCreationOptions.DenyChildAttach, scheduler);
     }
 }
+#endif
+
 
 public sealed class SingleThreadTaskScheduler : TaskScheduler {
     [ThreadStatic]
