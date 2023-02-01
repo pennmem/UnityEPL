@@ -6,135 +6,52 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Linq;
 using UnityEngine;
-using UnityEditor.Experimental.GraphView;
-using static Main;
 using Unity.VisualScripting;
+using Unity.Collections.LowLevel.Unsafe;
+using System.Diagnostics;
+
+
+public struct KeyMsg {
+    public string key;
+    public bool down;
+
+    public KeyMsg(string key, bool down) {
+        this.key = key;
+        this.down = down;
+    }
+}
 
 public class Main : MonoBehaviour
 {
     const long delay = 10000000000;
-
-    public struct KeyMsg {
-        public string key;
-        public bool down;
-
-        public KeyMsg(string key, bool down) {
-            this.key = key;
-            this.down = down;
-        }
-    }
-
-    public class Input {
-        TaskCompletionSource<KeyMsg> tcs = new TaskCompletionSource<KeyMsg>();
-
-        Input() {}
-    }
-
-    TaskCompletionSource<KeyMsg> tcs = new TaskCompletionSource<KeyMsg>();
-
-    async Task T1() {
-        Debug.Log("ThreadID - T1: " + Thread.CurrentThread.ManagedThreadId);
-        KeyMsg keyMsg = await tcs.Task;
-        Debug.Log("Key: " + keyMsg.key);
-        
-        Debug.Log("T1 - 1");
-        for (long i = 0; i < delay; i++) ;
-        Debug.Log("T1 - 2");
-        await Task.Delay(3000);
-        Debug.Log("T1 - 3");
-        for (long i = 0; i < delay; i++) ;
-        Debug.Log("T1 - 4");
-    }
-
-    async Task T2() {
-        Debug.Log("ThreadID - T2: " + Thread.CurrentThread.ManagedThreadId);
-        Debug.Log("T2 - 1");
-        for (long i = 0; i < delay; i++) ;
-        Debug.Log("T2 - 2");
-        await Task.Delay(3000);
-        Debug.Log("T2 - 3");
-        for (long i = 0; i < delay; i++) ;
-        Debug.Log("T2 - 4");
-        KeyMsg keyMsg = await tcs.Task;
-        Debug.Log("Key: " + keyMsg.key);
-    }
-
-    void T() {
-        //Thread.Sleep(1);
-        var t1 = T1();
-        var t2 = T2();
-    }
-
-    async void S() {
-        Debug.Log("ThreadID - S: " + Thread.CurrentThread.ManagedThreadId);
-        await Task.Delay(3000);
-        tcs?.SetResult(new KeyMsg("meep", true));
-    }
-
-    async void Waiting() {
-        Debug.Log("ThreadID - Waiting: " + Thread.CurrentThread.ManagedThreadId + " " + DateTime.Now);
-        KeyMsg keyMsg = await tcs.Task;
-        Debug.Log("Key: " + keyMsg.key);
-        Debug.Log("ThreadID - Waiting: " + Thread.CurrentThread.ManagedThreadId + " " + DateTime.Now);
-    }
-
-    async Task Trigger() {
-        Debug.Log("ThreadID - Trigger: " + Thread.CurrentThread.ManagedThreadId + " " + DateTime.Now);
-        var cts = new CancellationTokenSource();
-        //Cancel(cts);
-        await InterfaceManager2.Delay(3000, cts.Token);
-        Debug.Log("ThreadID - Trigger: " + Thread.CurrentThread.ManagedThreadId + " " + DateTime.Now);
-        tcs?.SetResult(new KeyMsg("meep", true));
-    }
-
-    async Task Cancel(CancellationTokenSource cts) {
-        Debug.Log("ThreadID - Cancel: " + Thread.CurrentThread.ManagedThreadId + " " + DateTime.Now);
-        await InterfaceManager2.Delay(2000);
-        Debug.Log("ThreadID - Cancel: " + Thread.CurrentThread.ManagedThreadId + " " + DateTime.Now);
-        cts.Cancel();
-    }
-
-    async Task<int> DelayedGet() {
-        await InterfaceManager2.Delay(1000);
-        return 5;
-    }
-
-    SingleThreadTaskScheduler scheduler;
-    CancellationTokenSource cts = new CancellationTokenSource();
 
     TestEventLoop testEventLoop = new TestEventLoop();
 
     // Start is called before the first frame update
     async void Start()
     {
-        Debug.Log("ThreadID - Start: " + Thread.CurrentThread.ManagedThreadId + " " + DateTime.Now);
-        //Debug.Log(ThreadPool.SetMinThreads(1, 1));
-        //Debug.Log(ThreadPool.SetMaxThreads(1, 1));
-        //Trigger();
-        //Waiting();
-        //Cancel();
-
-        //scheduler = new SingleThreadTaskScheduler(cts.Token);
-        //Task.Factory.StartNew(Trigger, cts.Token, TaskCreationOptions.DenyChildAttach, scheduler);
-        //Task.Factory.StartNew(Waiting, cts.Token, TaskCreationOptions.DenyChildAttach, scheduler);
-        //Task.Factory.StartNew(async () => { await Cancel(cts); }, cts.Token, TaskCreationOptions.DenyChildAttach, scheduler);
-        //var getVal = await Task.Factory.StartNew(DelayedGet, cts.Token, TaskCreationOptions.DenyChildAttach, scheduler).Unwrap();
-        //Debug.Log("DelayedGet: " + getVal);
+        UnityEngine.Debug.Log("ThreadID - Start: " + Thread.CurrentThread.ManagedThreadId + " " + DateTime.Now);
+        //UnityEngine.Debug.Log(ThreadPool.SetMinThreads(1, 1));
+        //UnityEngine.Debug.Log(ThreadPool.SetMaxThreads(1, 1));
 
         testEventLoop.DelayedGet();
         testEventLoop.DelayedStop();
         testEventLoop.DelayedTriggerKeyPress(default);
         KeyMsg keyMsg = await testEventLoop.WaitOnKey(default);
-        Debug.Log("Start - WaitOnKey: " + keyMsg.key);
+        UnityEngine.Debug.Log("Start - WaitOnKey: " + keyMsg.key);
         await Task.Delay(2000);
         testEventLoop.DelayedGet();
+
+        
     }
+    
 
     // Update is called once per frame
     void Update()
     {
         
     }
+
 }
 
 public class TestEventLoop : EventLoop4 {
@@ -146,10 +63,10 @@ public class TestEventLoop : EventLoop4 {
         });
     }
     async Task<KeyMsg> WaitOnKeyHelper(TaskCompletionSource<KeyMsg> tcs) {
-        Debug.Log("WaitOnKey: " + Thread.CurrentThread.ManagedThreadId + " " + DateTime.Now);
+        UnityEngine.Debug.Log("WaitOnKey: " + Thread.CurrentThread.ManagedThreadId + " " + DateTime.Now);
         KeyMsg keyMsg = await this.tcs.Task;
-        Debug.Log("Key: " + keyMsg.key);
-        Debug.Log("WaitOnKey: " + Thread.CurrentThread.ManagedThreadId + " " + DateTime.Now);
+        UnityEngine.Debug.Log("Key: " + keyMsg.key);
+        UnityEngine.Debug.Log("WaitOnKey: " + Thread.CurrentThread.ManagedThreadId + " " + DateTime.Now);
         return keyMsg;
     }
 
@@ -159,9 +76,9 @@ public class TestEventLoop : EventLoop4 {
         });
     }
     async Task DelayedTriggerKeyPressHelper(TaskCompletionSource<KeyMsg> tcs) {
-        Debug.Log("DelayedTriggerKeyPress: " + Thread.CurrentThread.ManagedThreadId + " " + DateTime.Now);
+        UnityEngine.Debug.Log("DelayedTriggerKeyPress: " + Thread.CurrentThread.ManagedThreadId + " " + DateTime.Now);
         await InterfaceManager2.Delay(1000);
-        Debug.Log("DelayedTriggerKeyPress: " + Thread.CurrentThread.ManagedThreadId + " " + DateTime.Now);
+        UnityEngine.Debug.Log("DelayedTriggerKeyPress: " + Thread.CurrentThread.ManagedThreadId + " " + DateTime.Now);
         tcs?.SetResult(new KeyMsg("meep", true));
     }
 
@@ -171,9 +88,9 @@ public class TestEventLoop : EventLoop4 {
         });
     }
     async Task DelayedStopHelper() {
-        Debug.Log("DelayedStop: " + Thread.CurrentThread.ManagedThreadId + " " + DateTime.Now);
+        UnityEngine.Debug.Log("DelayedStop: " + Thread.CurrentThread.ManagedThreadId + " " + DateTime.Now);
         await InterfaceManager2.Delay(2000);
-        Debug.Log("DelayedStop: " + Thread.CurrentThread.ManagedThreadId + " " + DateTime.Now);
+        UnityEngine.Debug.Log("DelayedStop: " + Thread.CurrentThread.ManagedThreadId + " " + DateTime.Now);
         Stop();
     }
 
@@ -183,9 +100,9 @@ public class TestEventLoop : EventLoop4 {
         });
     }
     async Task<int> DelayedGetHelper() {
-        Debug.Log("DelayedGet: " + Thread.CurrentThread.ManagedThreadId + " " + DateTime.Now);
+        UnityEngine.Debug.Log("DelayedGet: " + Thread.CurrentThread.ManagedThreadId + " " + DateTime.Now);
         await InterfaceManager2.Delay(3000);
-        Debug.Log("DelayedGet: " + Thread.CurrentThread.ManagedThreadId + " " + DateTime.Now);
+        UnityEngine.Debug.Log("DelayedGet: " + Thread.CurrentThread.ManagedThreadId + " " + DateTime.Now);
         return 5;
     }
 }
@@ -204,17 +121,17 @@ public class EventLoop4 {
     }
 
     protected void Do(Func<Task> func) {
-        if (isStopped) throw new OperationCanceledException();
+        if (isStopped) throw new OperationCanceledException("EventLoop has been stopped already.");
         func();
     }
 
     protected Task DoWaitFor(Func<Task> func) {
-        if (isStopped) throw new OperationCanceledException();
+        if (isStopped) throw new OperationCanceledException("EventLoop has been stopped already.");
         return func();
     }
 
     protected Task<T> DoGet<T>(Func<Task<T>> func) {
-        if (isStopped) throw new OperationCanceledException();
+        if (isStopped) throw new OperationCanceledException("EventLoop has been stopped already.");
         return func();
     }
 
@@ -235,21 +152,178 @@ public class EventLoop4 {
         Stop();
     }
 
+    public void Stop() {
+        cts.Cancel();
+        Task.Factory.StartNew(() => { }, cts.Token, TaskCreationOptions.DenyChildAttach, scheduler);
+    }
+
+    // TODO: JPB: (feature) The Do functions could be improved with C# Source Generators
+    //            Ex: any number of variadic arguments
+    //            Ex: attribute on original method to generate the call to Do automatically
+    //            https://itnext.io/this-is-how-variadic-arguments-could-work-in-c-e2034a9c241
+    //            https://github.com/WhiteBlackGoose/InductiveVariadics
+    //            This above link needs to be changed to include support for generic constraints
+    //            Get it working in unity: https://medium.com/@EnescanBektas/using-source-generators-in-the-unity-game-engine-140ff0cd0dc
+    //            This may also currently requires Roslyn https://forum.unity.com/threads/released-roslyn-c-runtime-c-compiler.651505/
+    //            Intro to Source Generators: https://devblogs.microsoft.com/dotnet/introducing-c-source-generators/
+
+    // Do
+
     protected void Do(Func<Task> func) {
         Task.Factory.StartNew(func, cts.Token, TaskCreationOptions.DenyChildAttach, scheduler);
     }
+    protected void Do<T>(Func<T, Task> func, T t)
+            where T : struct {
+        AssertBlittable(t);
+        T tCopy = t;
+        Do(async () => { await func(tCopy); });
+    }
+    protected void Do<T, U>(Func<T, U, Task> func, T t, U u)
+            where T : struct
+            where U : struct {
+        AssertBlittable(t, u);
+        T tCopy = t;
+        U uCopy = u;
+        Do(async () => { await func(tCopy, uCopy); });
+    }
+    protected void Do<T, U, V>(Func<T, U, V, Task> func, T t, U u, V v)
+            where T : struct
+            where U : struct
+            where V : struct {
+        AssertBlittable(t, u, v);
+        T tCopy = t;
+        U uCopy = u;
+        V vCopy = v;
+        Do(async () => { await func(tCopy, uCopy, vCopy); });
+    }
+    protected void Do<T, U, V, W>(Func<T, U, V, W, Task> func, T t, U u, V v, W w)
+            where T : struct
+            where U : struct
+            where V : struct
+            where W : struct {
+        AssertBlittable(t, u, v, w);
+        T tCopy = t;
+        U uCopy = u;
+        V vCopy = v;
+        W wCopy = w;
+        Do(async () => { await func(tCopy, uCopy, vCopy, wCopy); });
+    }
+
+    // DoWaitFor
 
     protected Task DoWaitFor(Func<Task> func) {
         return Task.Factory.StartNew(func, cts.Token, TaskCreationOptions.DenyChildAttach, scheduler).Unwrap();
     }
-
-    protected Task<T> DoGet<T>(Func<Task<T>> func) {
-        return Task.Factory.StartNew(func, cts.Token, TaskCreationOptions.DenyChildAttach, scheduler).Unwrap();
+    protected Task DoWaitFor<T>(Func<T, Task> func, T t)
+            where T : struct {
+        AssertBlittable(t);
+        T tCopy = t;
+        return DoWaitFor(async () => { await func(tCopy); });
+    }
+    protected Task DoWaitFor<T, U>(Func<T, U, Task> func, T t, U u)
+            where T : struct
+            where U : struct {
+        AssertBlittable(t, u);
+        T tCopy = t; U uCopy = u;
+        return DoWaitFor(async () => { await func(tCopy, uCopy); });
+    }
+    protected Task DoWaitFor<T, U, V>(Func<T, U, V, Task> func, T t, U u, V v)
+            where T : struct
+            where U : struct
+            where V : struct {
+        AssertBlittable(t, u, v);
+        T tCopy = t; U uCopy = u; V vCopy = v;
+        return DoWaitFor(async () => { await func(tCopy, uCopy, vCopy); });
+    }
+    protected Task DoWaitFor<T, U, V, W>(Func<T, U, V, W, Task> func, T t, U u, V v, W w)
+            where T : struct
+            where U : struct
+            where V : struct
+            where W : struct {
+        AssertBlittable(t, u, v, w);
+        T tCopy = t; U uCopy = u; V vCopy = v; W wCopy = w;
+        return DoWaitFor(async () => { await func(tCopy, uCopy, vCopy, wCopy); });
     }
 
-    public void Stop() {
-        cts.Cancel();
-        Task.Factory.StartNew(() => { }, cts.Token, TaskCreationOptions.DenyChildAttach, scheduler);
+    // DoGet
+
+    protected Task<Z> DoGet<Z>(Func<Task<Z>> func) {
+        return Task.Factory.StartNew(func, cts.Token, TaskCreationOptions.DenyChildAttach, scheduler).Unwrap();
+    }
+    protected Task<Z> DoGet<T, Z>(Func<T, Task<Z>> func, T t)
+            where T : struct {
+        AssertBlittable(t);
+        T tCopy = t;
+        return DoGet(async () => { return await func(tCopy); });
+    }
+    protected Task<Z> DoGet<T, U, Z>(Func<T, U, Task<Z>> func, T t, U u)
+            where T : struct
+            where U : struct {
+        AssertBlittable(t, u);
+        T tCopy = t; U uCopy = u;
+        return DoGet(async () => { return await func(tCopy, uCopy); });
+    }
+    protected Task<Z> DoGet<T, U, V, Z>(Func<T, U, V, Task<Z>> func, T t, U u, V v)
+            where T : struct
+            where U : struct
+            where V : struct {
+        AssertBlittable(t, u, v);
+        T tCopy = t; U uCopy = u; V vCopy = v;
+        return DoGet(async () => { return await func(tCopy, uCopy, vCopy); });
+    }
+    protected Task<Z> DoGet<T, U, V, W, Z>(Func<T, U, V, W, Task<Z>> func, T t, U u, V v, W w)
+            where T : struct
+            where U : struct
+            where V : struct
+            where W : struct {
+        AssertBlittable(t, u, v, w);
+        T tCopy = t; U uCopy = u; V vCopy = v; W wCopy = w;
+        return DoGet(async () => { return await func(tCopy, uCopy, vCopy, wCopy); });
+    }
+
+    // AssertBlittable
+
+    protected void AssertBlittable<T>(T t)
+            where T : struct {
+        if (UnsafeUtility.IsBlittable(typeof(T))) {
+            throw new ArgumentException("The first argument is not a blittable type.");
+        }
+    }
+    protected void AssertBlittable<T, U>(T t, U u)
+            where T : struct
+            where U : struct {
+        if (UnsafeUtility.IsBlittable(typeof(T))) {
+            throw new ArgumentException("The first argument is not a blittable type.");
+        } else if (UnsafeUtility.IsBlittable(typeof(U))) {
+            throw new ArgumentException("The second argument is not a blittable type.");
+        }
+    }
+    protected void AssertBlittable<T, U, V>(T t, U u, V v)
+            where T : struct
+            where U : struct
+            where V : struct {
+        if (UnsafeUtility.IsBlittable(typeof(T))) {
+            throw new ArgumentException("The first argument is not a blittable type.");
+        } else if (UnsafeUtility.IsBlittable(typeof(U))) {
+            throw new ArgumentException("The second argument is not a blittable type.");
+        } else if (UnsafeUtility.IsBlittable(typeof(V))) {
+            throw new ArgumentException("The third argument is not a blittable type.");
+        }
+    }
+    protected void AssertBlittable<T, U, V, W>(T t, U u, V v, W w)
+            where T : struct
+            where U : struct
+            where V : struct
+            where W : struct {
+        if (UnsafeUtility.IsBlittable(typeof(T))) {
+            throw new ArgumentException("The first argument is not a blittable type.");
+        } else if (UnsafeUtility.IsBlittable(typeof(U))) {
+            throw new ArgumentException("The second argument is not a blittable type.");
+        } else if (UnsafeUtility.IsBlittable(typeof(V))) {
+            throw new ArgumentException("The third argument is not a blittable type.");
+        } else if (UnsafeUtility.IsBlittable(typeof(W))) {
+            throw new ArgumentException("The fourth argument is not a blittable type.");
+        }
     }
 }
 #endif
