@@ -34,17 +34,14 @@ public class Main : MonoBehaviour
         //UnityEngine.Debug.Log(ThreadPool.SetMinThreads(1, 1));
         //UnityEngine.Debug.Log(ThreadPool.SetMaxThreads(1, 1));
 
-        testEventLoop.DelayedGet();
-        testEventLoop.DelayedStop();
-        testEventLoop.DelayedTriggerKeyPress(default);
-        KeyMsg keyMsg = await testEventLoop.WaitOnKey(default);
-        UnityEngine.Debug.Log("Start - WaitOnKey: " + keyMsg.key);
-        await Task.Delay(2000);
-        testEventLoop.DelayedGet();
-
-        
+        //testEventLoop.DelayedGet();
+        //testEventLoop.DelayedStop();
+        //testEventLoop.DelayedTriggerKeyPress(default);
+        //KeyMsg keyMsg = await testEventLoop.WaitOnKey(default);
+        //UnityEngine.Debug.Log("Start - WaitOnKey: " + keyMsg.key);
+        //await Task.Delay(2000);
+        //testEventLoop.DelayedGet();
     }
-    
 
     // Update is called once per frame
     void Update()
@@ -105,9 +102,17 @@ public class TestEventLoop : EventLoop4 {
         UnityEngine.Debug.Log("DelayedGet: " + Thread.CurrentThread.ManagedThreadId + " " + DateTime.Now);
         return 5;
     }
+
+    public void ThrowException(int i) {
+        Do(ThrowExceptionHelper, i);
+    }
+    public Task ThrowExceptionHelper(int i) {
+        UnityEngine.Debug.Log("Throwing Exception");
+        throw new Exception("Test Exception " + i);
+    }
 }
 
-// TODO: JPB: This may be able to cancel current running tasks
+// TODO: JPB: (refactor) This may be able to cancel current running tasks
 //            This would require replacing the standard task scheduler with a SingleThreadTaskScheduler
 //            Not sure how this would affect unity, because it would be on its thread...
 #if UNITY_WEBGL && !UNITY_EDITOR // System.Threading
@@ -120,19 +125,73 @@ public class EventLoop4 {
         Stop();
     }
 
+    // Do
+
     protected void Do(Func<Task> func) {
         if (isStopped) throw new OperationCanceledException("EventLoop has been stopped already.");
         func();
     }
+    protected void Do<T>(Func<T, Task> func, T t) {
+        if (isStopped) throw new OperationCanceledException("EventLoop has been stopped already.");
+        func(t);
+    }
+    protected void Do<T, U>(Func<T, U, Task> func, T t, U u) {
+        if (isStopped) throw new OperationCanceledException("EventLoop has been stopped already.");
+        func(t, u);
+    }
+    protected void Do<T, U, V>(Func<T, U, V, Task> func, T t, U u, V v) {
+        if (isStopped) throw new OperationCanceledException("EventLoop has been stopped already.");
+        func(t, u, v);
+    }
+    protected void Do<T, U, V, W>(Func<T, U, V, W, Task> func, T t, U u, V v, W w) {
+        if (isStopped) throw new OperationCanceledException("EventLoop has been stopped already.");
+        func(t, u, v, w);
+    }
+
+    // DoWaitFor
 
     protected Task DoWaitFor(Func<Task> func) {
         if (isStopped) throw new OperationCanceledException("EventLoop has been stopped already.");
         return func();
     }
+    protected Task DoWaitFor<T>(Func<T, Task> func, T t) {
+        if (isStopped) throw new OperationCanceledException("EventLoop has been stopped already.");
+        return func(t);
+    }
+    protected Task DoWaitFor<T, U>(Func<T, U, Task> func, T t, U u) {
+        if (isStopped) throw new OperationCanceledException("EventLoop has been stopped already.");
+        return func(t, u);
+    }
+    protected Task DoWaitFor<T, U, V>(Func<T, U, V, Task> func, T t, U u, V v) {
+        if (isStopped) throw new OperationCanceledException("EventLoop has been stopped already.");
+        return func(t, u, v);
+    }
+    protected Task DoWaitFor<T, U, V, W>(Func<T, U, V, W, Task> func, T t, U u, V v, W w) {
+        if (isStopped) throw new OperationCanceledException("EventLoop has been stopped already.");
+        return func(t, u, v, w);
+    }
 
-    protected Task<T> DoGet<T>(Func<Task<T>> func) {
+    // DoGet
+
+    protected Task<Z> DoGet<Z>(Func<Task<Z>> func) {
         if (isStopped) throw new OperationCanceledException("EventLoop has been stopped already.");
         return func();
+    }
+    protected Task<Z> DoGet<T, Z>(Func<T, Task<Z>> func, T t) {
+        if (isStopped) throw new OperationCanceledException("EventLoop has been stopped already.");
+        return func(t);
+    }
+    protected Task<Z> DoGet<T, U, Z>(Func<T, U, Task<Z>> func, T t, U u) {
+        if (isStopped) throw new OperationCanceledException("EventLoop has been stopped already.");
+        return func(t, u);
+    }
+    protected Task<Z> DoGet<T, U, V, Z>(Func<T, U, V, Task<Z>> func, T t, U u, V v) {
+        if (isStopped) throw new OperationCanceledException("EventLoop has been stopped already.");
+        return func(t, u, v);
+    }
+    protected Task<Z> DoGet<T, U, V, W, Z>(Func<T, U, V, W, Task<Z>> func, T t, U u, V v, W w) {
+        if (isStopped) throw new OperationCanceledException("EventLoop has been stopped already.");
+        return func(t, u, v, w);
     }
 
     public void Stop() {
@@ -157,7 +216,9 @@ public class EventLoop4 {
         Task.Factory.StartNew(() => { }, cts.Token, TaskCreationOptions.DenyChildAttach, scheduler);
     }
 
-    // TODO: JPB: (feature) The Do functions could be improved with C# Source Generators
+    // Do
+
+    // TODO: JPB: (refactor) The Do functions could be improved with C# Source Generators
     //            Ex: any number of variadic arguments
     //            Ex: attribute on original method to generate the call to Do automatically
     //            https://itnext.io/this-is-how-variadic-arguments-could-work-in-c-e2034a9c241
@@ -166,8 +227,6 @@ public class EventLoop4 {
     //            Get it working in unity: https://medium.com/@EnescanBektas/using-source-generators-in-the-unity-game-engine-140ff0cd0dc
     //            This may also currently requires Roslyn https://forum.unity.com/threads/released-roslyn-c-runtime-c-compiler.651505/
     //            Intro to Source Generators: https://devblogs.microsoft.com/dotnet/introducing-c-source-generators/
-
-    // Do
 
     protected void Do(Func<Task> func) {
         Task.Factory.StartNew(func, cts.Token, TaskCreationOptions.DenyChildAttach, scheduler);
@@ -283,99 +342,70 @@ public class EventLoop4 {
 
     // AssertBlittable
 
-    protected void AssertBlittable<T>(T t)
+    protected static bool IsPassable<T>(T t) {
+        return UnsafeUtility.IsBlittable(typeof(T))
+            || typeof(T) == typeof(bool)
+            || typeof(T) == typeof(char);
+    }
+
+    // TODO: JPB: (feature) Maybe use IComponentData from com.unity.entities when it releases
+    //            This will also allow for bool and char to be included in the structs
+    //            https://docs.unity3d.com/Packages/com.unity.entities@0.17/api/Unity.Entities.IComponentData.html
+    protected static void AssertBlittable<T>(T t)
             where T : struct {
-        if (UnsafeUtility.IsBlittable(typeof(T))) {
+        if (!UnsafeUtility.IsBlittable(typeof(T))) {
             throw new ArgumentException("The first argument is not a blittable type.");
         }
     }
-    protected void AssertBlittable<T, U>(T t, U u)
+    protected static void AssertBlittable<T, U>(T t, U u)
             where T : struct
             where U : struct {
-        if (UnsafeUtility.IsBlittable(typeof(T))) {
+        if (!UnsafeUtility.IsBlittable(typeof(T))) {
             throw new ArgumentException("The first argument is not a blittable type.");
-        } else if (UnsafeUtility.IsBlittable(typeof(U))) {
+        } else if (!UnsafeUtility.IsBlittable(typeof(U))) {
             throw new ArgumentException("The second argument is not a blittable type.");
         }
     }
-    protected void AssertBlittable<T, U, V>(T t, U u, V v)
+    protected static void AssertBlittable<T, U, V>(T t, U u, V v)
             where T : struct
             where U : struct
             where V : struct {
-        if (UnsafeUtility.IsBlittable(typeof(T))) {
+        if (!UnsafeUtility.IsBlittable(typeof(T))) {
             throw new ArgumentException("The first argument is not a blittable type.");
-        } else if (UnsafeUtility.IsBlittable(typeof(U))) {
+        } else if (!UnsafeUtility.IsBlittable(typeof(U))) {
             throw new ArgumentException("The second argument is not a blittable type.");
-        } else if (UnsafeUtility.IsBlittable(typeof(V))) {
+        } else if (!UnsafeUtility.IsBlittable(typeof(V))) {
             throw new ArgumentException("The third argument is not a blittable type.");
         }
     }
-    protected void AssertBlittable<T, U, V, W>(T t, U u, V v, W w)
+    protected static void AssertBlittable<T, U, V, W>(T t, U u, V v, W w)
             where T : struct
             where U : struct
             where V : struct
             where W : struct {
-        if (UnsafeUtility.IsBlittable(typeof(T))) {
+        if (!UnsafeUtility.IsBlittable(typeof(T))) {
             throw new ArgumentException("The first argument is not a blittable type.");
-        } else if (UnsafeUtility.IsBlittable(typeof(U))) {
+        } else if (!UnsafeUtility.IsBlittable(typeof(U))) {
             throw new ArgumentException("The second argument is not a blittable type.");
-        } else if (UnsafeUtility.IsBlittable(typeof(V))) {
+        } else if (!UnsafeUtility.IsBlittable(typeof(V))) {
             throw new ArgumentException("The third argument is not a blittable type.");
-        } else if (UnsafeUtility.IsBlittable(typeof(W))) {
+        } else if (!UnsafeUtility.IsBlittable(typeof(W))) {
             throw new ArgumentException("The fourth argument is not a blittable type.");
         }
     }
 }
-#endif
 
-
-public sealed class SingleThreadTaskScheduler : TaskScheduler {
-    [ThreadStatic]
-    private static bool _isExecuting;
-
-    private readonly CancellationToken _cancellationToken;
-
-    private readonly BlockingCollection<Task> _taskQueue;
-
-    private readonly Thread _singleThread;
-    public override int MaximumConcurrencyLevel => 1;
-
-    public SingleThreadTaskScheduler(CancellationToken cancellationToken) {
-        this._cancellationToken = cancellationToken;
-        this._taskQueue = new BlockingCollection<Task>();
-        _singleThread = new Thread(RunOnCurrentThread) { Name = "STTS Thread", IsBackground = true };
-        _singleThread.Start();
-    }
-
-    private void RunOnCurrentThread() {
-        _isExecuting = true;
-
-        try {
-            foreach (var task in _taskQueue.GetConsumingEnumerable(_cancellationToken)) {
-                TryExecuteTask(task);
-            }
-        } catch (OperationCanceledException) {
-        } finally {
-            _isExecuting = false;
+// TODO: JPB: (refactor) Remove Bool struct we have blittable bools or use IComponentData
+public readonly struct Bool {
+    private readonly byte _val;
+    public Bool(bool b) {
+        if (b) {
+            _val = 1;
+        } else {
+            _val = 0;
         }
     }
-
-    protected override IEnumerable<Task> GetScheduledTasks() => _taskQueue.ToList();
-
-    protected override void QueueTask(Task task) {
-        try {
-            _taskQueue.Add(task, _cancellationToken);
-        } catch (OperationCanceledException) {
-        }
-    }
-
-    protected override bool TryExecuteTaskInline(Task task, bool taskWasPreviouslyQueued) {
-        // We'd need to remove the task from queue if it was already queued. 
-        // That would be too hard.
-        if (taskWasPreviouslyQueued)
-            return false;
-
-        return _isExecuting && TryExecuteTask(task);
-    }
+    public static implicit operator bool(Bool b) => b._val != 0;
+    public static implicit operator Bool(bool b) => new Bool(b);
 }
-
+#endif
