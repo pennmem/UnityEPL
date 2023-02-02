@@ -20,14 +20,6 @@ public class Main : MonoBehaviour
         UnityEngine.Debug.Log("ThreadID - Start: " + Thread.CurrentThread.ManagedThreadId + " " + DateTime.Now);
         //UnityEngine.Debug.Log(ThreadPool.SetMinThreads(1, 1));
         //UnityEngine.Debug.Log(ThreadPool.SetMaxThreads(1, 1));
-
-        //testEventLoop.DelayedGet();
-        //testEventLoop.DelayedStop();
-        //testEventLoop.DelayedTriggerKeyPress(default);
-        //KeyMsg keyMsg = await testEventLoop.WaitOnKey(default);
-        //UnityEngine.Debug.Log("Start - WaitOnKey: " + keyMsg.key);
-        //await Task.Delay(2000);
-        //testEventLoop.DelayedGet();
     }
 
     // Update is called once per frame
