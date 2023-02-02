@@ -9,10 +9,15 @@ using UnityEngine;
 using Unity.VisualScripting;
 using Unity.Collections.LowLevel.Unsafe;
 using System.Diagnostics;
+using UnityEngine.UI;
+using Unity.Collections;
+using System.Text.RegularExpressions;
+using System.Text;
 
 public class Main : MonoBehaviour
 {
     const long delay = 10000000000;
+    InterfaceManager2 manager;
 
     // Start is called before the first frame update
     async void Start()
@@ -20,6 +25,10 @@ public class Main : MonoBehaviour
         UnityEngine.Debug.Log("ThreadID - Start: " + Thread.CurrentThread.ManagedThreadId + " " + DateTime.Now);
         //UnityEngine.Debug.Log(ThreadPool.SetMinThreads(1, 1));
         //UnityEngine.Debug.Log(ThreadPool.SetMaxThreads(1, 1));
+
+        manager = GameObject.Find("InterfaceManager").GetComponent<InterfaceManager2>();
+
+        //UnityEngine.Debug.Log(UnsafeUtility.IsBlittable(typeof(StackString)));
     }
 
     // Update is called once per frame
@@ -27,8 +36,6 @@ public class Main : MonoBehaviour
     {
         
     }
-
 }
-
 
 

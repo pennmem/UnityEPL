@@ -1,9 +1,11 @@
 using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class InterfaceManager2 : MonoBehaviour
 {
@@ -13,11 +15,11 @@ public class InterfaceManager2 : MonoBehaviour
     // can exist in a scene and that this object
     // is not destroyed when changing scenes
     //////////
-
+    
     private static InterfaceManager2 _instance;
 
     // pass references, rather than relying on Global
-    //    public static InterfaceManager Instance { get { return _instance; } }
+    //public static InterfaceManager2 Instance { get { return _instance; } }
 
     protected void Awake() {
         if (_instance != null && _instance != this) {
@@ -28,13 +30,35 @@ public class InterfaceManager2 : MonoBehaviour
         }
     }
 
+    //////////
+    // Singleton Boilerplate
+    // makes sure that only one Experiment Manager
+    // can exist in a scene and that this object
+    // is not destroyed when changing scenes
+    //////////
+
+    public ConcurrentQueue<IEnumerator> events = new ConcurrentQueue<IEnumerator>();
+
+    void Update() {
+        foreach (var e in events) {
+            StartCoroutine(e);
+        }
+    }
+
+    //////////
+    // Devices that can be accessed by managed
+    // scripts
+    //////////
+    public TextDisplayer textDisplayer;
+
     // Start is called before the first frame update
     void Start()
     {
+        textDisplayer = GameObject.Find("TextDisplayer").GetComponent<TextDisplayer>();
+        
+
         var exp = new TestExperiment4(this);
     }
-
-
 
     // TODO: JPB: Make InterfaceManager.Delay() pause aware
     public static async Task Delay(int millisecondsDelay) {

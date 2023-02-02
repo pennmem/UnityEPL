@@ -14,6 +14,7 @@ public class TestExperiment4 : ExperimentBase4 {
         DelayedTriggerKeyPress();
         KeyMsg keyMsg = await WaitOnKey(default);
         UnityEngine.Debug.Log("MainStates - WaitOnKey: " + keyMsg.key);
+        manager.textDisplayer.UpdateText("UpdateText");
         await Task.Delay(2000);
         await DelayedGet();
     }

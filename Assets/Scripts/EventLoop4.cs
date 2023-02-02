@@ -2,6 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Unity.Collections.LowLevel.Unsafe;
+using static Blittability;
 
 #if !UNITY_WEBGL || UNITY_EDITOR // System.Threading
 public class EventLoop4 {
@@ -165,61 +166,8 @@ public class EventLoop4 {
         return DoGet(async () => { return await func(tCopy, uCopy, vCopy, wCopy); });
     }
 
-    // AssertBlittable
-
-    protected static bool IsPassable(Type t) {
-        return UnsafeUtility.IsBlittable(t)
-            || t == typeof(bool)
-            || t == typeof(char);
-    }
-
-    // TODO: JPB: (feature) Maybe use IComponentData from com.unity.entities when it releases
-    //            This will also allow for bool and char to be included in the structs
-    //            https://docs.unity3d.com/Packages/com.unity.entities@0.17/api/Unity.Entities.IComponentData.html
-    protected static void AssertBlittable<T>(T t)
-            where T : struct {
-        if (!IsPassable(typeof(T))) {
-            throw new ArgumentException("The first argument is not a blittable type.");
-        }
-    }
-    protected static void AssertBlittable<T, U>(T t, U u)
-            where T : struct
-            where U : struct {
-        if (!IsPassable(typeof(T))) {
-            throw new ArgumentException("The first argument is not a blittable type.");
-        } else if (!IsPassable(typeof(U))) {
-            throw new ArgumentException("The second argument is not a blittable type.");
-        }
-    }
-    protected static void AssertBlittable<T, U, V>(T t, U u, V v)
-            where T : struct
-            where U : struct
-            where V : struct {
-        if (!IsPassable(typeof(T))) {
-            throw new ArgumentException("The first argument is not a blittable type.");
-        } else if (!IsPassable(typeof(U))) {
-            throw new ArgumentException("The second argument is not a blittable type.");
-        } else if (!IsPassable(typeof(V))) {
-            throw new ArgumentException("The third argument is not a blittable type.");
-        }
-    }
-    protected static void AssertBlittable<T, U, V, W>(T t, U u, V v, W w)
-            where T : struct
-            where U : struct
-            where V : struct
-            where W : struct {
-        if (!IsPassable(typeof(T))) {
-            throw new ArgumentException("The first argument is not a blittable type.");
-        } else if (!IsPassable(typeof(U))) {
-            throw new ArgumentException("The second argument is not a blittable type.");
-        } else if (!IsPassable(typeof(V))) {
-            throw new ArgumentException("The third argument is not a blittable type.");
-        } else if (!IsPassable(typeof(W))) {
-            throw new ArgumentException("The fourth argument is not a blittable type.");
-        }
-    }
+    
 }
-
 
 // TODO: JPB: (refactor) This may be able to cancel current running tasks
 //            This would require replacing the standard task scheduler with a SingleThreadTaskScheduler
