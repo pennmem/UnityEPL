@@ -31,28 +31,7 @@ public class InterfaceManager2 : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //var exp = new TestExperiment(this);
-    }
-
-    protected static IEnumerator WaitForSeconds(float seconds, TaskCompletionSource<bool> tcs) {
-        yield return new WaitForSeconds(seconds);
-        tcs?.SetResult(true);
-    }
-
-    protected static IEnumerator WaitForSeconds(float seconds, CancellationToken cancellationToken, TaskCompletionSource<bool> tcs) {
-        var endTime = Time.fixedTime + seconds;
-        Console.WriteLine(seconds);
-        Console.WriteLine(Time.fixedTime);
-        Console.WriteLine(endTime);
-        while (Time.fixedTime < endTime) {
-            if (cancellationToken.IsCancellationRequested) {
-                Console.WriteLine("CANCELLED");
-                tcs?.SetResult(false);
-                yield break;
-            }
-            yield return null;
-        }
-        tcs?.SetResult(true);
+        var exp = new TestExperiment4(this);
     }
 
     // TODO: JPB: Make InterfaceManager.Delay() pause aware
@@ -78,5 +57,26 @@ public class InterfaceManager2 : MonoBehaviour
 #endif
     }
 
+#if UNITY_WEBGL && !UNITY_EDITOR // System.Threading
+    protected static IEnumerator WaitForSeconds(float seconds, TaskCompletionSource<bool> tcs) {
+        yield return new WaitForSeconds(seconds);
+        tcs?.SetResult(true);
+    }
 
+    protected static IEnumerator WaitForSeconds(float seconds, CancellationToken cancellationToken, TaskCompletionSource<bool> tcs) {
+        var endTime = Time.fixedTime + seconds;
+        Console.WriteLine(seconds);
+        Console.WriteLine(Time.fixedTime);
+        Console.WriteLine(endTime);
+        while (Time.fixedTime < endTime) {
+            if (cancellationToken.IsCancellationRequested) {
+                Console.WriteLine("CANCELLED");
+                tcs?.SetResult(false);
+                yield break;
+            }
+            yield return null;
+        }
+        tcs?.SetResult(true);
+    }
+#endif
 }
