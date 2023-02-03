@@ -40,7 +40,8 @@ public class InterfaceManager2 : MonoBehaviour
     public ConcurrentQueue<IEnumerator> events = new ConcurrentQueue<IEnumerator>();
 
     void Update() {
-        foreach (var e in events) {
+        IEnumerator e; 
+        while (events.TryDequeue(out e)){
             StartCoroutine(e);
         }
     }

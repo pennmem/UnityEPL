@@ -318,10 +318,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1651240335}
-  - component: {fileID: 1651240334}
   - component: {fileID: 1651240338}
   - component: {fileID: 1651240337}
   - component: {fileID: 1651240336}
+  - component: {fileID: 1651240339}
   m_Layer: 0
   m_Name: TextDisplayer
   m_TagString: Untagged
@@ -329,19 +329,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1651240334
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1651240333}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 66155a2eb7ae24e01a0e205f39e64fd0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  tm: {fileID: 1651240336}
 --- !u!224 &1651240335
 RectTransform:
   m_ObjectHideFlags: 0
@@ -434,6 +421,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1651240333}
   m_CullTransparentMesh: 1
+--- !u!114 &1651240339
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1651240333}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c59ceaf7081904c8082b7cf4b8b87723, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tm: {fileID: 1651240336}
 --- !u!1 &1691830256
 GameObject:
   m_ObjectHideFlags: 0

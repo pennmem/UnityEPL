@@ -1,6 +1,7 @@
 // TODO: JPB: (refactor) Remove Bool and Char structs once we have blittable bools/chars or use IComponentData
 using System;
 using System.Text;
+using System.Xml.Linq;
 using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
 using Unity.VisualScripting;
@@ -27,6 +28,8 @@ public struct Bool {
     public static bool operator !=(Bool x, bool y) => !(x == y);
     public static bool operator ==(bool x, Bool y) => (y && x) || (!x && !y);
     public static bool operator !=(bool x, Bool y) => !(x == y);
+
+    public override string ToString() => ((bool)this).ToString();
 }
 
 public struct Char {
@@ -36,6 +39,7 @@ public struct Char {
     }
     public static implicit operator char(Char c) => (char)c._val;
     public static implicit operator Char(char c) => new Char(c);
+    public override string ToString() => ((char)_val).ToString();
 }
 
 public struct StackString {
@@ -60,6 +64,10 @@ public struct StackString {
     }
     public static implicit operator StackString(String s) {
         return new StackString(s);
+    }
+
+    public override string ToString() {
+        return this;
     }
 }
 

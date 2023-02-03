@@ -9,14 +9,22 @@ public class TestExperiment4 : ExperimentBase4 {
     }
 
     public override async Task MainStates() {
-        DelayedGet();
-        DelayedStop();
-        DelayedTriggerKeyPress();
-        KeyMsg keyMsg = await WaitOnKey(default);
-        UnityEngine.Debug.Log("MainStates - WaitOnKey: " + keyMsg.key);
-        manager.textDisplayer.UpdateText("UpdateText");
-        await Task.Delay(2000);
-        await DelayedGet();
+        //await Task.Delay(1000);
+        //manager.textDisplayer.UpdateText("UpdateText");
+        //await Task.Delay(1000);
+        await manager.textDisplayer.AwaitableUpdateText("AwaitableUpdateText");
+        await Task.Delay(1000);
+        manager.textDisplayer.UpdateText("DONE");
+        Debug.Log("DONE");
+
+        //DelayedGet();
+        //DelayedStop();
+        //DelayedTriggerKeyPress();
+        //KeyMsg keyMsg = await WaitOnKey(default);
+        //UnityEngine.Debug.Log("MainStates - WaitOnKey: " + keyMsg.key);
+        //manager.textDisplayer.UpdateText("UpdateText");
+        //await Task.Delay(2000);
+        //await DelayedGet();
     }
 }
 
