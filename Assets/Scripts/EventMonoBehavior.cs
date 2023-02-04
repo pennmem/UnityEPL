@@ -9,6 +9,7 @@ public abstract class EventMonoBehavior : MonoBehaviour {
     protected InterfaceManager2 manager;
     private bool _baseInvoked = false;
 
+    // TODO: JPB: Add this to documentation
     protected abstract void StartOverride();
     protected void Start() {
         manager = GameObject.Find("InterfaceManager").GetComponent<InterfaceManager2>();
