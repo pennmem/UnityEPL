@@ -1,6 +1,8 @@
 // TODO: JPB: (refactor) Remove Bool and Char structs once we have blittable bools/chars or use IComponentData
 using System;
+using System.Collections;
 using System.Text;
+using System.Threading.Tasks;
 using System.Xml.Linq;
 using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
@@ -71,7 +73,7 @@ public struct StackString {
     }
 }
 
-public static class StringExtensions {
+public static class UnityEplExtensions {
     public static NativeArray<UInt16> ToNativeArray(this string s) {
         var na = new NativeArray<UInt16>(s.Length, Allocator.Persistent);
         for (int i = 0; i < s.Length; ++i) {
@@ -85,6 +87,12 @@ public static class StringExtensions {
         byte[] asBytes = new byte[data.Length * sizeof(ushort)];
         Buffer.BlockCopy(data, 0, asBytes, 0, asBytes.Length);
         return Encoding.Unicode.GetString(asBytes);
+    }
+
+    public static IEnumerator ToEnumerator(this Task task) {
+        while (!task.IsCompleted) {
+            yield return null;
+        }
     }
 }
 

@@ -15,7 +15,9 @@ public class TestExperiment4 : ExperimentBase4 {
         await manager.textDisplayer.AwaitableUpdateText("AwaitableUpdateText");
         await Task.Delay(1000);
         manager.textDisplayer.UpdateText("DONE");
-        Debug.Log("DONE");
+        var a = await manager.textDisplayer.ReturnableUpdateText("ReturnableUpdateText");
+        Debug.Log("DoGet: " + a);
+
 
         //DelayedGet();
         //DelayedStop();
