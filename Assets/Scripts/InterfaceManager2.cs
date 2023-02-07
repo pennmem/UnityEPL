@@ -51,40 +51,42 @@ public class InterfaceManager2 : MonoBehaviour
     // scripts
     //////////
     public TextDisplayer textDisplayer;
+    public InputManager inputManager;
+    public VideoManager videoManager;
 
-    // Start is called before the first frame update
     void Start()
     {
         textDisplayer = GameObject.Find("TextDisplayer").GetComponent<TextDisplayer>();
-        
+        inputManager = this.transform.GetComponent<InputManager>();
+        videoManager = this.transform.GetComponent<VideoManager>();
 
         var exp = new TestExperiment4(this);
     }
 
     // TODO: JPB: Make InterfaceManager.Delay() pause aware
+#if !UNITY_WEBGL || UNITY_EDITOR // System.Threading
     public static async Task Delay(int millisecondsDelay) {
-#if UNITY_WEBGL && !UNITY_EDITOR // System.Threading
+        await Task.Delay(millisecondsDelay);
+    }
+
+    public static async Task Delay(int millisecondsDelay, CancellationToken cancellationToken) {
+        await Task.Delay(millisecondsDelay, cancellationToken);
+    }
+#else
+    public static async Task Delay(int millisecondsDelay) {
         var tcs = new TaskCompletionSource<bool>();
         float seconds = ((float)millisecondsDelay) / 1000;
         _instance.StartCoroutine(WaitForSeconds(seconds, tcs));
         await tcs.Task;
-#else
-        await Task.Delay(millisecondsDelay);
-#endif
     }
 
     public static async Task Delay(int millisecondsDelay, CancellationToken cancellationToken) {
-#if UNITY_WEBGL && !UNITY_EDITOR // System.Threading
         var tcs = new TaskCompletionSource<bool>();
         float seconds = ((float)millisecondsDelay) / 1000;
         _instance.StartCoroutine(WaitForSeconds(seconds, cancellationToken, tcs));
         await tcs.Task;
-#else
-        await Task.Delay(millisecondsDelay, cancellationToken);
-#endif
     }
 
-#if UNITY_WEBGL && !UNITY_EDITOR // System.Threading
     protected static IEnumerator WaitForSeconds(float seconds, TaskCompletionSource<bool> tcs) {
         yield return new WaitForSeconds(seconds);
         tcs?.SetResult(true);

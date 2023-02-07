@@ -54,6 +54,7 @@ NOTES:
 Important Coding Practices
 *************
 These are the important practices that are critical for all coders to understand and follow.
+- Do NOT use *Task.Delay()*. Instead, use *InterfaceManager.Delay()*. They act exactly the same, but InterfaceManager.Delay knows how to handle the single threaded nature of webgl
 
 *************
 Acronyms and Terms

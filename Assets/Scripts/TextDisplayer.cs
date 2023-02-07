@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class TextDisplayer : EventMonoBehavior {
+public class TextDisplayer : EventMonoBehaviour {
     const long delay = 10000000000;
     public TextMesh tm;
 
