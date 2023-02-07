@@ -76,7 +76,38 @@ public class EventLoop4 {
 
     // DoIn
 
-    // TODO: JPB: (feature) Add DoIn (and in the webgl version too)
+    // TODO: JPB: (refactor) Add wrapper functions around DoIn to remove warnings when using it
+
+    protected async void DoIn(int millisecondsDelay, Func<Task> func) {
+        await InterfaceManager2.Delay(millisecondsDelay);
+        Do(func);
+    }
+    protected async void DoIn<T>(int millisecondsDelay, Func<T, Task> func, T t)
+            where T : struct {
+        await InterfaceManager2.Delay(millisecondsDelay);
+        Do(func, t);
+    }
+    protected async void DoIn<T, U>(int millisecondsDelay, Func<T, U, Task> func, T t, U u)
+            where T : struct
+            where U : struct {
+        await InterfaceManager2.Delay(millisecondsDelay);
+        Do(func, t, u);
+    }
+    protected async void DoIn<T, U, V>(int millisecondsDelay, Func<T, U, V, Task> func, T t, U u, V v)
+            where T : struct
+            where U : struct
+            where V : struct {
+        await InterfaceManager2.Delay(millisecondsDelay);
+        Do(func, t, u, v);
+    }
+    protected async void DoIn<T, U, V, W>(int millisecondsDelay, Func<T, U, V, W, Task> func, T t, U u, V v, W w)
+            where T : struct
+            where U : struct
+            where V : struct
+            where W : struct {
+        await InterfaceManager2.Delay(millisecondsDelay);
+        Do(func, t, u, v, w);
+    }
 
     // DoRepeating
 
@@ -203,6 +234,36 @@ public class EventLoop4 {
     protected void Do<T, U, V, W>(Func<T, U, V, W, Task> func, T t, U u, V v, W w) {
         if (isStopped) throw new OperationCanceledException("EventLoop has been stopped already.");
         func(t, u, v, w);
+    }
+
+    // DoIn
+
+    // TODO: JPB: (refactor) Add wrapper functions around DoIn to remove warnings when using it
+
+    protected async void DoIn(int millisecondsDelay, Func<Task> func) {
+        if (isStopped) throw new OperationCanceledException("EventLoop has been stopped already.");
+        await InterfaceManager2.Delay(millisecondsDelay);
+        Do(func);
+    }
+    protected async void DoIn<T>(int millisecondsDelay, Func<T, Task> func, T t) {
+        if (isStopped) throw new OperationCanceledException("EventLoop has been stopped already.");
+        await InterfaceManager2.Delay(millisecondsDelay);
+        Do(func, t);
+    }
+    protected async void DoIn<T, U>(int millisecondsDelay, Func<T, U, Task> func, T t, U u) {
+        if (isStopped) throw new OperationCanceledException("EventLoop has been stopped already.");
+        await InterfaceManager2.Delay(millisecondsDelay);
+        Do(func, t, u);
+    }
+    protected async void DoIn<T, U, V>(int millisecondsDelay, Func<T, U, V, Task> func, T t, U u, V v) {
+        if (isStopped) throw new OperationCanceledException("EventLoop has been stopped already.");
+        await InterfaceManager2.Delay(millisecondsDelay);
+        Do(func, t, u ,v);
+    }
+    protected async void DoIn<T, U, V, W>(int millisecondsDelay, Func<T, U, V, W, Task> func, T t, U u, V v, W w) {
+        if (isStopped) throw new OperationCanceledException("EventLoop has been stopped already.");
+        await InterfaceManager2.Delay(millisecondsDelay);
+        Do(func, t, u, v, w);
     }
 
     // DoWaitFor
