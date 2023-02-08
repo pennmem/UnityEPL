@@ -63,7 +63,7 @@ public class InterfaceManager2 : MonoBehaviour
         var exp = new TestExperiment4(this);
     }
 
-    // TODO: JPB: Make InterfaceManager.Delay() pause aware
+    // TODO: JPB: (feature) Make InterfaceManager.Delay() pause aware
 #if !UNITY_WEBGL || UNITY_EDITOR // System.Threading
     public static async Task Delay(int millisecondsDelay) {
         await Task.Delay(millisecondsDelay);

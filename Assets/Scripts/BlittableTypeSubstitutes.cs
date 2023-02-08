@@ -32,6 +32,14 @@ public struct Bool {
     public static bool operator !=(bool x, Bool y) => !(x == y);
 
     public override string ToString() => ((bool)this).ToString();
+
+    public override bool Equals(object obj) {
+        return (obj is Bool b) && (_val == b._val);
+    }
+
+    public override int GetHashCode() {
+        return HashCode.Combine(_val);
+    }
 }
 
 public struct Char {

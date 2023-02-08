@@ -33,6 +33,7 @@ public sealed class SingleThreadTaskScheduler : TaskScheduler {
             }
         } catch (OperationCanceledException) {
         // TODO: JPB: (feature) Add catch handler for Tasks that throw and exception
+        //            Send them to an error notification in the task
         } finally {
             _isExecuting = false;
         }

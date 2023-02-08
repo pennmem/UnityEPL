@@ -40,18 +40,3 @@ public class TestExperiment4 : ExperimentBase4 {
         //await DelayedGet();
     }
 }
-
-public class TestExperiment : ExperimentBase2 {
-    public TestExperiment(InterfaceManager2 manager) : base(manager) {
-        Run();
-    }
-
-    public override IEnumerator<IEnumerator> MainStates() {
-        yield return s1();
-        yield return OuterEnumerator();
-    }
-
-    public IEnumerator s1() {
-        yield return A();
-    }
-}

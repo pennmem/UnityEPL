@@ -7,16 +7,14 @@ using static Blittability;
 
 public abstract class EventMonoBehaviour : MonoBehaviour {
     protected InterfaceManager2 manager;
-    private bool _baseInvoked = false;
 
-    // TODO: JPB: Add this to documentation
     protected abstract void StartOverride();
     protected void Start() {
         manager = GameObject.Find("InterfaceManager").GetComponent<InterfaceManager2>();
         StartOverride();
     }
 
-    // TODO: JPB: Add support for cancellation tokens in EventMonoBehavior Do functions
+    // TODO: JPB: (feature) Add support for cancellation tokens in EventMonoBehavior Do functions
 
     // Do
 

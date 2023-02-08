@@ -197,11 +197,10 @@ public class EventLoop4 {
 
     
 }
-
-// TODO: JPB: (refactor) This may be able to cancel current running tasks
+#else
+// TODO: JPB: (refactor) The EventLoop for webgl may be able to cancel current running tasks (while they are running)
 //            This would require replacing the standard task scheduler with a SingleThreadTaskScheduler
 //            Not sure how this would affect unity, because it would be on its thread...
-#else
 public class EventLoop4 {
     protected bool isStopped = false;
 

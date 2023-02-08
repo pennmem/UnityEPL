@@ -20,7 +20,7 @@ public class Main : MonoBehaviour
     InterfaceManager2 manager;
 
     // Start is called before the first frame update
-    async void Start()
+    void Start()
     {
         UnityEngine.Debug.Log("ThreadID - Start: " + Thread.CurrentThread.ManagedThreadId + " " + DateTime.Now);
         //UnityEngine.Debug.Log(ThreadPool.SetMinThreads(1, 1));
