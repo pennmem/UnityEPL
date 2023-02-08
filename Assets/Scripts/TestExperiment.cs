@@ -30,7 +30,6 @@ public class TestExperiment4 : ExperimentBase4 {
         var key = await manager.inputManager.GetKey();
         Debug.Log("Got key " + key);
 
-
         //DelayedGet();
         //DelayedStop();
         //DelayedTriggerKeyPress();

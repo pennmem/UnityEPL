@@ -76,8 +76,6 @@ public class EventLoop4 {
 
     // DoIn
 
-    // TODO: JPB: (refactor) Add wrapper functions around DoIn to remove warnings when using it
-
     protected async void DoIn(int millisecondsDelay, Func<Task> func) {
         await InterfaceManager2.Delay(millisecondsDelay);
         Do(func);
@@ -237,8 +235,6 @@ public class EventLoop4 {
     }
 
     // DoIn
-
-    // TODO: JPB: (refactor) Add wrapper functions around DoIn to remove warnings when using it
 
     protected async void DoIn(int millisecondsDelay, Func<Task> func) {
         if (isStopped) throw new OperationCanceledException("EventLoop has been stopped already.");
