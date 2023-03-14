@@ -90,20 +90,20 @@ public class EventLoop4 {
 
     // DoIn
 
-    protected async void DoIn(int delayMs, Func<Task> func) {
+    protected void DoIn(int delayMs, Func<Task> func) {
         Do(async () => {
             await InterfaceManager2.Delay(delayMs);
             await func();
         });
     }
-    protected async void DoIn<T>(int delayMs, Func<T, Task> func, T t)
+    protected void DoIn<T>(int delayMs, Func<T, Task> func, T t)
             where T : struct {
         Do(async () => {
             await InterfaceManager2.Delay(delayMs);
             await func(t);
         });
     }
-    protected async void DoIn<T, U>(int delayMs, Func<T, U, Task> func, T t, U u)
+    protected void DoIn<T, U>(int delayMs, Func<T, U, Task> func, T t, U u)
             where T : struct
             where U : struct {
         Do(async () => {
@@ -111,7 +111,7 @@ public class EventLoop4 {
             await func(t, u);
         });
     }
-    protected async void DoIn<T, U, V>(int delayMs, Func<T, U, V, Task> func, T t, U u, V v)
+    protected void DoIn<T, U, V>(int delayMs, Func<T, U, V, Task> func, T t, U u, V v)
             where T : struct
             where U : struct
             where V : struct {
@@ -120,7 +120,7 @@ public class EventLoop4 {
             await func(t, u, v);
         });
     }
-    protected async void DoIn<T, U, V, W>(int delayMs, Func<T, U, V, W, Task> func, T t, U u, V v, W w)
+    protected void DoIn<T, U, V, W>(int delayMs, Func<T, U, V, W, Task> func, T t, U u, V v, W w)
             where T : struct
             where U : struct
             where V : struct
@@ -132,6 +132,9 @@ public class EventLoop4 {
     }
 
     // DoRepeating
+
+    // TODO: JPB: (bug) Make DoRepeating wait for the correct amount of time
+
     protected CancellationTokenSource DoRepeating(int delayMs, uint iterations, int intervalMs, Func<Task> func) {
         if (intervalMs <= 0) { throw new ArgumentOutOfRangeException("intervalMs <= 0");}
         CancellationTokenSource cts = new();
