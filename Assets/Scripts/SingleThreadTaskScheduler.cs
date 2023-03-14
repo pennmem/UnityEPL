@@ -6,6 +6,9 @@ using System.Threading;
 using System.Threading.Tasks;
 
 // Origin: https://stackoverflow.com/a/30726903
+// If something more complex is needed in the future, look at the following links
+// https://devblogs.microsoft.com/pfxteam/parallelextensionsextras-tour-7-additional-taskschedulers/
+// https://github.com/ChadBurggraf/parallel-extensions-extras/tree/master/TaskSchedulers
 public sealed class SingleThreadTaskScheduler : TaskScheduler {
     [ThreadStatic]
     private static bool _isExecuting;
@@ -32,8 +35,9 @@ public sealed class SingleThreadTaskScheduler : TaskScheduler {
                 TryExecuteTask(task);
             }
         } catch (OperationCanceledException) {
-        // TODO: JPB: (feature) Add catch handler for Tasks that throw and exception
-        //            Send them to an error notification in the task
+            // TODO: JPB: (feature) Add catch handler for Tasks that throw and exception
+            //            Send them to an error notification in the task
+            //            Also, look at this link: https://www.codeguru.com/csharp/async-methods-exception-handling/
         } finally {
             _isExecuting = false;
         }

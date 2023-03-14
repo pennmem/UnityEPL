@@ -64,6 +64,7 @@ public class InterfaceManager2 : MonoBehaviour
     }
 
     // TODO: JPB: (feature) Make InterfaceManager.Delay() pause aware
+    // https://devblogs.microsoft.com/pfxteam/cooperatively-pausing-async-methods/
 #if !UNITY_WEBGL || UNITY_EDITOR // System.Threading
     public static async Task Delay(int millisecondsDelay) {
         await Task.Delay(millisecondsDelay);

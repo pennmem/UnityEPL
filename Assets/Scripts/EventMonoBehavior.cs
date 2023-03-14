@@ -5,6 +5,12 @@ using UnityEngine;
 
 using static Blittability;
 
+// TODO: JPB: (refactor) Clean up EventMonoBehaviour with UniTask
+//            https://github.com/Cysharp/UniTask
+//            https://cysharp.github.io/UniTask/api/Cysharp.Threading.Tasks.UniTaskExtensions.html#Cysharp_Threading_Tasks_UniTaskExtensions_AsUniTask_Task_System_Boolean_
+//            https://cysharp.github.io/UniTask/api/Cysharp.Threading.Tasks.UniTaskExtensions.html#Cysharp_Threading_Tasks_UniTaskExtensions_AsTask_Cysharp_Threading_Tasks_UniTask_
+//            https://cysharp.github.io/UniTask/api/Cysharp.Threading.Tasks.UniTaskExtensions.html
+
 public abstract class EventMonoBehaviour : MonoBehaviour {
     protected InterfaceManager2 manager;
 

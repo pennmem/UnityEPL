@@ -4,7 +4,15 @@ using System.Threading.Tasks;
 using Unity.Collections.LowLevel.Unsafe;
 using static Blittability;
 
-#if !UNITY_WEBGL || UNITY_EDITOR // System.Threading
+// TODO: JPB: (feature) There may be a way to allow WebGL to use multiple threads
+//            You would need to write the async underbelly in c++ and link it into unity
+//            https://pixel.engineer/posts/cross-platform-cc++-plugins-in-unity/
+//            Also, turn on PlayerSettings.WebGL.threadsSupport
+//            https://docs.unity3d.com/ScriptReference/PlayerSettings.WebGL-threadsSupport.html
+//            I would make sure to check blittability on the c# side
+//            This is also likely not worth the effort, unless WebGL becomes super important some day
+
+
 public class EventLoop4 {
     protected SingleThreadTaskScheduler scheduler;
     protected CancellationTokenSource cts = new CancellationTokenSource();
@@ -19,7 +27,6 @@ public class EventLoop4 {
 
     public void Stop() {
         cts.Cancel();
-        Task.Factory.StartNew(() => { }, cts.Token, TaskCreationOptions.DenyChildAttach, scheduler);
     }
 
     // Do
@@ -35,7 +42,14 @@ public class EventLoop4 {
     //            Intro to Source Generators: https://devblogs.microsoft.com/dotnet/introducing-c-source-generators/
 
     protected void Do(Func<Task> func) {
+        if (cts.IsCancellationRequested) {
+            throw new OperationCanceledException("EventLoop has been stopped already.");
+        }
+#if !UNITY_WEBGL || UNITY_EDITOR // System.Threading
         Task.Factory.StartNew(func, cts.Token, TaskCreationOptions.DenyChildAttach, scheduler);
+#else
+        func();
+#endif
     }
     protected void Do<T>(Func<T, Task> func, T t)
             where T : struct {
@@ -76,45 +90,155 @@ public class EventLoop4 {
 
     // DoIn
 
-    protected async void DoIn(int millisecondsDelay, Func<Task> func) {
-        await InterfaceManager2.Delay(millisecondsDelay);
-        Do(func);
+    protected async void DoIn(int delayMs, Func<Task> func) {
+        Do(async () => {
+            await InterfaceManager2.Delay(delayMs);
+            await func();
+        });
     }
-    protected async void DoIn<T>(int millisecondsDelay, Func<T, Task> func, T t)
+    protected async void DoIn<T>(int delayMs, Func<T, Task> func, T t)
             where T : struct {
-        await InterfaceManager2.Delay(millisecondsDelay);
-        Do(func, t);
+        Do(async () => {
+            await InterfaceManager2.Delay(delayMs);
+            await func(t);
+        });
     }
-    protected async void DoIn<T, U>(int millisecondsDelay, Func<T, U, Task> func, T t, U u)
+    protected async void DoIn<T, U>(int delayMs, Func<T, U, Task> func, T t, U u)
             where T : struct
             where U : struct {
-        await InterfaceManager2.Delay(millisecondsDelay);
-        Do(func, t, u);
+        Do(async () => {
+            await InterfaceManager2.Delay(delayMs);
+            await func(t, u);
+        });
     }
-    protected async void DoIn<T, U, V>(int millisecondsDelay, Func<T, U, V, Task> func, T t, U u, V v)
+    protected async void DoIn<T, U, V>(int delayMs, Func<T, U, V, Task> func, T t, U u, V v)
             where T : struct
             where U : struct
             where V : struct {
-        await InterfaceManager2.Delay(millisecondsDelay);
-        Do(func, t, u, v);
+        Do(async () => {
+            await InterfaceManager2.Delay(delayMs);
+            await func(t, u, v);
+        });
     }
-    protected async void DoIn<T, U, V, W>(int millisecondsDelay, Func<T, U, V, W, Task> func, T t, U u, V v, W w)
+    protected async void DoIn<T, U, V, W>(int delayMs, Func<T, U, V, W, Task> func, T t, U u, V v, W w)
             where T : struct
             where U : struct
             where V : struct
             where W : struct {
-        await InterfaceManager2.Delay(millisecondsDelay);
-        Do(func, t, u, v, w);
+        Do(async () => {
+            await InterfaceManager2.Delay(delayMs);
+            await func(t, u, v, w);
+        });
     }
 
     // DoRepeating
-
-    // TODO: JPB: (feature) Add DoRepeating (and in the webgl version too)
+    protected CancellationTokenSource DoRepeating(int delayMs, uint iterations, int intervalMs, Func<Task> func) {
+        if (intervalMs <= 0) { throw new ArgumentOutOfRangeException("intervalMs <= 0");}
+        CancellationTokenSource cts = new();
+        Do(async () => {
+            if (delayMs > 0) {
+                await InterfaceManager2.Delay(delayMs);
+            }
+            uint iterationsLeft = iterations;
+            while (iterationsLeft != 0) { // A negative value will loop forever
+                if (cts.IsCancellationRequested) { break; }
+                --iterationsLeft;
+                await func();
+                await InterfaceManager2.Delay(intervalMs);
+            }
+        });
+        return cts;
+    }
+    protected CancellationTokenSource DoRepeating<T>(int delayMs, uint iterations, int intervalMs, Func<T, Task> func, T t)
+            where T : struct {
+        if (intervalMs <= 0) { throw new ArgumentOutOfRangeException("intervalMs <= 0");}
+        CancellationTokenSource cts = new();
+        Do(async () => {
+            if (delayMs > 0) {
+                await InterfaceManager2.Delay(delayMs);
+            }
+            uint iterationsLeft = iterations;
+            while (iterationsLeft != 0) { // A negative value will loop forever
+                if (cts.IsCancellationRequested) { break; }
+                --iterationsLeft;
+                await func(t);
+                await InterfaceManager2.Delay(intervalMs);
+            }
+        });
+        return cts;
+    }
+    protected CancellationTokenSource DoRepeating<T, U>(int delayMs, uint iterations, int intervalMs, Func<T, U, Task> func, T t, U u)
+            where T : struct
+            where U : struct {
+        if (intervalMs <= 0) { throw new ArgumentOutOfRangeException("intervalMs <= 0");}
+        CancellationTokenSource cts = new();
+        Do(async () => {
+            if (delayMs > 0) {
+                await InterfaceManager2.Delay(delayMs);
+            }
+            uint iterationsLeft = iterations;
+            while (iterationsLeft != 0) { // A negative value will loop forever
+                if (cts.IsCancellationRequested) { break; }
+                --iterationsLeft;
+                await func(t, u);
+                await InterfaceManager2.Delay(intervalMs);
+            }
+        });
+        return cts;
+    }
+    protected CancellationTokenSource DoRepeating<T, U, V>(int delayMs, uint iterations, int intervalMs, Func<T, U, V, Task> func, T t, U u, V v)
+            where T : struct
+            where U : struct
+            where V : struct {
+        if (intervalMs <= 0) { throw new ArgumentOutOfRangeException("intervalMs <= 0");}
+        CancellationTokenSource cts = new();
+        Do(async () => {
+            if (delayMs > 0) {
+                await InterfaceManager2.Delay(delayMs);
+            }
+            uint iterationsLeft = iterations;
+            while (iterationsLeft != 0) { // A negative value will loop forever
+                if (cts.IsCancellationRequested) { break; }
+                --iterationsLeft;
+                await func(t, u, v);
+                await InterfaceManager2.Delay(intervalMs);
+            }
+        });
+        return cts;
+    }
+    protected CancellationTokenSource DoRepeating<T, U, V, W>(int delayMs, uint iterations, int intervalMs, Func<T, U, V, W, Task> func, T t, U u, V v, W w)
+            where T : struct
+            where U : struct
+            where V : struct
+            where W : struct {
+        if (intervalMs <= 0) { throw new ArgumentOutOfRangeException("intervalMs <= 0");}
+        CancellationTokenSource cts = new();
+        Do(async () => {
+            if (delayMs > 0) {
+                await InterfaceManager2.Delay(delayMs);
+            }
+            uint iterationsLeft = iterations;
+            while (iterationsLeft != 0) { // A negative value will loop forever
+                if (cts.IsCancellationRequested) { break; }
+                --iterationsLeft;
+                await func(t, u, v, w);
+                await InterfaceManager2.Delay(intervalMs);
+            }
+        });
+        return cts;
+    }
 
     // DoWaitFor
 
     protected Task DoWaitFor(Func<Task> func) {
+        if (cts.IsCancellationRequested) {
+            throw new OperationCanceledException("EventLoop has been stopped already.");
+        }
+#if !UNITY_WEBGL || UNITY_EDITOR // System.Threading
         return Task.Factory.StartNew(func, cts.Token, TaskCreationOptions.DenyChildAttach, scheduler).Unwrap();
+#else
+        return func();
+#endif
     }
     protected Task DoWaitFor<T>(Func<T, Task> func, T t)
             where T : struct {
@@ -156,7 +280,11 @@ public class EventLoop4 {
     // DoGet
 
     protected Task<Z> DoGet<Z>(Func<Task<Z>> func) {
+#if !UNITY_WEBGL || UNITY_EDITOR // System.Threading
         return Task.Factory.StartNew(func, cts.Token, TaskCreationOptions.DenyChildAttach, scheduler).Unwrap();
+#else
+        return func();
+#endif
     }
     protected Task<Z> DoGet<T, Z>(Func<T, Task<Z>> func, T t)
             where T : struct {
@@ -194,121 +322,4 @@ public class EventLoop4 {
         W wCopy = w;
         return DoGet(async () => { return await func(tCopy, uCopy, vCopy, wCopy); });
     }
-
-    
 }
-#else
-// TODO: JPB: (refactor) The EventLoop for webgl may be able to cancel current running tasks (while they are running)
-//            This would require replacing the standard task scheduler with a SingleThreadTaskScheduler
-//            Not sure how this would affect unity, because it would be on its thread...
-public class EventLoop4 {
-    protected bool isStopped = false;
-
-    public EventLoop4() {}
-
-    ~EventLoop4() {
-        Stop();
-    }
-
-    // Do
-
-    protected void Do(Func<Task> func) {
-        if (isStopped) throw new OperationCanceledException("EventLoop has been stopped already.");
-        func();
-    }
-    protected void Do<T>(Func<T, Task> func, T t) {
-        if (isStopped) throw new OperationCanceledException("EventLoop has been stopped already.");
-        func(t);
-    }
-    protected void Do<T, U>(Func<T, U, Task> func, T t, U u) {
-        if (isStopped) throw new OperationCanceledException("EventLoop has been stopped already.");
-        func(t, u);
-    }
-    protected void Do<T, U, V>(Func<T, U, V, Task> func, T t, U u, V v) {
-        if (isStopped) throw new OperationCanceledException("EventLoop has been stopped already.");
-        func(t, u, v);
-    }
-    protected void Do<T, U, V, W>(Func<T, U, V, W, Task> func, T t, U u, V v, W w) {
-        if (isStopped) throw new OperationCanceledException("EventLoop has been stopped already.");
-        func(t, u, v, w);
-    }
-
-    // DoIn
-
-    protected async void DoIn(int millisecondsDelay, Func<Task> func) {
-        if (isStopped) throw new OperationCanceledException("EventLoop has been stopped already.");
-        await InterfaceManager2.Delay(millisecondsDelay);
-        Do(func);
-    }
-    protected async void DoIn<T>(int millisecondsDelay, Func<T, Task> func, T t) {
-        if (isStopped) throw new OperationCanceledException("EventLoop has been stopped already.");
-        await InterfaceManager2.Delay(millisecondsDelay);
-        Do(func, t);
-    }
-    protected async void DoIn<T, U>(int millisecondsDelay, Func<T, U, Task> func, T t, U u) {
-        if (isStopped) throw new OperationCanceledException("EventLoop has been stopped already.");
-        await InterfaceManager2.Delay(millisecondsDelay);
-        Do(func, t, u);
-    }
-    protected async void DoIn<T, U, V>(int millisecondsDelay, Func<T, U, V, Task> func, T t, U u, V v) {
-        if (isStopped) throw new OperationCanceledException("EventLoop has been stopped already.");
-        await InterfaceManager2.Delay(millisecondsDelay);
-        Do(func, t, u ,v);
-    }
-    protected async void DoIn<T, U, V, W>(int millisecondsDelay, Func<T, U, V, W, Task> func, T t, U u, V v, W w) {
-        if (isStopped) throw new OperationCanceledException("EventLoop has been stopped already.");
-        await InterfaceManager2.Delay(millisecondsDelay);
-        Do(func, t, u, v, w);
-    }
-
-    // DoWaitFor
-
-    protected Task DoWaitFor(Func<Task> func) {
-        if (isStopped) throw new OperationCanceledException("EventLoop has been stopped already.");
-        return func();
-    }
-    protected Task DoWaitFor<T>(Func<T, Task> func, T t) {
-        if (isStopped) throw new OperationCanceledException("EventLoop has been stopped already.");
-        return func(t);
-    }
-    protected Task DoWaitFor<T, U>(Func<T, U, Task> func, T t, U u) {
-        if (isStopped) throw new OperationCanceledException("EventLoop has been stopped already.");
-        return func(t, u);
-    }
-    protected Task DoWaitFor<T, U, V>(Func<T, U, V, Task> func, T t, U u, V v) {
-        if (isStopped) throw new OperationCanceledException("EventLoop has been stopped already.");
-        return func(t, u, v);
-    }
-    protected Task DoWaitFor<T, U, V, W>(Func<T, U, V, W, Task> func, T t, U u, V v, W w) {
-        if (isStopped) throw new OperationCanceledException("EventLoop has been stopped already.");
-        return func(t, u, v, w);
-    }
-
-    // DoGet
-
-    protected Task<Z> DoGet<Z>(Func<Task<Z>> func) {
-        if (isStopped) throw new OperationCanceledException("EventLoop has been stopped already.");
-        return func();
-    }
-    protected Task<Z> DoGet<T, Z>(Func<T, Task<Z>> func, T t) {
-        if (isStopped) throw new OperationCanceledException("EventLoop has been stopped already.");
-        return func(t);
-    }
-    protected Task<Z> DoGet<T, U, Z>(Func<T, U, Task<Z>> func, T t, U u) {
-        if (isStopped) throw new OperationCanceledException("EventLoop has been stopped already.");
-        return func(t, u);
-    }
-    protected Task<Z> DoGet<T, U, V, Z>(Func<T, U, V, Task<Z>> func, T t, U u, V v) {
-        if (isStopped) throw new OperationCanceledException("EventLoop has been stopped already.");
-        return func(t, u, v);
-    }
-    protected Task<Z> DoGet<T, U, V, W, Z>(Func<T, U, V, W, Task<Z>> func, T t, U u, V v, W w) {
-        if (isStopped) throw new OperationCanceledException("EventLoop has been stopped already.");
-        return func(t, u, v, w);
-    }
-
-    public void Stop() {
-        isStopped = true;
-    }
-}
-#endif

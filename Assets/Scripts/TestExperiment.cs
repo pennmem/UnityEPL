@@ -17,15 +17,16 @@ public class TestExperiment4 : ExperimentBase4 {
     }
 
     public override async Task MainStates() {
-        //await InterfaceManager2.Delay(1000);
-        //manager.textDisplayer.UpdateText("UpdateText");
-        //await InterfaceManager2.Delay(1000);
         await manager.textDisplayer.AwaitableUpdateText("AwaitableUpdateText");
         await InterfaceManager2.Delay(1000);
         manager.textDisplayer.UpdateText("DONE");
         var a = await manager.textDisplayer.ReturnableUpdateText("ReturnableUpdateText");
         Debug.Log("DoGet: " + a);
 
+        //var cts = DoRepeating(1000, 10, 500, async () => { Debug.Log("Repeat"); });
+        //await manager.inputManager.GetKey();
+        //cts.Cancel();
+        //await manager.inputManager.GetKey();
 
         var key = await manager.inputManager.GetKey();
         Debug.Log("Got key " + key);

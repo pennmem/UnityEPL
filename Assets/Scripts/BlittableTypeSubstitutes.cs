@@ -1,4 +1,3 @@
-// TODO: JPB: (refactor) Remove Bool and Char structs once we have blittable bools/chars or use IComponentData
 using System;
 using System.Collections;
 using System.Text;
@@ -7,6 +6,11 @@ using System.Xml.Linq;
 using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
 using Unity.VisualScripting;
+
+// Information on blittability
+// https://learn.microsoft.com/en-us/dotnet/framework/interop/blittable-and-non-blittable-types
+
+// TODO: JPB: (refactor) Remove Bool and Char structs once we have blittable bools/chars or use IComponentData
 
 public struct Bool {
     private byte _val;
