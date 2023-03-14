@@ -19,6 +19,12 @@ public class EventLoop4 {
 
     public EventLoop4() {
         scheduler = new SingleThreadTaskScheduler(cts.Token);
+
+        // Init threadlocal variables
+        Do(async () => {
+            var _ = Clock.UtcNow;
+            await InterfaceManager2.Delay(1);
+        });
     }
 
     ~EventLoop4() {
@@ -40,6 +46,17 @@ public class EventLoop4 {
     //            Get it working in unity: https://medium.com/@EnescanBektas/using-source-generators-in-the-unity-game-engine-140ff0cd0dc
     //            This may also currently requires Roslyn https://forum.unity.com/threads/released-roslyn-c-runtime-c-compiler.651505/
     //            Intro to Source Generators: https://devblogs.microsoft.com/dotnet/introducing-c-source-generators/
+
+    protected void Do(Action func) {
+        if (cts.IsCancellationRequested) {
+            throw new OperationCanceledException("EventLoop has been stopped already.");
+        }
+#if !UNITY_WEBGL || UNITY_EDITOR // System.Threading
+        Task.Factory.StartNew(func, cts.Token, TaskCreationOptions.DenyChildAttach, scheduler);
+#else
+        func();
+#endif
+    }
 
     protected void Do(Func<Task> func) {
         if (cts.IsCancellationRequested) {
@@ -156,7 +173,7 @@ public class EventLoop4 {
             where T : struct {
         if (intervalMs <= 0) { throw new ArgumentOutOfRangeException("intervalMs <= 0");}
         CancellationTokenSource cts = new();
-        Do(async () => {
+        Do(async (t) => {
             if (delayMs > 0) {
                 await InterfaceManager2.Delay(delayMs);
             }
@@ -167,7 +184,7 @@ public class EventLoop4 {
                 await func(t);
                 await InterfaceManager2.Delay(intervalMs);
             }
-        });
+        }, t);
         return cts;
     }
     protected CancellationTokenSource DoRepeating<T, U>(int delayMs, uint iterations, int intervalMs, Func<T, U, Task> func, T t, U u)
