@@ -67,14 +67,32 @@ public class InterfaceManager2 : MonoBehaviour
     // https://devblogs.microsoft.com/pfxteam/cooperatively-pausing-async-methods/
 #if !UNITY_WEBGL || UNITY_EDITOR // System.Threading
     public static async Task Delay(int millisecondsDelay) {
+        if (millisecondsDelay < 0) {
+            throw new ArgumentOutOfRangeException($"millisecondsDelay <= 0 ({millisecondsDelay})");
+        } else if (millisecondsDelay == 0) {
+            return;
+        }
+
         await Task.Delay(millisecondsDelay);
     }
 
     public static async Task Delay(int millisecondsDelay, CancellationToken cancellationToken) {
+        if (millisecondsDelay < 0) {
+            throw new ArgumentOutOfRangeException($"millisecondsDelay <= 0 ({millisecondsDelay})"); }
+        else if (millisecondsDelay == 0) {
+            return;
+        }
+
         await Task.Delay(millisecondsDelay, cancellationToken);
     }
 #else
     public static async Task Delay(int millisecondsDelay) {
+        if (millisecondsDelay < 0) {
+            throw new ArgumentOutOfRangeException($"millisecondsDelay <= 0 ({millisecondsDelay})"); }
+        else if (millisecondsDelay == 0) {
+            return;
+        }
+
         var tcs = new TaskCompletionSource<bool>();
         float seconds = ((float)millisecondsDelay) / 1000;
         _instance.StartCoroutine(WaitForSeconds(seconds, tcs));
@@ -82,6 +100,12 @@ public class InterfaceManager2 : MonoBehaviour
     }
 
     public static async Task Delay(int millisecondsDelay, CancellationToken cancellationToken) {
+        if (millisecondsDelay < 0) {
+            throw new ArgumentOutOfRangeException($"millisecondsDelay <= 0 ({millisecondsDelay})"); }
+        else if (millisecondsDelay == 0) {
+            return;
+        }
+
         var tcs = new TaskCompletionSource<bool>();
         float seconds = ((float)millisecondsDelay) / 1000;
         _instance.StartCoroutine(WaitForSeconds(seconds, cancellationToken, tcs));

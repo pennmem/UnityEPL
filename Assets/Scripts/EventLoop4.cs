@@ -150,101 +150,101 @@ public class EventLoop4 {
 
     // DoRepeating
 
-    // TODO: JPB: (bug) Make DoRepeating wait for the correct amount of time
-
-    protected CancellationTokenSource DoRepeating(int delayMs, uint iterations, int intervalMs, Func<Task> func) {
-        if (intervalMs <= 0) { throw new ArgumentOutOfRangeException("intervalMs <= 0");}
+    protected CancellationTokenSource DoRepeating(int delayMs, int intervalMs, uint? iterations, Func<Task> func) {
+        if (intervalMs <= 0) {
+            throw new ArgumentOutOfRangeException($"intervalMs <= 0 ({intervalMs})");
+        }
         CancellationTokenSource cts = new();
         Do(async () => {
-            if (delayMs > 0) {
-                await InterfaceManager2.Delay(delayMs);
-            }
-            uint iterationsLeft = iterations;
-            while (iterationsLeft != 0) { // A negative value will loop forever
+            await InterfaceManager2.Delay(delayMs);
+
+            uint totalIterations = iterations ?? uint.MaxValue;
+            var initTime = Clock.UtcNow;
+            for (int i = 0; i < totalIterations; ++i) {
                 if (cts.IsCancellationRequested) { break; }
-                --iterationsLeft;
                 await func();
-                await InterfaceManager2.Delay(intervalMs);
+                var delayTime = (i + 1) * intervalMs - (Clock.UtcNow - initTime).TotalMilliseconds;
+                await InterfaceManager2.Delay((int)delayTime);
             }
         });
         return cts;
     }
-    protected CancellationTokenSource DoRepeating<T>(int delayMs, uint iterations, int intervalMs, Func<T, Task> func, T t)
+    protected CancellationTokenSource DoRepeating<T>(int delayMs, int intervalMs, uint? iterations, Func<T, Task> func, T t)
             where T : struct {
-        if (intervalMs <= 0) { throw new ArgumentOutOfRangeException("intervalMs <= 0");}
+        if (intervalMs <= 0) { throw new ArgumentOutOfRangeException($"intervalMs <= 0 ({intervalMs})");}
         CancellationTokenSource cts = new();
         Do(async (t) => {
-            if (delayMs > 0) {
-                await InterfaceManager2.Delay(delayMs);
-            }
-            uint iterationsLeft = iterations;
-            while (iterationsLeft != 0) { // A negative value will loop forever
+            await InterfaceManager2.Delay(delayMs);
+
+            uint totalIterations = iterations ?? uint.MaxValue;
+            var initTime = Clock.UtcNow;
+            for (int i = 0; i < totalIterations; ++i) {
                 if (cts.IsCancellationRequested) { break; }
-                --iterationsLeft;
                 await func(t);
-                await InterfaceManager2.Delay(intervalMs);
+                var delayTime = (i + 1) * intervalMs - (Clock.UtcNow - initTime).TotalMilliseconds;
+                await InterfaceManager2.Delay((int)delayTime);
             }
         }, t);
         return cts;
     }
-    protected CancellationTokenSource DoRepeating<T, U>(int delayMs, uint iterations, int intervalMs, Func<T, U, Task> func, T t, U u)
+    protected CancellationTokenSource DoRepeating<T, U>(int delayMs, int intervalMs, uint? iterations, Func<T, U, Task> func, T t, U u)
             where T : struct
             where U : struct {
-        if (intervalMs <= 0) { throw new ArgumentOutOfRangeException("intervalMs <= 0");}
+        if (intervalMs <= 0) { throw new ArgumentOutOfRangeException($"intervalMs <= 0 ({intervalMs})");}
         CancellationTokenSource cts = new();
-        Do(async () => {
-            if (delayMs > 0) {
-                await InterfaceManager2.Delay(delayMs);
-            }
-            uint iterationsLeft = iterations;
-            while (iterationsLeft != 0) { // A negative value will loop forever
+        Do(async (t, u) => {
+            await InterfaceManager2.Delay(delayMs);
+
+            uint totalIterations = iterations ?? uint.MaxValue;
+            var initTime = Clock.UtcNow;
+            for (int i = 0; i < totalIterations; ++i) {
                 if (cts.IsCancellationRequested) { break; }
-                --iterationsLeft;
                 await func(t, u);
-                await InterfaceManager2.Delay(intervalMs);
+                var delayTime = (i + 1) * intervalMs - (Clock.UtcNow - initTime).TotalMilliseconds;
+                await InterfaceManager2.Delay((int)delayTime);
             }
-        });
+        }, t, u);
         return cts;
     }
-    protected CancellationTokenSource DoRepeating<T, U, V>(int delayMs, uint iterations, int intervalMs, Func<T, U, V, Task> func, T t, U u, V v)
+    protected CancellationTokenSource DoRepeating<T, U, V>(int delayMs, int intervalMs, uint? iterations, Func<T, U, V, Task> func, T t, U u, V v)
             where T : struct
             where U : struct
             where V : struct {
-        if (intervalMs <= 0) { throw new ArgumentOutOfRangeException("intervalMs <= 0");}
+        if (intervalMs <= 0) { throw new ArgumentOutOfRangeException($"intervalMs <= 0 ({intervalMs})");}
         CancellationTokenSource cts = new();
-        Do(async () => {
-            if (delayMs > 0) {
-                await InterfaceManager2.Delay(delayMs);
-            }
-            uint iterationsLeft = iterations;
-            while (iterationsLeft != 0) { // A negative value will loop forever
+        Do(async (t, u, v) => {
+            await InterfaceManager2.Delay(delayMs);
+
+            uint totalIterations = iterations ?? uint.MaxValue;
+            var initTime = Clock.UtcNow;
+            for (int i = 0; i < totalIterations; ++i) {
                 if (cts.IsCancellationRequested) { break; }
-                --iterationsLeft;
                 await func(t, u, v);
-                await InterfaceManager2.Delay(intervalMs);
+                var delayTime = (i + 1) * intervalMs - (Clock.UtcNow - initTime).TotalMilliseconds;
+                await InterfaceManager2.Delay((int)delayTime);
             }
-        });
+        }, t, u, v);
         return cts;
     }
-    protected CancellationTokenSource DoRepeating<T, U, V, W>(int delayMs, uint iterations, int intervalMs, Func<T, U, V, W, Task> func, T t, U u, V v, W w)
+    protected CancellationTokenSource DoRepeating<T, U, V, W>(int delayMs, int intervalMs, uint? iterations, Func<T, U, V, W, Task> func, T t, U u, V v, W w)
             where T : struct
             where U : struct
             where V : struct
             where W : struct {
-        if (intervalMs <= 0) { throw new ArgumentOutOfRangeException("intervalMs <= 0");}
+        if (intervalMs <= 0) { throw new ArgumentOutOfRangeException($"intervalMs <= 0 ({intervalMs})");}
         CancellationTokenSource cts = new();
-        Do(async () => {
-            if (delayMs > 0) {
-                await InterfaceManager2.Delay(delayMs);
-            }
-            uint iterationsLeft = iterations;
-            while (iterationsLeft != 0) { // A negative value will loop forever
+        Do(async (t, u, v, w) => {
+            await InterfaceManager2.Delay(delayMs);
+
+            uint totalIterations = iterations ?? uint.MaxValue;
+            var initTime = Clock.UtcNow;
+            for (int i = 0; i < totalIterations; ++i) {
                 if (cts.IsCancellationRequested) { break; }
-                --iterationsLeft;
                 await func(t, u, v, w);
-                await InterfaceManager2.Delay(intervalMs);
+                var delayTime = (i + 1) * intervalMs - (Clock.UtcNow - initTime).TotalMilliseconds;
+                await InterfaceManager2.Delay((int)delayTime);
             }
-        });
+        }, t, u, v, w);
         return cts;
     }
 
