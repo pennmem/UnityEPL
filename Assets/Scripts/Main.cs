@@ -17,7 +17,7 @@ using System.Text;
 public class Main : MonoBehaviour
 {
     const long delay = 10000000000;
-    InterfaceManager2 manager;
+    InterfaceManager manager;
 
     // Start is called before the first frame update
     void Start()
@@ -26,7 +26,7 @@ public class Main : MonoBehaviour
         //UnityEngine.Debug.Log(ThreadPool.SetMinThreads(1, 1));
         //UnityEngine.Debug.Log(ThreadPool.SetMaxThreads(1, 1));
 
-        manager = GameObject.Find("InterfaceManager").GetComponent<InterfaceManager2>();
+        manager = GameObject.Find("InterfaceManager").GetComponent<InterfaceManager>();
 
         //UnityEngine.Debug.Log(UnsafeUtility.IsBlittable(typeof(StackString)));
     }
