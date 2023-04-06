@@ -16,13 +16,6 @@ public class InputReporter : DataReporter {
 
     private int lastMousePositionReportFrame;
 
-    private InterfaceManager manager;
-
-    void Awake() {
-        GameObject mgr = GameObject.Find("InterfaceManager");
-        manager = (InterfaceManager)mgr.GetComponent("InterfaceManager");
-    }
-
     void Update() {
         if (reportKeyStrokes)
             CollectKeyEvents();

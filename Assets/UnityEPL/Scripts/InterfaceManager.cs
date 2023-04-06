@@ -2,13 +2,18 @@ using System;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Profiling;
 using UnityEngine.SceneManagement;
+using UnityEngine.UIElements;
 
 public class InterfaceManager : EventMonoBehaviour {
+    const string quitKey = "Escape"; // escape to quit
+    const string SYSTEM_CONFIG = "config.json";
+
     //////////
     // Singleton Boilerplate
     // makes sure that only one Experiment Manager
@@ -44,6 +49,7 @@ public class InterfaceManager : EventMonoBehaviour {
     //////////
     // ???
     //////////
+    private ExperimentBase exp;
     public FileManager fileManager;
 
     //////////
@@ -72,7 +78,7 @@ public class InterfaceManager : EventMonoBehaviour {
     public AudioSource playback;
     //public RamulatorInterface ramulator;
     public InputManager inputManager;
-    //public ISyncBox syncBox;
+    public ISyncBox syncBox;
     public ErrorPopup errorPopup;
 
     //////////
@@ -89,6 +95,7 @@ public class InterfaceManager : EventMonoBehaviour {
     void Update() {
         IEnumerator e;
         while (events.TryDequeue(out e)) {
+            // TODO: JPB: (needed) Wrap all Coroutines in IEnumerator that displays Errors on exception 
             StartCoroutine(e);
         }
     }
@@ -106,9 +113,45 @@ public class InterfaceManager : EventMonoBehaviour {
 
         //var exp = new TestExperiment(this);
 
+        var configs = SetupConfigs();
+        GetExperiments(configs);
 
+        eventsPerFrame = Config.eventsPerFrame ?? 5;
 
-        Notify(new Exception("AHHHH"));
+        // Syncbox interface
+        //if (!Config.isTest && !Config.noSyncbox) {
+        //    syncBox.Init();
+        //}
+
+        LaunchLauncher();
+    }
+
+    protected string[] SetupConfigs() {
+#if !UNITY_WEBGL // System.IO
+        Config.SetupSystemConfig(fileManager.ConfigPath());
+#else // !UNITY_WEBGL
+        Config.SetupSystemConfig(Application.streamingAssetsPath);
+#endif // !UNITY_WEBGL
+
+        // Get all configuration files
+        string configPath = fileManager.ConfigPath();
+        string[] configs = Directory.GetFiles(configPath, "*.json");
+        if (configs.Length < 2) {
+            Notify(new Exception("Configuration File Error"));
+        }
+        return configs;
+    }
+
+    protected void GetExperiments(string[] configs) {
+        List<string> exps = new List<string>();
+
+        for (int i = 0, j = 0; i < configs.Length; i++) {
+            Debug.Log(configs[i]);
+            if (!configs[i].Contains(SYSTEM_CONFIG))
+                exps.Add(Path.GetFileNameWithoutExtension(configs[i]));
+            j++;
+        }
+        Config.availableExperiments = exps.ToArray();
     }
 
     //////////
@@ -246,6 +289,78 @@ public class InterfaceManager : EventMonoBehaviour {
     }
 #endif
 
+    protected void LaunchLauncher() {
+        // Reset external hardware state if exiting task
+        //syncBox.StopPulse();
+        //hostPC?.Disconnect();
+
+        //mainEvents.Pause(true);
+        foreach (var scene in SceneManager.GetAllScenes()) {
+            UnityEngine.Debug.Log(scene.name);
+        }
+        SceneManager.LoadScene(Config.launcherScene);
+    }
+
+    public void LoadExperimentConfig(string name) {
+        Config.experimentConfigName = name;
+        Config.SetupExperimentConfig();
+    }
+
+    public void LaunchExperiment() {
+        // launch scene with exp, 
+        // instantiate experiment,
+        // call start function
+
+        // Check if settings are loaded
+        if (Config.IsExperimentConfigSetup()) {
+
+            UnityEngine.Cursor.visible = false;
+            Application.runInBackground = true;
+
+            // Make the game run as fast as possible
+            QualitySettings.vSyncCount = Config.vSync;
+            Application.targetFrameRate = Config.frameRate;
+
+            // Create path for current participant/session
+            fileManager.CreateSession();
+
+            //mainEvents.Pause(true);
+            SceneManager.LoadScene(Config.experimentScene);
+
+            // Start Syncbox
+            //syncBox.StartPulse();
+
+            // Connect to HostPC
+            //if (Config.elemem) {
+            //    hostPC = new ElememInterface(this);
+            //} else if (Config.ramulator) {
+            //    hostPC = new RamulatorWrapper(this);
+            //}
+
+            LogExperimentInfo();
+
+            Type t = Type.GetType(Config.experimentClass);
+            exp = (ExperimentBase)Activator.CreateInstance(t, new object[] { this });
+        } else {
+            throw new Exception("No experiment configuration loaded");
+        }
+    }
+
+    protected void LogExperimentInfo() {
+        //write versions to logfile
+        Dictionary<string, object> versionsData = new Dictionary<string, object>();
+        versionsData.Add("application version", Application.version);
+        versionsData.Add("build date", BuildInfo.ToString()); // compiler magic, gives compile date
+        versionsData.Add("experiment version", Config.experimentName);
+        versionsData.Add("logfile version", "0");
+        versionsData.Add("participant", Config.participantCode);
+        versionsData.Add("session", Config.session);
+
+        ReportEvent("session start", versionsData);
+    }
+
+
+
     public void ReportEvent(string type, Dictionary<string, object> data = null) {
         eventReporter.ReportScriptedEvent(type, data);
     }
@@ -253,13 +368,11 @@ public class InterfaceManager : EventMonoBehaviour {
         eventReporter.ReportScriptedEvent(type, time, data);
     }
 
-    // This should also be moved to ErrorNotification class
+    // TODO: JPB: (needed) This should also be moved to ErrorNotification class
     public void Notify(Exception e) {
         warning.SetActive(true);
         TextDisplayer warnText = warning.GetComponent<TextDisplayer>();
         warnText.DisplayText("warning", e.Message);
         //mainEvents.Pause(true);
-        // TODO: JPB: Notify needs to actually use the ErrorNotification
-        //throw new NotImplementedException("Notify needs to actually use the ErrorNotification", e);
     }
 }

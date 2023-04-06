@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[AddComponentMenu("UnityEPL/Handlers/Updated Write to Disk Handler")]
+[AddComponentMenu("UnityEPL/Handlers/Write to Disk Handler")]
 public class WriteToDiskHandler : DataHandler {
     //more output formats may be added in the future
     public enum FORMAT { JSON_LINES };

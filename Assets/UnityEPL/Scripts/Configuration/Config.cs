@@ -3,7 +3,8 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 
-// This class is thread safe
+// This class is thread safe (except for setup)
+// TODO: JPB: (needed) Fix config setup thread safety
 public static partial class Config {
 
     // Private Internal Variables

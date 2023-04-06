@@ -66,6 +66,20 @@ public abstract class EventMonoBehaviour : MonoBehaviour {
         DoHelper(func(t, u, v, w));
     }
 
+    protected IEnumerator EnumeratorCaller(Action func) {
+        func();
+        yield return null;
+    }
+
+    protected IEnumerator EnumeratorCaller<T>(Action<T> func, T t) {
+        func(t);
+        yield return null;
+    }
+
+    protected void Do(Action func) {
+        DoHelper(EnumeratorCaller(func));
+    }
+
     // DoIn
 
     protected async void DoIn(int millisecondsDelay, Func<IEnumerator> func) {
@@ -98,6 +112,11 @@ public abstract class EventMonoBehaviour : MonoBehaviour {
         await InterfaceManager.Delay(millisecondsDelay);
         Do(func, t, u, v, w);
     }
+
+    //protected async void DoIn(int millisecondsDelay, Action func) {
+    //    await InterfaceManager.Delay(millisecondsDelay);
+    //    Do(func);
+    //}
 
     // DoRepeating
 
@@ -183,6 +202,12 @@ public abstract class EventMonoBehaviour : MonoBehaviour {
         AssertBlittable(t, u, v, w);
         var tcs = new TaskCompletionSource<bool>();
         manager.events.Enqueue(func(tcs, t, u, v, w));
+        return tcs.Task;
+    }
+
+    protected Task DoWaitFor(Action<TaskCompletionSource<bool>> func) {
+        var tcs = new TaskCompletionSource<bool>();
+        manager.events.Enqueue(EnumeratorCaller(func, tcs));
         return tcs.Task;
     }
 

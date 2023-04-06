@@ -176,6 +176,7 @@ MonoBehaviour:
   lowerBeep: {fileID: 0}
   playback: {fileID: 0}
   inputManager: {fileID: 0}
+  errorPopup: {fileID: 0}
   eventReporter: {fileID: 0}
   peripheralInput: {fileID: 0}
   uiInput: {fileID: 0}
