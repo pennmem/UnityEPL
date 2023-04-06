@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -29,13 +30,23 @@ public abstract class EventMonoBehaviour : MonoBehaviour {
 #endif
     }
 
-    // TODO: JPB: (feature) Add support for cancellation tokens in EventMonoBehavior Do functions
+    // Action to Enumerator Conversion
+
+    protected IEnumerator EnumeratorCaller(Action func) {
+        func();
+        yield return null;
+    }
+    protected IEnumerator EnumeratorCaller<T>(Action<T> func, T t) {
+        func(t);
+        yield return null;
+    }
 
     // Do
+    // TODO: JPB: (feature) Add support for cancellation tokens in EventMonoBehavior Do functions
 
     private void DoHelper(IEnumerator enumerator) {
         manager.events.Enqueue(enumerator);
-    } 
+    }
     protected void Do(Func<IEnumerator> func) {
         DoHelper(func());
     }
@@ -66,18 +77,14 @@ public abstract class EventMonoBehaviour : MonoBehaviour {
         DoHelper(func(t, u, v, w));
     }
 
-    protected IEnumerator EnumeratorCaller(Action func) {
-        func();
-        yield return null;
-    }
-
-    protected IEnumerator EnumeratorCaller<T>(Action<T> func, T t) {
-        func(t);
-        yield return null;
-    }
-
     protected void Do(Action func) {
         DoHelper(EnumeratorCaller(func));
+    }
+
+    protected void Do<T>(Action<T> func, T t)
+            where T : struct {
+        AssertBlittable(t);
+        DoHelper(EnumeratorCaller(func, t));
     }
 
     // DoIn
@@ -111,6 +118,16 @@ public abstract class EventMonoBehaviour : MonoBehaviour {
             where W : struct {
         await InterfaceManager.Delay(millisecondsDelay);
         Do(func, t, u, v, w);
+    }
+
+    protected async void DoIn(int millisecondsDelay, Action func) {
+        await InterfaceManager.Delay(millisecondsDelay);
+        Do(func);
+    }
+    protected async void DoIn<T>(int millisecondsDelay, Action<T> func, T t)
+            where T : struct {
+        await InterfaceManager.Delay(millisecondsDelay);
+        Do(func, t);
     }
 
     //protected async void DoIn(int millisecondsDelay, Action func) {

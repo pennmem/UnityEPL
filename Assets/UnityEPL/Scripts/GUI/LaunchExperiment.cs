@@ -36,20 +36,18 @@ public class LaunchExperiment : EventMonoBehaviour {
         }
     }
 
-    
-
-    public void DoSyncBoxTest() {
+    public async void DoSyncBoxTest() {
         if (!manager.syncBox?.IsRunning() ?? false) {
             syncButton.GetComponent<UnityEngine.UI.Button>().interactable = false;
 
             // TODO: JPB: (need) Fix Syncbox test
-            //DoWaitFor(TestSyncbox);
+            manager.syncBox.StartPulse();
+            await InterfaceManager.Delay(5000);
+            //await InterfaceManager.Delay(Config.syncboxTestLength);
+            manager.syncBox.StopPulse();
+
             syncButton.GetComponent<UnityEngine.UI.Button>().interactable = true;
         }
-    }
-
-    public void ResetSyncBoxButton() {
-        syncButton.GetComponent<UnityEngine.UI.Button>().interactable = true;
     }
 
     // activated by UI launch button

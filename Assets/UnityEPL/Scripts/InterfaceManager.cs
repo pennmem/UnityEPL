@@ -3,12 +3,14 @@ using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Profiling;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
+
 
 public class InterfaceManager : EventMonoBehaviour {
     const string quitKey = "Escape"; // escape to quit
@@ -119,9 +121,9 @@ public class InterfaceManager : EventMonoBehaviour {
         eventsPerFrame = Config.eventsPerFrame ?? 5;
 
         // Syncbox interface
-        //if (!Config.isTest && !Config.noSyncbox) {
-        //    syncBox.Init();
-        //}
+        if (!Config.isTest && !Config.noSyncbox) {
+            syncBox.Init();
+        }
 
         LaunchLauncher();
     }
@@ -306,6 +308,41 @@ public class InterfaceManager : EventMonoBehaviour {
         Config.SetupExperimentConfig();
     }
 
+    // These can be called by anything
+
+    protected void LogExperimentInfo() {
+        //write versions to logfile
+        Dictionary<string, object> versionsData = new Dictionary<string, object>();
+        versionsData.Add("application version", Application.version);
+        versionsData.Add("build date", BuildInfo.ToString()); // compiler magic, gives compile date
+        versionsData.Add("experiment version", Config.experimentName);
+        versionsData.Add("logfile version", "0");
+        versionsData.Add("participant", Config.participantCode);
+        versionsData.Add("session", Config.session);
+
+        ReportEvent("session start", versionsData);
+    }
+
+    public void ReportEvent(string type, Dictionary<string, object> data = null) {
+        eventReporter.ReportScriptedEvent(type, data);
+    }
+    public void ReportEvent(string type, DateTime time, Dictionary<string, object> data = null) {
+        eventReporter.ReportScriptedEvent(type, time, data);
+    }
+
+    // TODO: JPB: (needed) This should also be moved to ErrorNotification class
+    public void Notify(Exception e) {
+        warning.SetActive(true);
+        TextDisplayer warnText = warning.GetComponent<TextDisplayer>();
+        warnText.DisplayText("warning", e.Message);
+        //mainEvents.Pause(true);
+    }
+
+    // These should only be called by other EventMonoBehaviors
+
+    //public void LaunchExperiment() {
+    //    Do(LaunchExperimentHandler);
+    //}
     public void LaunchExperiment() {
         // launch scene with exp, 
         // instantiate experiment,
@@ -344,35 +381,5 @@ public class InterfaceManager : EventMonoBehaviour {
         } else {
             throw new Exception("No experiment configuration loaded");
         }
-    }
-
-    protected void LogExperimentInfo() {
-        //write versions to logfile
-        Dictionary<string, object> versionsData = new Dictionary<string, object>();
-        versionsData.Add("application version", Application.version);
-        versionsData.Add("build date", BuildInfo.ToString()); // compiler magic, gives compile date
-        versionsData.Add("experiment version", Config.experimentName);
-        versionsData.Add("logfile version", "0");
-        versionsData.Add("participant", Config.participantCode);
-        versionsData.Add("session", Config.session);
-
-        ReportEvent("session start", versionsData);
-    }
-
-
-
-    public void ReportEvent(string type, Dictionary<string, object> data = null) {
-        eventReporter.ReportScriptedEvent(type, data);
-    }
-    public void ReportEvent(string type, DateTime time, Dictionary<string, object> data = null) {
-        eventReporter.ReportScriptedEvent(type, time, data);
-    }
-
-    // TODO: JPB: (needed) This should also be moved to ErrorNotification class
-    public void Notify(Exception e) {
-        warning.SetActive(true);
-        TextDisplayer warnText = warning.GetComponent<TextDisplayer>();
-        warnText.DisplayText("warning", e.Message);
-        //mainEvents.Pause(true);
     }
 }
