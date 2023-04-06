@@ -170,7 +170,7 @@ MonoBehaviour:
   testTextDisplayer: {fileID: 0}
   videoManager: {fileID: 0}
   textDisplayer: {fileID: 0}
-  warning: {fileID: 0}
+  warning: {fileID: 1706917769}
   highBeep: {fileID: 0}
   lowBeep: {fileID: 0}
   lowerBeep: {fileID: 0}
@@ -472,6 +472,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e6672ad97ff294adba0eb53a61d1502f, type: 3}
+--- !u!1 &1706917769 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1867217279982840, guid: e6672ad97ff294adba0eb53a61d1502f, type: 3}
+  m_PrefabInstance: {fileID: 1706917768}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &1706917770 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 114683826083339600, guid: e6672ad97ff294adba0eb53a61d1502f, type: 3}

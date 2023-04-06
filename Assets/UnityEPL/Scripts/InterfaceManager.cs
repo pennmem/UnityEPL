@@ -19,7 +19,7 @@ public class InterfaceManager : EventMonoBehaviour {
     private static InterfaceManager _instance;
 
     // pass references, rather than relying on Global
-    //public static InterfaceManager2 Instance { get { return _instance; } }
+    //public static InterfaceManager Instance { get { return _instance; } }
 
     protected void Awake() {
         if (_instance != null && _instance != this) {
@@ -27,23 +27,10 @@ public class InterfaceManager : EventMonoBehaviour {
         } else {
             _instance = this;
             DontDestroyOnLoad(this.gameObject);
+            DontDestroyOnLoad(warning);
         }
-    }
 
-    //////////
-    // Singleton Boilerplate
-    // makes sure that only one Experiment Manager
-    // can exist in a scene and that this object
-    // is not destroyed when changing scenes
-    //////////
-
-    public ConcurrentQueue<IEnumerator> events = new ConcurrentQueue<IEnumerator>();
-
-    void Update() {
-        IEnumerator e;
-        while (events.TryDequeue(out e)) {
-            StartCoroutine(e);
-        }
+        ErrorNotification.manager = this;
     }
 
     //////////
@@ -86,6 +73,7 @@ public class InterfaceManager : EventMonoBehaviour {
     //public RamulatorInterface ramulator;
     public InputManager inputManager;
     //public ISyncBox syncBox;
+    public ErrorPopup errorPopup;
 
     //////////
     // Input reporters
@@ -96,6 +84,14 @@ public class InterfaceManager : EventMonoBehaviour {
     public UIDataReporter uiInput;
     private int eventsPerFrame;
 
+    // TODO: JPB: (needed) Should these events and update be separate for EACH EventMonoBehavior
+    public ConcurrentQueue<IEnumerator> events = new ConcurrentQueue<IEnumerator>();
+    void Update() {
+        IEnumerator e;
+        while (events.TryDequeue(out e)) {
+            StartCoroutine(e);
+        }
+    }
 
     protected override void StartOverride() {
         // Unity internal event handling
@@ -109,6 +105,10 @@ public class InterfaceManager : EventMonoBehaviour {
         videoManager = this.transform.GetComponent<VideoManager>();
 
         //var exp = new TestExperiment(this);
+
+
+
+        Notify(new Exception("AHHHH"));
     }
 
     //////////
@@ -151,14 +151,14 @@ public class InterfaceManager : EventMonoBehaviour {
         //}
 
         // Beep Sounds
-        //GameObject sound = GameObject.Find("Sounds");
-        //if (sound != null) {
-        //    lowBeep = sound.transform.Find("LowBeep").gameObject.GetComponent<AudioSource>();
-        //    lowerBeep = sound.transform.Find("LowerBeep").gameObject.GetComponent<AudioSource>();
-        //    highBeep = sound.transform.Find("HighBeep").gameObject.GetComponent<AudioSource>();
-        //    playback = sound.transform.Find("Playback").gameObject.GetComponent<AudioSource>();
-        //    Debug.Log("Found Sounds");
-        //}
+        GameObject sound = GameObject.Find("Sounds");
+        if (sound != null) {
+            lowBeep = sound.transform.Find("LowBeep").gameObject.GetComponent<AudioSource>();
+            lowerBeep = sound.transform.Find("LowerBeep").gameObject.GetComponent<AudioSource>();
+            highBeep = sound.transform.Find("HighBeep").gameObject.GetComponent<AudioSource>();
+            playback = sound.transform.Find("Playback").gameObject.GetComponent<AudioSource>();
+            Debug.Log("Found Sounds");
+        }
 
         // Sound Recorder
         //GameObject soundRecorder = GameObject.Find("SoundRecorder");
@@ -255,7 +255,11 @@ public class InterfaceManager : EventMonoBehaviour {
 
     // This should also be moved to ErrorNotification class
     public void Notify(Exception e) {
+        warning.SetActive(true);
+        TextDisplayer warnText = warning.GetComponent<TextDisplayer>();
+        warnText.DisplayText("warning", e.Message);
+        //mainEvents.Pause(true);
         // TODO: JPB: Notify needs to actually use the ErrorNotification
-        throw new NotImplementedException("Notify needs to actually use the ErrorNotification", e);
+        //throw new NotImplementedException("Notify needs to actually use the ErrorNotification", e);
     }
 }
