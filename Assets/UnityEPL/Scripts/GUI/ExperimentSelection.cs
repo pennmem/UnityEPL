@@ -3,37 +3,38 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-/// <summary>
-/// This is attached to the dropdown menu which selects experiments.
-/// 
-/// It only needs to call UnityEPL.SetExperimentName().
-/// </summary>
-public class ExperimentSelection : MonoBehaviour
-{
-    public InterfaceManager manager;
+namespace UnityEPL {
 
-    void Awake()
-    {
-        GameObject mgr = GameObject.Find("InterfaceManager");
-        manager = (InterfaceManager)mgr.GetComponent("InterfaceManager");
+    /// <summary>
+    /// This is attached to the dropdown menu which selects experiments.
+    /// 
+    /// It only needs to call UnityEPL.SetExperimentName().
+    /// </summary>
+    public class ExperimentSelection : MonoBehaviour {
+        public InterfaceManager manager;
 
-        UnityEngine.UI.Dropdown dropdown = GetComponent<UnityEngine.UI.Dropdown>();
+        void Awake() {
+            GameObject mgr = GameObject.Find("InterfaceManager");
+            manager = (InterfaceManager)mgr.GetComponent("InterfaceManager");
 
-        List<string> experiments = new(Config.availableExperiments);
+            UnityEngine.UI.Dropdown dropdown = GetComponent<UnityEngine.UI.Dropdown>();
 
-        dropdown.AddOptions(new List<string>(new string[] {"Select Task..."}));
-        dropdown.AddOptions(experiments);
-        SetExperiment();
-    }
+            List<string> experiments = new(Config.availableExperiments);
 
-    public void SetExperiment()
-    {
-        UnityEngine.UI.Dropdown dropdown = GetComponent<UnityEngine.UI.Dropdown>();
+            dropdown.AddOptions(new List<string>(new string[] { "Select Task..." }));
+            dropdown.AddOptions(experiments);
+            SetExperiment();
+        }
 
-        if(dropdown.captionText.text != "Select Task...") {
-            Debug.Log("Task chosen");
+        public void SetExperiment() {
+            UnityEngine.UI.Dropdown dropdown = GetComponent<UnityEngine.UI.Dropdown>();
 
-            manager.LoadExperimentConfig(dropdown.captionText.text);
+            if (dropdown.captionText.text != "Select Task...") {
+                Debug.Log("Task chosen");
+
+                manager.LoadExperimentConfig(dropdown.captionText.text);
+            }
         }
     }
+
 }
