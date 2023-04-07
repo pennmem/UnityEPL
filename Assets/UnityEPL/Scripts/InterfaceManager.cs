@@ -11,7 +11,6 @@ using UnityEngine.Profiling;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 
-
 namespace UnityEPL {
 
     public class InterfaceManager : EventMonoBehaviour {
