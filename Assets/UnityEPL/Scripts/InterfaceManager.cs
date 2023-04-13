@@ -35,7 +35,9 @@ namespace UnityEPL {
             } else {
                 _instance = this;
                 DontDestroyOnLoad(this.gameObject);
-                DontDestroyOnLoad(warning);
+                if (warning != null) {
+                    DontDestroyOnLoad(warning);
+                }
             }
 
             ErrorNotification.manager = this;
@@ -243,6 +245,14 @@ namespace UnityEPL {
 
             await Task.Delay(millisecondsDelay, cancellationToken);
         }
+
+        public static IEnumerator DelayE(int millisecondsDelay) {
+            yield return InterfaceManager.Delay(millisecondsDelay).ToEnumerator();
+        }
+
+        public static IEnumerator DelayE(int millisecondsDelay, CancellationToken cancellationToken) {
+            yield return InterfaceManager.Delay(millisecondsDelay, cancellationToken).ToEnumerator();
+        }
 #else
     public static async Task Delay(int millisecondsDelay) {
         if (millisecondsDelay < 0) {
@@ -304,13 +314,6 @@ namespace UnityEPL {
             SceneManager.LoadScene(Config.launcherScene);
         }
 
-        public void LoadExperimentConfig(string name) {
-            Config.experimentConfigName = name;
-            Config.SetupExperimentConfig();
-        }
-
-        // These can be called by anything
-
         protected void LogExperimentInfo() {
             //write versions to logfile
             Dictionary<string, object> versionsData = new Dictionary<string, object>();
@@ -324,12 +327,16 @@ namespace UnityEPL {
             ReportEvent("session start", versionsData);
         }
 
+
+        // These can be called by anything
+
         public void ReportEvent(string type, Dictionary<string, object> data = null) {
             eventReporter.ReportScriptedEvent(type, data);
         }
         public void ReportEvent(string type, DateTime time, Dictionary<string, object> data = null) {
             eventReporter.ReportScriptedEvent(type, time, data);
         }
+
 
         // TODO: JPB: (needed) This should also be moved to ErrorNotification class
         public void Notify(Exception e) {
@@ -339,7 +346,13 @@ namespace UnityEPL {
             //mainEvents.Pause(true);
         }
 
+
         // These should only be called by other EventMonoBehaviors
+
+        public void LoadExperimentConfig(string name) {
+            Config.experimentConfigName = name;
+            Config.SetupExperimentConfig();
+        }
 
         //public void LaunchExperiment() {
         //    Do(LaunchExperimentHandler);

@@ -24,8 +24,7 @@ namespace UnityEPL {
         // selected from dropdown menu
 
         void Awake() {
-            GameObject mgr = GameObject.Find("InterfaceManager");
-            manager = (InterfaceManager)mgr.GetComponent("InterfaceManager");
+            manager = FindObjectOfType<InterfaceManager>();
         }
 
         void Update() {

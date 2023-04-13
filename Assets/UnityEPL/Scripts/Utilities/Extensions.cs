@@ -1,4 +1,8 @@
+using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using UnityEngine;
 
 namespace UnityEPL {
 
@@ -57,4 +61,24 @@ namespace UnityEPL {
         }
     }
 
+    public static class TaskExtensions {
+        /// <summary>
+        /// Convert awaitable task to an IEnumerator
+        /// https://forum.unity.com/threads/async-await-inside-a-coroutine.952110/
+        /// </summary>
+        /// <param name="task"></param>
+        public static IEnumerator ToEnumerator(this Task task) {
+            yield return new WaitUntil(() => task.IsCompleted);
+        }
+
+        /// <summary>
+        /// Convert awaitable task to an IEnumerator
+        /// https://forum.unity.com/threads/async-await-inside-a-coroutine.952110/
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="task"></param>
+        public static IEnumerator ToEnumerator<T>(this Task<T> task) {
+            yield return new WaitUntil(() => task.IsCompleted);
+        }
+    }
 }

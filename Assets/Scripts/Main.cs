@@ -28,7 +28,7 @@ public class Main : MonoBehaviour
         //UnityEngine.Debug.Log(ThreadPool.SetMinThreads(1, 1));
         //UnityEngine.Debug.Log(ThreadPool.SetMaxThreads(1, 1));
 
-        manager = GameObject.Find("InterfaceManager").GetComponent<InterfaceManager>();
+        manager = FindObjectOfType<InterfaceManager>();
 
         //UnityEngine.Debug.Log(UnsafeUtility.IsBlittable(typeof(StackString)));
     }

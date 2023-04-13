@@ -12,7 +12,6 @@ namespace UnityEPL {
     public class LaunchExperiment : EventMonoBehaviour {
         protected override void StartOverride() { }
 
-        public InterfaceManager manager;
         public GameObject cantGoPrompt;
         public UnityEngine.UI.InputField participantNameInput;
         public UnityEngine.GameObject launchButton;
@@ -20,11 +19,6 @@ namespace UnityEPL {
         public UnityEngine.GameObject syncButton;
         public UnityEngine.GameObject greyedLaunchButton;
         public UnityEngine.GameObject loadingButton;
-
-        void Awake() {
-            GameObject mgr = GameObject.Find("InterfaceManager");
-            manager = (InterfaceManager)mgr.GetComponent("InterfaceManager");
-        }
 
         void Update() {
             launchButton.SetActive(isValidParticipant(participantNameInput.text));

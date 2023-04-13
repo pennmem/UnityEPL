@@ -102,12 +102,6 @@ namespace UnityEPL {
             Buffer.BlockCopy(data, 0, asBytes, 0, asBytes.Length);
             return Encoding.Unicode.GetString(asBytes);
         }
-
-        public static IEnumerator ToEnumerator(this Task task) {
-            while (!task.IsCompleted) {
-                yield return null;
-            }
-        }
     }
 
     public static class Blittability {

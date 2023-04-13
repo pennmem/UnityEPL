@@ -21,7 +21,8 @@ namespace UnityEPL {
         protected abstract void StartOverride();
         protected void Start()
         {
-            manager = GameObject.Find("InterfaceManager").GetComponent<InterfaceManager>();
+            manager = FindObjectOfType<InterfaceManager>();
+            Debug.Log(manager == null);
             StartOverride();
         }
 
@@ -47,12 +48,18 @@ namespace UnityEPL {
             func(t);
             yield return null;
         }
+        protected IEnumerator EnumeratorCaller<T, U, V, W>(Action<T, U, V, W> func, T t, U u, V v, W w) {
+            func(t, u, v, w);
+            yield return null;
+        }
 
         // Do
         // TODO: JPB: (feature) Add support for cancellation tokens in EventMonoBehavior Do functions
 
         private void DoHelper(IEnumerator enumerator)
         {
+            // TODO: JPB: (needed) Find out why tests can't find the manager.
+            if (manager == null) { manager = FindObjectOfType<InterfaceManager>(); }
             manager.events.Enqueue(enumerator);
         }
         protected void Do(Func<IEnumerator> func)
@@ -99,6 +106,17 @@ namespace UnityEPL {
         {
             AssertBlittable(t);
             DoHelper(EnumeratorCaller(func, t));
+        }
+        protected void Do<T, U, V, W>(Action<T, U, V, W> func, T t, U u, V v, W w)
+                where T : struct
+                where U : struct
+                where V : struct
+                where W : struct {
+            AssertBlittable(t);
+            AssertBlittable(u);
+            AssertBlittable(v);
+            AssertBlittable(w);
+            DoHelper(EnumeratorCaller(func, t, u, v, w));
         }
 
         // DoIn
