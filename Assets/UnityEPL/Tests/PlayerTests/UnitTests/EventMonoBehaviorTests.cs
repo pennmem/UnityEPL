@@ -13,12 +13,21 @@ using UnityEPL;
 namespace UnityEPLTests {
 
     public class EventMonoBehaviorTests {
+        // -------------------------------------
+        // Globals
+        // -------------------------------------
+
         InterfaceManager manager;
         EMB emb;
 
+        // TODO: JPB: (bug) Things should probably never take two frames
         const double ONE_FRAME_MS = 1000.0 / 120.0;
+        const double TWO_FRAMES_MS = 1000.0 / 120.0 * 2;
 
+
+        // -------------------------------------
         // SETUP
+        // -------------------------------------
 
         [OneTimeSetUp]
         public void InterfaceManagerSetup() {
@@ -30,15 +39,16 @@ namespace UnityEPLTests {
             emb = new GameObject().AddComponent<EMB>();
         }
 
+
         // -------------------------------------
         // DoGet Test
-        // -------------------------------------
-
+        //
         // THIS IS NOT HOW YOU SHOULD USE THIS FRAMEWORK
         // Below we are verifying that Do and DoGet work
         // In order to do this, we use a mutex class to guarantee that we are not creating threading issues
         // This methodology should be avoided because it can significantly slow your code down due to the locks
         // Instead just use DoGet like the rest of the example do, once we verify that DoGet works
+        // -------------------------------------
 
         [UnityTest]
         public IEnumerator DoGet() {
@@ -56,6 +66,7 @@ namespace UnityEPLTests {
             Assert.AreEqual(i + 1, task.Result); // Didn't mutate state
             Assert.AreEqual(emb.mutex.Get(), task.Result); // Didn't mutate state but cached value
         }
+
 
         // -------------------------------------
         // The rest of the tests
@@ -126,13 +137,31 @@ namespace UnityEPLTests {
         }
 
         [UnityTest]
-        public IEnumerator DoWaitFor() {
+        public IEnumerator DoWaitForEnum() {
             var task = emb.GetI();
             yield return task.ToEnumerator();
             var i = task.Result;
 
             var start = Clock.UtcNow;
-            yield return emb.DelayedIncAndWait(1000).ToEnumerator();
+            yield return emb.DelayedIncAndWaitEnum(1000).ToEnumerator();
+
+            var diff = (Clock.UtcNow - start).TotalMilliseconds;
+            Assert.GreaterOrEqual(diff, 1000);
+            Assert.LessOrEqual(diff, 1000 + TWO_FRAMES_MS);
+
+            task = emb.GetI();
+            yield return task.ToEnumerator();
+            Assert.AreEqual(i+1, task.Result);
+        }
+
+        [UnityTest]
+        public IEnumerator DoWaitForAct() {
+            var task = emb.GetI();
+            yield return task.ToEnumerator();
+            var i = task.Result;
+
+            var start = Clock.UtcNow;
+            yield return emb.DelayedIncAndWaitAct(1000).ToEnumerator();
 
             var diff = (Clock.UtcNow - start).TotalMilliseconds;
             Assert.GreaterOrEqual(diff, 1000);
@@ -140,13 +169,34 @@ namespace UnityEPLTests {
 
             task = emb.GetI();
             yield return task.ToEnumerator();
-            Assert.AreEqual(i+1, task.Result);
+            Assert.AreEqual(i + 1, task.Result);
         }
 
-        
+        [UnityTest]
+        public IEnumerator DoWaitForTask() {
+            var task = emb.GetI();
+            yield return task.ToEnumerator();
+            var i = task.Result;
+
+            var start = Clock.UtcNow;
+            yield return emb.DelayedIncAndWaitTask(1000).ToEnumerator();
+
+            var diff = (Clock.UtcNow - start).TotalMilliseconds;
+            Assert.GreaterOrEqual(diff, 1000);
+            Assert.LessOrEqual(diff, 1000 + TWO_FRAMES_MS);
+
+            task = emb.GetI();
+            yield return task.ToEnumerator();
+            Assert.AreEqual(i + 1, task.Result);
+        }
+
+
+        // -------------------------------------
+        // EventMonoBehavior Helper Class
+        // -------------------------------------
 
         class EMB : EventMonoBehaviour {
-            protected override void StartOverride() {}
+            protected override void StartOverride() { }
 
             public Mutex<int> mutex = new Mutex<int>(0);
             protected int i = 0;
@@ -155,7 +205,7 @@ namespace UnityEPLTests {
                 Do(IncMutexValHelper);
             }
             protected IEnumerator IncMutexValHelper() {
-                mutex.Mutate((int i) => { return i+1; });
+                mutex.Mutate((int i) => { return i + 1; });
                 yield break;
             }
 
@@ -213,17 +263,34 @@ namespace UnityEPLTests {
             }
 
             public void IncThreeTimesEnum() {
-                
+
             }
             protected IEnumerator IncThreeTimesEnumHelper() {
                 yield return null;
             }
 
-            public async Task DelayedIncAndWait(int millisecondsDelay) {
-                await DoWaitFor(DelayedIncAndWaitHelper, millisecondsDelay);
+            public async Task DelayedIncAndWaitEnum(int millisecondsDelay) {
+                await DoWaitFor(DelayedIncAndWaitEnumHelper, millisecondsDelay);
             }
-            protected IEnumerator DelayedIncAndWaitHelper(int millisecondsDelay) {
+            protected IEnumerator DelayedIncAndWaitEnumHelper(int millisecondsDelay) {
                 yield return new WaitForSeconds((float)millisecondsDelay / 1000f);
+                i += 1;
+            }
+
+            public async Task DelayedIncAndWaitAct(int millisecondsDelay) {
+                await DoWaitFor(DelayedIncAndWaitActHelper, millisecondsDelay);
+            }
+            protected void DelayedIncAndWaitActHelper(int millisecondsDelay) {
+                var start = Clock.UtcNow;
+                while ((Clock.UtcNow - start).TotalMilliseconds < 1000.0) ;
+                i += 1;
+            }
+
+            public async Task DelayedIncAndWaitTask(int millisecondsDelay) {
+                await DoWaitFor(DelayedIncAndWaitTaskHelper, millisecondsDelay);
+            }
+            protected async Task DelayedIncAndWaitTaskHelper(int millisecondsDelay) {
+                await InterfaceManager.Delay(1000);
                 i += 1;
             }
         }

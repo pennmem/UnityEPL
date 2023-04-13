@@ -48,9 +48,34 @@ namespace UnityEPL {
             func(t);
             yield return null;
         }
+        protected IEnumerator EnumeratorCaller<T, U>(Action<T, U> func, T t, U u) {
+            func(t, u);
+            yield return null;
+        }
+        protected IEnumerator EnumeratorCaller<T, U, V>(Action<T, U, V> func, T t, U u, V v) {
+            func(t, u, v);
+            yield return null;
+        }
         protected IEnumerator EnumeratorCaller<T, U, V, W>(Action<T, U, V, W> func, T t, U u, V v, W w) {
             func(t, u, v, w);
             yield return null;
+        }
+
+        // Task to Enumerator Conversion
+        protected IEnumerator EnumeratorCaller(Func<Task> func) {
+            yield return func().ToEnumerator();
+        }
+        protected IEnumerator EnumeratorCaller<T>(Func<T, Task> func, T t) {
+            yield return func(t).ToEnumerator();
+        }
+        protected IEnumerator EnumeratorCaller<T, U>(Func<T, U, Task> func, T t, U u) {
+            yield return func(t, u).ToEnumerator();
+        }
+        protected IEnumerator EnumeratorCaller<T, U, V>(Func<T, U, V, Task> func, T t, U u, V v) {
+            yield return func(t, u, v).ToEnumerator();
+        }
+        protected IEnumerator EnumeratorCaller<T, U, V, W>(Func<T, U, V, W, Task> func, T t, U u, V v, W w) {
+            yield return func(t, u, v, w).ToEnumerator();
         }
 
         // Do
@@ -106,6 +131,22 @@ namespace UnityEPL {
         {
             AssertBlittable(t);
             DoHelper(EnumeratorCaller(func, t));
+        }
+        protected void Do<T, U>(Action<T, U> func, T t, U u)
+                where T : struct
+                where U : struct {
+            AssertBlittable(t);
+            AssertBlittable(u);
+            DoHelper(EnumeratorCaller(func, t, u));
+        }
+        protected void Do<T, U, V>(Action<T, U, V> func, T t, U u, V v)
+                where T : struct
+                where U : struct
+                where V : struct {
+            AssertBlittable(t);
+            AssertBlittable(u);
+            AssertBlittable(v);
+            DoHelper(EnumeratorCaller(func, t, u, v));
         }
         protected void Do<T, U, V, W>(Action<T, U, V, W> func, T t, U u, V v, W w)
                 where T : struct
@@ -168,11 +209,27 @@ namespace UnityEPL {
             await InterfaceManager.Delay(millisecondsDelay);
             Do(func, t);
         }
-
-        //protected async void DoIn(int millisecondsDelay, Action func) {
-        //    await InterfaceManager.Delay(millisecondsDelay);
-        //    Do(func);
-        //}
+        protected async void DoIn<T, U>(int millisecondsDelay, Action<T, U> func, T t, U u)
+                where T : struct
+                where U : struct {
+            await InterfaceManager.Delay(millisecondsDelay);
+            Do(func, t, u);
+        }
+        protected async void DoIn<T, U, V>(int millisecondsDelay, Action<T, U, V> func, T t, U u, V v)
+                where T : struct
+                where U : struct
+                where V : struct {
+            await InterfaceManager.Delay(millisecondsDelay);
+            Do(func, t, u, v);
+        }
+        protected async void DoIn<T, U, V, W>(int millisecondsDelay, Action<T, U, V, W> func, T t, U u, V v, W w)
+                where T : struct
+                where U : struct
+                where V : struct
+                where W : struct {
+            await InterfaceManager.Delay(millisecondsDelay);
+            Do(func, t, u, v, w);
+        }
 
         // DoRepeating
 
@@ -180,15 +237,63 @@ namespace UnityEPL {
 
         // DoWaitFor - Simple version
 
-        private IEnumerator TaskTrigger(IEnumerator func, TaskCompletionSource<bool> tcs)
+        private IEnumerator TaskTrigger(TaskCompletionSource<bool> tcs, IEnumerator func)
         {
             yield return func;
             tcs.SetResult(true);
         }
+
+        private IEnumerator TaskTrigger(TaskCompletionSource<bool> tcs, Action func) {
+            func();
+            tcs.SetResult(true);
+            yield break;
+        }
+        private IEnumerator TaskTrigger<T>(TaskCompletionSource<bool> tcs, Action<T> func, T t) {
+            func(t);
+            tcs.SetResult(true);
+            yield break;
+        }
+        private IEnumerator TaskTrigger<T, U>(TaskCompletionSource<bool> tcs, Action<T, U> func, T t, U u) {
+            func(t, u);
+            tcs.SetResult(true);
+            yield break;
+        }
+        private IEnumerator TaskTrigger<T, U, V>(TaskCompletionSource<bool> tcs, Action<T, U, V> func, T t, U u, V v) {
+            func(t, u, v);
+            tcs.SetResult(true);
+            yield break;
+        }
+        private IEnumerator TaskTrigger<T, U, V, W>(TaskCompletionSource<bool> tcs, Action<T, U, V, W> func, T t, U u, V v, W w) {
+            func(t, u, v, w);
+            tcs.SetResult(true);
+            yield break;
+        }
+
+        private IEnumerator TaskTrigger(TaskCompletionSource<bool> tcs, Func<Task> func) {
+            yield return func().ToEnumerator();
+            tcs.SetResult(true);
+        }
+        private IEnumerator TaskTrigger<T>(TaskCompletionSource<bool> tcs, Func<T, Task> func, T t) {
+            yield return func(t).ToEnumerator();
+            tcs.SetResult(true);
+        }
+        private IEnumerator TaskTrigger<T, U>(TaskCompletionSource<bool> tcs, Func<T, U, Task> func, T t, U u) {
+            yield return func(t, u).ToEnumerator();
+            tcs.SetResult(true);
+        }
+        private IEnumerator TaskTrigger<T, U, V>(TaskCompletionSource<bool> tcs, Func<T, U, V, Task> func, T t, U u, V v) {
+            yield return func(t, u, v).ToEnumerator();
+            tcs.SetResult(true);
+        }
+        private IEnumerator TaskTrigger<T, U, V, W>(TaskCompletionSource<bool> tcs, Func<T, U, V, W, Task> func, T t, U u, V v, W w) {
+            yield return func(t, u, v, w).ToEnumerator();
+            tcs.SetResult(true);
+        }
+
         private Task DoWaitForHelper(IEnumerator enumerator)
         {
             var tcs = new TaskCompletionSource<bool>();
-            manager.events.Enqueue(TaskTrigger(enumerator, tcs));
+            manager.events.Enqueue(TaskTrigger(tcs, enumerator));
             return tcs.Task;
         }
         protected Task DoWaitFor(Func<IEnumerator> func)
@@ -226,15 +331,96 @@ namespace UnityEPL {
             return DoWaitForHelper(func(t, u, v, w));
         }
 
-        // DoWaitFor - User is responsible for triggering these TaskCompletionSources
+        protected Task DoWaitFor(Action func) {
+            var tcs = new TaskCompletionSource<bool>();
+            manager.events.Enqueue(TaskTrigger(tcs, func));
+            return tcs.Task;
+        }
+        protected Task DoWaitFor<T>(Action<T> func, T t)
+                where T : struct {
+            AssertBlittable(t);
+            var tcs = new TaskCompletionSource<bool>();
+            manager.events.Enqueue(TaskTrigger(tcs, func, t));
+            return tcs.Task;
+        }
+        protected Task DoWaitFor<T, U>(Action<T, U> func, T t, U u)
+                where T : struct
+                where U : struct {
+            AssertBlittable(t, u);
+            var tcs = new TaskCompletionSource<bool>();
+            manager.events.Enqueue(TaskTrigger(tcs, func, t, u));
+            return tcs.Task;
+        }
+        protected Task DoWaitFor<T, U, V>(Action<T, U, V> func, T t, U u, V v)
+                where T : struct
+                where U : struct
+                where V : struct {
+            AssertBlittable(t, u, v);
+            var tcs = new TaskCompletionSource<bool>();
+            manager.events.Enqueue(TaskTrigger(tcs, func, t, u, v));
+            return tcs.Task;
+        }
+        protected Task DoWaitFor<T, U, V, W>(Action<T, U, V, W> func, T t, U u, V v, W w)
+                where T : struct
+                where U : struct
+                where V : struct
+                where W : struct {
+            AssertBlittable(t, u, v, w);
+            var tcs = new TaskCompletionSource<bool>();
+            manager.events.Enqueue(TaskTrigger(tcs, func, t, u, v, w));
+            return tcs.Task;
+        }
 
-        protected Task DoWaitFor(Func<TaskCompletionSource<bool>, IEnumerator> func)
+        protected Task DoWaitFor(Func<Task> func) {
+            var tcs = new TaskCompletionSource<bool>();
+            manager.events.Enqueue(TaskTrigger(tcs, func));
+            return tcs.Task;
+        }
+        protected Task DoWaitFor<T>(Func<T, Task> func, T t)
+                where T : struct {
+            AssertBlittable(t);
+            var tcs = new TaskCompletionSource<bool>();
+            manager.events.Enqueue(TaskTrigger(tcs, func, t));
+            return tcs.Task;
+        }
+        protected Task DoWaitFor<T, U>(Func<T, U, Task> func, T t, U u)
+                where T : struct
+                where U : struct {
+            AssertBlittable(t, u);
+            var tcs = new TaskCompletionSource<bool>();
+            manager.events.Enqueue(TaskTrigger(tcs, func, t, u));
+            return tcs.Task;
+        }
+        protected Task DoWaitFor<T, U, V>(Func<T, U, V, Task> func, T t, U u, V v)
+                where T : struct
+                where U : struct
+                where V : struct {
+            AssertBlittable(t, u, v);
+            var tcs = new TaskCompletionSource<bool>();
+            manager.events.Enqueue(TaskTrigger(tcs, func, t, u, v));
+            return tcs.Task;
+        }
+        protected Task DoWaitFor<T, U, V, W>(Func<T, U, V, W, Task> func, T t, U u, V v, W w)
+                where T : struct
+                where U : struct
+                where V : struct
+                where W : struct {
+            AssertBlittable(t, u, v, w);
+            var tcs = new TaskCompletionSource<bool>();
+            manager.events.Enqueue(TaskTrigger(tcs, func, t, u, v, w));
+            return tcs.Task;
+        }
+
+        // DoWaitFor - User is responsible for triggering these TaskCompletionSources
+        // JPB: Not sure what purpose I had in mind for these...
+
+        protected Task DoWaitForSelfTrigger(Func<TaskCompletionSource<bool>, IEnumerator> func)
         {
             var tcs = new TaskCompletionSource<bool>();
             manager.events.Enqueue(func(tcs));
             return tcs.Task;
         }
-        protected Task DoWaitFor<T>(Func<TaskCompletionSource<bool>, T, IEnumerator> func, T t)
+        protected Task DoWaitForSelfTrigger<T>(Func<TaskCompletionSource<bool>, T, IEnumerator> func, T t)
                 where T : struct
         {
             AssertBlittable(t);
@@ -242,7 +428,7 @@ namespace UnityEPL {
             manager.events.Enqueue(func(tcs, t));
             return tcs.Task;
         }
-        protected Task DoWaitFor<T, U>(Func<TaskCompletionSource<bool>, T, U, IEnumerator> func, T t, U u)
+        protected Task DoWaitForSelfTrigger<T, U>(Func<TaskCompletionSource<bool>, T, U, IEnumerator> func, T t, U u)
                 where T : struct
                 where U : struct
         {
@@ -251,7 +437,7 @@ namespace UnityEPL {
             manager.events.Enqueue(func(tcs, t, u));
             return tcs.Task;
         }
-        protected Task DoWaitFor<T, U, V>(Func<TaskCompletionSource<bool>, T, U, V, IEnumerator> func, T t, U u, V v)
+        protected Task DoWaitForSelfTrigger<T, U, V>(Func<TaskCompletionSource<bool>, T, U, V, IEnumerator> func, T t, U u, V v)
                 where T : struct
                 where U : struct
                 where V : struct
@@ -261,22 +447,64 @@ namespace UnityEPL {
             manager.events.Enqueue(func(tcs, t, u, v));
             return tcs.Task;
         }
-        protected Task DoWaitFor<T, U, V, W>(Func<TaskCompletionSource<bool>, T, U, V, W, IEnumerator> func, T t, U u, V v, W w)
+
+        protected Task DoWaitForSelfTrigger(Action<TaskCompletionSource<bool>> func) {
+            var tcs = new TaskCompletionSource<bool>();
+            manager.events.Enqueue(EnumeratorCaller(func, tcs));
+            return tcs.Task;
+        }
+        protected Task DoWaitForSelfTrigger<T>(Action<TaskCompletionSource<bool>, T> func, T t)
+                where T : struct {
+            AssertBlittable(t);
+            var tcs = new TaskCompletionSource<bool>();
+            manager.events.Enqueue(EnumeratorCaller(func, tcs, t));
+            return tcs.Task;
+        }
+        protected Task DoWaitForSelfTrigger<T, U>(Action<TaskCompletionSource<bool>, T, U> func, T t, U u)
+                where T : struct
+                where U : struct {
+            AssertBlittable(t, u);
+            var tcs = new TaskCompletionSource<bool>();
+            manager.events.Enqueue(EnumeratorCaller(func, tcs, t, u));
+            return tcs.Task;
+        }
+        protected Task DoWaitForSelfTrigger<T, U, V>(Action<TaskCompletionSource<bool>, T, U, V> func, T t, U u, V v)
                 where T : struct
                 where U : struct
-                where V : struct
-                where W : struct
-        {
-            AssertBlittable(t, u, v, w);
+                where V : struct {
+            AssertBlittable(t, u, v);
             var tcs = new TaskCompletionSource<bool>();
-            manager.events.Enqueue(func(tcs, t, u, v, w));
+            manager.events.Enqueue(EnumeratorCaller(func, tcs, t, u, v));
             return tcs.Task;
         }
 
-        protected Task DoWaitFor(Action<TaskCompletionSource<bool>> func)
-        {
+        protected Task DoWaitForSelfTrigger(Func<TaskCompletionSource<bool>, Task> func) {
             var tcs = new TaskCompletionSource<bool>();
             manager.events.Enqueue(EnumeratorCaller(func, tcs));
+            return tcs.Task;
+        }
+        protected Task DoWaitForSelfTrigger<T>(Func<TaskCompletionSource<bool>, T, Task> func, T t)
+                where T : struct {
+            AssertBlittable(t);
+            var tcs = new TaskCompletionSource<bool>();
+            manager.events.Enqueue(EnumeratorCaller(func, tcs, t));
+            return tcs.Task;
+        }
+        protected Task DoWaitForSelfTrigger<T, U>(Func<TaskCompletionSource<bool>, T, U, Task> func, T t, U u)
+                where T : struct
+                where U : struct {
+            AssertBlittable(t, u);
+            var tcs = new TaskCompletionSource<bool>();
+            manager.events.Enqueue(EnumeratorCaller(func, tcs, t, u));
+            return tcs.Task;
+        }
+        protected Task DoWaitForSelfTrigger<T, U, V>(Func<TaskCompletionSource<bool>, T, U, V, Task> func, T t, U u, V v)
+                where T : struct
+                where U : struct
+                where V : struct {
+            AssertBlittable(t, u, v);
+            var tcs = new TaskCompletionSource<bool>();
+            manager.events.Enqueue(EnumeratorCaller(func, tcs, t, u, v));
             return tcs.Task;
         }
 
