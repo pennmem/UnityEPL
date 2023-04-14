@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
@@ -13,6 +14,8 @@ namespace UnityEPL {
         InterfaceManager manager;
 
         const double ONE_FRAME_MS = 1000.0 / 120.0;
+        const double DELAY_JITTER_MS = 9;
+        // TODO: JPB: (bug) The acceptable jitter for InterfaceManager.Delay() should be less than 9ms
 
         [OneTimeSetUp]
         public void InterfaceManagerSetup() {
@@ -30,12 +33,14 @@ namespace UnityEPL {
 
         // Async Delay has 9ms leniency (because it's bad)
         [Test]
-        public async void Delay() {
-            var start = Clock.UtcNow;
-            await InterfaceManager.Delay(1000);
-            var diff = (Clock.UtcNow - start).TotalMilliseconds;
-            Assert.GreaterOrEqual(diff, 1000);
-            Assert.LessOrEqual(diff, 1009);
+        public void Delay() {
+            Task.Run(async () => {
+                var start = Clock.UtcNow;
+                await InterfaceManager.Delay(1000);
+                var diff = (Clock.UtcNow - start).TotalMilliseconds;
+                Assert.GreaterOrEqual(diff, 1000);
+                Assert.LessOrEqual(diff, 1000 + DELAY_JITTER_MS);
+            }).Wait();
         }
 
         // Enumerator Delay has 9ms leniency (due to frame linking at 120fps)

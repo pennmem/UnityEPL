@@ -403,7 +403,7 @@ namespace UnityEPLTests {
             }
 
 
-            // Test the result of the functions with i and GetI
+            // Test the rest of the functions with i and GetI
 
             public async Task<int> GetI() {
                 return await DoGet<int>(GetIHelper);
@@ -446,7 +446,8 @@ namespace UnityEPLTests {
 
             }
             protected IEnumerator IncThreeTimesEnumHelper() {
-                yield return null;
+                i += 1;
+                yield break;
             }
 
             public async Task DelayedIncAndWaitEnum(int millisecondsDelay) {
