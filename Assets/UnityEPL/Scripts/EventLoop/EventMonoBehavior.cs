@@ -80,40 +80,6 @@ namespace UnityEPL {
         protected IEnumerator EnumeratorCaller<T, U, V, W>(Func<T, U, V, W, Task> func, T t, U u, V v, W w) {
             yield return func(t, u, v, w).ToEnumerator();
         }
-
-        protected IEnumerator EnumeratorCaller<T, Z>(Func<T, Z> func, T t)
-        {
-            yield return func(t);
-        }
-        protected IEnumerator EnumeratorCaller<T, U, Z>(Func<T, U, Z> func, T t, U u)
-        {
-            yield return func(t, u);
-        }
-        protected IEnumerator EnumeratorCaller<T, U, V, Z>(Func<T, U, V, Z> func, T t, U u, V v)
-        {
-            yield return func(t, u, v);
-        }
-        protected IEnumerator EnumeratorCaller<T, U, V, W, Z>(Func<T, U, V, W, Z> func, T t, U u, V v, W w)
-        {
-            yield return func(t, u, v, w);
-        }
-
-        protected IEnumerator EnumeratorCaller<T, Z>(Func<T, Task<Z>> func, T t)
-        {
-            yield return func(t).ToEnumerator();
-        }
-        protected IEnumerator EnumeratorCaller<T, U, Z>(Func<T, U, Task<Z>> func, T t, U u)
-        {
-            yield return func(t, u).ToEnumerator();
-        }
-        protected IEnumerator EnumeratorCaller<T, U, V, Z>(Func<T, U, V, Task<Z>> func, T t, U u, V v)
-        {
-            yield return func(t, u, v).ToEnumerator();
-        }
-        protected IEnumerator EnumeratorCaller<T, U, V, W, Z>(Func<T, U, V, W, Task<Z>> func, T t, U u, V v, W w)
-        {
-            yield return func(t, u, v, w).ToEnumerator();
-        }
 #endif // EVENTMONOBEHAVIOR_MANUAL_RESULT_SET
 
 
