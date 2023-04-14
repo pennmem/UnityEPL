@@ -300,6 +300,9 @@ namespace UnityEPL {
         }
 
         // DoGet
+        // TODO: JPB: Change all of these to test if the return type is blittable
+        // TODO: JPB: Add normal functions as well.
+        // TODO: JPB: Remove unneeded tCopy and similar copies (they are guarenteed to be copied since they are structs)
 
         protected Task<Z> DoGet<Z>(Func<Task<Z>> func) {
 #if !UNITY_WEBGL || UNITY_EDITOR // System.Threading
