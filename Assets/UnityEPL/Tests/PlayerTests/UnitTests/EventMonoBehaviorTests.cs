@@ -230,6 +230,120 @@ namespace UnityEPLTests {
         }
 
         [UnityTest]
+        public IEnumerator DoRepeatingEnum() {
+            var task = emb.GetI();
+            yield return task.ToEnumerator();
+            var i = task.Result;
+
+            emb.IncThreeTimesEnum(0, 1000, 3);
+
+            task = emb.GetI();
+            yield return task.ToEnumerator();
+            Assert.AreEqual(i + 1, task.Result);
+
+            yield return InterfaceManager.DelayE(900);
+            task = emb.GetI();
+            yield return task.ToEnumerator();
+            Assert.AreEqual(i + 1, task.Result);
+
+            yield return InterfaceManager.DelayE(200);
+            task = emb.GetI();
+            yield return task.ToEnumerator();
+            Assert.AreEqual(i + 2, task.Result);
+
+            yield return InterfaceManager.DelayE(1000);
+            task = emb.GetI();
+            yield return task.ToEnumerator();
+            Assert.AreEqual(i + 3, task.Result);
+        }
+
+        [UnityTest]
+        public IEnumerator DoRepeatingDelayedEnum() {
+            var task = emb.GetI();
+            yield return task.ToEnumerator();
+            var i = task.Result;
+
+            emb.IncThreeTimesEnum(1000, 1000, 3);
+
+            yield return InterfaceManager.DelayE(900);
+            task = emb.GetI();
+            yield return task.ToEnumerator();
+            Assert.AreEqual(i, task.Result);
+
+            yield return InterfaceManager.DelayE(200);
+            task = emb.GetI();
+            yield return task.ToEnumerator();
+            Assert.AreEqual(i + 1, task.Result);
+
+            yield return InterfaceManager.DelayE(1000);
+            task = emb.GetI();
+            yield return task.ToEnumerator();
+            Assert.AreEqual(i + 2, task.Result);
+
+            yield return InterfaceManager.DelayE(1000);
+            task = emb.GetI();
+            yield return task.ToEnumerator();
+            Assert.AreEqual(i + 3, task.Result);
+        }
+
+        [UnityTest]
+        public IEnumerator DoRepeatingAct() {
+            var task = emb.GetI();
+            yield return task.ToEnumerator();
+            var i = task.Result;
+
+            emb.IncThreeTimesAct(0, 1000, 3);
+
+            task = emb.GetI();
+            yield return task.ToEnumerator();
+            Assert.AreEqual(i + 1, task.Result);
+
+            yield return InterfaceManager.DelayE(900);
+            task = emb.GetI();
+            yield return task.ToEnumerator();
+            Assert.AreEqual(i + 1, task.Result);
+
+            yield return InterfaceManager.DelayE(200);
+            task = emb.GetI();
+            yield return task.ToEnumerator();
+            Assert.AreEqual(i + 2, task.Result);
+
+            yield return InterfaceManager.DelayE(1000);
+            task = emb.GetI();
+            yield return task.ToEnumerator();
+            Assert.AreEqual(i + 3, task.Result);
+        }
+
+        [UnityTest]
+        public IEnumerator DoRepeatingDelayedAct() {
+            var task = emb.GetI();
+            yield return task.ToEnumerator();
+            var i = task.Result;
+
+            emb.IncThreeTimesAct(1000, 1000, 3);
+
+            yield return InterfaceManager.DelayE(900);
+            task = emb.GetI();
+            yield return task.ToEnumerator();
+            Assert.AreEqual(i, task.Result);
+
+            yield return InterfaceManager.DelayE(200);
+            task = emb.GetI();
+            yield return task.ToEnumerator();
+            Assert.AreEqual(i + 1, task.Result);
+
+            yield return InterfaceManager.DelayE(1000);
+            task = emb.GetI();
+            yield return task.ToEnumerator();
+            Assert.AreEqual(i + 2, task.Result);
+
+            yield return InterfaceManager.DelayE(1000);
+            task = emb.GetI();
+            yield return task.ToEnumerator();
+            Assert.AreEqual(i + 3, task.Result);
+        }
+
+        [UnityTest]
         public IEnumerator DoWaitForEnum() {
             var task = emb.GetI();
             yield return task.ToEnumerator();
@@ -442,12 +556,19 @@ namespace UnityEPLTests {
                 i += 1;
             }
 
-            public void IncThreeTimesEnum() {
-
+            public void IncThreeTimesEnum(int delayMs, int intervalMs, uint? iterations) {
+                DoRepeating(delayMs, intervalMs, iterations, IncThreeTimesEnumHelper);
             }
             protected IEnumerator IncThreeTimesEnumHelper() {
                 i += 1;
                 yield break;
+            }
+
+            public void IncThreeTimesAct(int delayMs, int intervalMs, uint? iterations) {
+                DoRepeating(delayMs, intervalMs, iterations, IncThreeTimesActHelper);
+            }
+            protected void IncThreeTimesActHelper() {
+                i += 1;
             }
 
             public async Task DelayedIncAndWaitEnum(int millisecondsDelay) {

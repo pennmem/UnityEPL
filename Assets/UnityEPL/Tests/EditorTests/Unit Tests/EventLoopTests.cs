@@ -131,7 +131,7 @@ namespace UnityEPLTests {
                 var el = new EL();
                 int i = await el.GetI();
 
-                el.IncThreeTimesAct();
+                el.IncThreeTimesAct(0, 1000, 3);
 
                 Assert.AreEqual(i + 1, await el.GetI());
 
@@ -152,7 +152,7 @@ namespace UnityEPLTests {
                 var el = new EL();
                 int i = await el.GetI();
 
-                el.DelayedIncThreeTimesAct();
+                el.IncThreeTimesAct(1000, 1000, 3);
 
                 Assert.AreEqual(i, await el.GetI());
 
@@ -176,7 +176,7 @@ namespace UnityEPLTests {
                 var el = new EL();
                 int i = await el.GetI();
 
-                el.IncThreeTimesTask();
+                el.IncThreeTimesTask(0, 1000, 3);
 
                 Assert.AreEqual(i + 1, await el.GetI());
 
@@ -197,7 +197,7 @@ namespace UnityEPLTests {
                 var el = new EL();
                 int i = await el.GetI();
 
-                el.DelayedIncThreeTimesTask();
+                el.IncThreeTimesTask(1000, 1000, 3);
 
                 Assert.AreEqual(i, await el.GetI());
 
@@ -311,21 +311,15 @@ namespace UnityEPLTests {
             i += 1;
         }
 
-        public void IncThreeTimesAct() {
-            DoRepeating(0, 1000, 3, IncThreeTimesActHelper);
-        }
-        public void DelayedIncThreeTimesAct() {
-            DoRepeating(1000, 1000, 3, IncThreeTimesActHelper);
+        public void IncThreeTimesAct(int delayMs, int intervalMs, uint? iterations) {
+            DoRepeating(delayMs, intervalMs, iterations, IncThreeTimesActHelper);
         }
         protected void IncThreeTimesActHelper() {
             i += 1;
         }
 
-        public void IncThreeTimesTask() {
-            DoRepeating(0, 1000, 3, IncThreeTimesTaskHelper);
-        }
-        public void DelayedIncThreeTimesTask() {
-            DoRepeating(1000, 1000, 3, IncThreeTimesTaskHelper);
+        public void IncThreeTimesTask(int delayMs, int intervalMs, uint? iterations) {
+            DoRepeating(delayMs, intervalMs, iterations, IncThreeTimesTaskHelper);
         }
         protected async Task IncThreeTimesTaskHelper() {
             i += 1;

@@ -4,6 +4,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -44,43 +45,200 @@ namespace UnityEPL {
         // EnumeratorCaller
         // -------------------------------------
 
-        protected IEnumerator EnumeratorCaller(Action func)
+        private IEnumerator EnumeratorCaller(Action func)
         {
             func();
-            yield return null;
+            yield break;
         }
-        protected IEnumerator EnumeratorCaller<T>(Action<T> func, T t)
+        private IEnumerator EnumeratorCaller<T>(Action<T> func, T t)
         {
             func(t);
-            yield return null;
+            yield break;
         }
-        protected IEnumerator EnumeratorCaller<T, U>(Action<T, U> func, T t, U u) {
+        private IEnumerator EnumeratorCaller<T, U>(Action<T, U> func, T t, U u) {
             func(t, u);
-            yield return null;
+            yield break;
         }
-        protected IEnumerator EnumeratorCaller<T, U, V>(Action<T, U, V> func, T t, U u, V v) {
+        private IEnumerator EnumeratorCaller<T, U, V>(Action<T, U, V> func, T t, U u, V v) {
             func(t, u, v);
-            yield return null;
+            yield break;
         }
-        protected IEnumerator EnumeratorCaller<T, U, V, W>(Action<T, U, V, W> func, T t, U u, V v, W w) {
+        private IEnumerator EnumeratorCaller<T, U, V, W>(Action<T, U, V, W> func, T t, U u, V v, W w) {
             func(t, u, v, w);
-            yield return null;
+            yield break;
         }
 
 #if EVENTMONOBEHAVIOR_MANUAL_RESULT_SET
-        protected IEnumerator EnumeratorCaller<T>(Func<T, Task> func, T t) {
+        private IEnumerator EnumeratorCaller<T>(Func<T, Task> func, T t) {
             yield return func(t).ToEnumerator();
         }
-        protected IEnumerator EnumeratorCaller<T, U>(Func<T, U, Task> func, T t, U u) {
+        private IEnumerator EnumeratorCaller<T, U>(Func<T, U, Task> func, T t, U u) {
             yield return func(t, u).ToEnumerator();
         }
-        protected IEnumerator EnumeratorCaller<T, U, V>(Func<T, U, V, Task> func, T t, U u, V v) {
+        private IEnumerator EnumeratorCaller<T, U, V>(Func<T, U, V, Task> func, T t, U u, V v) {
             yield return func(t, u, v).ToEnumerator();
         }
-        protected IEnumerator EnumeratorCaller<T, U, V, W>(Func<T, U, V, W, Task> func, T t, U u, V v, W w) {
+        private IEnumerator EnumeratorCaller<T, U, V, W>(Func<T, U, V, W, Task> func, T t, U u, V v, W w) {
             yield return func(t, u, v, w).ToEnumerator();
         }
 #endif // EVENTMONOBEHAVIOR_MANUAL_RESULT_SET
+
+
+        // -------------------------------------
+        // DelayedEnumeratorCaller
+        // -------------------------------------
+
+        private IEnumerator DelayedEnumeratorCaller(int millisecondsDelay, IEnumerator func) {
+            yield return InterfaceManager.DelayE(millisecondsDelay);
+            yield return func;
+        }
+        private IEnumerator DelayedEnumeratorCaller(int millisecondsDelay, Action func) {
+            yield return InterfaceManager.DelayE(millisecondsDelay);
+            func();
+        }
+        private IEnumerator DelayedEnumeratorCaller<T>(int millisecondsDelay, Action<T> func, T t) {
+            yield return InterfaceManager.DelayE(millisecondsDelay);
+            func(t);
+        }
+        private IEnumerator DelayedEnumeratorCaller<T, U>(int millisecondsDelay, Action<T, U> func, T t, U u) {
+            yield return InterfaceManager.DelayE(millisecondsDelay);
+            func(t, u);
+        }
+        private IEnumerator DelayedEnumeratorCaller<T, U, V>(int millisecondsDelay, Action<T, U, V> func, T t, U u, V v) {
+            yield return InterfaceManager.DelayE(millisecondsDelay);
+            func(t, u, v);
+        }
+        private IEnumerator DelayedEnumeratorCaller<T, U, V, W>(int millisecondsDelay, Action<T, U, V, W> func, T t, U u, V v, W w) {
+            yield return InterfaceManager.DelayE(millisecondsDelay);
+            func(t, u, v, w);
+        }
+
+
+        // -------------------------------------
+        // RepeatingEnumeratorCaller
+        // -------------------------------------
+
+        private IEnumerator RepeatingEnumeratorCaller(CancellationTokenSource cts, int delayMs, int intervalMs, uint? iterations, Func<IEnumerator> func) {
+            if (delayMs != 0) { yield return InterfaceManager.DelayE(delayMs); }
+
+            uint totalIterations = iterations ?? uint.MaxValue;
+            var initTime = Clock.UtcNow;
+            for (int i = 0; i < totalIterations; ++i) {
+                if (cts.IsCancellationRequested) { break; }
+                yield return func();
+                var delayTime = (i + 1) * intervalMs - (Clock.UtcNow - initTime).TotalMilliseconds;
+                yield return InterfaceManager.DelayE((int)delayTime);
+            }
+        }
+        private IEnumerator RepeatingEnumeratorCaller<T>(CancellationTokenSource cts, int delayMs, int intervalMs, uint? iterations, Func<T, IEnumerator> func, T t) {
+            if (delayMs != 0) { yield return InterfaceManager.DelayE(delayMs); }
+
+            uint totalIterations = iterations ?? uint.MaxValue;
+            var initTime = Clock.UtcNow;
+            for (int i = 0; i < totalIterations; ++i) {
+                if (cts.IsCancellationRequested) { break; }
+                yield return func(t);
+                var delayTime = (i + 1) * intervalMs - (Clock.UtcNow - initTime).TotalMilliseconds;
+                yield return InterfaceManager.DelayE((int)delayTime);
+            }
+        }
+        private IEnumerator RepeatingEnumeratorCaller<T, U>(CancellationTokenSource cts, int delayMs, int intervalMs, uint? iterations, Func<T, U, IEnumerator> func, T t, U u) {
+            if (delayMs != 0) { yield return InterfaceManager.DelayE(delayMs); }
+
+            uint totalIterations = iterations ?? uint.MaxValue;
+            var initTime = Clock.UtcNow;
+            for (int i = 0; i < totalIterations; ++i) {
+                if (cts.IsCancellationRequested) { break; }
+                yield return func(t, u);
+                var delayTime = (i + 1) * intervalMs - (Clock.UtcNow - initTime).TotalMilliseconds;
+                yield return InterfaceManager.DelayE((int)delayTime);
+            }
+        }
+        private IEnumerator RepeatingEnumeratorCaller<T, U, V>(CancellationTokenSource cts, int delayMs, int intervalMs, uint? iterations, Func<T, U, V, IEnumerator> func, T t, U u, V v) {
+            if (delayMs != 0) { yield return InterfaceManager.DelayE(delayMs); }
+
+            uint totalIterations = iterations ?? uint.MaxValue;
+            var initTime = Clock.UtcNow;
+            for (int i = 0; i < totalIterations; ++i) {
+                if (cts.IsCancellationRequested) { break; }
+                yield return func(t, u, v);
+                var delayTime = (i + 1) * intervalMs - (Clock.UtcNow - initTime).TotalMilliseconds;
+                yield return InterfaceManager.DelayE((int)delayTime);
+            }
+        }
+        private IEnumerator RepeatingEnumeratorCaller<T, U, V, W>(CancellationTokenSource cts, int delayMs, int intervalMs, uint? iterations, Func<T, U, V, W, IEnumerator> func, T t, U u, V v, W w) {
+            if (delayMs != 0) { yield return InterfaceManager.DelayE(delayMs); }
+
+            uint totalIterations = iterations ?? uint.MaxValue;
+            var initTime = Clock.UtcNow;
+            for (int i = 0; i < totalIterations; ++i) {
+                if (cts.IsCancellationRequested) { break; }
+                yield return func(t, u, v, w);
+                var delayTime = (i + 1) * intervalMs - (Clock.UtcNow - initTime).TotalMilliseconds;
+                yield return InterfaceManager.DelayE((int)delayTime);
+            }
+        }
+
+        private IEnumerator RepeatingEnumeratorCaller(CancellationTokenSource cts, int delayMs, int intervalMs, uint? iterations, Action func) {
+            if (delayMs != 0) { yield return InterfaceManager.DelayE(delayMs); }
+
+            uint totalIterations = iterations ?? uint.MaxValue;
+            var initTime = Clock.UtcNow;
+            for (int i = 0; i < totalIterations; ++i) {
+                if (cts.IsCancellationRequested) { break; }
+                func();
+                var delayTime = (i + 1) * intervalMs - (Clock.UtcNow - initTime).TotalMilliseconds;
+                yield return InterfaceManager.DelayE((int)delayTime);
+            }
+        }
+        private IEnumerator RepeatingEnumeratorCaller<T>(CancellationTokenSource cts, int delayMs, int intervalMs, uint? iterations, Action<T> func, T t) {
+            if (delayMs != 0) { yield return InterfaceManager.DelayE(delayMs); }
+
+            uint totalIterations = iterations ?? uint.MaxValue;
+            var initTime = Clock.UtcNow;
+            for (int i = 0; i < totalIterations; ++i) {
+                if (cts.IsCancellationRequested) { break; }
+                func(t);
+                var delayTime = (i + 1) * intervalMs - (Clock.UtcNow - initTime).TotalMilliseconds;
+                yield return InterfaceManager.DelayE((int)delayTime);
+            }
+        }
+        private IEnumerator RepeatingEnumeratorCaller<T, U>(CancellationTokenSource cts, int delayMs, int intervalMs, uint? iterations, Action<T, U> func, T t, U u) {
+            if (delayMs != 0) { yield return InterfaceManager.DelayE(delayMs); }
+
+            uint totalIterations = iterations ?? uint.MaxValue;
+            var initTime = Clock.UtcNow;
+            for (int i = 0; i < totalIterations; ++i) {
+                if (cts.IsCancellationRequested) { break; }
+                func(t, u);
+                var delayTime = (i + 1) * intervalMs - (Clock.UtcNow - initTime).TotalMilliseconds;
+                yield return InterfaceManager.DelayE((int)delayTime);
+            }
+        }
+        private IEnumerator RepeatingEnumeratorCaller<T, U, V>(CancellationTokenSource cts, int delayMs, int intervalMs, uint? iterations, Action<T, U, V> func, T t, U u, V v) {
+            if (delayMs != 0) { yield return InterfaceManager.DelayE(delayMs); }
+
+            uint totalIterations = iterations ?? uint.MaxValue;
+            var initTime = Clock.UtcNow;
+            for (int i = 0; i < totalIterations; ++i) {
+                if (cts.IsCancellationRequested) { break; }
+                func(t, u, v);
+                var delayTime = (i + 1) * intervalMs - (Clock.UtcNow - initTime).TotalMilliseconds;
+                yield return InterfaceManager.DelayE((int)delayTime);
+            }
+        }
+        private IEnumerator RepeatingEnumeratorCaller<T, U, V, W>(CancellationTokenSource cts, int delayMs, int intervalMs, uint? iterations, Action<T, U, V, W> func, T t, U u, V v, W w) {
+            if (delayMs != 0) { yield return InterfaceManager.DelayE(delayMs); }
+
+            uint totalIterations = iterations ?? uint.MaxValue;
+            var initTime = Clock.UtcNow;
+            for (int i = 0; i < totalIterations; ++i) {
+                if (cts.IsCancellationRequested) { break; }
+                func(t, u, v, w);
+                var delayTime = (i + 1) * intervalMs - (Clock.UtcNow - initTime).TotalMilliseconds;
+                yield return InterfaceManager.DelayE((int)delayTime);
+            }
+        }
 
 
         // -------------------------------------
@@ -319,73 +477,71 @@ namespace UnityEPL {
         // DoIn
         // -------------------------------------
 
-        protected async void DoIn(int millisecondsDelay, Func<IEnumerator> func)
+        protected void DoIn(int millisecondsDelay, Func<IEnumerator> func)
         {
-            await InterfaceManager.Delay(millisecondsDelay);
-            Do(func);
+            DoHelper(DelayedEnumeratorCaller(millisecondsDelay, func())); ;
         }
-        protected async void DoIn<T>(int millisecondsDelay, Func<T, IEnumerator> func, T t)
+        protected void DoIn<T>(int millisecondsDelay, Func<T, IEnumerator> func, T t)
                 where T : struct
         {
-            await InterfaceManager.Delay(millisecondsDelay);
-            Do(func, t);
+            AssertBlittable(t);
+            DoHelper(DelayedEnumeratorCaller(millisecondsDelay, func(t)));
         }
-        protected async void DoIn<T, U>(int millisecondsDelay, Func<T, U, IEnumerator> func, T t, U u)
+        protected void DoIn<T, U>(int millisecondsDelay, Func<T, U, IEnumerator> func, T t, U u)
                 where T : struct
                 where U : struct
         {
-            await InterfaceManager.Delay(millisecondsDelay);
-            Do(func, t, u);
+            AssertBlittable(t, u);
+            DoHelper(DelayedEnumeratorCaller(millisecondsDelay, func(t, u)));
         }
-        protected async void DoIn<T, U, V>(int millisecondsDelay, Func<T, U, V, IEnumerator> func, T t, U u, V v)
+        protected void DoIn<T, U, V>(int millisecondsDelay, Func<T, U, V, IEnumerator> func, T t, U u, V v)
                 where T : struct
                 where U : struct
                 where V : struct
         {
-            await InterfaceManager.Delay(millisecondsDelay);
-            Do(func, t, u, v);
+            AssertBlittable(t, u, v);
+            DoHelper(DelayedEnumeratorCaller(millisecondsDelay, func(t, u, v)));
         }
-        protected async void DoIn<T, U, V, W>(int millisecondsDelay, Func<T, U, V, W, IEnumerator> func, T t, U u, V v, W w)
+        protected void DoIn<T, U, V, W>(int millisecondsDelay, Func<T, U, V, W, IEnumerator> func, T t, U u, V v, W w)
                 where T : struct
                 where U : struct
                 where V : struct
                 where W : struct
         {
-            await InterfaceManager.Delay(millisecondsDelay);
-            Do(func, t, u, v, w);
+            AssertBlittable(t, u, v, w);
+            DoHelper(DelayedEnumeratorCaller(millisecondsDelay, func(t, u, v, w)));
         }
 
-        protected async void DoIn(int millisecondsDelay, Action func)
+        protected void DoIn(int millisecondsDelay, Action func)
         {
-            await InterfaceManager.Delay(millisecondsDelay);
-            Do(func);
+            DoHelper(DelayedEnumeratorCaller(millisecondsDelay, func));
         }
-        protected async void DoIn<T>(int millisecondsDelay, Action<T> func, T t)
+        protected void DoIn<T>(int millisecondsDelay, Action<T> func, T t)
                 where T : struct
         {
-            await InterfaceManager.Delay(millisecondsDelay);
-            Do(func, t);
+            AssertBlittable(t);
+            DoHelper(DelayedEnumeratorCaller(millisecondsDelay, func, t));
         }
-        protected async void DoIn<T, U>(int millisecondsDelay, Action<T, U> func, T t, U u)
+        protected void DoIn<T, U>(int millisecondsDelay, Action<T, U> func, T t, U u)
                 where T : struct
                 where U : struct {
-            await InterfaceManager.Delay(millisecondsDelay);
-            Do(func, t, u);
+            AssertBlittable(t, u);
+            DoHelper(DelayedEnumeratorCaller(millisecondsDelay, func, t, u));
         }
-        protected async void DoIn<T, U, V>(int millisecondsDelay, Action<T, U, V> func, T t, U u, V v)
+        protected void DoIn<T, U, V>(int millisecondsDelay, Action<T, U, V> func, T t, U u, V v)
                 where T : struct
                 where U : struct
                 where V : struct {
-            await InterfaceManager.Delay(millisecondsDelay);
-            Do(func, t, u, v);
+            AssertBlittable(t, u, v);
+            DoHelper(DelayedEnumeratorCaller(millisecondsDelay, func, t, u, v));
         }
-        protected async void DoIn<T, U, V, W>(int millisecondsDelay, Action<T, U, V, W> func, T t, U u, V v, W w)
+        protected void DoIn<T, U, V, W>(int millisecondsDelay, Action<T, U, V, W> func, T t, U u, V v, W w)
                 where T : struct
                 where U : struct
                 where V : struct
                 where W : struct {
-            await InterfaceManager.Delay(millisecondsDelay);
-            Do(func, t, u, v, w);
+            AssertBlittable(t, u, v, w);
+            DoHelper(DelayedEnumeratorCaller(millisecondsDelay, func, t, u, v, w));
         }
 
 
@@ -394,7 +550,105 @@ namespace UnityEPL {
         // TODO: JPB: (feature) Add DoRepeating in the EventMonoBehavior
         // -------------------------------------
 
+        protected CancellationTokenSource DoRepeating(int delayMs, int intervalMs, uint? iterations, Func<IEnumerator> func) {
+            if (intervalMs <= 0) { throw new ArgumentOutOfRangeException($"intervalMs <= 0 ({intervalMs})"); }
 
+            CancellationTokenSource cts = new();
+            DoHelper(RepeatingEnumeratorCaller(cts, delayMs, intervalMs, iterations, func));
+            return cts;
+        }
+        protected CancellationTokenSource DoRepeating<T>(int delayMs, int intervalMs, uint? iterations, Func<IEnumerator> func, T t)
+                where T : struct {
+            AssertBlittable(t);
+            if (intervalMs <= 0) { throw new ArgumentOutOfRangeException($"intervalMs <= 0 ({intervalMs})"); }
+
+            CancellationTokenSource cts = new();
+            DoHelper(RepeatingEnumeratorCaller(cts, delayMs, intervalMs, iterations, func));
+            return cts;
+        }
+        protected CancellationTokenSource DoRepeating<T, U>(int delayMs, int intervalMs, uint? iterations, Func<IEnumerator> func, T t, U u)
+                where T : struct
+                where U : struct {
+            AssertBlittable(t, u);
+            if (intervalMs <= 0) { throw new ArgumentOutOfRangeException($"intervalMs <= 0 ({intervalMs})"); }
+
+            CancellationTokenSource cts = new();
+            DoHelper(RepeatingEnumeratorCaller(cts, delayMs, intervalMs, iterations, func));
+            return cts;
+        }
+        protected CancellationTokenSource DoRepeating<T, U, V>(int delayMs, int intervalMs, uint? iterations, Func<IEnumerator> func, T t, U u, V v)
+                where T : struct
+                where U : struct
+                where V : struct {
+            AssertBlittable(t, u, v);
+            if (intervalMs <= 0) { throw new ArgumentOutOfRangeException($"intervalMs <= 0 ({intervalMs})"); }
+
+            CancellationTokenSource cts = new();
+            DoHelper(RepeatingEnumeratorCaller(cts, delayMs, intervalMs, iterations, func));
+            return cts;
+        }
+        protected CancellationTokenSource DoRepeating<T, U, V, W>(int delayMs, int intervalMs, uint? iterations, Func<IEnumerator> func, T t, U u, V v, W w)
+                where T : struct
+                where U : struct
+                where V : struct
+                where W : struct {
+            AssertBlittable(t, u, v, w);
+            if (intervalMs <= 0) { throw new ArgumentOutOfRangeException($"intervalMs <= 0 ({intervalMs})"); }
+
+            CancellationTokenSource cts = new();
+            DoHelper(RepeatingEnumeratorCaller(cts, delayMs, intervalMs, iterations, func));
+            return cts;
+        }
+
+        protected CancellationTokenSource DoRepeating(int delayMs, int intervalMs, uint? iterations, Action func) {
+            if (intervalMs <= 0) { throw new ArgumentOutOfRangeException($"intervalMs <= 0 ({intervalMs})"); }
+
+            CancellationTokenSource cts = new();
+            DoHelper(RepeatingEnumeratorCaller(cts, delayMs, intervalMs, iterations, func));
+            return cts;
+        }
+        protected CancellationTokenSource DoRepeating<T>(int delayMs, int intervalMs, uint? iterations, Action<T> func, T t)
+                where T : struct {
+            AssertBlittable(t);
+            if (intervalMs <= 0) { throw new ArgumentOutOfRangeException($"intervalMs <= 0 ({intervalMs})"); }
+
+            CancellationTokenSource cts = new();
+            DoHelper(RepeatingEnumeratorCaller(cts, delayMs, intervalMs, iterations, func, t));
+            return cts;
+        }
+        protected CancellationTokenSource DoRepeating<T, U>(int delayMs, int intervalMs, uint? iterations, Action<T, U> func, T t, U u)
+                where T : struct
+                where U : struct {
+            AssertBlittable(t, u);
+            if (intervalMs <= 0) { throw new ArgumentOutOfRangeException($"intervalMs <= 0 ({intervalMs})"); }
+
+            CancellationTokenSource cts = new();
+            DoHelper(RepeatingEnumeratorCaller(cts, delayMs, intervalMs, iterations, func, t, u));
+            return cts;
+        }
+        protected CancellationTokenSource DoRepeating<T, U, V>(int delayMs, int intervalMs, uint? iterations, Action<T, U, V> func, T t, U u, V v)
+                where T : struct
+                where U : struct
+                where V : struct {
+            AssertBlittable(t, u, v);
+            if (intervalMs <= 0) { throw new ArgumentOutOfRangeException($"intervalMs <= 0 ({intervalMs})"); }
+
+            CancellationTokenSource cts = new();
+            DoHelper(RepeatingEnumeratorCaller(cts, delayMs, intervalMs, iterations, func, t, u, v));
+            return cts;
+        }
+        protected CancellationTokenSource DoRepeating<T, U, V, W>(int delayMs, int intervalMs, uint? iterations, Action<T, U, V, W> func, T t, U u, V v, W w)
+                where T : struct
+                where U : struct
+                where V : struct
+                where W : struct {
+            AssertBlittable(t, u, v, w);
+            if (intervalMs <= 0) { throw new ArgumentOutOfRangeException($"intervalMs <= 0 ({intervalMs})"); }
+
+            CancellationTokenSource cts = new();
+            DoHelper(RepeatingEnumeratorCaller(cts, delayMs, intervalMs, iterations, func, t, u, v, w));
+            return cts;
+        }
 
 
         // -------------------------------------
