@@ -4,25 +4,8 @@ using UnityEngine;
 
 namespace UnityEPL {
 
-    public class ErrorNotifier : EventMonoBehaviour {
-        //////////
-        // Singleton Boilerplate
-        // makes sure that only one Experiment Manager
-        // can exist in a scene and that this object
-        // is not destroyed when changing scenes
-        //////////
-
-        public static ErrorNotifier Instance { get; private set; } = null;
-
-        protected override void AwakeOverride() {
-            if (Instance != null) { //&& Instance != this) {
-                throw new System.InvalidOperationException("Cannot create multiple ErrorNotification Objects");
-            }
-
-            Instance = this;
-            DontDestroyOnLoad(this.gameObject);
-            gameObject.SetActive(false);
-        }
+    public class ErrorNotifier : SingletonEventMonoBehaviour<ErrorNotifier> {
+        protected override void AwakeOverride() { }
 
         public static void Error(Exception e) {
             var go = Instance.gameObject;

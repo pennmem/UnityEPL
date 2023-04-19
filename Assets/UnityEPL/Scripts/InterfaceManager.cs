@@ -13,27 +13,11 @@ using UnityEngine.UIElements;
 
 namespace UnityEPL {
 
-    public class InterfaceManager : EventMonoBehaviour {
+    public class InterfaceManager : SingletonEventMonoBehaviour<InterfaceManager> {
+        protected override void AwakeOverride() { }
+
         const string quitKey = "Escape"; // escape to quit
         const string SYSTEM_CONFIG = "config.json";
-
-        //////////
-        // Singleton Boilerplate
-        // makes sure that only one Experiment Manager
-        // can exist in a scene and that this object
-        // is not destroyed when changing scenes
-        //////////
-
-        public static InterfaceManager Instance { get; private set; }
-
-        protected override void AwakeOverride() {
-            if (Instance != null && Instance != this) {
-                throw new System.InvalidOperationException("Cannot create multiple InterfaceManager Objects");
-            } else {
-                Instance = this;
-                DontDestroyOnLoad(this.gameObject);
-            }
-        }
 
         //////////
         // Experiment Settings and Experiment object
@@ -75,7 +59,6 @@ namespace UnityEPL {
         //public RamulatorInterface ramulator;
         public InputManager inputManager;
         public ISyncBox syncBox;
-        //public ErrorPopup errorPopup;
 
         //////////
         // Input reporters
