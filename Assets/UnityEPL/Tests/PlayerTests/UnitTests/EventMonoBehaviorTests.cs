@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 
 using UnityEPL;
@@ -20,7 +21,6 @@ namespace UnityEPLTests {
         // Globals
         // -------------------------------------
 
-        InterfaceManager manager;
         EMB emb;
 
         // TODO: JPB: (bug) Things should probably never take two frames
@@ -31,14 +31,12 @@ namespace UnityEPLTests {
         // Setup
         // -------------------------------------
 
-        [OneTimeSetUp]
-        public void InterfaceManagerSetup() {
-            manager = GameObject.FindObjectOfType<InterfaceManager>();
-            if (manager == null) {
-                manager = new GameObject().AddComponent<InterfaceManager>();
-            }
+        [UnitySetUp]
+        public IEnumerator Setup() {
+            if (InterfaceManager.Instance == null) SceneManager.LoadScene("manager");
+            yield return null; // Wait for InterfaceManager Awake call
 
-            emb = new GameObject().AddComponent<EMB>();
+            if (emb == null) emb = new GameObject().AddComponent<EMB>();
         }
 
 
@@ -463,7 +461,7 @@ namespace UnityEPLTests {
         // -------------------------------------
 
         class EMB : EventMonoBehaviour {
-            protected override void StartOverride() { }
+            protected override void AwakeOverride() { }
 
             public Mutex<int> mutex = new Mutex<int>(0);
             protected int i = 0;

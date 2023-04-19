@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 namespace UnityEPL {
 
     public class VideoManager : EventMonoBehaviour {
-        protected override void StartOverride() {
+        protected override void AwakeOverride() {
             throw new System.NotImplementedException();
         }
 

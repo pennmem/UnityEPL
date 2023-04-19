@@ -4,31 +4,27 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 
 using UnityEPL;
 
-namespace UnityEPL {
+namespace UnityEPLTests {
 
     public class InterfaceManagerTests {
-        InterfaceManager manager;
-
         const double ONE_FRAME_MS = 1000.0 / 120.0;
         const double DELAY_JITTER_MS = 9;
         // TODO: JPB: (bug) The acceptable jitter for InterfaceManager.Delay() should be less than 9ms
 
-        [OneTimeSetUp]
-        public void InterfaceManagerSetup() {
-            manager = GameObject.FindObjectOfType<InterfaceManager>();
-            if (manager == null) {
-                manager = new GameObject().AddComponent<InterfaceManager>();
-            }
+        [UnitySetUp]
+        public IEnumerator Setup() {
+            if (InterfaceManager.Instance == null) SceneManager.LoadScene("manager");
+            yield return null; // Wait for InterfaceManager Awake call
         }
 
-        // A Test behaves as an ordinary method
         [Test]
         public void Creation() {
-            Assert.AreNotEqual(null, manager);
+            Assert.AreNotEqual(null, InterfaceManager.Instance);
         }
 
         // Async Delay has 9ms leniency (because it's bad)

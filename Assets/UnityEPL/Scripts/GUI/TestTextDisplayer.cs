@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace UnityEPL {
     public class TestTextDisplayer : EventMonoBehaviour {
-        protected override void StartOverride() { }
+        protected override void AwakeOverride() { }
 
         const long delay = 10000000000;
         public TextMesh tm;

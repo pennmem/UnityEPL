@@ -24,23 +24,15 @@ namespace UnityEPL {
         // is not destroyed when changing scenes
         //////////
 
-        private static InterfaceManager _instance;
+        public static InterfaceManager Instance { get; private set; }
 
-        // pass references, rather than relying on Global
-        //public static InterfaceManager Instance { get { return _instance; } }
-
-        protected void Awake() {
-            if (_instance != null && _instance != this) {
+        protected override void AwakeOverride() {
+            if (Instance != null && Instance != this) {
                 throw new System.InvalidOperationException("Cannot create multiple InterfaceManager Objects");
             } else {
-                _instance = this;
+                Instance = this;
                 DontDestroyOnLoad(this.gameObject);
-                if (warning != null) {
-                    DontDestroyOnLoad(warning);
-                }
             }
-
-            ErrorNotification.manager = this;
         }
 
         //////////
@@ -76,7 +68,6 @@ namespace UnityEPL {
         //public VideoControl videoControl;
         public TextDisplayer textDisplayer;
         //public SoundRecorder recorder;
-        public GameObject warning;
         public AudioSource highBeep;
         public AudioSource lowBeep;
         public AudioSource lowerBeep;
@@ -84,7 +75,7 @@ namespace UnityEPL {
         //public RamulatorInterface ramulator;
         public InputManager inputManager;
         public ISyncBox syncBox;
-        public ErrorPopup errorPopup;
+        //public ErrorPopup errorPopup;
 
         //////////
         // Input reporters
@@ -95,17 +86,19 @@ namespace UnityEPL {
         public UIDataReporter uiInput;
         private int eventsPerFrame;
 
-        // TODO: JPB: (needed) Should these events and update be separate for EACH EventMonoBehavior
         public ConcurrentQueue<IEnumerator> events = new ConcurrentQueue<IEnumerator>();
         void Update() {
             IEnumerator e;
             while (events.TryDequeue(out e)) {
-                // TODO: JPB: (needed) Wrap all Coroutines in IEnumerator that displays Errors on exception 
+                // TODO: JPB: (needed) Wrap all Coroutines in IEnumerator that displays Errors on exception
+                //            This will be far more complicated because you can't yield inside a try catch
+                //            To fix this, I will have to make my own Couroutine calling class
+                //            This will be needed anyway to implement pausing and guarantees on thread ordering anyway
                 StartCoroutine(e);
             }
         }
 
-        protected override void StartOverride() {
+        protected void Start() {
             // Unity internal event handling
             SceneManager.sceneLoaded += onSceneLoaded;
 
@@ -142,7 +135,7 @@ namespace UnityEPL {
             string configPath = fileManager.ConfigPath();
             string[] configs = Directory.GetFiles(configPath, "*.json");
             if (configs.Length < 2) {
-                Notify(new Exception("Configuration File Error"));
+                ErrorNotifier.Error(new Exception("Configuration File Error"));
             }
             return configs;
         }
@@ -173,6 +166,8 @@ namespace UnityEPL {
                 textDisplayer = canvas.GetComponent<TextDisplayer>();
                 Debug.Log("Found TextDisplay");
             }
+            //textDisplayer = FindObjectOfType<TextDisplayer>();
+            //if (textDisplayer != null) Debug.Log("Found TextDisplayer");
 
             // Input Reporters
             GameObject inputReporters = GameObject.Find("DataManager");
@@ -337,15 +332,11 @@ namespace UnityEPL {
             eventReporter.ReportScriptedEvent(type, time, data);
         }
 
-
-        // TODO: JPB: (needed) This should also be moved to ErrorNotification class
-        public void Notify(Exception e) {
-            warning.SetActive(true);
-            TextDisplayer warnText = warning.GetComponent<TextDisplayer>();
-            warnText.DisplayText("warning", e.Message);
-            //mainEvents.Pause(true);
+        public void Pause(bool pause) {
+            // TODO: JPB: (needed) Implement pause functionality correctly
+            if (pause) Time.timeScale = 0;
+            else Time.timeScale = 1;
         }
-
 
         // These should only be called by other EventMonoBehaviors
 

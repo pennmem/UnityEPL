@@ -22,12 +22,10 @@ namespace UnityEPL {
     {
         protected InterfaceManager manager;
 
-        protected abstract void StartOverride();
-        protected void Start()
-        {
-            manager = FindObjectOfType<InterfaceManager>();
-            Debug.Log(manager == null);
-            StartOverride();
+        protected abstract void AwakeOverride();
+        protected void Awake() {
+            manager = InterfaceManager.Instance;
+            AwakeOverride();
         }
 
         protected static void Quit()
@@ -393,10 +391,7 @@ namespace UnityEPL {
         // -------------------------------------
         // TODO: JPB: (feature) Add support for cancellation tokens in EventMonoBehavior Do functions
 
-        private void DoHelper(IEnumerator enumerator)
-        {
-            // TODO: JPB: (needed) Find out why tests can't find the manager.
-            if (manager == null) { manager = FindObjectOfType<InterfaceManager>(); }
+        private void DoHelper(IEnumerator enumerator) {
             manager.events.Enqueue(enumerator);
         }
         protected void Do(Func<IEnumerator> func)

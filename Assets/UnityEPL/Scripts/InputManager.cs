@@ -9,7 +9,7 @@ using UnityEngine;
 namespace UnityEPL {
 
     public class InputManager : EventMonoBehaviour {
-        protected override void StartOverride() { }
+        protected override void AwakeOverride() { }
 
         LinkedList<TaskCompletionSource<KeyCode>> tempKeyRequests = new LinkedList<TaskCompletionSource<KeyCode>>();
 

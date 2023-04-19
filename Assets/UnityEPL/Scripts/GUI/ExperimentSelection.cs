@@ -14,7 +14,7 @@ namespace UnityEPL {
         public InterfaceManager manager;
 
         void Awake() {
-            manager = FindObjectOfType<InterfaceManager>();
+            manager = InterfaceManager.Instance;
 
             UnityEngine.UI.Dropdown dropdown = GetComponent<UnityEngine.UI.Dropdown>();
 

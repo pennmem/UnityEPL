@@ -10,7 +10,7 @@ namespace UnityEPL {
     /// DoLaunchExperiment is responsible for calling EditableExperiment.ConfigureExperiment with the proper parameters.
     /// </summary>
     public class LaunchExperiment : EventMonoBehaviour {
-        protected override void StartOverride() { }
+        protected override void AwakeOverride() { }
 
         public GameObject cantGoPrompt;
         public UnityEngine.UI.InputField participantNameInput;

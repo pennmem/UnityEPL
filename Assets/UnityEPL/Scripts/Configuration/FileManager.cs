@@ -36,7 +36,7 @@ namespace UnityEPL {
             try {
                 experiment = Config.experimentName;
             } catch (MissingFieldException) {
-                ErrorNotification.Notify(new Exception("No experiment selected"));
+                ErrorNotifier.Error(new Exception("No experiment selected"));
                 return null;
             }
 
@@ -61,7 +61,7 @@ namespace UnityEPL {
             try {
                 participant = Config.participantCode;
             } catch (MissingFieldException) {
-                ErrorNotification.Notify(new Exception("No participant selected"));
+                ErrorNotifier.Error(new Exception("No participant selected"));
                 return null;
             }
 

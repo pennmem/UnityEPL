@@ -14,7 +14,7 @@ namespace UnityEPL {
         protected InterfaceManager manager;
 
         public void Start() {
-            manager = FindObjectOfType<InterfaceManager>();
+            manager = InterfaceManager.Instance;
         }
 
         public void QueuePoint(DataPoint data) {

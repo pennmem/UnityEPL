@@ -60,6 +60,7 @@ namespace UnityEPL {
 
     public struct StackString {
         NativeArray<UInt16> _val;
+
         public StackString(String s) {
             _val = new NativeArray<UInt16>(s.Length, Allocator.Persistent);
             for (int i = 0; i < s.Length; ++i) {
