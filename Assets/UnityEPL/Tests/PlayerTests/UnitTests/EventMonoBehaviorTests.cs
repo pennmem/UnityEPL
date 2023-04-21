@@ -5,6 +5,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using NUnit.Framework;
@@ -15,6 +16,10 @@ using UnityEngine.TestTools;
 using UnityEPL;
 
 namespace UnityEPLTests {
+
+    // TODO: JPB: (refactor) Use a task instead of a thread to check for Exceptions
+    //            This would make it so that we don't have to use LogAssert and dirty the logs
+    //            Ex: https://stackoverflow.com/a/53460032
 
     public class EventMonoBehaviorTests {
         // -------------------------------------
@@ -41,6 +46,26 @@ namespace UnityEPLTests {
 
 
         // -------------------------------------
+        // General Tests
+        // -------------------------------------
+
+        [UnityTest]
+        public IEnumerator MonobehaviourSafetyCheck() {
+            // This should not throw an exception because it is on the unity thread
+            emb.MonoBehaviourSafetyCheckTest();
+
+            LogAssert.Expect(LogType.Exception, new Regex("InvalidOperationException: .*"));
+
+            // This should throw an exception because it's on a new thread
+            var thread = new Thread(() => { emb.MonoBehaviourSafetyCheckTest(); });
+            thread.Start();
+            thread.Join();
+
+            yield break;
+        }
+
+
+        // -------------------------------------
         // DoGet Tests
         //
         // THIS IS NOT HOW YOU SHOULD USE THIS FRAMEWORK
@@ -49,6 +74,32 @@ namespace UnityEPLTests {
         // This methodology should be avoided because it can significantly slow your code down due to the locks
         // Instead just use DoGet like the rest of the example do, once we verify that DoGet works
         // -------------------------------------
+
+        [UnityTest]
+        public IEnumerator DoGetFuncMB() {
+            int i = emb.mutex.Get();
+
+            Assert.AreEqual(i, emb.GetMutexValFuncMB()); // Didn't mutate state
+            Assert.AreEqual(emb.mutex.Get(), emb.GetMutexValFuncMB()); // Didn't mutate state but cached value
+
+            emb.mutex.Mutate((int i) => { return i + 1; });
+
+            Assert.AreEqual(i + 1, emb.GetMutexValFuncMB()); // Didn't mutate state
+            Assert.AreEqual(emb.mutex.Get(), emb.GetMutexValFuncMB()); // Didn't mutate state but cached value
+            yield break;
+        }
+
+        [UnityTest]
+        public IEnumerator DoGetFuncMBSafetyCheck() {
+            LogAssert.Expect(LogType.Exception, new Regex("InvalidOperationException: .*"));
+
+            var thread = new Thread(() => {
+                emb.GetMutexValFuncMB();
+            });
+            thread.Start();
+            thread.Join();
+            yield break;
+        }
 
         [UnityTest]
         public IEnumerator DoGetEnum() {
@@ -190,6 +241,52 @@ namespace UnityEPLTests {
         }
 
         [UnityTest]
+        public IEnumerator DoEnumMB() {
+            var i = emb.GetIMB();
+
+            yield return emb.IncEnumMB();
+
+            Assert.AreEqual(i + 1, emb.GetIMB());
+        }
+
+        [UnityTest]
+        public IEnumerator DoActMB() {
+            var i = emb.GetIMB();
+
+            emb.IncActMB();
+
+            Assert.AreEqual(i + 1, emb.GetIMB());
+            yield break;
+        }
+
+        [UnityTest]
+        public IEnumerator DoEnumMBSafetyCheck() {
+            LogAssert.Expect(LogType.Exception, new Regex("InvalidOperationException: .*"));
+
+            var thread = new Thread(() => {
+                var enumerator = emb.IncEnumMB();
+                enumerator.MoveNext();
+                enumerator = (IEnumerator) enumerator.Current;
+                while (enumerator.MoveNext()) ;
+            });
+            thread.Start();
+            thread.Join();
+            yield break;
+        }
+
+        [UnityTest]
+        public IEnumerator DoActMBSafetyCheck() {
+            LogAssert.Expect(LogType.Exception, new Regex("InvalidOperationException: .*"));
+
+            var thread = new Thread(() => {
+                emb.IncActMB();
+            });
+            thread.Start();
+            thread.Join();
+            yield break;
+        }
+
+        [UnityTest]
         public IEnumerator DoInEnum() {
             var task = emb.GetI();
             yield return task.ToEnumerator();
@@ -261,9 +358,9 @@ namespace UnityEPLTests {
             yield return task.ToEnumerator();
             var i = task.Result;
 
-            emb.IncThreeTimesEnum(1000, 1000, 3);
+            emb.IncThreeTimesEnum(500, 1000, 3);
 
-            yield return InterfaceManager.DelayE(900);
+            yield return InterfaceManager.DelayE(400);
             task = emb.GetI();
             yield return task.ToEnumerator();
             Assert.AreEqual(i, task.Result);
@@ -318,9 +415,9 @@ namespace UnityEPLTests {
             yield return task.ToEnumerator();
             var i = task.Result;
 
-            emb.IncThreeTimesAct(1000, 1000, 3);
+            emb.IncThreeTimesAct(500, 1000, 3);
 
-            yield return InterfaceManager.DelayE(900);
+            yield return InterfaceManager.DelayE(400);
             task = emb.GetI();
             yield return task.ToEnumerator();
             Assert.AreEqual(i, task.Result);
@@ -339,6 +436,107 @@ namespace UnityEPLTests {
             task = emb.GetI();
             yield return task.ToEnumerator();
             Assert.AreEqual(i + 3, task.Result);
+        }
+
+        [UnityTest]
+        public IEnumerator DoRepeatingEnumMB() {
+            var i = emb.GetIMB();
+
+            yield return emb.IncThreeTimesEnumMB(0, 1000, 3);
+
+            Assert.AreEqual(i + 1, emb.GetIMB());
+
+            yield return InterfaceManager.DelayE(900);
+            Assert.AreEqual(i + 1, emb.GetIMB());
+
+            yield return InterfaceManager.DelayE(200);
+            Assert.AreEqual(i + 2, emb.GetIMB());
+
+            yield return InterfaceManager.DelayE(1000);
+            Assert.AreEqual(i + 3, emb.GetIMB());
+        }
+
+        [UnityTest]
+        public IEnumerator DoRepeatingDelayedEnumMB() {
+            var i = emb.GetIMB();
+
+            yield return emb.IncThreeTimesEnumMB(500, 1000, 3);
+
+            yield return InterfaceManager.DelayE(400);
+            Assert.AreEqual(i, emb.GetIMB());
+
+            yield return InterfaceManager.DelayE(200);
+            Assert.AreEqual(i + 1, emb.GetIMB());
+
+            yield return InterfaceManager.DelayE(1000);
+            Assert.AreEqual(i + 2, emb.GetIMB());
+
+            yield return InterfaceManager.DelayE(1000);
+            Assert.AreEqual(i + 3, emb.GetIMB());
+        }
+
+        [UnityTest]
+        public IEnumerator DoRepeatingEnumMBSafetyCheck() {
+            LogAssert.Expect(LogType.Exception, new Regex("InvalidOperationException: .*"));
+
+            var thread = new Thread(() => {
+                var enumerator = emb.IncThreeTimesEnumMB(500, 1000, 3);
+                enumerator.MoveNext();
+                enumerator = (IEnumerator)enumerator.Current;
+                while (enumerator.MoveNext()) ;
+            });
+            thread.Start();
+            thread.Join();
+            yield break;
+        }
+
+        [UnityTest]
+        public IEnumerator DoRepeatingActMB() {
+            var i = emb.GetIMB();
+
+            emb.IncThreeTimesActMB(0, 1000, 3);
+
+            Assert.AreEqual(i + 1, emb.GetIMB());
+
+            yield return InterfaceManager.DelayE(900);
+            Assert.AreEqual(i + 1, emb.GetIMB());
+
+            yield return InterfaceManager.DelayE(200);
+            Assert.AreEqual(i + 2, emb.GetIMB());
+
+            yield return InterfaceManager.DelayE(1000);
+            Assert.AreEqual(i + 3, emb.GetIMB());
+        }
+
+        [UnityTest]
+        public IEnumerator DoRepeatingDelayedActMB() {
+            var i = emb.GetIMB();
+
+            emb.IncThreeTimesActMB(500, 1000, 3);
+
+            yield return InterfaceManager.DelayE(400);
+            Assert.AreEqual(i, emb.GetIMB());
+
+            yield return InterfaceManager.DelayE(200);
+            Assert.AreEqual(i + 1, emb.GetIMB());
+
+            yield return InterfaceManager.DelayE(1000);
+            Assert.AreEqual(i + 2, emb.GetIMB());
+
+            yield return InterfaceManager.DelayE(1000);
+            Assert.AreEqual(i + 3, emb.GetIMB());
+        }
+
+        [UnityTest]
+        public IEnumerator DoRepeatingActMBSafetyCheck() {
+            LogAssert.Expect(LogType.Exception, new Regex("InvalidOperationException: .*"));
+
+            var thread = new Thread(() => {
+                emb.IncThreeTimesActMB(500, 1000, 3);
+            });
+            thread.Start();
+            thread.Join();
+            yield break;
         }
 
         [UnityTest]
@@ -466,8 +664,20 @@ namespace UnityEPLTests {
             public Mutex<int> mutex = new Mutex<int>(0);
             protected int i = 0;
 
+            // General functions
 
-            // Test DoGet and DoGetManualTrigger with mutex
+            public void MonoBehaviourSafetyCheckTest() {
+                MonoBehaviourSafetyCheck();
+            }
+
+            // Test DoGetMB, DoGet and DoGetManualTrigger with mutex
+
+            public int GetMutexValFuncMB() {
+                return DoGetMB(GetMutexValFuncMBHelper);
+            }
+            protected int GetMutexValFuncMBHelper() {
+                return mutex.Get();
+            }
 
             public async Task<int> GetMutexValEnum() {
                 return await DoGet<int>(GetMutexValEnumHelper);
@@ -483,6 +693,7 @@ namespace UnityEPLTests {
                 return mutex.Get();
             }
 
+#if EVENTMONOBEHAVIOR_TASK_OPERATORS
             public async Task<int> GetMutexValTask() {
                 return await DoGet<int>(GetMutexValTaskHelper);
             }
@@ -490,6 +701,7 @@ namespace UnityEPLTests {
                 await InterfaceManager.Delay(1);
                 return mutex.Get();
             }
+#endif // EVENTMONOBEHAVIOR_TASK_OPERATORS
 
             public async Task<int> GetMutexValManualTriggerEnum() {
                 return await DoGetManualTrigger<int>(GetMutexValManualTriggerEnumHelper);
@@ -499,6 +711,7 @@ namespace UnityEPLTests {
                 yield return null;
             }
 
+#if EVENTMONOBEHAVIOR_MANUAL_RESULT_SET
             public async Task<int> GetMutexValManualTriggerFunc() {
                 return await DoGetManualTrigger<int>(GetMutexValManualTriggerFuncHelper);
             }
@@ -506,6 +719,7 @@ namespace UnityEPLTests {
                 tcs.SetResult(mutex.Get());
             }
 
+#if EVENTMONOBEHAVIOR_TASK_OPERATORS
             public async Task<int> GetMutexValManualTriggerTask() {
                 return await DoGetManualTrigger<int>(GetMutexValManualTriggerTaskHelper);
             }
@@ -513,6 +727,8 @@ namespace UnityEPLTests {
                 tcs.SetResult(mutex.Get());
                 return tcs.Task;
             }
+#endif // EVENTMONOBEHAVIOR_TASK_OPERATORS
+#endif // EVENTMONOBEHAVIOR_MANUAL_RESULT_SET
 
 
             // Test the rest of the functions with i and GetI
@@ -522,6 +738,13 @@ namespace UnityEPLTests {
             }
             protected IEnumerator<int> GetIHelper() {
                 yield return i;
+            }
+
+            public int GetIMB() {
+                return DoGetMB(GetIMBHelper);
+            }
+            protected int GetIMBHelper() {
+                return i;
             }
 
             public void IncEnum() {
@@ -536,6 +759,21 @@ namespace UnityEPLTests {
                 Do(IncActHelper);
             }
             protected void IncActHelper() {
+                i += 1;
+            }
+
+            public IEnumerator IncEnumMB() {
+                yield return DoMB(IncEnumMBHelper);
+            }
+            protected IEnumerator IncEnumMBHelper() {
+                i += 1;
+                yield break;
+            }
+
+            public void IncActMB() {
+                DoMB(IncActMBHelper);
+            }
+            protected void IncActMBHelper() {
                 i += 1;
             }
 
@@ -569,6 +807,21 @@ namespace UnityEPLTests {
                 i += 1;
             }
 
+            public IEnumerator IncThreeTimesEnumMB(int delayMs, int intervalMs, uint? iterations) {
+                yield return DoRepeatingMB(delayMs, intervalMs, iterations, IncThreeTimesEnumMBHelper);
+            }
+            protected IEnumerator IncThreeTimesEnumMBHelper() {
+                i += 1;
+                yield break;
+            }
+
+            public void IncThreeTimesActMB(int delayMs, int intervalMs, uint? iterations) {
+                DoRepeatingMB(delayMs, intervalMs, iterations, IncThreeTimesActMBHelper);
+            }
+            protected void IncThreeTimesActMBHelper() {
+                i += 1;
+            }
+
             public async Task DelayedIncAndWaitEnum(int millisecondsDelay) {
                 await DoWaitFor(DelayedIncAndWaitEnumHelper, millisecondsDelay);
             }
@@ -586,6 +839,7 @@ namespace UnityEPLTests {
                 i += 1;
             }
 
+#if EVENTMONOBEHAVIOR_TASK_OPERATORS
             public async Task DelayedIncAndWaitTask(int millisecondsDelay) {
                 await DoWaitFor(DelayedIncAndWaitTaskHelper, millisecondsDelay);
             }
@@ -593,9 +847,10 @@ namespace UnityEPLTests {
                 await InterfaceManager.Delay(1000);
                 i += 1;
             }
+#endif // EVENTMONOBEHAVIOR_TASK_OPERATORS
 
 
-
+#if EVENTMONOBEHAVIOR_MANUAL_RESULT_SET
             public async Task DelayedIncAndWaitManualTriggerEnum(int millisecondsDelay) {
                 await DoWaitForManualTrigger(DelayedIncAndWaitManualTriggerEnumHelper, millisecondsDelay);
             }
@@ -615,6 +870,7 @@ namespace UnityEPLTests {
                 tcs.SetResult(true);
             }
 
+#if EVENTMONOBEHAVIOR_TASK_OPERATORS
             public async Task DelayedIncAndWaitManualTriggerTask(int millisecondsDelay) {
                 await DoWaitForManualTrigger(DelayedIncAndWaitManualTriggerTaskHelper, millisecondsDelay);
             }
@@ -623,6 +879,8 @@ namespace UnityEPLTests {
                 i += 1;
                 tcs.SetResult(true);
             }
+#endif // EVENTMONOBEHAVIOR_TASK_OPERATORS
+#endif // EVENTMONOBEHAVIOR_MANUAL_RESULT_SET
         }
     }
 
