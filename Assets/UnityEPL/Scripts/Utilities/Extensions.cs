@@ -81,4 +81,16 @@ namespace UnityEPL {
             yield return new WaitUntil(() => task.IsCompleted);
         }
     }
+
+    public static class MonoBehaviourExtensions {
+
+        public static void Quit(this MonoBehaviour monoBehaviour) {
+            Debug.Log("Quitting");
+#if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+#else
+            Application.Quit();
+#endif
+        }
+    }
 }

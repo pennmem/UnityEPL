@@ -12,7 +12,7 @@ using UnityEPL;
 
 namespace UnityEPLTests {
 
-    public class ErrorNotificationTests {
+    public class ErrorNotifierTests {
         [UnitySetUp]
         public IEnumerator Setup() {
             if (InterfaceManager.Instance == null) SceneManager.LoadScene("manager");
@@ -22,7 +22,11 @@ namespace UnityEPLTests {
         [UnityTest]
         public IEnumerator MakeErrorNotification() {
             var inputText = "TESTING";
-            ErrorNotifier.Error(new Exception(inputText));
+
+            Assert.Throws<Exception>(() => {
+                ErrorNotifier.Error(new Exception(inputText));
+            });
+
             yield return null; // Wait for next frame
             var actualText = ErrorNotifier.Instance.transform
                 .Find("Black Background").Find("Stimulus")
@@ -34,7 +38,9 @@ namespace UnityEPLTests {
         [UnityTest]
         public IEnumerator MakeWarningNotification() {
             var inputText = "TESTING";
-            ErrorNotifier.Error(new Exception(inputText));
+
+            ErrorNotifier.Warning(new Exception(inputText));
+
             yield return null; // Wait for next frame
             var actualText = ErrorNotifier.Instance.transform
                 .Find("Black Background").Find("Stimulus")

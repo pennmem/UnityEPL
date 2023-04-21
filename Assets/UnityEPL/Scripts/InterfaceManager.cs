@@ -321,6 +321,10 @@ namespace UnityEPL {
             else Time.timeScale = 1;
         }
 
+        public void Quit() {
+            Do(this.Quit);
+        }
+
         // These should only be called by other EventMonoBehaviors
 
         public void LoadExperimentConfig(string name) {
