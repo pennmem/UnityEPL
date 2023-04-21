@@ -43,7 +43,7 @@ namespace UnityEPL {
         public void OriginalColor() {
             Do(OriginalColorHelper);
         }
-        public void OriginalColorUnity() {
+        public void OriginalColorMB() {
             DoMB(OriginalColorHelper);
         }
         protected void OriginalColorHelper() {
@@ -64,7 +64,7 @@ namespace UnityEPL {
         public void DisplayText(StackString description, StackString text) {
             Do(DisplayTextHelper, description, text);
         }
-        public void DisplayTextUnity(StackString description, StackString text) {
+        public void DisplayTextMB(StackString description, StackString text) {
             DoMB(DisplayTextHelper, description, text);
         }
         protected void DisplayTextHelper(StackString description, StackString text) {
@@ -81,7 +81,7 @@ namespace UnityEPL {
         public void DisplayTitle(StackString description, StackString text) {
             Do(DisplayTitleHelper, description, text);
         }
-        public void DisplayTitleUnity(StackString description, StackString text) {
+        public void DisplayTitleMB(StackString description, StackString text) {
             DoMB(DisplayTitleHelper, description, text);
         }
         protected void DisplayTitleHelper(StackString description, StackString text) {
@@ -102,7 +102,7 @@ namespace UnityEPL {
         public void Display(StackString description, StackString title, StackString text) {
             Do(DisplayHelper, description, title, text);
         }
-        public void DisplayUnity(StackString description, StackString title, StackString text) {
+        public void DisplayMB(StackString description, StackString title, StackString text) {
             DoMB(DisplayHelper, description, title, text);
         }
         protected void DisplayHelper(StackString description, StackString title, StackString text) {
@@ -128,7 +128,7 @@ namespace UnityEPL {
         public void ClearText() {
             Do(ClearTextHelper);
         }
-        public void ClearTextUnity() {
+        public void ClearTextMB() {
             DoMB(ClearTextHelper);
         }
         protected void ClearTextHelper() {
@@ -140,7 +140,7 @@ namespace UnityEPL {
         public void ClearTitle() {
             Do(ClearTitleHelper);
         }
-        public void ClearTitleUnity() {
+        public void ClearTitleMB() {
             DoMB(ClearTitleHelper);
         }
         protected void ClearTitleHelper() {
@@ -152,7 +152,7 @@ namespace UnityEPL {
         public void Clear() {
             Do(ClearHelper);
         }
-        public void ClearUnity() {
+        public void ClearMB() {
             DoMB(ClearHelper);
         }
         protected void ClearHelper() {
@@ -169,7 +169,7 @@ namespace UnityEPL {
         public void ChangeColor(Color newColor) {
             Do(ChangeColorHelper, newColor);
         }
-        public void ChangeColorUnity(Color newColor) {
+        public void ChangeColorMB(Color newColor) {
             DoMB(ChangeColorHelper, newColor);
         }
         protected void ChangeColorHelper(Color newColor) {
@@ -186,7 +186,7 @@ namespace UnityEPL {
         public async Task<StackString> CurrentText() {
             return await DoGet(CurrentTextHelper);
         }
-        public StackString CurrentTextUnity() {
+        public StackString CurrentTextMB() {
             return DoGetMB(CurrentTextHelper);
         }
         public StackString CurrentTextHelper() {

@@ -22,7 +22,7 @@ namespace UnityEPL {
         protected void ErrorHelper(StackString message, StackString stackTrace) {
             gameObject.SetActive(true);
             var textDisplayer = gameObject.GetComponent<TextDisplayer>();
-            textDisplayer.Display("Error", "Error", message);
+            textDisplayer.DisplayMB("Error", "Error", message);
             manager.eventReporter.ReportScriptedEvent("Error",
                 new Dictionary<string, object>{
                     { "message", message },
@@ -44,7 +44,7 @@ namespace UnityEPL {
         protected void WarningHelper(Exception e) {
             gameObject.SetActive(true);
             var textDisplayer = gameObject.GetComponent<TextDisplayer>();
-            textDisplayer.Display("Warning", "Warning", e.Message);
+            textDisplayer.DisplayMB("Warning", "Warning", e.Message);
             manager.eventReporter.ReportScriptedEvent("Warning",
                 new Dictionary<string, object>{
                     { "message", e.Message },
