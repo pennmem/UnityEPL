@@ -30,6 +30,7 @@ namespace UnityEPL {
             AwakeOverride();
         }
 
+
         // This function is used to guarentee that a function is being called from
         // the main unity thread
         protected void MonoBehaviourSafetyCheck() {
@@ -46,27 +47,6 @@ namespace UnityEPL {
         // Acts just like a function call, but guarentees thread safety
         // -------------------------------------
         // TODO: JPB: (feature) Add support for cancellation tokens in EventMonoBehavior DoMB functions
-
-        protected IEnumerator DoMB(Func<IEnumerator> func) {
-            MonoBehaviourSafetyCheck();
-            yield return func();
-        }
-        protected IEnumerator DoMB<T>(Func<T, IEnumerator> func, T t) {
-            MonoBehaviourSafetyCheck();
-            yield return func(t);
-        }
-        protected IEnumerator DoMB<T, U>(Func<T, U, IEnumerator> func, T t, U u) {
-            MonoBehaviourSafetyCheck();
-            yield return func(t, u);
-        }
-        protected IEnumerator DoMB<T, U, V>(Func<T, U, V, IEnumerator> func, T t, U u, V v) {
-            MonoBehaviourSafetyCheck();
-            yield return func(t, u, v);
-        }
-        protected IEnumerator DoMB<T, U, V, W>(Func<T, U, V, W, IEnumerator> func, T t, U u, V v, W w) {
-            MonoBehaviourSafetyCheck();
-            yield return func(t, u, v, w);
-        }
 
         protected void DoMB(Action func) {
             MonoBehaviourSafetyCheck();
@@ -561,6 +541,54 @@ namespace UnityEPL {
 
 
         // -------------------------------------
+        // DoWaitForMB
+        // -------------------------------------
+
+        protected IEnumerator DoWaitForMB(Func<IEnumerator> func) {
+            MonoBehaviourSafetyCheck();
+            yield return func();
+        }
+        protected IEnumerator DoWaitForMB<T>(Func<T, IEnumerator> func, T t) {
+            MonoBehaviourSafetyCheck();
+            yield return func(t);
+        }
+        protected IEnumerator DoWaitForMB<T, U>(Func<T, U, IEnumerator> func, T t, U u) {
+            MonoBehaviourSafetyCheck();
+            yield return func(t, u);
+        }
+        protected IEnumerator DoWaitForMB<T, U, V>(Func<T, U, V, IEnumerator> func, T t, U u, V v) {
+            MonoBehaviourSafetyCheck();
+            yield return func(t, u, v);
+        }
+        protected IEnumerator DoWaitForMB<T, U, V, W>(Func<T, U, V, W, IEnumerator> func, T t, U u, V v, W w) {
+            MonoBehaviourSafetyCheck();
+            yield return func(t, u, v, w);
+        }
+
+#if EVENTMONOBEHAVIOR_TASK_OPERATORS
+        protected Task DoWaitForMB(Func<Task> func) {
+            MonoBehaviourSafetyCheck();
+            return func();
+        }
+        protected Task DoWaitForMB<T>(Func<T, Task> func, T t) {
+            MonoBehaviourSafetyCheck();
+            return func(t);
+        }
+        protected Task DoWaitForMB<T, U>(Func<T, U, Task> func, T t, U u) {
+            MonoBehaviourSafetyCheck();
+            return func(t, u);
+        }
+        protected Task DoWaitForMB<T, U, V>(Func<T, U, V, Task> func, T t, U u, V v) {
+            MonoBehaviourSafetyCheck();
+            return func(t, u, v);
+        }
+        protected Task DoWaitForMB<T, U, V, W>(Func<T, U, V, W, Task> func, T t, U u, V v, W w) {
+            MonoBehaviourSafetyCheck();
+            return func(t, u, v, w);
+        }
+#endif // EVENTMONOBEHAVIOR_TASK_OPERATORS
+
+        // -------------------------------------
         // DoWaitFor
         // -------------------------------------
 
@@ -713,6 +741,28 @@ namespace UnityEPL {
             return func(t, u, v, w);
         }
 
+#if EVENTMONOBEHAVIOR_TASK_OPERATORS
+        protected Task<Z> DoGetMB<Z>(Func<Task<Z>> func) {
+            MonoBehaviourSafetyCheck();
+            return func();
+        }
+        protected Task<Z> DoGetMB<T, Z>(Func<T, Task<Z>> func, T t) {
+            MonoBehaviourSafetyCheck();
+            return func(t);
+        }
+        protected Task<Z> DoGetMB<T, U, Z>(Func<T, U, Task<Z>> func, T t, U u) {
+            MonoBehaviourSafetyCheck();
+            return func(t, u);
+        }
+        protected Task<Z> DoGetMB<T, U, V, Z>(Func<T, U, V, Task<Z>> func, T t, U u, V v) {
+            MonoBehaviourSafetyCheck();
+            return func(t, u, v);
+        }
+        protected Task<Z> DoGetMB<T, U, V, W, Z>(Func<T, U, V, W, Task<Z>> func, T t, U u, V v, W w) {
+            MonoBehaviourSafetyCheck();
+            return func(t, u, v, w);
+        }
+#endif // EVENTMONOBEHAVIOR_TASK_OPERATORS
 
         // -------------------------------------
         // DoGet

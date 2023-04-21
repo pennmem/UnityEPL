@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace UnityEPL {
@@ -30,7 +31,10 @@ namespace UnityEPL {
             }
         }
 
-        public async void DoSyncBoxTest() {
+        public async void DoSyncBoxTestMB() {
+            await DoWaitForMB(DoSyncBoxTestHelper);
+        }
+        protected async Task DoSyncBoxTestHelper() {
             if (!manager.syncBox?.IsRunning() ?? false) {
                 syncButton.GetComponent<UnityEngine.UI.Button>().interactable = false;
 
@@ -45,7 +49,10 @@ namespace UnityEPL {
         }
 
         // activated by UI launch button
-        public void DoLaunchExperiment() {
+        public void DoLaunchExperimentMB() {
+            DoMB(DoLaunchExperimentHelper);
+        }
+        protected void DoLaunchExperimentHelper() {
             if (manager.syncBox?.IsRunning() ?? false) {
                 cantGoPrompt.GetComponent<UnityEngine.UI.Text>().text = "Can't start while Syncbox Test is running";
                 cantGoPrompt.SetActive(true);
