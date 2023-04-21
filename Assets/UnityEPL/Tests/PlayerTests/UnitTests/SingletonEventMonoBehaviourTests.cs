@@ -44,7 +44,7 @@ namespace UnityEPLTests {
         class SEMB : SingletonEventMonoBehaviour<SEMB> {
             protected override void AwakeOverride() { }
         }
-       
+
     }
 
 }
