@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -42,12 +43,16 @@ namespace UnityEPL {
         public void OriginalColor() {
             Do(OriginalColorHelper);
         }
+        public void OriginalColorUnity() {
+            DoMB(OriginalColorHelper);
+        }
         protected void OriginalColorHelper() {
             textElement.color = originalColors[0];
             titleElement.color = originalColors[1];
             if (scriptedEventReporter != null)
                 scriptedEventReporter.ReportScriptedEvent("restore original text color", new Dictionary<string, object>());
         }
+
 
         /// <summary>
         /// First argument is a description of the text to be displayed.  This is logged if the wordEventReporter field is populated in the editor.
@@ -58,6 +63,9 @@ namespace UnityEPL {
         /// <param name="text">Text.</param>
         public void DisplayText(StackString description, StackString text) {
             Do(DisplayTextHelper, description, text);
+        }
+        public void DisplayTextUnity(StackString description, StackString text) {
+            DoMB(DisplayTextHelper, description, text);
         }
         protected void DisplayTextHelper(StackString description, StackString text) {
             if (OnText != null)
@@ -72,6 +80,9 @@ namespace UnityEPL {
 
         public void DisplayTitle(StackString description, StackString text) {
             Do(DisplayTitleHelper, description, text);
+        }
+        public void DisplayTitleUnity(StackString description, StackString text) {
+            DoMB(DisplayTitleHelper, description, text);
         }
         protected void DisplayTitleHelper(StackString description, StackString text) {
             if (OnText != null)
@@ -90,6 +101,9 @@ namespace UnityEPL {
 
         public void Display(StackString description, StackString title, StackString text) {
             Do(DisplayHelper, description, title, text);
+        }
+        public void DisplayUnity(StackString description, StackString title, StackString text) {
+            DoMB(DisplayHelper, description, title, text);
         }
         protected void DisplayHelper(StackString description, StackString title, StackString text) {
             if (OnText != null)
@@ -114,11 +128,10 @@ namespace UnityEPL {
         public void ClearText() {
             Do(ClearTextHelper);
         }
+        public void ClearTextUnity() {
+            DoMB(ClearTextHelper);
+        }
         protected void ClearTextHelper() {
-            if (titleElement == null) {
-                return;
-            }
-
             textElement.text = "";
             if (scriptedEventReporter != null)
                 scriptedEventReporter.ReportScriptedEvent("text display cleared", new Dictionary<string, object>());
@@ -127,8 +140,24 @@ namespace UnityEPL {
         public void ClearTitle() {
             Do(ClearTitleHelper);
         }
+        public void ClearTitleUnity() {
+            DoMB(ClearTitleHelper);
+        }
         protected void ClearTitleHelper() {
             titleElement.text = "";
+            if (scriptedEventReporter != null)
+                scriptedEventReporter.ReportScriptedEvent("title display cleared", new Dictionary<string, object>());
+        }
+
+        public void Clear() {
+            Do(ClearHelper);
+        }
+        public void ClearUnity() {
+            DoMB(ClearHelper);
+        }
+        protected void ClearHelper() {
+            titleElement.text = "";
+            textElement.text = "";
             if (scriptedEventReporter != null)
                 scriptedEventReporter.ReportScriptedEvent("title display cleared", new Dictionary<string, object>());
         }
@@ -139,6 +168,9 @@ namespace UnityEPL {
         /// <param name="newColor">New color.</param>
         public void ChangeColor(Color newColor) {
             Do(ChangeColorHelper, newColor);
+        }
+        public void ChangeColorUnity(Color newColor) {
+            DoMB(ChangeColorHelper, newColor);
         }
         protected void ChangeColorHelper(Color newColor) {
             textElement.color = newColor;
@@ -151,8 +183,11 @@ namespace UnityEPL {
         /// <summary>
         /// Returns the current text being displayed on the first textElement.  Throws an error if there are no textElements.
         /// </summary>
-        public async Task<string> CurrentText() {
+        public async Task<StackString> CurrentText() {
             return await DoGet(CurrentTextHelper);
+        }
+        public StackString CurrentTextUnity() {
+            return DoGetMB(CurrentTextHelper);
         }
         public StackString CurrentTextHelper() {
             if (textElement == null)
