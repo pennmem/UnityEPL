@@ -87,8 +87,7 @@ namespace UnityEPL {
             for (int i = 0; i < count; i++) {
                 bool dequeued = false;
                 while (!dequeued) {
-                    DataPoint readPoint;
-                    dequeued = eventQueue.TryDequeue(out readPoint);
+                    dequeued = eventQueue.TryDequeue(out DataPoint readPoint);
                     dataPoints[i] = readPoint;
                 }
             }

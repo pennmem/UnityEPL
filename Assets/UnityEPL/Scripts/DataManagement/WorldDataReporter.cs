@@ -62,10 +62,8 @@ namespace UnityEPL {
                     Plane[] frustrumPlanes = GeometryUtility.CalculateFrustumPlanes(thisCamera);
                     Collider objectCollider = GetComponent<Collider>();
 
-                    RaycastHit lineOfSightHit;
-
                     // raycast to center mass
-                    Physics.Linecast(thisCamera.transform.position, gameObject.transform.position, out lineOfSightHit);
+                    Physics.Linecast(thisCamera.transform.position, gameObject.transform.position, out RaycastHit lineOfSightHit);
                     bool lineOfSight = lineOfSightHit.collider.Equals(gameObject.GetComponent<Collider>());
                     bool inView = GeometryUtility.TestPlanesAABB(frustrumPlanes, objectCollider.bounds) && lineOfSight;
 

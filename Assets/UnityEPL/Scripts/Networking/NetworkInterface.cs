@@ -149,12 +149,10 @@
 //            tokenSource = new CancellationTokenSource();
 //        }
 
-//        NetMsg message;
 //        int bytesRead;
-
 //        do {
 //            bytesRead = await stream.ReadAsync(buffer, 0, bufferSize, tokenSource.Token);
-//        } while (!ParseBuffer(bytesRead, out message));
+//        } while (!ParseBuffer(bytesRead, out NetMsg message));
 
 //        Do(message);
 
