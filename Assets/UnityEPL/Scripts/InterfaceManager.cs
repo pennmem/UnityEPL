@@ -71,8 +71,7 @@ namespace UnityEPL {
 
         public ConcurrentQueue<IEnumerator> events = new ConcurrentQueue<IEnumerator>();
         void Update() {
-            IEnumerator e;
-            while (events.TryDequeue(out e)) {
+            while (events.TryDequeue(out IEnumerator e)) {
                 // TODO: JPB: (needed) Wrap all Coroutines in IEnumerator that displays Errors on exception
                 //            This will be far more complicated because you can't yield inside a try catch
                 //            To fix this, I will have to make my own Couroutine calling class

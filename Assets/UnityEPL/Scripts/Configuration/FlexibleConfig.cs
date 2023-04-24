@@ -81,18 +81,13 @@ public static class FlexibleConfig {
     }
 
     public static Type JTypeConversion(int t) {
-        switch (t) {
-            case 6:
-                return typeof(int);
-            case 7:
-                return typeof(float);
-            case 8:
-                return typeof(string);
-            case 9:
-                return typeof(bool);
-            default:
-                throw new Exception("Unsupported Type");
-        }
+        return t switch {
+            6 => typeof(int),
+            7 => typeof(float),
+            8 => typeof(string),
+            9 => typeof(bool),
+            _ => throw new Exception("Unsupported Type"),
+        };
     }
 }
 

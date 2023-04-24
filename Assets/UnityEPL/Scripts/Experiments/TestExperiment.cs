@@ -25,7 +25,7 @@ namespace UnityEPL {
             //var a = await manager.textDisplayer.ReturnableUpdateText("ReturnableUpdateText");
             //UnityEngine.Debug.Log("DoGet: " + a);
 
-            var cts = DoRepeating(1000, 500, 10, async () => { UnityEngine.Debug.Log("Repeat"); });
+            var cts = DoRepeating(1000, 500, 10, () => { UnityEngine.Debug.Log("Repeat"); });
             await manager.inputManager.GetKey();
             cts.Cancel();
             await manager.inputManager.GetKey();
