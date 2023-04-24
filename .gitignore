@@ -6,10 +6,9 @@
 /[Oo]bj/
 /[Bb]uild/
 /[Bb]uilds/
-/Assets/AssetStoreTools*
-/Assets/19ThTownPack/Textures
 /[Ww]ebgl/
 /[Ll]ogs/
+/[Uu]ser[Ss]ettings/
 
 # Visual Studio 2015 cache directory
 /.vs/
@@ -28,6 +27,9 @@ ExportedObj/
 *.booproj
 *.svd
 *.pdb
+*.mdb
+*.opendb
+*.VC.db
 
 # Unity3D generated meta files
 *.pidb.meta
@@ -42,7 +44,7 @@ Assets/InitTestScene*.unity.meta
 # Builds
 *.apk
 *.unitypackage
-Assets/VikingVillage/Textures/wood_tiled_01_n.tif
+*.app
 
 data/
 tags
