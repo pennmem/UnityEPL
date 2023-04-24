@@ -18,8 +18,7 @@ using static UnityEPL.Blittability;
 
 namespace UnityEPL {
 
-    public abstract class EventMonoBehaviour : MonoBehaviour
-    {
+    public abstract class EventMonoBehaviour : MonoBehaviour {
         protected InterfaceManager manager;
         protected int threadID;
 
@@ -78,8 +77,7 @@ namespace UnityEPL {
         private void DoHelper(IEnumerator enumerator) {
             manager.events.Enqueue(enumerator);
         }
-        protected void Do(Func<IEnumerator> func)
-        {
+        protected void Do(Func<IEnumerator> func) {
             DoHelper(func());
         }
         protected void Do<T>(Func<T, IEnumerator> func, T t)
@@ -89,16 +87,14 @@ namespace UnityEPL {
         }
         protected void Do<T, U>(Func<T, U, IEnumerator> func, T t, U u)
                 where T : struct
-                where U : struct
-        {
+                where U : struct {
             AssertBlittable(t, u);
             DoHelper(func(t, u));
         }
         protected void Do<T, U, V>(Func<T, U, V, IEnumerator> func, T t, U u, V v)
                 where T : struct
                 where U : struct
-                where V : struct
-        {
+                where V : struct {
             AssertBlittable(t, u, v);
             DoHelper(func(t, u, v));
         }
@@ -106,19 +102,16 @@ namespace UnityEPL {
                 where T : struct
                 where U : struct
                 where V : struct
-                where W : struct
-        {
+                where W : struct {
             AssertBlittable(t, u, v, w);
             DoHelper(func(t, u, v, w));
         }
 
-        protected void Do(Action func)
-        {
+        protected void Do(Action func) {
             DoHelper(EnumeratorCaller(func));
         }
         protected void Do<T>(Action<T> func, T t)
-                where T : struct
-        {
+                where T : struct {
             AssertBlittable(t);
             DoHelper(EnumeratorCaller(func, t));
         }
@@ -155,28 +148,25 @@ namespace UnityEPL {
         // DoIn
         // -------------------------------------
 
-        protected void DoIn(int millisecondsDelay, Func<IEnumerator> func)
-        {
-            DoHelper(DelayedEnumeratorCaller(millisecondsDelay, func())); ;
+        protected void DoIn(int millisecondsDelay, Func<IEnumerator> func) {
+            DoHelper(DelayedEnumeratorCaller(millisecondsDelay, func()));
+            ;
         }
         protected void DoIn<T>(int millisecondsDelay, Func<T, IEnumerator> func, T t)
-                where T : struct
-        {
+                where T : struct {
             AssertBlittable(t);
             DoHelper(DelayedEnumeratorCaller(millisecondsDelay, func(t)));
         }
         protected void DoIn<T, U>(int millisecondsDelay, Func<T, U, IEnumerator> func, T t, U u)
                 where T : struct
-                where U : struct
-        {
+                where U : struct {
             AssertBlittable(t, u);
             DoHelper(DelayedEnumeratorCaller(millisecondsDelay, func(t, u)));
         }
         protected void DoIn<T, U, V>(int millisecondsDelay, Func<T, U, V, IEnumerator> func, T t, U u, V v)
                 where T : struct
                 where U : struct
-                where V : struct
-        {
+                where V : struct {
             AssertBlittable(t, u, v);
             DoHelper(DelayedEnumeratorCaller(millisecondsDelay, func(t, u, v)));
         }
@@ -184,19 +174,16 @@ namespace UnityEPL {
                 where T : struct
                 where U : struct
                 where V : struct
-                where W : struct
-        {
+                where W : struct {
             AssertBlittable(t, u, v, w);
             DoHelper(DelayedEnumeratorCaller(millisecondsDelay, func(t, u, v, w)));
         }
 
-        protected void DoIn(int millisecondsDelay, Action func)
-        {
+        protected void DoIn(int millisecondsDelay, Action func) {
             DoHelper(DelayedEnumeratorCaller(millisecondsDelay, func));
         }
         protected void DoIn<T>(int millisecondsDelay, Action<T> func, T t)
-                where T : struct
-        {
+                where T : struct {
             AssertBlittable(t);
             DoHelper(DelayedEnumeratorCaller(millisecondsDelay, func, t));
         }
@@ -346,7 +333,7 @@ namespace UnityEPL {
                     throw new TimeoutException("DoRepeating execution took longer than the interval assigned");
                 } else if (iterations > 1) {
                     DoHelper(RepeatingEnumeratorCaller(cts, delayMs, intervalMs, iterations - 1, func));
-                } 
+                }
             } else {
                 DoHelper(RepeatingEnumeratorCaller(cts, delayMs, intervalMs, iterations, func));
             }
@@ -430,7 +417,7 @@ namespace UnityEPL {
             } else {
                 DoHelper(RepeatingEnumeratorCaller(cts, delayMs, intervalMs, iterations, func, t, u, v, w));
             }
-            
+
             return cts;
         }
 
@@ -592,34 +579,29 @@ namespace UnityEPL {
         // DoWaitFor
         // -------------------------------------
 
-        private Task DoWaitForHelper(IEnumerator enumerator)
-        {
+        private Task DoWaitForHelper(IEnumerator enumerator) {
             var tcs = new TaskCompletionSource<bool>();
             manager.events.Enqueue(TaskTrigger(tcs, enumerator));
             return tcs.Task;
         }
-        protected Task DoWaitFor(Func<IEnumerator> func)
-        {
+        protected Task DoWaitFor(Func<IEnumerator> func) {
             return DoWaitForHelper(func());
         }
         protected Task DoWaitFor<T>(Func<T, IEnumerator> func, T t)
-                where T : struct
-        {
+                where T : struct {
             AssertBlittable(t);
             return DoWaitForHelper(func(t));
         }
         protected Task DoWaitFor<T, U>(Func<T, U, IEnumerator> func, T t, U u)
                 where T : struct
-                where U : struct
-        {
+                where U : struct {
             AssertBlittable(t, u);
             return DoWaitForHelper(func(t, u));
         }
         protected Task DoWaitFor<T, U, V>(Func<T, U, V, IEnumerator> func, T t, U u, V v)
                 where T : struct
                 where U : struct
-                where V : struct
-        {
+                where V : struct {
             AssertBlittable(t, u, v);
             return DoWaitForHelper(func(t, u, v));
         }
@@ -627,8 +609,7 @@ namespace UnityEPL {
                 where T : struct
                 where U : struct
                 where V : struct
-                where W : struct
-        {
+                where W : struct {
             AssertBlittable(t, u, v, w);
             return DoWaitForHelper(func(t, u, v, w));
         }

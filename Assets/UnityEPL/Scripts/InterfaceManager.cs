@@ -285,8 +285,8 @@ namespace UnityEPL {
             //hostPC?.Disconnect();
 
             //mainEvents.Pause(true);
-            foreach (var scene in SceneManager.GetAllScenes()) {
-                UnityEngine.Debug.Log(scene.name);
+            for (int i = 0; i < SceneManager.sceneCount; ++i) {
+                UnityEngine.Debug.Log(SceneManager.GetSceneAt(i).name);
             }
             SceneManager.LoadScene(Config.launcherScene);
         }
