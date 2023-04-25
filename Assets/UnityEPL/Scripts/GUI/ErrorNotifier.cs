@@ -5,7 +5,9 @@ using UnityEngine;
 namespace UnityEPL {
 
     public class ErrorNotifier : SingletonEventMonoBehaviour<ErrorNotifier> {
-        protected override void AwakeOverride() { }
+        protected override void AwakeOverride() {
+            gameObject.SetActive(false);
+        }
 
         public static void Error<T>(T exception) where T : Exception {
             if (exception.StackTrace == null) {
@@ -39,16 +41,16 @@ namespace UnityEPL {
                 }
             }
 
-            Instance.Do<StackString, StackString>(Instance.ErrorHelper, exception.Message, exception.StackTrace);
+            Instance.Do<StackString, StackString>(Instance.WarningHelper, exception.Message, exception.StackTrace);
         }
-        protected void WarningHelper(Exception e) {
+        protected void WarningHelper(StackString message, StackString stackTrace) {
             gameObject.SetActive(true);
             var textDisplayer = gameObject.GetComponent<TextDisplayer>();
-            textDisplayer.DisplayMB("Warning", "Warning", e.Message);
+            textDisplayer.DisplayMB("Warning", "Warning", message);
             manager.eventReporter.ReportScriptedEvent("Warning",
                 new Dictionary<string, object>{
-                    { "message", e.Message },
-                    { "stackTrace", e.StackTrace } });
+                    { "message", message },
+                    { "stackTrace", stackTrace } });
             manager.Pause(true);
         }
     }

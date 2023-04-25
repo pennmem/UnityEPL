@@ -293,8 +293,9 @@ namespace UnityEPLTests {
         public void IncTask() {
             Do(IncTaskHelper);
         }
-        protected async Task IncTaskHelper() {
+        protected Task IncTaskHelper() {
             i += 1;
+            return Task.CompletedTask;
         }
 
         public void DelayedIncAct(int millisecondsDelay) {
@@ -307,8 +308,9 @@ namespace UnityEPLTests {
         public void DelayedIncTask(int millisecondsDelay) {
             DoIn(millisecondsDelay, DelayedIncTaskHelper);
         }
-        protected async Task DelayedIncTaskHelper() {
+        protected Task DelayedIncTaskHelper() {
             i += 1;
+            return Task.CompletedTask;
         }
 
         public void IncThreeTimesAct(int delayMs, int intervalMs, uint? iterations) {
@@ -321,8 +323,9 @@ namespace UnityEPLTests {
         public void IncThreeTimesTask(int delayMs, int intervalMs, uint? iterations) {
             DoRepeating(delayMs, intervalMs, iterations, IncThreeTimesTaskHelper);
         }
-        protected async Task IncThreeTimesTaskHelper() {
+        protected Task IncThreeTimesTaskHelper() {
             i += 1;
+            return Task.CompletedTask;
         }
 
         public async Task DelayedIncAndWaitAct(int millisecondsDelay) {

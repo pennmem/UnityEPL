@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace UnityEPL {
 
@@ -10,8 +11,10 @@ namespace UnityEPL {
     /// 
     /// It also allows users to edit the loaded information with Increase/Decrease Session/List number buttons.
     /// </summary>
-    public class ParticipantSelection : MonoBehaviour {
-        InterfaceManager manager;
+    [RequireComponent(typeof(Dropdown))]
+    public class ParticipantSelection : EventMonoBehaviour {
+        protected override void AwakeOverride() { }
+
         public UnityEngine.UI.InputField participantNameInput;
         public UnityEngine.UI.Text sessionNumberText;
         public UnityEngine.UI.Text listNumberText;
@@ -23,10 +26,6 @@ namespace UnityEPL {
         // ^ updtaed by GUI event when experiment is
         // selected from dropdown menu
 
-        void Awake() {
-            manager = FindObjectOfType<InterfaceManager>();
-        }
-
         void Update() {
             // update participants when new experiments are loaded
             if (experimentUpdated && Config.experimentName != null) {
@@ -35,24 +34,58 @@ namespace UnityEPL {
             }
         }
 
-        public void ExperimentUpdated() {
+        public void ExperimentUpdatedMB() {
+            DoMB(ExperimentUpdatedHelper);
+        }
+        protected void ExperimentUpdatedHelper() {
             experimentUpdated = true;
         }
 
-        public void FindParticipants() {
-            UnityEngine.UI.Dropdown dropdown = GetComponent<UnityEngine.UI.Dropdown>();
+        
+        public void ParticipantSelectedMB() {
+            DoMB(ParticipantSelectedHelper);
+        }
+        protected void ParticipantSelectedHelper() {
+            Dropdown dropdown = GetComponent<Dropdown>();
+            if (dropdown.value <= 1) {
+                participantNameInput.text = "New Participant";
+            } else {
+                LoadParticipant();
+            }
+        }
+
+
+        public void DecreaseSessionNumberMB() {
+            DoMB(DecreaseSessionNumberHelper);
+        }
+        protected void DecreaseSessionNumberHelper() {
+            if (nextSessionNumber > 0)
+                nextSessionNumber--;
+            LoadSession();
+        }
+
+        public void IncreaseSessionNumberMB() {
+            DoMB(IncreaseSessionNumberHelper);
+        }
+        protected void IncreaseSessionNumberHelper() {
+            nextSessionNumber++;
+            LoadSession();
+        }
+
+        protected void FindParticipants() {
+            Dropdown dropdown = GetComponent<Dropdown>();
 
             dropdown.ClearOptions();
             dropdown.AddOptions(new List<string>() { "Select participant", "New Participant" });
 
             string participantDirectory = manager.fileManager.ExperimentPath();
             if (Directory.Exists(participantDirectory)) {
-                string[] filepaths = System.IO.Directory.GetDirectories(participantDirectory);
+                string[] filepaths = Directory.GetDirectories(participantDirectory);
                 List<string> filenames = new List<string>();
 
                 for (int i = 0; i < filepaths.Length; i++)
-                    if (manager.fileManager.isValidParticipant(System.IO.Path.GetFileName(filepaths[i])))
-                        filenames.Add(System.IO.Path.GetFileName(filepaths[i]));
+                    if (manager.fileManager.isValidParticipant(Path.GetFileName(filepaths[i])))
+                        filenames.Add(Path.GetFileName(filepaths[i]));
 
                 dropdown.AddOptions(filenames);
             }
@@ -63,21 +96,11 @@ namespace UnityEPL {
             nextListNumber = 0;
             UpdateTexts();
         }
-
-        public void ParticipantSelected() {
-            UnityEngine.UI.Dropdown dropdown = GetComponent<UnityEngine.UI.Dropdown>();
-            if (dropdown.value <= 1) {
-                participantNameInput.text = "New Participant";
-            } else {
-                LoadParticipant();
-            }
-        }
-
-        public void LoadParticipant() {
-            UnityEngine.UI.Dropdown dropdown = GetComponent<UnityEngine.UI.Dropdown>();
+        protected void LoadParticipant() {
+            Dropdown dropdown = GetComponent<Dropdown>();
             string selectedParticipant = dropdown.captionText.text;
 
-            if (!System.IO.Directory.Exists(manager.fileManager.ParticipantPath(selectedParticipant)))
+            if (!Directory.Exists(manager.fileManager.ParticipantPath(selectedParticipant)))
                 throw new UnityException("You tried to load a participant that doesn't exist.");
 
             participantNameInput.text = selectedParticipant;
@@ -86,26 +109,13 @@ namespace UnityEPL {
 
             UpdateTexts();
         }
-
-        public void LoadSession() {
-            UnityEngine.UI.Dropdown dropdown = GetComponent<UnityEngine.UI.Dropdown>();
+        protected void LoadSession() {
+            Dropdown dropdown = GetComponent<Dropdown>();
             string selectedParticipant = dropdown.captionText.text;
             string sessionFilePath = manager.fileManager.SessionPath(selectedParticipant, nextSessionNumber);
             UpdateTexts();
         }
-
-        public void DecreaseSessionNumber() {
-            if (nextSessionNumber > 0)
-                nextSessionNumber--;
-            LoadSession();
-        }
-
-        public void IncreaseSessionNumber() {
-            nextSessionNumber++;
-            LoadSession();
-        }
-
-        public void UpdateTexts() {
+        protected void UpdateTexts() {
             sessionNumberText.text = nextSessionNumber.ToString();
         }
     }

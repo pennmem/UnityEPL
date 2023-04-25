@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace UnityEPL {
 
@@ -9,8 +10,10 @@ namespace UnityEPL {
     /// 
     /// This is included in order to match the behavior of PyEPL (CML's previous experimental task software).
     /// </summary>
-    public class TextResizer : MonoBehaviour {
-        public UnityEngine.UI.Text textElement;
+    public class TextResizer : EventMonoBehaviour {
+        protected override void AwakeOverride() { }
+
+        public Text textElement;
 
         private Vector2 originalAnchorMin;
         private Vector2 originalAnchorMax;

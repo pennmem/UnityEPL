@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace UnityEPL {
 
@@ -10,23 +11,24 @@ namespace UnityEPL {
     /// 
     /// It only needs to call UnityEPL.SetExperimentName().
     /// </summary>
-    public class ExperimentSelection : MonoBehaviour {
-        public InterfaceManager manager;
-
-        void Awake() {
-            manager = InterfaceManager.Instance;
-
-            UnityEngine.UI.Dropdown dropdown = GetComponent<UnityEngine.UI.Dropdown>();
+    [RequireComponent(typeof(Dropdown))]
+    public class ExperimentSelection : EventMonoBehaviour {
+        protected override void AwakeOverride() {
+            Dropdown dropdown = GetComponent<Dropdown>();
 
             List<string> experiments = new(Config.availableExperiments);
 
             dropdown.AddOptions(new List<string>(new string[] { "Select Task..." }));
             dropdown.AddOptions(experiments);
-            SetExperiment();
+            SetExperimentMB();
         }
 
-        public void SetExperiment() {
-            UnityEngine.UI.Dropdown dropdown = GetComponent<UnityEngine.UI.Dropdown>();
+
+        public void SetExperimentMB() {
+            DoMB(SetExperimentHelper);
+        }
+        protected void SetExperimentHelper() {
+            Dropdown dropdown = GetComponent<Dropdown>();
 
             if (dropdown.captionText.text != "Select Task...") {
                 Debug.Log("Task chosen");

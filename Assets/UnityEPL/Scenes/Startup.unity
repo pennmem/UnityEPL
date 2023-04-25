@@ -525,11 +525,11 @@ PrefabInstance:
       objectReference: {fileID: 3667653024765904504}
     - target: {fileID: 3667653022947741352, guid: 05b300d065a0c427db22e49311cb2c89, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: IncreaseSessionNumber
+      value: IncreaseSessionNumberMB
       objectReference: {fileID: 0}
     - target: {fileID: 3667653022947741352, guid: 05b300d065a0c427db22e49311cb2c89, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: ParticipantSelection, Assembly-CSharp
+      value: UnityEPL.ParticipantSelection, UnityEPL
       objectReference: {fileID: 0}
     - target: {fileID: 3667653022997106946, guid: 05b300d065a0c427db22e49311cb2c89, type: 3}
       propertyPath: m_FontData.m_BestFit
@@ -593,11 +593,11 @@ PrefabInstance:
       objectReference: {fileID: 3667653024765904504}
     - target: {fileID: 3667653023120699723, guid: 05b300d065a0c427db22e49311cb2c89, type: 3}
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: ParticipantSelected
+      value: ParticipantSelectedMB
       objectReference: {fileID: 0}
     - target: {fileID: 3667653023120699723, guid: 05b300d065a0c427db22e49311cb2c89, type: 3}
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: ParticipantSelection, Assembly-CSharp
+      value: UnityEPL.ParticipantSelection, UnityEPL
       objectReference: {fileID: 0}
     - target: {fileID: 3667653023193257186, guid: 05b300d065a0c427db22e49311cb2c89, type: 3}
       propertyPath: m_SizeDelta.x
@@ -717,19 +717,19 @@ PrefabInstance:
       objectReference: {fileID: 3667653024765904504}
     - target: {fileID: 3667653024019025117, guid: 05b300d065a0c427db22e49311cb2c89, type: 3}
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: SetExperiment
+      value: SetExperimentMB
       objectReference: {fileID: 0}
     - target: {fileID: 3667653024019025117, guid: 05b300d065a0c427db22e49311cb2c89, type: 3}
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
-      value: ExperimentUpdated
+      value: ExperimentUpdatedMB
       objectReference: {fileID: 0}
     - target: {fileID: 3667653024019025117, guid: 05b300d065a0c427db22e49311cb2c89, type: 3}
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: ExperimentSelection, Assembly-CSharp
+      value: UnityEPL.ExperimentSelection, UnityEPL
       objectReference: {fileID: 0}
     - target: {fileID: 3667653024019025117, guid: 05b300d065a0c427db22e49311cb2c89, type: 3}
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
-      value: ParticipantSelection, Assembly-CSharp
+      value: UnityEPL.ParticipantSelection, UnityEPL
       objectReference: {fileID: 0}
     - target: {fileID: 3667653024068710314, guid: 05b300d065a0c427db22e49311cb2c89, type: 3}
       propertyPath: m_FontData.m_MaxSize
@@ -801,11 +801,11 @@ PrefabInstance:
       objectReference: {fileID: 3667653024765904504}
     - target: {fileID: 3667653024365203147, guid: 05b300d065a0c427db22e49311cb2c89, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: DecreaseSessionNumber
+      value: DecreaseSessionNumberMB
       objectReference: {fileID: 0}
     - target: {fileID: 3667653024365203147, guid: 05b300d065a0c427db22e49311cb2c89, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: ParticipantSelection, Assembly-CSharp
+      value: UnityEPL.ParticipantSelection, UnityEPL
       objectReference: {fileID: 0}
     - target: {fileID: 3667653024479078230, guid: 05b300d065a0c427db22e49311cb2c89, type: 3}
       propertyPath: m_SizeDelta.x
