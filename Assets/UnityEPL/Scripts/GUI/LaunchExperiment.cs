@@ -78,7 +78,6 @@ namespace UnityEPL {
             launchButton.SetActive(false);
             loadingButton.SetActive(true);
 
-            // TODO: JPB: (needed) Should LaunchExperiment be in a Do
             manager.LaunchExperiment();
         }
 

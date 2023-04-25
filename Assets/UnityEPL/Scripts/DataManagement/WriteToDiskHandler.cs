@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 namespace UnityEPL {
@@ -17,7 +18,7 @@ namespace UnityEPL {
         [SerializeField]
         private int framesPerWrite = 30;
 
-        private System.Collections.Generic.Queue<DataPoint> waitingPoints = new System.Collections.Generic.Queue<DataPoint>();
+        private Queue<DataPoint> waitingPoints = new Queue<DataPoint>();
 
         public void SetWriteAutomatically(bool newAutomatically) {
             writeAutomatically = newAutomatically;
@@ -56,8 +57,8 @@ namespace UnityEPL {
                 if (directory == null) {
                     return;
                 }
-                System.IO.Directory.CreateDirectory(directory);
-                string filePath = System.IO.Path.Combine(directory, "unnamed_file");
+                Directory.CreateDirectory(directory);
+                string filePath = Path.Combine(directory, "unnamed_file");
 
                 DataPoint dataPoint = waitingPoints.Dequeue();
                 string writeMe = "unrecognized type";
@@ -65,10 +66,10 @@ namespace UnityEPL {
                 switch (outputFormat) {
                     case FORMAT.JSON_LINES:
                         writeMe = dataPoint.ToJSON();
-                        filePath = System.IO.Path.Combine(directory, extensionlessFileName + ".jsonl");
+                        filePath = Path.Combine(directory, extensionlessFileName + ".jsonl");
                         break;
                 }
-                System.IO.File.AppendAllText(filePath, writeMe + System.Environment.NewLine);
+                File.AppendAllText(filePath, writeMe + System.Environment.NewLine);
             }
         }
     }

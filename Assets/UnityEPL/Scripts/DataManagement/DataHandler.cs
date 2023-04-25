@@ -29,8 +29,8 @@ namespace UnityEPL {
             }
 
             foreach (DataReporter reporter in reportersToHandle) {
-                if (reporter.UnreadDataPointCount() > 0) {
-                    DataPoint[] newPoints = reporter.ReadDataPoints(reporter.UnreadDataPointCount());
+                if (reporter.UnreadDataPointCountMB() > 0) {
+                    DataPoint[] newPoints = reporter.ReadDataPointsMB(reporter.UnreadDataPointCountMB());
                     HandleDataPoints(newPoints);
                 }
             }

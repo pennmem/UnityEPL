@@ -11,7 +11,7 @@ namespace UnityEPL {
         public bool reportView = true;
         public int framesPerViewReport = 30;
 
-        private Dictionary<Camera, bool> camerasToInViewfield = new Dictionary<Camera, bool>();
+        private Dictionary<Camera, bool> camerasToInViewfield = new();
 
         void Update() {
             if (reportTransform) CheckTransformReport();
@@ -20,16 +20,19 @@ namespace UnityEPL {
 
         void Start() {
             if (reportView && GetComponent<Collider>() == null) {
-                throw new UnityException("You have selected enter/exit viewfield reporting for " + gameObject.name + " but there is no collider on the object." +
-                                          "  This feature uses collision detection to compare with camera bounds and other objects.  Please add a collider or " +
-                                          "unselect viewfield enter/exit reporting.");
+                ErrorNotifier.Error(
+                    new UnityException("You have selected enter/exit viewfield reporting for " + gameObject.name + " but there is no collider on the object. " +
+                                       "This feature uses collision detection to compare with camera bounds and other objects.  Please add a collider or " +
+                                       "unselect viewfield enter/exit reporting."));
             }
         }
 
-        public void DoTransformReport(System.Collections.Generic.Dictionary<string, object> extraData = null) {
-            if (extraData == null)
-                extraData = new Dictionary<string, object>();
-            System.Collections.Generic.Dictionary<string, object> transformDict = new System.Collections.Generic.Dictionary<string, object>(extraData);
+
+        public void DoTransformReportMB(Dictionary<string, object> extraData = null) {
+            DoMB(DoTransformReportHelper, extraData);
+        }
+        public void DoTransformReportHelper(Dictionary<string, object> extraData = null) {
+            var transformDict = new Dictionary<string, object>(extraData) ?? new();
             transformDict.Add("positionX", transform.position.x);
             transformDict.Add("positionY", transform.position.y);
             transformDict.Add("positionZ", transform.position.z);
@@ -45,7 +48,7 @@ namespace UnityEPL {
 
         private void CheckTransformReport() {
             if (Time.frameCount % framesPerTransformReport == 0) {
-                DoTransformReport();
+                DoTransformReportMB();
             }
         }
 
@@ -53,31 +56,31 @@ namespace UnityEPL {
             if (Time.frameCount % framesPerViewReport == 0) {
                 DoViewReport();
             }
+        }
 
-            //untested accuraccy, requires collider
-            void DoViewReport() {
-                Camera[] cameras = FindObjectsOfType<Camera>();
+        //untested accuraccy, requires collider
+        private void DoViewReport() {
+            Camera[] cameras = FindObjectsOfType<Camera>();
 
-                foreach (Camera thisCamera in cameras) {
-                    Plane[] frustrumPlanes = GeometryUtility.CalculateFrustumPlanes(thisCamera);
-                    Collider objectCollider = GetComponent<Collider>();
+            foreach (Camera thisCamera in cameras) {
+                Plane[] frustrumPlanes = GeometryUtility.CalculateFrustumPlanes(thisCamera);
+                Collider objectCollider = GetComponent<Collider>();
 
-                    // raycast to center mass
-                    Physics.Linecast(thisCamera.transform.position, gameObject.transform.position, out RaycastHit lineOfSightHit);
-                    bool lineOfSight = lineOfSightHit.collider.Equals(gameObject.GetComponent<Collider>());
-                    bool inView = GeometryUtility.TestPlanesAABB(frustrumPlanes, objectCollider.bounds) && lineOfSight;
+                // raycast to center mass
+                Physics.Linecast(thisCamera.transform.position, gameObject.transform.position, out RaycastHit lineOfSightHit);
+                bool lineOfSight = lineOfSightHit.collider.Equals(gameObject.GetComponent<Collider>());
+                bool inView = GeometryUtility.TestPlanesAABB(frustrumPlanes, objectCollider.bounds) && lineOfSight;
 
-                    string eventName = "";
+                string eventName = "";
 
-                    if (!reportView)
-                        continue;
+                if (!reportView)
+                    continue;
 
-                    Dictionary<string, object> dataDict = new Dictionary<string, object>();
-                    dataDict.Add("cameraName", thisCamera.name);
-                    dataDict.Add("isInView", inView);
-                    eventName = gameObject.name.ToLower() + "InView";
-                    eventQueue.Enqueue(new DataPoint(eventName, TimeStamp(), dataDict));
-                }
+                Dictionary<string, object> dataDict = new Dictionary<string, object>();
+                dataDict.Add("cameraName", thisCamera.name);
+                dataDict.Add("isInView", inView);
+                eventName = gameObject.name.ToLower() + "InView";
+                eventQueue.Enqueue(new DataPoint(eventName, TimeStamp(), dataDict));
             }
         }
     }
