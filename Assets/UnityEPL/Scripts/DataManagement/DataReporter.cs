@@ -46,14 +46,14 @@ namespace UnityEPL {
             }
 
             if (reportTo) {
-                reportTo.AddReporter(this);
+                reportTo.AddReporterMB(this);
             }
         }
 
         protected virtual void OnDisable() {
             if (reportTo) {
                 eventQueue.Enqueue(new DataPoint(reportingID + "Disabled", TimeStamp(), new Dictionary<string, object>()));
-                reportTo.RemoveReporter(this);
+                reportTo.RemoveReporterMB(this);
             }
         }
 

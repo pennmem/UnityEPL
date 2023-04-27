@@ -19,14 +19,11 @@ public class Main : EventMonoBehaviour {
     protected override void AwakeOverride() { }
 
     const long delay = 10000000000;
-    InterfaceManager manager;
 
     void Start() {
         UnityEngine.Debug.Log("ThreadID - Start: " + Thread.CurrentThread.ManagedThreadId + " " + DateTime.Now);
         //UnityEngine.Debug.Log(ThreadPool.SetMinThreads(1, 1));
         //UnityEngine.Debug.Log(ThreadPool.SetMaxThreads(1, 1));
-
-        manager = FindObjectOfType<InterfaceManager>();
 
         //UnityEngine.Debug.Log(UnsafeUtility.IsBlittable(typeof(StackString)));
     }
