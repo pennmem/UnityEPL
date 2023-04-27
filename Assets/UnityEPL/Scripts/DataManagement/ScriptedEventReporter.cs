@@ -10,7 +10,7 @@ namespace UnityEPL {
     public class ScriptedEventReporter : DataReporter {
 
         // TODO: JPB: (needed) (bug) Make ReportScriptedEvent use a blittable type instead of Dictionary
-        //            Or at least have it use ICloneable 
+        //            Or at least have it use Mutex
         public void ReportScriptedEvent(string type, Dictionary<string, object> data = null) {
             Do<StackString>((type) => {
                 ReportScriptedEventHelper(type, TimeStamp(), data);
