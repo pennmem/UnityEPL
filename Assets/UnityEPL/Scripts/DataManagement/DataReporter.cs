@@ -37,7 +37,7 @@ namespace UnityEPL {
             }
         }
 
-        protected virtual void OnEnable() {
+        protected void OnEnable() {
             if (!reportTo) {
                 GameObject data = GameObject.Find("DataManager");
                 if (data != null) {
@@ -46,11 +46,12 @@ namespace UnityEPL {
             }
 
             if (reportTo) {
-                reportTo.AddReporterMB(this);
+                // TODO: JPB: (needed) (bug) Figure out why DataReporter::OnEnable crashes when I call AddReporterMB
+                //reportTo.AddReporterMB(this);
             }
         }
 
-        protected virtual void OnDisable() {
+        protected void OnDisable() {
             if (reportTo) {
                 eventQueue.Enqueue(new DataPoint(reportingID + "Disabled", TimeStamp(), new Dictionary<string, object>()));
                 reportTo.RemoveReporterMB(this);
@@ -113,6 +114,7 @@ namespace UnityEPL {
             eventQueue.Enqueue(new DataPoint(gameObject.name + " transform", TimeStamp(), transformDict));
         }
 
+        // TODO: JPB: (needed) (feature) Convert DataReporter::TimeStamp to use Clock class
         public static DateTime TimeStamp() {
             return GetStartTime().Add(stopwatch.Elapsed);
         }

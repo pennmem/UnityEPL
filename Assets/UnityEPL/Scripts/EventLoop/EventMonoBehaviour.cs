@@ -33,6 +33,7 @@ namespace UnityEPL {
         // This function is used to guarentee that a function is being called from
         // the main unity thread
         protected void MonoBehaviourSafetyCheck() {
+            //Debug.Log($"{threadID} {Thread.CurrentThread.ManagedThreadId}");
             if (threadID != Thread.CurrentThread.ManagedThreadId) {
                 ErrorNotifier.Error(new InvalidOperationException(
                     "Cannot call this function from a non-unity thread.\n" +

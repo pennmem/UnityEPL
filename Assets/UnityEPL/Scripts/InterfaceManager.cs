@@ -49,7 +49,7 @@ namespace UnityEPL {
         // scripts
         //////////
         //public NetworkInterface hostPC;
-        //public VideoControl videoControl;
+        public VideoControl videoControl;
         public TextDisplayer textDisplayer;
         //public SoundRecorder recorder;
         public AudioSource highBeep;
@@ -168,12 +168,12 @@ namespace UnityEPL {
             //}
 
             // Video Control
-            //GameObject video = GameObject.Find("VideoPlayer");
-            //if (video != null) {
-            //    videoControl = video.GetComponent<VideoControl>();
-            //    video.SetActive(false);
-            //    Debug.Log("Found VideoPlayer");
-            //}
+            GameObject video = GameObject.Find("VideoPlayer");
+            if (video != null) {
+                videoControl = video.GetComponent<VideoControl>();
+                video.SetActive(false);
+                Debug.Log("Found VideoPlayer");
+            }
 
             // Beep Sounds
             GameObject sound = GameObject.Find("Sounds");
@@ -367,8 +367,9 @@ namespace UnityEPL {
 
                 LogExperimentInfo();
 
-                Type t = Type.GetType(Config.experimentClass);
-                exp = (ExperimentBase)Activator.CreateInstance(t, new object[] { this });
+                string className = "UnityEPL." + Config.experimentClass;
+                Type classType = Type.GetType(className);
+                exp = (ExperimentBase)Activator.CreateInstance(classType, new object[] { this });
             } else {
                 throw new Exception("No experiment configuration loaded");
             }

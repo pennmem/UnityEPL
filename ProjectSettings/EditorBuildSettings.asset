@@ -11,4 +11,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/UnityEPL/Scenes/Startup.unity
     guid: 9ef34562564d14c36a0d922422fdaedc
+  - enabled: 1
+    path: Assets/Scenes/RepFR.unity
+    guid: a9d8a7c8b7abd47cd9a1f9ceb062bcf5
   m_configObjects: {}
