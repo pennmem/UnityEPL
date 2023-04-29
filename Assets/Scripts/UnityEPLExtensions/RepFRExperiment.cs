@@ -8,7 +8,7 @@ using UnityEngine;
 namespace UnityEPL {
 
     public class RepFRExperiment : ExperimentBase {
-        public RepFRExperiment(InterfaceManager manager) : base(manager) {
+        public RepFRExperiment(InterfaceManager manager) {
             Run();
         }
 

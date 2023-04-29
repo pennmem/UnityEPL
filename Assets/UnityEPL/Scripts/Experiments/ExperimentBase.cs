@@ -21,9 +21,11 @@ namespace UnityEPL {
         TaskCompletionSource<KeyMsg> tcs = new TaskCompletionSource<KeyMsg>();
 
         protected InterfaceManager manager;
+        protected InputManager inputManager;
 
-        public ExperimentBase(InterfaceManager manager) {
-            this.manager = manager;
+        public ExperimentBase() {
+            this.manager = InterfaceManager.Instance;
+            this.inputManager = InputManager.Instance;
         }
 
         protected void Run() {

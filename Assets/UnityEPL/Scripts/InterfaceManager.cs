@@ -37,7 +37,6 @@ namespace UnityEPL {
         // Testing things
         //////////
         public TestTextDisplayer testTextDisplayer;
-        public VideoManager videoManager;
 
         //////////
         // IDK what label // TODO: JPB: Rename this
@@ -57,7 +56,6 @@ namespace UnityEPL {
         public AudioSource lowerBeep;
         public AudioSource playback;
         //public RamulatorInterface ramulator;
-        public InputManager inputManager;
         public ISyncBox syncBox;
 
         //////////
@@ -65,8 +63,8 @@ namespace UnityEPL {
         //////////
         //public VoiceActivityDetection voiceActity;
         public ScriptedEventReporter eventReporter;
-        public InputReporter peripheralInput;
-        public UIDataReporter uiInput;
+        public InputReporter inputReporter;
+        public UIDataReporter uiReporter;
         private int eventsPerFrame;
 
         public ConcurrentQueue<IEnumerator> events = new ConcurrentQueue<IEnumerator>();
@@ -85,14 +83,9 @@ namespace UnityEPL {
             SceneManager.sceneLoaded += onSceneLoaded;
 
             // create objects not tied to unity
-            // TODO: JPB: (needed) Move into onSceneLoaded? 
             fileManager = new FileManager(this);
-            //testTextDisplayer = GameObject.Find("TextDisplayer").GetComponent<TestTextDisplayer>();
-            inputManager = this.transform.GetComponent<InputManager>();
-            videoManager = this.transform.GetComponent<VideoManager>();
-
-            //var exp = new TestExperiment(this);
-
+            
+            // Setup configs
             var configs = SetupConfigs();
             GetExperiments(configs);
 
@@ -138,7 +131,7 @@ namespace UnityEPL {
         // collect references to managed objects
         // and release references to non-active objects
         //////////
-        void onSceneLoaded(Scene scene, LoadSceneMode mode) {
+        private void onSceneLoaded(Scene scene, LoadSceneMode mode) {
             // TODO: JPB: (needed) Check
             //onKey = new ConcurrentQueue<Action<string, bool>>(); // clear keyhandler queue on scene change
 
@@ -148,15 +141,13 @@ namespace UnityEPL {
                 textDisplayer = canvas.GetComponent<TextDisplayer>();
                 Debug.Log("Found TextDisplay");
             }
-            //textDisplayer = FindObjectOfType<TextDisplayer>();
-            //if (textDisplayer != null) Debug.Log("Found TextDisplayer");
 
             // Input Reporters
             GameObject inputReporters = GameObject.Find("DataManager");
             if (inputReporters != null) {
                 eventReporter = inputReporters.GetComponent<ScriptedEventReporter>();
-                peripheralInput = inputReporters.GetComponent<InputReporter>();
-                uiInput = inputReporters.GetComponent<UIDataReporter>();
+                inputReporter = inputReporters.GetComponent<InputReporter>();
+                uiReporter = inputReporters.GetComponent<UIDataReporter>();
                 Debug.Log("Found InputReporters");
             }
 
@@ -199,6 +190,18 @@ namespace UnityEPL {
             //    Debug.Log("Found Ramulator");
             //}
         }
+
+        private void onExperimentSceneLoaded(Scene scene, LoadSceneMode mode) {
+            onSceneLoaded(scene, mode);
+
+            string className = $"{typeof(ExperimentBase).Namespace}.{Config.experimentClass}";
+            Type classType = Type.GetType(className);
+            exp = (ExperimentBase)Activator.CreateInstance(classType, new object[] { this });
+
+            SceneManager.sceneLoaded -= onExperimentSceneLoaded;
+            SceneManager.sceneLoaded += onSceneLoaded;
+        }
+        
 
         // TODO: JPB: (feature) Make InterfaceManager.Delay() pause aware
         // https://devblogs.microsoft.com/pfxteam/cooperatively-pausing-async-methods/
@@ -336,9 +339,10 @@ namespace UnityEPL {
         //}
 
         public void LaunchExperimentMB() {
-            StartCoroutine(DoWaitForMB(LaunchExperimentHelper));
+            //StartCoroutine(DoWaitForMB(LaunchExperimentHelper));
+            DoMB(LaunchExperimentHelper);
         }
-        protected IEnumerator LaunchExperimentHelper() {
+        protected void LaunchExperimentHelper() {
             // launch scene with exp, 
             // instantiate experiment,
             // call start function
@@ -356,9 +360,6 @@ namespace UnityEPL {
                 // Create path for current participant/session
                 fileManager.CreateSession();
 
-                //mainEvents.Pause(true);
-                SceneManager.LoadScene(Config.experimentScene);
-
                 // Start Syncbox
                 //syncBox.StartPulse();
 
@@ -371,21 +372,9 @@ namespace UnityEPL {
 
                 LogExperimentInfo();
 
-                bool allAwake = false;
-                while (!allAwake) {
-                    foreach (var emb in FindObjectsOfType<EventMonoBehaviour>()) {
-                        allAwake = true;
-                        if (emb.isActiveAndEnabled) {
-                            allAwake &= emb.IsAwakeCompletedMB();
-                        }
-                    }
-                    
-                    yield return null;
-                }
-                
-                string className = $"{typeof(ExperimentBase).Namespace}.{Config.experimentClass}";
-                Type classType = Type.GetType(className);
-                exp = (ExperimentBase)Activator.CreateInstance(classType, new object[] { this });
+                SceneManager.sceneLoaded -= onSceneLoaded;
+                SceneManager.sceneLoaded += onExperimentSceneLoaded;
+                SceneManager.LoadScene(Config.experimentScene);
             } else {
                 throw new Exception("No experiment configuration loaded");
             }

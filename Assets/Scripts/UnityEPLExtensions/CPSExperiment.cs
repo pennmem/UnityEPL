@@ -9,7 +9,7 @@ using UnityEngine;
 namespace UnityEPL {
 
     public class CPSExperiment : ExperimentBase {
-        public CPSExperiment(InterfaceManager manager) : base(manager) {
+        public CPSExperiment(InterfaceManager manager) {
             Run();
         }
 

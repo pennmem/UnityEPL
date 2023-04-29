@@ -11,7 +11,7 @@ namespace UnityEPL {
     // Classes to manage the filesystem in
     // which experiment data is stored
     /////////
-
+    // TODO: JPB: (needed) (refactor) Decide if FileManager should be an EventLoop
     public class FileManager {
 
         InterfaceManager manager;

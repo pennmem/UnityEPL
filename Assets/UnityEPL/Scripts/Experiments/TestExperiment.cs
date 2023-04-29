@@ -8,12 +8,12 @@ using UnityEngine;
 namespace UnityEPL {
 
     public class TestExperiment : ExperimentBase {
-        public TestExperiment(InterfaceManager manager) : base(manager) {
+        public TestExperiment(InterfaceManager manager) {
             Run();
         }
 
         protected async Task RepeatedGetKey() {
-            var key = await manager.inputManager.GetKey();
+            var key = await inputManager.GetKey();
             UnityEngine.Debug.Log("Got key " + key);
             Do(RepeatedGetKey);
         }
@@ -26,9 +26,9 @@ namespace UnityEPL {
             //UnityEngine.Debug.Log("DoGet: " + a);
 
             var cts = DoRepeating(1000, 500, 10, () => { UnityEngine.Debug.Log("Repeat"); });
-            await manager.inputManager.GetKey();
+            await inputManager.GetKey();
             cts.Cancel();
-            await manager.inputManager.GetKey();
+            await inputManager.GetKey();
 
             //var key = await manager.inputManager.GetKey();
             //UnityEngine.Debug.Log("Got key " + key);
