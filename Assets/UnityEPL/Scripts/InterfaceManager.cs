@@ -334,7 +334,11 @@ namespace UnityEPL {
         //public void LaunchExperiment() {
         //    Do(LaunchExperimentHandler);
         //}
-        public void LaunchExperiment() {
+
+        public void LaunchExperimentMB() {
+            StartCoroutine(DoWaitForMB(LaunchExperimentHelper));
+        }
+        protected IEnumerator LaunchExperimentHelper() {
             // launch scene with exp, 
             // instantiate experiment,
             // call start function
@@ -367,9 +371,19 @@ namespace UnityEPL {
 
                 LogExperimentInfo();
 
-                // TODO: JPB: (bug) I create the experiment, which may access the other EventMonoBehaviour methods
-                //            before awake is called
-                string className = "UnityEPL." + Config.experimentClass;
+                bool allAwake = false;
+                while (!allAwake) {
+                    foreach (var emb in FindObjectsOfType<EventMonoBehaviour>()) {
+                        allAwake = true;
+                        if (emb.isActiveAndEnabled) {
+                            allAwake &= emb.IsAwakeCompletedMB();
+                        }
+                    }
+                    
+                    yield return null;
+                }
+                
+                string className = $"{typeof(ExperimentBase).Namespace}.{Config.experimentClass}";
                 Type classType = Type.GetType(className);
                 exp = (ExperimentBase)Activator.CreateInstance(classType, new object[] { this });
             } else {

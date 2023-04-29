@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
+using Unity.Collections;
 using UnityEngine;
 
 namespace UnityEPL {
@@ -11,20 +12,21 @@ namespace UnityEPL {
         const long delay = 10000000000;
         public TextMesh tm;
 
-        public void UpdateText(StackString ss) {
-            Do(UpdateTextHelper, ss);
+        public void UpdateText(string ss) {
+            Do(UpdateTextHelper, ss.ToNativeText());
         }
-        protected IEnumerator UpdateTextHelper(StackString ss) {
-            tm.text = ss;
+        protected IEnumerator UpdateTextHelper(NativeText ss) {
+            tm.text = ss.ToString();
             Debug.Log(ss);
+            ss.Dispose();
             yield break;
         }
 
 
-        public Task AwaitableUpdateText(StackString ss) {
-            return DoWaitFor(AwaitableUpdateTextHelper, ss);
+        public Task AwaitableUpdateText(string ss) {
+            return DoWaitFor(AwaitableUpdateTextHelper, ss.ToNativeText());
         }
-        protected IEnumerator AwaitableUpdateTextHelper(StackString ss) {
+        protected IEnumerator AwaitableUpdateTextHelper(NativeText ss) {
             Debug.Log(1 + " - " + DateTime.Now);
             tm.text = "1";
             yield return new WaitForSeconds(1);
@@ -32,19 +34,21 @@ namespace UnityEPL {
             tm.text = "2";
             yield return new WaitForSeconds(1);
             Debug.Log(ss + " - " + DateTime.Now);
-            tm.text = ss;
+            tm.text = ss.ToString();
+            ss.Dispose();
             yield break;
         }
 
-        public Task<int> ReturnableUpdateText(StackString ss) {
-            return DoGet<StackString, int>(ReturnableUpdateTextHelper, ss);
+        public Task<int> ReturnableUpdateText(string ss) {
+            return DoGet<NativeText, int>(ReturnableUpdateTextHelper, ss.ToNativeText());
         }
-        protected IEnumerator ReturnableUpdateTextHelper(StackString ss) {
+        protected IEnumerator ReturnableUpdateTextHelper(NativeText ss) {
             Debug.Log(1 + " - " + DateTime.Now);
-            tm.text = ss;
+            tm.text = ss.ToString();
             yield return new WaitForSeconds(1);
-            tm.text = ss;
+            tm.text = ss.ToString();
             yield return 69;
+            ss.Dispose();
         }
     }
 

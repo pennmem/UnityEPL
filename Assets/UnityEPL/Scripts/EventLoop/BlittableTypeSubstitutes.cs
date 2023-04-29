@@ -58,54 +58,7 @@ namespace UnityEPL {
         public override string ToString() => ((char)_val).ToString();
     }
 
-
-    // TODO: JPB: (needed) (bug) Remove StackString so that I can handle Disposing of NativeArrays
-    public struct StackString {
-        NativeArray<UInt16> _val;
-
-        public StackString(String s) {
-            _val = new NativeArray<UInt16>(s.Length, Allocator.Persistent);
-            for (int i = 0; i < s.Length; ++i) {
-                _val[i] = s[i];
-            }
-        }
-
-        public UInt16 this[int key] {
-            get => _val[key];
-            set => _val[key] = value;
-        }
-
-        public static implicit operator String(StackString ss) {
-            var data = ss._val.ToArray();
-            byte[] asBytes = new byte[data.Length * sizeof(ushort)];
-            Buffer.BlockCopy(data, 0, asBytes, 0, asBytes.Length);
-            return Encoding.Unicode.GetString(asBytes);
-        }
-        public static implicit operator StackString(String s) {
-            return new StackString(s);
-        }
-
-        public override string ToString() {
-            return this;
-        }
-    }
-
     public static class UnityEplExtensions {
-        public static NativeArray<UInt16> ToNativeArray(this string s) {
-            var na = new NativeArray<UInt16>(s.Length, Allocator.Persistent);
-            for (int i = 0; i < s.Length; ++i) {
-                na[i] = s[i];
-            }
-            return na;
-        }
-
-        public static String ToString(this NativeArray<UInt16> na) {
-            var data = na.ToArray();
-            byte[] asBytes = new byte[data.Length * sizeof(ushort)];
-            Buffer.BlockCopy(data, 0, asBytes, 0, asBytes.Length);
-            return Encoding.Unicode.GetString(asBytes);
-        }
-
         public static NativeText ToNativeText(this string s) {
             return new NativeText(s, Allocator.Persistent);
         }

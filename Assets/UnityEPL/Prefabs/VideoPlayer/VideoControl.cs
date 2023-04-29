@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Unity.Collections;
 using UnityEngine;
 using UnityEngine.Video;
 
@@ -45,14 +46,15 @@ namespace UnityEPL {
         }
 
         public void SetVideo(string videoPath, bool skippable) {
-            Do<StackString, Bool>(SetVideoHelper, videoPath, skippable);
+            Do(SetVideoHelper, videoPath.ToNativeText(), (Bool)skippable);
         }
         public void SetVideoMB(string videoPath, bool skippable) {
-            DoMB<StackString, Bool>(SetVideoHelper, videoPath, skippable);
+            DoMB(SetVideoHelper, videoPath.ToNativeText(), (Bool)skippable);
         }
-        protected void SetVideoHelper(StackString videoPath, Bool skippable) {
+        protected void SetVideoHelper(NativeText videoPath, Bool skippable) {
             this.videoPlayer.url = "file://" + videoPath;
             this.skippable = skippable;
+            videoPath.Dispose();
         }
 
         public Task PlayVideo() {

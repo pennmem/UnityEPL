@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace UnityEPL {
 
@@ -14,12 +15,12 @@ namespace UnityEPL {
         protected override void AwakeOverride() { }
 
         public GameObject cantGoPrompt;
-        public UnityEngine.UI.InputField participantNameInput;
-        public UnityEngine.GameObject launchButton;
+        public InputField participantNameInput;
+        public GameObject launchButton;
 
-        public UnityEngine.GameObject syncButton;
-        public UnityEngine.GameObject greyedLaunchButton;
-        public UnityEngine.GameObject loadingButton;
+        public GameObject syncButton;
+        public GameObject greyedLaunchButton;
+        public GameObject loadingButton;
 
         void Update() {
             launchButton.SetActive(isValidParticipant(participantNameInput.text));
@@ -27,7 +28,7 @@ namespace UnityEPL {
 
             if (isValidParticipant(participantNameInput.text)) {
                 int sessionNumber = ParticipantSelection.nextSessionNumber;
-                launchButton.GetComponentInChildren<UnityEngine.UI.Text>().text = "Start session " + sessionNumber.ToString();
+                launchButton.GetComponentInChildren<Text>().text = "Start session " + sessionNumber.ToString();
             }
         }
 
@@ -36,7 +37,7 @@ namespace UnityEPL {
         }
         protected async Task DoSyncBoxTestHelper() {
             if (!manager.syncBox?.IsRunning() ?? false) {
-                syncButton.GetComponent<UnityEngine.UI.Button>().interactable = false;
+                syncButton.GetComponent<Button>().interactable = false;
 
                 // TODO: JPB: (need) Fix Syncbox test
                 manager.syncBox.StartPulse();
@@ -44,7 +45,7 @@ namespace UnityEPL {
                 //await InterfaceManager.Delay(Config.syncboxTestLength);
                 manager.syncBox.StopPulse();
 
-                syncButton.GetComponent<UnityEngine.UI.Button>().interactable = true;
+                syncButton.GetComponent<Button>().interactable = true;
             }
         }
 
@@ -54,18 +55,18 @@ namespace UnityEPL {
         }
         protected void DoLaunchExperimentHelper() {
             if (manager.syncBox?.IsRunning() ?? false) {
-                cantGoPrompt.GetComponent<UnityEngine.UI.Text>().text = "Can't start while Syncbox Test is running";
+                cantGoPrompt.GetComponent<Text>().text = "Can't start while Syncbox Test is running";
                 cantGoPrompt.SetActive(true);
                 return;
             }
 
             if (participantNameInput.text.Equals("")) {
-                cantGoPrompt.GetComponent<UnityEngine.UI.Text>().text = "Please enter a participant";
+                cantGoPrompt.GetComponent<Text>().text = "Please enter a participant";
                 cantGoPrompt.SetActive(true);
                 return;
             }
             if (!isValidParticipant(participantNameInput.text)) {
-                cantGoPrompt.GetComponent<UnityEngine.UI.Text>().text = "Please enter a valid participant name (ex. R1123E or LTP123)";
+                cantGoPrompt.GetComponent<Text>().text = "Please enter a valid participant name (ex. R1123E or LTP123)";
                 cantGoPrompt.SetActive(true);
                 return;
             }
@@ -78,7 +79,7 @@ namespace UnityEPL {
             launchButton.SetActive(false);
             loadingButton.SetActive(true);
 
-            manager.LaunchExperiment();
+            manager.LaunchExperimentMB();
         }
 
         private bool isValidParticipant(string name) {

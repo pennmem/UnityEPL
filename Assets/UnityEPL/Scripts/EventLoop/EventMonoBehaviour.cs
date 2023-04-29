@@ -21,14 +21,26 @@ namespace UnityEPL {
     public abstract class EventMonoBehaviour : MonoBehaviour {
         protected InterfaceManager manager;
         protected int threadID;
+        protected bool awakeCompleted = false;
 
         protected abstract void AwakeOverride();
         protected void Awake() {
             manager = InterfaceManager.Instance;
             threadID = Thread.CurrentThread.ManagedThreadId;
             AwakeOverride();
+            awakeCompleted = true;
         }
 
+        // This function is used to check if an EventMonoBehvaiour has finished it's awake call
+        public async Task<bool> IsAwakeCompleted() {
+            return await DoGet(IsAwakeCompletedHelper);
+        }
+        public bool IsAwakeCompletedMB() {
+            return DoGetMB(IsAwakeCompletedHelper);
+        }
+        protected Bool IsAwakeCompletedHelper() {
+            return awakeCompleted;
+        }
 
         // This function is used to guarentee that a function is being called from
         // the main unity thread

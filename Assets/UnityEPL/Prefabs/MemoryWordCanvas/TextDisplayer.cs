@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Unity.Collections;
 using UnityEngine;
 
 namespace UnityEPL {
@@ -61,64 +62,74 @@ namespace UnityEPL {
         /// </summary>
         /// <param name="description">Description.</param>
         /// <param name="text">Text.</param>
-        public void DisplayText(StackString description, StackString text) {
-            Do(DisplayTextHelper, description, text);
+        public void DisplayText(string description, string text) {
+            Do(DisplayTextHelper, description.ToNativeText(), text.ToNativeText());
         }
-        public void DisplayTextMB(StackString description, StackString text) {
-            DoMB(DisplayTextHelper, description, text);
+        public void DisplayTextMB(string description, string text) {
+            DoMB(DisplayTextHelper, description.ToNativeText(), text.ToNativeText());
         }
-        protected void DisplayTextHelper(StackString description, StackString text) {
+        protected void DisplayTextHelper(NativeText description, NativeText text) {
             if (OnText != null)
-                OnText(text);
+                OnText(text.ToString());
 
-            textElement.text = text;
+            textElement.text = text.ToString();
             Dictionary<string, object> dataDict = new Dictionary<string, object>();
-            dataDict.Add("displayed text", text);
+            dataDict.Add("displayed text", text.ToString());
             if (scriptedEventReporter != null)
-                scriptedEventReporter.ReportScriptedEvent(description, dataDict);
+                scriptedEventReporter.ReportScriptedEvent(description.ToString(), dataDict);
+
+            description.Dispose();
+            text.Dispose();
         }
 
-        public void DisplayTitle(StackString description, StackString text) {
-            Do(DisplayTitleHelper, description, text);
+        public void DisplayTitle(string description, string title) {
+            Do(DisplayTitleHelper, description.ToNativeText(), title.ToNativeText());
         }
-        public void DisplayTitleMB(StackString description, StackString text) {
-            DoMB(DisplayTitleHelper, description, text);
+        public void DisplayTitleMB(string description, string title) {
+            DoMB(DisplayTitleHelper, description.ToNativeText(), title.ToNativeText());
         }
-        protected void DisplayTitleHelper(StackString description, StackString text) {
+        protected void DisplayTitleHelper(NativeText description, NativeText title) {
             if (OnText != null)
-                OnText(text);
+                OnText(title.ToString());
 
             if (titleElement == null) {
                 return;
             }
 
-            titleElement.text = text;
+            titleElement.text = title.ToString();
             Dictionary<string, object> dataDict = new Dictionary<string, object>();
-            dataDict.Add("displayed title", text);
+            dataDict.Add("displayed title", title);
             if (scriptedEventReporter != null)
-                scriptedEventReporter.ReportScriptedEvent(description, dataDict);
+                scriptedEventReporter.ReportScriptedEvent(description.ToString(), dataDict);
+
+            description.Dispose();
+            title.Dispose();
         }
 
-        public void Display(StackString description, StackString title, StackString text) {
-            Do(DisplayHelper, description, title, text);
+        public void Display(string description, string title, string text) {
+            Do(DisplayHelper, description.ToNativeText(), title.ToNativeText(), text.ToNativeText());
         }
-        public void DisplayMB(StackString description, StackString title, StackString text) {
-            DoMB(DisplayHelper, description, title, text);
+        public void DisplayMB(string description, string title, string text) {
+            DoMB(DisplayHelper, description.ToNativeText(), title.ToNativeText(), text.ToNativeText());
         }
-        protected void DisplayHelper(StackString description, StackString title, StackString text) {
+        protected void DisplayHelper(NativeText description, NativeText title, NativeText text) {
             if (OnText != null)
-                OnText(text);
+                OnText(text.ToString());
 
             if (titleElement == null) {
                 return;
             }
 
-            titleElement.text = title;
-            textElement.text = text;
+            titleElement.text = title.ToString();
+            textElement.text = text.ToString();
             Dictionary<string, object> dataDict = new Dictionary<string, object>();
             dataDict.Add("displayed title and text", text);
             if (scriptedEventReporter != null)
-                scriptedEventReporter.ReportScriptedEvent(description, dataDict);
+                scriptedEventReporter.ReportScriptedEvent(description.ToString(), dataDict);
+
+            description.Dispose();
+            title.Dispose();
+            text.Dispose();
         }
 
 
@@ -183,16 +194,22 @@ namespace UnityEPL {
         /// <summary>
         /// Returns the current text being displayed on the first textElement.  Throws an error if there are no textElements.
         /// </summary>
-        public async Task<StackString> CurrentText() {
-            return await DoGet(CurrentTextHelper);
+        public async Task<string> CurrentText() {
+            var text = await DoGet(CurrentTextHelper);
+            var ret = text.ToString();
+            text.Dispose();
+            return ret;
         }
-        public StackString CurrentTextMB() {
-            return DoGetMB(CurrentTextHelper);
+        public string CurrentTextMB() {
+            var text = DoGetMB(CurrentTextHelper);
+            var ret = text.ToString();
+            text.Dispose();
+            return ret;
         }
-        public StackString CurrentTextHelper() {
+        public NativeText CurrentTextHelper() {
             if (textElement == null)
                 throw new UnityException("There aren't any text elements assigned to this TextDisplayer.");
-            return textElement.text;
+            return textElement.text.ToNativeText();
         }
     }
 
