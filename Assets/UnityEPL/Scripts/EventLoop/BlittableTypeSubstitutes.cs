@@ -58,6 +58,8 @@ namespace UnityEPL {
         public override string ToString() => ((char)_val).ToString();
     }
 
+
+    // TODO: JPB: (needed) (bug) Remove StackString so that I can handle Disposing of NativeArrays
     public struct StackString {
         NativeArray<UInt16> _val;
 
@@ -102,6 +104,10 @@ namespace UnityEPL {
             byte[] asBytes = new byte[data.Length * sizeof(ushort)];
             Buffer.BlockCopy(data, 0, asBytes, 0, asBytes.Length);
             return Encoding.Unicode.GetString(asBytes);
+        }
+
+        public static NativeText ToNativeText(this string s) {
+            return new NativeText(s, Allocator.Persistent);
         }
     }
 

@@ -26,7 +26,7 @@ namespace UnityEPL {
             this.manager = manager;
         }
 
-        public void Run() {
+        protected void Run() {
             Do(MainStates);
         }
 

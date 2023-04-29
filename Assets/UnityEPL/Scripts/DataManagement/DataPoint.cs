@@ -60,6 +60,7 @@ namespace UnityEPL {
     }
 
 
+    // TODO: JPB: (needed) Remove DataPointOld after I verify that the new DataPoint works right
     //these datapoints represent behavioral events
     //data about the event is currently stored in a dictionary
     public class DataPointOld {

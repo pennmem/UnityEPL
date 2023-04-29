@@ -57,7 +57,8 @@ namespace UnityEPL {
                 throw new OperationCanceledException("EventLoop has been stopped already.");
             }
 #if !UNITY_WEBGL || UNITY_EDITOR // System.Threading
-            Task.Factory.StartNew(func, cts.Token, TaskCreationOptions.DenyChildAttach, scheduler);
+            StartTask(func);
+            //StartTask(() => { ErrorNotifier.Error(new Exception("Test")); func(); });
 #else
         func();
 #endif
@@ -94,7 +95,7 @@ namespace UnityEPL {
                 throw new OperationCanceledException("EventLoop has been stopped already.");
             }
 #if !UNITY_WEBGL || UNITY_EDITOR // System.Threading
-            Task.Factory.StartNew(func, cts.Token, TaskCreationOptions.DenyChildAttach, scheduler);
+            StartTask(func);
 #else
         func();
 #endif
@@ -415,7 +416,7 @@ namespace UnityEPL {
                 throw new OperationCanceledException("EventLoop has been stopped already.");
             }
 #if !UNITY_WEBGL || UNITY_EDITOR // System.Threading
-            return Task.Factory.StartNew(func, cts.Token, TaskCreationOptions.DenyChildAttach, scheduler);
+            return StartTask(func);
 #else
         return func();
 #endif
@@ -452,7 +453,7 @@ namespace UnityEPL {
                 throw new OperationCanceledException("EventLoop has been stopped already.");
             }
 #if !UNITY_WEBGL || UNITY_EDITOR // System.Threading
-            return Task.Factory.StartNew(func, cts.Token, TaskCreationOptions.DenyChildAttach, scheduler).Unwrap();
+            return StartTask(func).Unwrap();
 #else
         return func();
 #endif
@@ -494,7 +495,7 @@ namespace UnityEPL {
                 AssertBlittable(ret);
                 return ret;
             };
-            return Task.Factory.StartNew(safeFunc, cts.Token, TaskCreationOptions.DenyChildAttach, scheduler);
+            return StartTask<Z>(safeFunc);
 #else
             var ret = func();
             AssertBlittable(ret);
@@ -540,7 +541,7 @@ namespace UnityEPL {
                 AssertBlittable(ret);
                 return ret;
             };
-            return Task.Factory.StartNew(safeFunc, cts.Token, TaskCreationOptions.DenyChildAttach, scheduler).Unwrap();
+            return StartTask(safeFunc).Unwrap();
 #else
             var ret = func();
             AssertBlittable(ret);
@@ -577,5 +578,65 @@ namespace UnityEPL {
             AssertBlittable(t, u, v, w);
             return DoGet(async () => { return await func(t, u, v, w); });
         }
+
+
+        // Helper Functions for error handling
+
+        private static Action TaskErrorHandler(Action func) {
+            return () => {
+                try {
+                    func();
+                } catch (Exception e) {
+                    ErrorNotifier.Error(e);
+                    throw e;
+                }
+            };
+        }
+        private static Func<Task> TaskErrorHandler(Func<Task> func) {
+            return async () => {
+                try {
+                    await func();
+                } catch (Exception e) {
+                    ErrorNotifier.Error(e);
+                    throw e;
+                }
+            };
+        }
+        private static Func<Task<Z>> TaskErrorHandler<Z>(Func<Task<Z>> func) {
+            return async () => {
+                try {
+                    var ret = await func();
+                    return ret;
+                } catch (Exception e) {
+                    ErrorNotifier.Error(e);
+                    throw e;
+                }
+            };
+        }
+        private static Func<Z> TaskErrorHandler<Z>(Func<Z> func) {
+            return () => {
+                try {
+                    var ret = func();
+                    return ret;
+                } catch (Exception e) {
+                    ErrorNotifier.Error(e);
+                    throw e;
+                }
+            };
+        }
+
+        private Task StartTask(Action func) {
+            return Task.Factory.StartNew(TaskErrorHandler(func), cts.Token, TaskCreationOptions.DenyChildAttach, scheduler);
+        }
+        private Task<Task> StartTask(Func<Task> func) {
+            return Task.Factory.StartNew(TaskErrorHandler(func), cts.Token, TaskCreationOptions.DenyChildAttach, scheduler);
+        }
+        private Task<Task<Z>> StartTask<Z>(Func<Task<Z>> func) {
+            return Task.Factory.StartNew(TaskErrorHandler(func), cts.Token, TaskCreationOptions.DenyChildAttach, scheduler);
+        }
+        private Task<Z> StartTask<Z>(Func<Z> func) {
+            return Task.Factory.StartNew(TaskErrorHandler(func), cts.Token, TaskCreationOptions.DenyChildAttach, scheduler);
+        }
     }
+
 }

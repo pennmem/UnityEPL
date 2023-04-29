@@ -36,10 +36,8 @@ namespace UnityEPL {
                 foreach (var task in _taskQueue.GetConsumingEnumerable(_cancellationToken)) {
                     TryExecuteTask(task);
                 }
-            } catch (OperationCanceledException) {
-                // TODO: JPB: (feature) Add catch handler for Tasks that throw and exception
-                //            Send them to an error notification in the task
-                //            Also, look at this link: https://www.codeguru.com/csharp/async-methods-exception-handling/
+            } catch (OperationCanceledException e) {
+                ErrorNotifier.Error(e);
             } finally {
                 _isExecuting = false;
             }
@@ -50,7 +48,8 @@ namespace UnityEPL {
         protected override void QueueTask(Task task) {
             try {
                 _taskQueue.Add(task, _cancellationToken);
-            } catch (OperationCanceledException) {
+            } catch (OperationCanceledException e) {
+                ErrorNotifier.Error(e);
             }
         }
 

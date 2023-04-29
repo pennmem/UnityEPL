@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using UnityEngine;
@@ -22,6 +23,8 @@ namespace UnityEPLTests {
         [UnityTest]
         public IEnumerator MakeErrorNotification() {
             var inputText = "TESTING";
+
+            LogAssert.Expect(LogType.Exception, new Regex("Exception: .*"));
 
             Assert.Throws<Exception>(() => {
                 ErrorNotifier.Error(new Exception(inputText));

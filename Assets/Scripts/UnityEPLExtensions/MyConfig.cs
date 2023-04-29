@@ -16,6 +16,9 @@ namespace UnityEPL {
 
         // ltpRepFRExperiment.cs
         public static int[] restLists { get { return Config.GetSetting<int[]>("restLists"); } }
+
+        // CPSExperiment.cs
+        public static string video { get { return Config.GetSetting<string>("video"); } }
     }
 
 }

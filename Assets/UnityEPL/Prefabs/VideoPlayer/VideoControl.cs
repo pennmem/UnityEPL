@@ -55,19 +55,6 @@ namespace UnityEPL {
             this.skippable = skippable;
         }
 
-        public void StartVideo() {
-            Do(StartVideoHelper);
-        }
-        public void StartVideoMB() {
-            DoMB(StartVideoHelper);
-        }
-        protected void StartVideoHelper() {
-            GameObject textDisplay = GameObject.Find(gameObject.name).transform.Find("VideoPlayerCanvas").transform.Find("Text").gameObject;
-            textDisplay.SetActive(skippable);
-
-            videoPlayer.Play();
-        }
-
         public Task PlayVideo() {
             return DoWaitFor(PlayVideoHelper);
         }

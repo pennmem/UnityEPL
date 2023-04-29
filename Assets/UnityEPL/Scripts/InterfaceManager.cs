@@ -367,6 +367,8 @@ namespace UnityEPL {
 
                 LogExperimentInfo();
 
+                // TODO: JPB: (bug) I create the experiment, which may access the other EventMonoBehaviour methods
+                //            before awake is called
                 string className = "UnityEPL." + Config.experimentClass;
                 Type classType = Type.GetType(className);
                 exp = (ExperimentBase)Activator.CreateInstance(classType, new object[] { this });
