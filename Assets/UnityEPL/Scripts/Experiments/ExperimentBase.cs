@@ -20,16 +20,15 @@ namespace UnityEPL {
     public abstract class ExperimentBase : EventLoop {
         TaskCompletionSource<KeyMsg> tcs = new TaskCompletionSource<KeyMsg>();
 
-        protected InterfaceManager manager;
         protected InputManager inputManager;
 
         public ExperimentBase() {
-            this.manager = InterfaceManager.Instance;
             this.inputManager = InputManager.Instance;
         }
 
-        protected void Run() {
-            Do(MainStates);
+        protected async void Run() {
+            await DoWaitFor(MainStates);
+            manager.Quit();
         }
 
         public abstract Task MainStates();

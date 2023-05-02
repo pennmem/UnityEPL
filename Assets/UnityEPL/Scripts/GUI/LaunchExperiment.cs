@@ -73,13 +73,13 @@ namespace UnityEPL {
 
             int sessionNumber = ParticipantSelection.nextSessionNumber;
 
-            Config.participantCode = participantNameInput.text;
+            Config.subject = participantNameInput.text;
             Config.session = sessionNumber;
 
             launchButton.SetActive(false);
             loadingButton.SetActive(true);
 
-            manager.LaunchExperimentMB();
+            manager.LaunchExperiment();
         }
 
         private bool isValidParticipant(string name) {

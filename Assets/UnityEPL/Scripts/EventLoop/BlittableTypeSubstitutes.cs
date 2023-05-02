@@ -68,9 +68,7 @@ namespace UnityEPL {
         // AssertBlittable
 
         public static bool IsPassable(Type t) {
-            return UnsafeUtility.IsBlittable(t)
-                || t == typeof(bool)
-                || t == typeof(char);
+            return UnsafeUtility.IsBlittable(t);
         }
 
         // TODO: JPB: (feature) Maybe use IComponentData from com.unity.entities when it releases
@@ -79,16 +77,16 @@ namespace UnityEPL {
         public static void AssertBlittable<T>(T t)
                 where T : struct {
             if (!IsPassable(typeof(T))) {
-                throw new ArgumentException("The first argument is not a blittable type.");
+                throw new ArgumentException($"The first argument is not a blittable type ({typeof(T)}).");
             }
         }
         public static void AssertBlittable<T, U>(T t, U u)
                 where T : struct
                 where U : struct {
             if (!IsPassable(typeof(T))) {
-                throw new ArgumentException("The first argument is not a blittable type.");
+                throw new ArgumentException($"The first argument is not a blittable type ({typeof(T)}).");
             } else if (!IsPassable(typeof(U))) {
-                throw new ArgumentException("The second argument is not a blittable type.");
+                throw new ArgumentException($"The second argument is not a blittable type ({typeof(U)}).");
             }
         }
         public static void AssertBlittable<T, U, V>(T t, U u, V v)
@@ -96,11 +94,11 @@ namespace UnityEPL {
                 where U : struct
                 where V : struct {
             if (!IsPassable(typeof(T))) {
-                throw new ArgumentException("The first argument is not a blittable type.");
+                throw new ArgumentException($"The first argument is not a blittable type ({typeof(T)}).");
             } else if (!IsPassable(typeof(U))) {
-                throw new ArgumentException("The second argument is not a blittable type.");
+                throw new ArgumentException($"The second argument is not a blittable type ({typeof(U)}).");
             } else if (!IsPassable(typeof(V))) {
-                throw new ArgumentException("The third argument is not a blittable type.");
+                throw new ArgumentException($"The third argument is not a blittable type ({typeof(V)}).");
             }
         }
         public static void AssertBlittable<T, U, V, W>(T t, U u, V v, W w)
@@ -109,13 +107,13 @@ namespace UnityEPL {
                 where V : struct
                 where W : struct {
             if (!IsPassable(typeof(T))) {
-                throw new ArgumentException("The first argument is not a blittable type.");
+                throw new ArgumentException($"The first argument is not a blittable type ({typeof(T)}).");
             } else if (!IsPassable(typeof(U))) {
-                throw new ArgumentException("The second argument is not a blittable type.");
+                throw new ArgumentException($"The second argument is not a blittable type ({typeof(U)}).");
             } else if (!IsPassable(typeof(V))) {
-                throw new ArgumentException("The third argument is not a blittable type.");
+                throw new ArgumentException($"The third argument is not a blittable type ({typeof(V)}).");
             } else if (!IsPassable(typeof(W))) {
-                throw new ArgumentException("The fourth argument is not a blittable type.");
+                throw new ArgumentException($"The fourth argument is not a blittable type ({typeof(W)}).");
             }
         }
     }

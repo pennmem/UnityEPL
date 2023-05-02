@@ -34,27 +34,29 @@ namespace UnityEPL {
         private void CollectKeyEvents() {
             foreach (KeyCode keyCode in System.Enum.GetValues(typeof(KeyCode))) {
                 if (Input.GetKeyDown(keyCode)) {
-                    ReportKey((int)keyCode, true, DataReporter.TimeStamp());
+                    ReportKey((int)keyCode, true);
                 }
                 if (Input.GetKeyUp(keyCode)) {
-                    ReportKey((int)keyCode, false, DataReporter.TimeStamp());
+                    ReportKey((int)keyCode, false);
                 }
             }
         }
 
-        private void ReportKey(int keyCode, bool pressed, System.DateTime timestamp) {
-            Dictionary<string, object> dataDict = new Dictionary<string, object>();
+        private void ReportKey(int keyCode, bool pressed) {
             var key = (Enum.GetName(typeof(KeyCode), keyCode) ?? "none").ToLower();
-            dataDict.Add("key code", key);
-            dataDict.Add("is pressed", pressed);
+            Dictionary<string, object> dataDict = new() {
+                { "key code", key },
+                { "is pressed", pressed },
+            };
             var label = "key/mouse press/release";
-            eventQueue.Enqueue(new DataPoint(label, timestamp, dataDict));
+            eventQueue.Enqueue(new DataPoint(label, dataDict));
         }
 
         private void CollectMousePosition() {
-            Dictionary<string, object> dataDict = new Dictionary<string, object>();
-            dataDict.Add("position", Input.mousePosition);
-            eventQueue.Enqueue(new DataPoint("mouse position", DataReporter.TimeStamp(), dataDict));
+            Dictionary<string, object> dataDict = new() {
+                { "position", Input.mousePosition },
+            };
+            eventQueue.Enqueue(new DataPoint("mouse position", dataDict));
             lastMousePositionReportFrame = Time.frameCount;
         }
     }

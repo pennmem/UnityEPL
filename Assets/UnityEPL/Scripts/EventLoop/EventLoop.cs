@@ -21,9 +21,12 @@ namespace UnityEPL {
     public class EventLoop {
         protected SingleThreadTaskScheduler scheduler;
         protected CancellationTokenSource cts = new CancellationTokenSource();
+        protected InterfaceManager manager;
 
         public EventLoop() {
             scheduler = new SingleThreadTaskScheduler(cts.Token);
+            manager = InterfaceManager.Instance;
+            manager.eventLoops.Add(this);
 
             // Init threadlocal variables
             Do(async () => {
@@ -38,6 +41,27 @@ namespace UnityEPL {
 
         public void Stop() {
             cts.Cancel();
+        }
+
+        public async void Abort() {
+            cts.Cancel();
+            await InterfaceManager.Delay(5000);
+            scheduler.Abort();
+        }
+
+        protected async Task TimeoutTask(Task task, int timeoutMs, string timeoutMessage = null) {
+            Task timeoutTask = InterfaceManager.Delay(timeoutMs, cts.Token);
+            if (await Task.WhenAny(task, timeoutTask) == timeoutTask) {
+                var msg = timeoutMessage ?? $"Task Timed out after {timeoutMs}ms";
+                throw new TimeoutException(timeoutMessage);
+            }
+        }
+        protected async Task<Z> TimeoutTask<Z>(Task<Z> task, int timeoutMs, string timeoutMessage = null) {
+            Task timeoutTask = InterfaceManager.Delay(timeoutMs, cts.Token);
+            if (await Task.WhenAny(task, timeoutTask) == timeoutTask) {
+                var msg = timeoutMessage ?? $"Task Timed out after {timeoutMs}ms";
+            }
+            return task.Result;
         }
 
         // Do

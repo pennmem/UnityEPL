@@ -29,6 +29,10 @@ namespace UnityEPL {
             _singleThread.Start();
         }
 
+        public void Abort() {
+            _singleThread.Abort();
+        }
+
         private void RunOnCurrentThread() {
             _isExecuting = true;
 
@@ -36,8 +40,8 @@ namespace UnityEPL {
                 foreach (var task in _taskQueue.GetConsumingEnumerable(_cancellationToken)) {
                     TryExecuteTask(task);
                 }
-            } catch (OperationCanceledException e) {
-                ErrorNotifier.Error(e);
+            } catch (OperationCanceledException) {
+                // Do nothing if the operation is cancelled
             } finally {
                 _isExecuting = false;
             }
@@ -48,8 +52,8 @@ namespace UnityEPL {
         protected override void QueueTask(Task task) {
             try {
                 _taskQueue.Add(task, _cancellationToken);
-            } catch (OperationCanceledException e) {
-                ErrorNotifier.Error(e);
+            } catch (OperationCanceledException) {
+                // Do nothing if the operation is cancelled
             }
         }
 

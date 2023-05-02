@@ -15,7 +15,7 @@ namespace UnityEPL {
             DoMB(LogUIEventHelper, name.ToNativeText());
         }
         protected void LogUIEventHelper(NativeText name) {
-            eventQueue.Enqueue(new DataPoint(name.ToString(), TimeStamp(), new Dictionary<string, object>()));
+            eventQueue.Enqueue(new DataPoint(name.ToString()));
             name.Dispose();
         }
     }

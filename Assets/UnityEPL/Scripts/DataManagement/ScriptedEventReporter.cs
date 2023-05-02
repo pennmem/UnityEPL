@@ -11,27 +11,36 @@ namespace UnityEPL {
 
         // TODO: JPB: (needed) (bug) Make ReportScriptedEvent use a blittable type instead of Dictionary
         //            Or at least have it use Mutex
+        //            And the NativeText as well...
+        //            And Datetime....
+        //            Even better, just make DataPoint a Native type and then use that
         public void ReportScriptedEvent(string type, Dictionary<string, object> data = null) {
-            Do((type) => {
-                ReportScriptedEventHelper(type, TimeStamp(), data);
-            }, type.ToNativeText());
+            var time = TimeStamp();
+            Do(() => {
+                ReportScriptedEventHelper(type.ToNativeText(), time, data);
+            });
+            //Do((type, timestamp) => {
+            //    ReportScriptedEventHelper(type, timestamp, data);
+            //}, type.ToNativeText(), TimeStamp());
         }
         public void ReportScriptedEventMB(string type, Dictionary<string, object> data = null) {
             DoMB(ReportScriptedEventHelper, type.ToNativeText(), TimeStamp(), data);
         }
 
         public void ReportScriptedEvent(string type, DateTime time, Dictionary<string, object> data = null) {
-            Do((type, time) => {
-                ReportScriptedEventHelper(type, time, data);
-            }, type.ToNativeText(), time);
+            Do(() => {
+                ReportScriptedEventHelper(type.ToNativeText(), time, data);
+            });
+            //Do((type, time) => {
+            //    ReportScriptedEventHelper(type, time, data);
+            //}, type.ToNativeText(), time);
         }
         public void ReportScriptedEventMB(string type, DateTime time, Dictionary<string, object> data = null) {
             DoMB(ReportScriptedEventHelper, type.ToNativeText(), time, data);
         }
 
         protected void ReportScriptedEventHelper(NativeText type, DateTime time, Dictionary<string, object> data = null) {
-            var dataDict = data ?? new();
-            eventQueue.Enqueue(new DataPoint(type.ToString(), time, dataDict));
+            eventQueue.Enqueue(new DataPoint(type.ToString(), time, data));
             type.Dispose();
         }
     }

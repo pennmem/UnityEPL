@@ -39,15 +39,10 @@ namespace UnityEPL {
         public TestTextDisplayer testTextDisplayer;
 
         //////////
-        // IDK what label // TODO: JPB: Rename this
-        //////////
-
-
-        //////////
         // Devices that can be accessed by managed
         // scripts
         //////////
-        //public NetworkInterface hostPC;
+        public NetworkInterface hostPC;
         public VideoControl videoControl;
         public TextDisplayer textDisplayer;
         //public SoundRecorder recorder;
@@ -67,7 +62,14 @@ namespace UnityEPL {
         public UIDataReporter uiReporter;
         private int eventsPerFrame;
 
-        public ConcurrentQueue<IEnumerator> events = new ConcurrentQueue<IEnumerator>();
+        public ConcurrentBag<EventLoop> eventLoops = new();
+
+        public ConcurrentQueue<IEnumerator> events = new();
+
+        private void OnDestroy() {
+            Quit();
+        }
+
         void Update() {
             while (events.TryDequeue(out IEnumerator e)) {
                 // TODO: JPB: (needed) Wrap all Coroutines in IEnumerator that displays Errors on exception
@@ -198,6 +200,11 @@ namespace UnityEPL {
             Type classType = Type.GetType(className);
             exp = (ExperimentBase)Activator.CreateInstance(classType, new object[] { this });
 
+            LogExperimentInfo();
+
+            // Start Syncbox
+            //syncBox.StartPulse();
+
             SceneManager.sceneLoaded -= onExperimentSceneLoaded;
             SceneManager.sceneLoaded += onSceneLoaded;
         }
@@ -296,53 +303,44 @@ namespace UnityEPL {
 
         protected void LogExperimentInfo() {
             //write versions to logfile
-            Dictionary<string, object> versionsData = new Dictionary<string, object>();
-            versionsData.Add("application version", Application.version);
-            versionsData.Add("build date", BuildInfo.ToString()); // compiler magic, gives compile date
-            versionsData.Add("experiment version", Config.experimentName);
-            versionsData.Add("logfile version", "0");
-            versionsData.Add("participant", Config.participantCode);
-            versionsData.Add("session", Config.session);
+            Dictionary<string, object> versionsData = new() {
+                { "application version", Application.version },
+                { "build date", BuildInfo.ToString() }, // compiler magic, gives compile date
+                { "experiment version", Config.experimentName },
+                { "logfile version", "0" },
+                { "participant", Config.subject },
+                { "session", Config.session },
+            };
 
-            ReportEvent("session start", versionsData);
+            eventReporter.ReportScriptedEvent("session start", versionsData);
         }
 
 
         // These can be called by anything
-
-        public void ReportEvent(string type, Dictionary<string, object> data = null) {
-            eventReporter.ReportScriptedEvent(type, data);
-        }
-        public void ReportEvent(string type, DateTime time, Dictionary<string, object> data = null) {
-            eventReporter.ReportScriptedEvent(type, time, data);
-        }
-
         public void Pause(bool pause) {
+            Do<Bool>(PauseHelper, pause);
+        }
+        protected void PauseHelper(Bool pause) {
             // TODO: JPB: (needed) Implement pause functionality correctly
             if (pause) Time.timeScale = 0;
             else Time.timeScale = 1;
         }
 
         public void Quit() {
-            Do(this.Quit);
+            Do(QuitHelper);
+        }
+        protected void QuitHelper() {
+            foreach (var eventLoop in eventLoops) {
+                //eventLoop.Stop();
+                eventLoop.Abort();
+            }
+            ((MonoBehaviour)this).Quit();
         }
 
-        // These should only be called by other EventMonoBehaviors
-
-        public void LoadExperimentConfig(string name) {
-            Config.experimentConfigName = name;
-            Config.SetupExperimentConfig();
+        public void LaunchExperiment() {
+            Do(LaunchExperimentHelper);
         }
-
-        //public void LaunchExperiment() {
-        //    Do(LaunchExperimentHandler);
-        //}
-
-        public void LaunchExperimentMB() {
-            //StartCoroutine(DoWaitForMB(LaunchExperimentHelper));
-            DoMB(LaunchExperimentHelper);
-        }
-        protected void LaunchExperimentHelper() {
+        protected IEnumerator LaunchExperimentHelper() {
             // launch scene with exp, 
             // instantiate experiment,
             // call start function
@@ -360,17 +358,23 @@ namespace UnityEPL {
                 // Create path for current participant/session
                 fileManager.CreateSession();
 
-                // Start Syncbox
-                //syncBox.StartPulse();
-
                 // Connect to HostPC
-                //if (Config.elemem) {
-                //    hostPC = new ElememInterface(this);
-                //} else if (Config.ramulator) {
-                //    hostPC = new RamulatorWrapper(this);
-                //}
+                if (Config.elememOn) {
+                    //var task = ElememInterface.Build();
+                    //task.Wait();
+                    //yield return null;
+                    //hostPC = task.Result;
 
-                LogExperimentInfo();
+                    //var e = ElememInterface.Build().ToEnumerator();
+                    //yield return e;
+                    //hostPC = (ElememInterface)e.Current;
+                    var elememInterface = new ElememInterface();
+                    hostPC = elememInterface;
+                    yield return elememInterface.Configure().ToEnumerator();
+                } else if (Config.ramulatorOn) {
+                    // TODO: JPB: (needed) Add Ramulator integration
+                    //hostPC = new RamulatorWrapper(this);
+                }
 
                 SceneManager.sceneLoaded -= onSceneLoaded;
                 SceneManager.sceneLoaded += onExperimentSceneLoaded;
@@ -378,6 +382,28 @@ namespace UnityEPL {
             } else {
                 throw new Exception("No experiment configuration loaded");
             }
+        }
+
+        // These should only be called by other EventMonoBehaviors
+
+        public void LoadExperimentConfig(string name) {
+            Config.experimentConfigName = name;
+            Config.SetupExperimentConfig();
+        }
+
+        public string videoPath = "";
+        public async Task<string> FilePicker(string startingPath, SFB.ExtensionFilter[] extensions) {
+            await DoWaitFor(() => { return FilePickerHelper(startingPath, extensions); });
+            return videoPath;
+        }
+        protected Task FilePickerHelper(string startingPath, SFB.ExtensionFilter[] extensions) {
+            string[] videoPaths = new string[0];
+            while (videoPaths.Length != 1) {
+                videoPaths = SFB.StandaloneFileBrowser.OpenFilePanel("Select Video To Watch", startingPath, extensions, false);
+            }
+            UnityEngine.Debug.Log(videoPaths[0].Replace("%20", " "));
+            videoPath = videoPaths[0].Replace("%20", " ");
+            return Task.CompletedTask;
         }
     }
 

@@ -45,10 +45,10 @@ namespace UnityEPL {
             videoPlayer.errorReceived -= OnErrorReceived;
         }
 
-        public void SetVideo(string videoPath, bool skippable) {
+        public void SetVideo(string videoPath, bool skippable = false) {
             Do(SetVideoHelper, videoPath.ToNativeText(), (Bool)skippable);
         }
-        public void SetVideoMB(string videoPath, bool skippable) {
+        public void SetVideoMB(string videoPath, bool skippable = false) {
             DoMB(SetVideoHelper, videoPath.ToNativeText(), (Bool)skippable);
         }
         protected void SetVideoHelper(NativeText videoPath, Bool skippable) {
@@ -83,6 +83,17 @@ namespace UnityEPL {
         protected Bool IsPlayingHelper() {
             return gameObject.activeSelf;
         }
+
+        public async Task<double> VideoLength() {
+            return await DoGet(VideoLengthHelper);
+        }
+        public double VideoLengthMB() {
+            return DoGetMB(VideoLengthHelper);
+        }
+        protected double VideoLengthHelper() {
+            return videoPlayer.length;
+        }
+
 
         protected void OnLoopPointReached(VideoPlayer vp) {
             gameObject.SetActive(false);

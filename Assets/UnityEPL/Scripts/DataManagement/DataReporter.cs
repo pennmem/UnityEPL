@@ -53,7 +53,7 @@ namespace UnityEPL {
 
         protected void OnDisable() {
             if (reportTo) {
-                eventQueue.Enqueue(new DataPoint(reportingID + "Disabled", TimeStamp(), new Dictionary<string, object>()));
+                eventQueue.Enqueue(new DataPoint(reportingID + "Disabled"));
                 reportTo.RemoveReporterMB(this);
             }
         }
@@ -99,11 +99,11 @@ namespace UnityEPL {
             return dataPoints;
         }
 
-        public void DoReport(Dictionary<string, object> extraData = null) {
+        public void DoReportMB(Dictionary<string, object> extraData = null) {
             DoMB(DoReportHelper, extraData);
         }
         protected void DoReportHelper(Dictionary<string, object> extraData = null) {
-            var transformDict = new Dictionary<string, object>(extraData) ?? new();
+            var transformDict = (extraData != null) ? new Dictionary<string, object>(extraData) : new();
             transformDict.Add("positionX", transform.position.x);
             transformDict.Add("positionY", transform.position.y);
             transformDict.Add("positionZ", transform.position.z);
@@ -111,7 +111,7 @@ namespace UnityEPL {
             transformDict.Add("rotationY", transform.rotation.eulerAngles.y);
             transformDict.Add("rotationZ", transform.rotation.eulerAngles.z);
             transformDict.Add("object reporting id", reportingID);
-            eventQueue.Enqueue(new DataPoint(gameObject.name + " transform", TimeStamp(), transformDict));
+            eventQueue.Enqueue(new DataPoint(gameObject.name + " transform", transformDict));
         }
 
         // TODO: JPB: (needed) (feature) Convert DataReporter::TimeStamp to use Clock class

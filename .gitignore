@@ -46,6 +46,9 @@ Assets/InitTestScene*.unity.meta
 *.unitypackage
 *.app
 
+# Crashes
+mono_crash.*
+
 data/
 tags
 *.swp

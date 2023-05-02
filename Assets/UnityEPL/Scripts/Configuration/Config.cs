@@ -17,14 +17,15 @@ namespace UnityEPL {
 
         // Public Internal Variables
         public static string experimentConfigName = null;
-        public static string elememStimMode = "none";
 
         // System Settings
-        public static string niclServerIP { get { return Config.GetSetting<string>("niclServerIP"); } }
-        public static int niclServerPort { get { return Config.GetSetting<int>("niclServerPort"); } }
+        public static bool elememOn { get { return Config.GetSetting<bool>("elememOn"); } }
         public static string elememServerIP { get { return Config.GetSetting<string>("elememServerIP"); } }
         public static int elememServerPort { get { return Config.GetSetting<int>("elememServerPort"); } }
-        public static bool elememOn { get { return Config.GetSetting<bool>("elememOn"); } }
+        public static int elememHeartbeatInterval { get { return Config.GetSetting<int>("elememHeartbeatInterval"); } }
+        public static bool ramulatorOn { get { return Config.GetSetting<bool>("ramulatorOn"); } }
+        public static string niclServerIP { get { return Config.GetSetting<string>("niclServerIP"); } }
+        public static int niclServerPort { get { return Config.GetSetting<int>("niclServerPort"); } }
 
         // Hardware
         public static bool noSyncbox { get { return Config.GetSetting<bool>("noSyncbox"); } }
@@ -41,9 +42,9 @@ namespace UnityEPL {
         //public static bool skipNewEfrKeypressPractice { get { return (bool)Config.GetSetting("skipNewEfrKeypressPractice"); } }
 
         // Local variables
-        public static string participantCode {
-            get { return Config.GetSetting<string>("participantCode"); }
-            set { Config.SetSetting("participantCode", value); }
+        public static string subject {
+            get { return Config.GetSetting<string>("subject"); }
+            set { Config.SetSetting("subject", value); }
         }
         public static int session {
             get { return Config.GetSetting<int>("session"); }
@@ -61,9 +62,6 @@ namespace UnityEPL {
         public static int frameRate { get { return Config.GetSetting<int>("frameRate"); } }
 
         public static string experimentScene { get { return Config.GetSetting<string>("experimentScene"); } }
-        public static bool elemem { get { return Config.GetSetting<bool>("elemem"); } }
-        public static bool ramulator { get { return Config.GetSetting<bool>("ramulator"); } }
-
         public static string experimentClass { get { return Config.GetSetting<string>("experimentClass"); } }
         public static string launcherScene { get { return Config.GetSetting<string>("launcherScene"); } }
         public static string introductionVideo { get { return Config.GetSetting<string>("introductionVideo"); } }
@@ -87,7 +85,7 @@ namespace UnityEPL {
 
         // ElememInterface.cs
         public static string stimMode { get { return Config.GetSetting<string>("stimMode"); } }
-        public static int heartbeatInterval { get { return Config.GetSetting<int>("heartbeatInterval"); } }
+        
 
         // Functions
         public static void SaveConfigs(ScriptedEventReporter scriptedEventReporter, string path) {

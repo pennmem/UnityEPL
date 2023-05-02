@@ -32,7 +32,7 @@ namespace UnityEPL {
             DoMB(DoTransformReportHelper, extraData);
         }
         public void DoTransformReportHelper(Dictionary<string, object> extraData = null) {
-            var transformDict = new Dictionary<string, object>(extraData) ?? new();
+            var transformDict = (extraData != null) ? new Dictionary<string, object>(extraData) : new();
             transformDict.Add("positionX", transform.position.x);
             transformDict.Add("positionY", transform.position.y);
             transformDict.Add("positionZ", transform.position.z);
@@ -43,7 +43,7 @@ namespace UnityEPL {
             transformDict.Add("scaleY", transform.position.y);
             transformDict.Add("scaleZ", transform.position.z);
             transformDict.Add("object reporting id", reportingID);
-            eventQueue.Enqueue(new DataPoint(gameObject.name + " transform", TimeStamp(), transformDict));
+            eventQueue.Enqueue(new DataPoint(gameObject.name + " transform", transformDict));
         }
 
         private void CheckTransformReport() {
@@ -76,11 +76,12 @@ namespace UnityEPL {
                 if (!reportView)
                     continue;
 
-                Dictionary<string, object> dataDict = new Dictionary<string, object>();
-                dataDict.Add("cameraName", thisCamera.name);
-                dataDict.Add("isInView", inView);
+                Dictionary<string, object> dataDict = new() {
+                    { "cameraName", thisCamera.name },
+                    { "isInView", inView },
+                };
                 eventName = gameObject.name.ToLower() + "InView";
-                eventQueue.Enqueue(new DataPoint(eventName, TimeStamp(), dataDict));
+                eventQueue.Enqueue(new DataPoint(eventName, dataDict));
             }
         }
     }

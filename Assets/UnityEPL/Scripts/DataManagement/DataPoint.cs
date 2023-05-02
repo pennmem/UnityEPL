@@ -9,13 +9,13 @@ using Newtonsoft.Json;
 namespace UnityEPL {
     //these datapoints represent behavioral events
     //data about the event is currently stored in a dictionary
-    public class DataPoint {
-        protected readonly string type;
-        protected readonly Dictionary<string, object> dataDict;
-        protected readonly DateTime time;
-        protected readonly int thisID;
+    public struct DataPoint {
+        public readonly string type;
+        public readonly DateTime time;
+        public readonly int thisID;
+        public readonly string json;
 
-        protected static volatile int id = 0;
+        private static volatile int id = 0;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:DataPoint"/> class.  This represents a piece of data that you might want to keep about your project.
@@ -31,10 +31,13 @@ namespace UnityEPL {
         /// <param name="newDataDict">New data dict.</param>
         public DataPoint(string type, DateTime time, Dictionary<string, object> data = null) {
             this.type = type;
-            this.dataDict = new Dictionary<string, object>(data) ?? new();
             this.time = time;
             this.thisID = Interlocked.Increment(ref id);
+            this.json = "";
+            this.json = GenJSON(data ?? new());
         }
+        public DataPoint(string type, Dictionary<string, object> data = null) :
+            this(type, DataReporter.TimeStamp(), data) { }
 
         /// <summary>
         /// Returns a JSON string representing this datapoint.
@@ -43,16 +46,26 @@ namespace UnityEPL {
         /// </summary>
         /// <returns>The json.</returns>
         public string ToJSON() {
+            return json;
+        }
+
+        /// <summary>
+        /// Sets the JSON string representing this datapoint.
+        /// 
+        /// Strings conforming to certain formats will be converted to corresponding types.  For example, if a string looks like a number it will be represented as a JSON number type. 
+        /// </summary>
+        /// <returns>The json.</returns>
+        private string GenJSON(Dictionary<string, object> data) {
             double unixTimestamp = ConvertToMillisecondsSinceEpoch(time);
 
             var dataPointjson = new Dictionary<string, object> {
             { "type", type },
             { "time", unixTimestamp.ToString() },
-            { "data", dataDict } };
+            { "data", data } };
             return JsonConvert.SerializeObject(dataPointjson);
         }
 
-        protected static double ConvertToMillisecondsSinceEpoch(DateTime convertMe) {
+        private static double ConvertToMillisecondsSinceEpoch(DateTime convertMe) {
             double milliseconds = (double)(convertMe.ToUniversalTime()
                 .Subtract(new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc))).TotalMilliseconds;
             return milliseconds;
@@ -85,7 +98,7 @@ namespace UnityEPL {
         /// <param name="newDataDict">New data dict.</param>
         public DataPointOld(string type, DateTime time, Dictionary<string, object> data = null) {
             this.type = type;
-            this.dataDict = new Dictionary<string, object>(data) ?? new();
+            this.dataDict = data ?? new();
             this.time = time;
             this.thisID = Interlocked.Increment(ref id);
         }

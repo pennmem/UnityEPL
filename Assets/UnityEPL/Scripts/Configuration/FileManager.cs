@@ -59,7 +59,7 @@ namespace UnityEPL {
             string participant;
 
             try {
-                participant = Config.participantCode;
+                participant = Config.subject;
             } catch (MissingFieldException) {
                 ErrorNotifier.Error(new Exception("No participant selected"));
                 return null;
