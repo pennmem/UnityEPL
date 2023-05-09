@@ -369,6 +369,7 @@ namespace UnityEPL {
                     // TODO: JPB: (needed) Add Ramulator integration
                     //hostPC = new RamulatorWrapper(this);
                 }
+                yield return hostPC?.Connect().ToEnumerator();
                 yield return hostPC?.Configure().ToEnumerator();
 
                 SceneManager.sceneLoaded -= onSceneLoaded;

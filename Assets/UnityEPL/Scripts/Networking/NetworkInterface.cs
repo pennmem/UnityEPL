@@ -25,9 +25,6 @@ namespace UnityEPL {
         private readonly static int sendTimeoutMs = 5000;
         private readonly static int receiveTimeoutMs = 5000;
 
-        public NetworkInterface() {
-            Connect();
-        }
         ~NetworkInterface() {
             DisconnectHelper();
         }
@@ -39,8 +36,8 @@ namespace UnityEPL {
             return tcpClient.Connected;
         }
 
-        protected void Connect() {
-            DoWaitFor(ConnectHelper).Wait();
+        public Task Connect() {
+            return DoWaitFor(ConnectHelper);
         }
         private async Task ConnectHelper() {
             tcpClient = new TcpClient();

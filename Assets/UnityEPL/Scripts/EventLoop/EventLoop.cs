@@ -474,14 +474,12 @@ namespace UnityEPL {
             return DoWaitFor(() => { func(t, u, v, w); });
         }
 
-        protected Task DoWaitFor(Func<Task> func) {
+        protected async Task DoWaitFor(Func<Task> func) {
             if (cts.IsCancellationRequested) {
                 throw new OperationCanceledException("EventLoop has been stopped already.");
             }
 #if !UNITY_WEBGL || UNITY_EDITOR // System.Threading
-            // TODO: JPB: (needed) (bug) DoWaitFor's Unwrap is technically starting a new Task, it should be await await
-            //            This causes a deadlock though (likely NetworkInterface::Connect that has a Wait call in it)
-            return StartTask(func).Unwrap();
+            await await StartTask(func);
 #else
         return func();
 #endif
