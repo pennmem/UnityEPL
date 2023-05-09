@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Unity.Collections;
 using UnityEngine;
@@ -57,8 +58,13 @@ namespace UnityEPL {
         }
         protected Task SelectVideoFileHelper(string startingPath, SFB.ExtensionFilter[] extensions, bool skippable) {
             string[] videoPaths = new string[0];
+            // Wait until a single video is selected
             while (videoPaths.Length != 1) {
-                videoPaths = SFB.StandaloneFileBrowser.OpenFilePanel("Select Video To Watch", startingPath, extensions, false);
+                var paths = SFB.StandaloneFileBrowser.OpenFilePanel("Select Video To Watch", startingPath, extensions, false);
+                // Handle cancel case
+                if (paths.Length == 1 && paths[0] != "") {
+                    videoPaths = paths;
+                }
             }
             var videoPath = videoPaths[0].Replace("%20", " ");
             SetVideoMB(videoPath, skippable);

@@ -295,7 +295,7 @@ namespace UnityEPL {
         protected void LaunchLauncher() {
             // Reset external hardware state if exiting task
             //syncBox.StopPulse();
-            //hostPC?.Disconnect();
+            hostPC?.SendExitMsg();
 
             //mainEvents.Pause(true);
             for (int i = 0; i < SceneManager.sceneCount; ++i) {

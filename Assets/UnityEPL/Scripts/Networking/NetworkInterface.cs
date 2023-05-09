@@ -4,6 +4,7 @@ using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -75,8 +76,13 @@ namespace UnityEPL {
             var buffer = new byte[8192];
             string messageBuffer = "";
             while (!stopListening && !cts.Token.IsCancellationRequested) {
-                var bytesRead = await stream.ReadAsync(buffer, cts.Token);
-                messageBuffer += Encoding.UTF8.GetString(buffer, 0, bytesRead);
+                try {
+                    var bytesRead = await stream.ReadAsync(buffer, cts.Token);
+                    messageBuffer += Encoding.UTF8.GetString(buffer, 0, bytesRead);
+                } catch (SocketException) {
+                    var name = this.GetType().Name;
+                    throw new IOException($"The network interface {name} disconnected prematurely");
+                }
 
                 // Extract a full message from the byte buffer, and leave remaining characters in string buffer.
                 // Also, if there is more than one message in the buffer, report both.
@@ -145,21 +151,27 @@ namespace UnityEPL {
             DataPoint point = new DataPoint(type, data);
             string message = point.ToJSON();
 
-            ReportNetworkMessage(type, message, point.time, true);
-
             Byte[] buffer = Encoding.UTF8.GetBytes(message + "\n");
             var timeoutMessage = $"{this.GetType().Name} didn't receive message after waiting {1000}ms";
-            var sendTask = stream.WriteAsync(buffer, 0, buffer.Length);
+            Task sendTask;
+            try {
+                sendTask = stream.WriteAsync(buffer, 0, buffer.Length);
+            } catch (SocketException) {
+                var name = this.GetType().Name;
+                throw new IOException($"The network interface {name} closed before the {type} message could be sent");
+            }
+
+            ReportNetworkMessage(type, message, point.time, true);
             return TimeoutTask(sendTask, 1000, timeoutMessage);
         }
 
         protected Task<JObject> SendAndReceive(string sendType, string receiveType) {
             return SendAndReceive(sendType, null, receiveType);
         }
-        protected Task<JObject> SendAndReceive(string sendType, Dictionary<string, object> sendData, string receiveType) {
-            var task = Receive(receiveType);
-            _ = Send(sendType, sendData);
-            return task;
+        protected async Task<JObject> SendAndReceive(string sendType, Dictionary<string, object> sendData, string receiveType) {
+            var recvTask = Receive(receiveType);
+            await Send(sendType, sendData);
+            return await recvTask;
         }
 
         protected void ReportNetworkMessage(string type, string message, DateTime time, bool sent) {

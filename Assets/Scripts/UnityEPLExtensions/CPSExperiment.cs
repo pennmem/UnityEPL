@@ -59,9 +59,6 @@ namespace UnityEPL {
             };
             manager.eventReporter.ReportScriptedEvent("movie", movieInfo);
 
-            // TODO: JPB: (needed) PressAnyKey doesn't display text correctly
-            // TODO: JPB: (needed) This crashes sometimes and doesn't show the video
-            UnityEngine.Debug.Log(0);
             await manager.textDisplayer.PressAnyKey("instructions", "In this experiment, you will watch a short educational film lasting about twenty-five minutes. Please pay attention to the film to the best of your ability. You will be asked a series of questions about the video after its completion. After the questionnaire, you will have the opportunity to take a break.\n\n Press any key to begin watching.");
 
             UnityEngine.Debug.Log(1);
@@ -70,11 +67,8 @@ namespace UnityEPL {
             // Remove 10s to not overrun video legnth
             UnityEngine.Debug.Log(2);
             var cclLength = await manager.videoControl.VideoLength() - 10.0;
-            UnityEngine.Debug.Log(3);
-            //await manager.hostPC.SendCCLStartMsg(Convert.ToInt32(cclLength));
-            UnityEngine.Debug.Log(4);
+            await manager.hostPC.SendCCLStartMsg(Convert.ToInt32(cclLength));
             await manager.videoControl.PlayVideo();
-            UnityEngine.Debug.Log(5);
         }
     }
 

@@ -51,21 +51,19 @@ namespace UnityEPL {
         }
 
         protected async Task TimeoutTask(Task task, int timeoutMs, string timeoutMessage = null) {
-            UnityEngine.Debug.Log("1-4-0");
             Task timeoutTask = InterfaceManager.Delay(timeoutMs, cts.Token);
             if (await Task.WhenAny(task, timeoutTask) == timeoutTask) {
                 var msg = timeoutMessage ?? $"Task Timed out after {timeoutMs}ms";
-                UnityEngine.Debug.Log("1-4-ERROR");
                 throw new TimeoutException(timeoutMessage);
             }
-            UnityEngine.Debug.Log("1-4-2");
         }
         protected async Task<Z> TimeoutTask<Z>(Task<Z> task, int timeoutMs, string timeoutMessage = null) {
             Task timeoutTask = InterfaceManager.Delay(timeoutMs, cts.Token);
             if (await Task.WhenAny(task, timeoutTask) == timeoutTask) {
                 var msg = timeoutMessage ?? $"Task Timed out after {timeoutMs}ms";
+                throw new TimeoutException(timeoutMessage);
             }
-            return task.Result;
+            return await task;
         }
 
         // Do
@@ -481,6 +479,8 @@ namespace UnityEPL {
                 throw new OperationCanceledException("EventLoop has been stopped already.");
             }
 #if !UNITY_WEBGL || UNITY_EDITOR // System.Threading
+            // TODO: JPB: (needed) (bug) DoWaitFor's Unwrap is technically starting a new Task, it should be await await
+            //            This causes a deadlock though (likely NetworkInterface::Connect that has a Wait call in it)
             return StartTask(func).Unwrap();
 #else
         return func();
@@ -555,11 +555,11 @@ namespace UnityEPL {
             return DoGet(() => { return func(t, u, v, w); });
         }
 
-        protected Task<Z> DoGet<Z>(Func<Task<Z>> func)
+        protected async Task<Z> DoGet<Z>(Func<Task<Z>> func)
                 where Z : struct {
             AssertBlittable<Z>();
 #if !UNITY_WEBGL || UNITY_EDITOR // System.Threading
-            return StartTask(func).Unwrap();
+            return await await StartTask(func);
 #else
             return func();
 #endif
@@ -612,9 +612,9 @@ namespace UnityEPL {
             return DoGetRelaxed(() => { return func(t); });
         }
 
-        protected Task<Z> DoGetRelaxed<Z>(Func<Task<Z>> func) {
+        protected async Task<Z> DoGetRelaxed<Z>(Func<Task<Z>> func) {
 #if !UNITY_WEBGL || UNITY_EDITOR // System.Threading
-            return StartTask(func).Unwrap();
+            return await await StartTask(func);
 #else
             return func();
 #endif

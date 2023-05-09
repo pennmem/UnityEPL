@@ -51,8 +51,7 @@ namespace UnityEPL {
                 { "count", heartbeatCount }
             };
             heartbeatCount++;
-            await Send("HEARTBEAT", data);
-            await Receive("HEARTBEAT_OK");
+            await SendAndReceive("HEARTBEAT", data, "HEARTBEAT_OK");
         }
 
         protected readonly static double maxSingleTimeMs = 20;
