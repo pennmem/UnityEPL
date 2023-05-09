@@ -4,7 +4,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Palmmedia.ReportGenerator.Core;
 using UnityEngine;
 
 namespace UnityEPL {
@@ -14,7 +13,7 @@ namespace UnityEPL {
         protected override void AwakeOverride() { }
 
         void Update() {
-            // TODO: JPB: (refactor) Use new unity imput system for key input
+            // TODO: JPB: (refactor) Use new unity input system for key input
             //            Keyboard.current.anyKey.wasPressedThisFrame
             foreach (KeyCode vKey in System.Enum.GetValues(typeof(KeyCode))) {
                 if (Input.GetKeyDown(vKey)) {

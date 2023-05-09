@@ -95,20 +95,20 @@ namespace UnityEPL {
         }
         protected void Do<T>(Func<T, IEnumerator> func, T t)
                 where T : struct {
-            AssertBlittable(t);
+            AssertBlittable<T>();
             DoHelper(func(t));
         }
         protected void Do<T, U>(Func<T, U, IEnumerator> func, T t, U u)
                 where T : struct
                 where U : struct {
-            AssertBlittable(t, u);
+            AssertBlittable<T, U>();
             DoHelper(func(t, u));
         }
         protected void Do<T, U, V>(Func<T, U, V, IEnumerator> func, T t, U u, V v)
                 where T : struct
                 where U : struct
                 where V : struct {
-            AssertBlittable(t, u, v);
+            AssertBlittable<T, U, V>();
             DoHelper(func(t, u, v));
         }
         protected void Do<T, U, V, W>(Func<T, U, V, W, IEnumerator> func, T t, U u, V v, W w)
@@ -116,7 +116,7 @@ namespace UnityEPL {
                 where U : struct
                 where V : struct
                 where W : struct {
-            AssertBlittable(t, u, v, w);
+            AssertBlittable<T, U, V, W>();
             DoHelper(func(t, u, v, w));
         }
 
@@ -125,23 +125,20 @@ namespace UnityEPL {
         }
         protected void Do<T>(Action<T> func, T t)
                 where T : struct {
-            AssertBlittable(t);
+            AssertBlittable<T>();
             DoHelper(EnumeratorCaller(func, t));
         }
         protected void Do<T, U>(Action<T, U> func, T t, U u)
                 where T : struct
                 where U : struct {
-            AssertBlittable(t);
-            AssertBlittable(u);
+            AssertBlittable<T, U>();
             DoHelper(EnumeratorCaller(func, t, u));
         }
         protected void Do<T, U, V>(Action<T, U, V> func, T t, U u, V v)
                 where T : struct
                 where U : struct
                 where V : struct {
-            AssertBlittable(t);
-            AssertBlittable(u);
-            AssertBlittable(v);
+            AssertBlittable<T, U, V>();
             DoHelper(EnumeratorCaller(func, t, u, v));
         }
         protected void Do<T, U, V, W>(Action<T, U, V, W> func, T t, U u, V v, W w)
@@ -149,10 +146,7 @@ namespace UnityEPL {
                 where U : struct
                 where V : struct
                 where W : struct {
-            AssertBlittable(t);
-            AssertBlittable(u);
-            AssertBlittable(v);
-            AssertBlittable(w);
+            AssertBlittable<T, U, V, W>();
             DoHelper(EnumeratorCaller(func, t, u, v, w));
         }
 
@@ -167,20 +161,20 @@ namespace UnityEPL {
         }
         protected void DoIn<T>(int millisecondsDelay, Func<T, IEnumerator> func, T t)
                 where T : struct {
-            AssertBlittable(t);
+            AssertBlittable<T>();
             DoHelper(DelayedEnumeratorCaller(millisecondsDelay, func(t)));
         }
         protected void DoIn<T, U>(int millisecondsDelay, Func<T, U, IEnumerator> func, T t, U u)
                 where T : struct
                 where U : struct {
-            AssertBlittable(t, u);
+            AssertBlittable<T, U>();
             DoHelper(DelayedEnumeratorCaller(millisecondsDelay, func(t, u)));
         }
         protected void DoIn<T, U, V>(int millisecondsDelay, Func<T, U, V, IEnumerator> func, T t, U u, V v)
                 where T : struct
                 where U : struct
                 where V : struct {
-            AssertBlittable(t, u, v);
+            AssertBlittable<T, U, V>();
             DoHelper(DelayedEnumeratorCaller(millisecondsDelay, func(t, u, v)));
         }
         protected void DoIn<T, U, V, W>(int millisecondsDelay, Func<T, U, V, W, IEnumerator> func, T t, U u, V v, W w)
@@ -188,7 +182,7 @@ namespace UnityEPL {
                 where U : struct
                 where V : struct
                 where W : struct {
-            AssertBlittable(t, u, v, w);
+            AssertBlittable<T, U, V, W>();
             DoHelper(DelayedEnumeratorCaller(millisecondsDelay, func(t, u, v, w)));
         }
 
@@ -197,20 +191,20 @@ namespace UnityEPL {
         }
         protected void DoIn<T>(int millisecondsDelay, Action<T> func, T t)
                 where T : struct {
-            AssertBlittable(t);
+            AssertBlittable<T>();
             DoHelper(DelayedEnumeratorCaller(millisecondsDelay, func, t));
         }
         protected void DoIn<T, U>(int millisecondsDelay, Action<T, U> func, T t, U u)
                 where T : struct
                 where U : struct {
-            AssertBlittable(t, u);
+            AssertBlittable<T, U>();
             DoHelper(DelayedEnumeratorCaller(millisecondsDelay, func, t, u));
         }
         protected void DoIn<T, U, V>(int millisecondsDelay, Action<T, U, V> func, T t, U u, V v)
                 where T : struct
                 where U : struct
                 where V : struct {
-            AssertBlittable(t, u, v);
+            AssertBlittable<T, U, V>();
             DoHelper(DelayedEnumeratorCaller(millisecondsDelay, func, t, u, v));
         }
         protected void DoIn<T, U, V, W>(int millisecondsDelay, Action<T, U, V, W> func, T t, U u, V v, W w)
@@ -218,7 +212,7 @@ namespace UnityEPL {
                 where U : struct
                 where V : struct
                 where W : struct {
-            AssertBlittable(t, u, v, w);
+            AssertBlittable<T, U, V, W>();
             DoHelper(DelayedEnumeratorCaller(millisecondsDelay, func, t, u, v, w));
         }
 
@@ -448,7 +442,7 @@ namespace UnityEPL {
         }
         protected CancellationTokenSource DoRepeating<T>(int delayMs, int intervalMs, uint? iterations, Func<T, IEnumerator> func, T t)
                 where T : struct {
-            AssertBlittable(t);
+            AssertBlittable<T>();
             if (intervalMs <= 0) { throw new ArgumentOutOfRangeException($"intervalMs <= 0 ({intervalMs})"); }
 
             CancellationTokenSource cts = new();
@@ -458,7 +452,7 @@ namespace UnityEPL {
         protected CancellationTokenSource DoRepeating<T, U>(int delayMs, int intervalMs, uint? iterations, Func<T, U, IEnumerator> func, T t, U u)
                 where T : struct
                 where U : struct {
-            AssertBlittable(t, u);
+            AssertBlittable<T, U>();
             if (intervalMs <= 0) { throw new ArgumentOutOfRangeException($"intervalMs <= 0 ({intervalMs})"); }
 
             CancellationTokenSource cts = new();
@@ -469,7 +463,7 @@ namespace UnityEPL {
                 where T : struct
                 where U : struct
                 where V : struct {
-            AssertBlittable(t, u, v);
+            AssertBlittable<T, U, V>();
             if (intervalMs <= 0) { throw new ArgumentOutOfRangeException($"intervalMs <= 0 ({intervalMs})"); }
 
             CancellationTokenSource cts = new();
@@ -481,7 +475,7 @@ namespace UnityEPL {
                 where U : struct
                 where V : struct
                 where W : struct {
-            AssertBlittable(t, u, v, w);
+            AssertBlittable<T, U, V, W>();
             if (intervalMs <= 0) { throw new ArgumentOutOfRangeException($"intervalMs <= 0 ({intervalMs})"); }
 
             CancellationTokenSource cts = new();
@@ -498,7 +492,7 @@ namespace UnityEPL {
         }
         protected CancellationTokenSource DoRepeating<T>(int delayMs, int intervalMs, uint? iterations, Action<T> func, T t)
                 where T : struct {
-            AssertBlittable(t);
+            AssertBlittable<T>();
             if (intervalMs <= 0) { throw new ArgumentOutOfRangeException($"intervalMs <= 0 ({intervalMs})"); }
 
             CancellationTokenSource cts = new();
@@ -508,7 +502,7 @@ namespace UnityEPL {
         protected CancellationTokenSource DoRepeating<T, U>(int delayMs, int intervalMs, uint? iterations, Action<T, U> func, T t, U u)
                 where T : struct
                 where U : struct {
-            AssertBlittable(t, u);
+            AssertBlittable<T, U>();
             if (intervalMs <= 0) { throw new ArgumentOutOfRangeException($"intervalMs <= 0 ({intervalMs})"); }
 
             CancellationTokenSource cts = new();
@@ -519,7 +513,7 @@ namespace UnityEPL {
                 where T : struct
                 where U : struct
                 where V : struct {
-            AssertBlittable(t, u, v);
+            AssertBlittable<T, U, V>();
             if (intervalMs <= 0) { throw new ArgumentOutOfRangeException($"intervalMs <= 0 ({intervalMs})"); }
 
             CancellationTokenSource cts = new();
@@ -531,7 +525,7 @@ namespace UnityEPL {
                 where U : struct
                 where V : struct
                 where W : struct {
-            AssertBlittable(t, u, v, w);
+            AssertBlittable<T, U, V, W>();
             if (intervalMs <= 0) { throw new ArgumentOutOfRangeException($"intervalMs <= 0 ({intervalMs})"); }
 
             CancellationTokenSource cts = new();
@@ -602,20 +596,20 @@ namespace UnityEPL {
         }
         protected Task DoWaitFor<T>(Func<T, IEnumerator> func, T t)
                 where T : struct {
-            AssertBlittable(t);
+            AssertBlittable<T>();
             return DoWaitForHelper(func(t));
         }
         protected Task DoWaitFor<T, U>(Func<T, U, IEnumerator> func, T t, U u)
                 where T : struct
                 where U : struct {
-            AssertBlittable(t, u);
+            AssertBlittable<T, U>();
             return DoWaitForHelper(func(t, u));
         }
         protected Task DoWaitFor<T, U, V>(Func<T, U, V, IEnumerator> func, T t, U u, V v)
                 where T : struct
                 where U : struct
                 where V : struct {
-            AssertBlittable(t, u, v);
+            AssertBlittable<T, U, V>();
             return DoWaitForHelper(func(t, u, v));
         }
         protected Task DoWaitFor<T, U, V, W>(Func<T, U, V, W, IEnumerator> func, T t, U u, V v, W w)
@@ -623,7 +617,7 @@ namespace UnityEPL {
                 where U : struct
                 where V : struct
                 where W : struct {
-            AssertBlittable(t, u, v, w);
+            AssertBlittable<T, U, V, W>();
             return DoWaitForHelper(func(t, u, v, w));
         }
 
@@ -634,7 +628,7 @@ namespace UnityEPL {
         }
         protected Task DoWaitFor<T>(Action<T> func, T t)
                 where T : struct {
-            AssertBlittable(t);
+            AssertBlittable<T>();
             var tcs = new TaskCompletionSource<bool>();
             manager.events.Enqueue(TaskTrigger(tcs, func, t));
             return tcs.Task;
@@ -642,7 +636,7 @@ namespace UnityEPL {
         protected Task DoWaitFor<T, U>(Action<T, U> func, T t, U u)
                 where T : struct
                 where U : struct {
-            AssertBlittable(t, u);
+            AssertBlittable<T, U>();
             var tcs = new TaskCompletionSource<bool>();
             manager.events.Enqueue(TaskTrigger(tcs, func, t, u));
             return tcs.Task;
@@ -651,7 +645,7 @@ namespace UnityEPL {
                 where T : struct
                 where U : struct
                 where V : struct {
-            AssertBlittable(t, u, v);
+            AssertBlittable<T, U, V>();
             var tcs = new TaskCompletionSource<bool>();
             manager.events.Enqueue(TaskTrigger(tcs, func, t, u, v));
             return tcs.Task;
@@ -661,7 +655,7 @@ namespace UnityEPL {
                 where U : struct
                 where V : struct
                 where W : struct {
-            AssertBlittable(t, u, v, w);
+            AssertBlittable<T, U, V, W>();
             var tcs = new TaskCompletionSource<bool>();
             manager.events.Enqueue(TaskTrigger(tcs, func, t, u, v, w));
             return tcs.Task;
@@ -675,7 +669,7 @@ namespace UnityEPL {
         }
         protected Task DoWaitFor<T>(Func<T, Task> func, T t)
                 where T : struct {
-            AssertBlittable(t);
+            AssertBlittable<T>();
             var tcs = new TaskCompletionSource<bool>();
             manager.events.Enqueue(TaskTrigger(tcs, func, t));
             return tcs.Task;
@@ -683,7 +677,7 @@ namespace UnityEPL {
         protected Task DoWaitFor<T, U>(Func<T, U, Task> func, T t, U u)
                 where T : struct
                 where U : struct {
-            AssertBlittable(t, u);
+            AssertBlittable<T, U>();
             var tcs = new TaskCompletionSource<bool>();
             manager.events.Enqueue(TaskTrigger(tcs, func, t, u));
             return tcs.Task;
@@ -692,7 +686,7 @@ namespace UnityEPL {
                 where T : struct
                 where U : struct
                 where V : struct {
-            AssertBlittable(t, u, v);
+            AssertBlittable<T, U, V>();
             var tcs = new TaskCompletionSource<bool>();
             manager.events.Enqueue(TaskTrigger(tcs, func, t, u, v));
             return tcs.Task;
@@ -702,7 +696,7 @@ namespace UnityEPL {
                 where U : struct
                 where V : struct
                 where W : struct {
-            AssertBlittable(t, u, v, w);
+            AssertBlittable<T, U, V, W>();
             var tcs = new TaskCompletionSource<bool>();
             manager.events.Enqueue(TaskTrigger(tcs, func, t, u, v, w));
             return tcs.Task;
@@ -764,6 +758,7 @@ namespace UnityEPL {
 
         private Task<Z> DoGetHelper<Z>(IEnumerator enumerator)
                 where Z : struct {
+            AssertBlittable<Z>();
             var tcs = new TaskCompletionSource<Z>();
             manager.events.Enqueue(TaskTrigger(tcs, enumerator));
             return tcs.Task;
@@ -775,14 +770,14 @@ namespace UnityEPL {
         protected Task<Z> DoGet<T, Z>(Func<T, IEnumerator> func, T t)
                 where T : struct
                 where Z : struct {
-            AssertBlittable(t);
+            AssertBlittable<T>();
             return DoGetHelper<Z>(func(t));
         }
         protected Task<Z> DoGet<T, U, Z>(Func<T, U, IEnumerator> func, T t, U u)
                 where T : struct
                 where U : struct
                 where Z : struct {
-            AssertBlittable(t, u);
+            AssertBlittable<T, U>();
             return DoGetHelper<Z>(func(t, u));
         }
         protected Task<Z> DoGet<T, U, V, Z>(Func<T, U, V, IEnumerator> func, T t, U u, V v)
@@ -790,7 +785,7 @@ namespace UnityEPL {
                 where U : struct
                 where V : struct
                 where Z : struct {
-            AssertBlittable(t, u, v);
+            AssertBlittable<T, U, V>();
             return DoGetHelper<Z>(func(t, u, v));
         }
         protected Task<Z> DoGet<T, U, V, W, Z>(Func<T, U, V, W, IEnumerator> func, T t, U u, V v, W w)
@@ -799,12 +794,13 @@ namespace UnityEPL {
                 where V : struct
                 where W : struct
                 where Z : struct {
-            AssertBlittable(t, u, v, w);
+            AssertBlittable<T, U, V, W>();
             return DoGetHelper<Z>(func(t, u, v, w));
         }
 
         protected Task<Z> DoGet<Z>(Func<Z> func)
                 where Z : struct {
+            AssertBlittable<Z>();
             var tcs = new TaskCompletionSource<Z>();
             manager.events.Enqueue(TaskTrigger(tcs, func));
             return tcs.Task;
@@ -812,7 +808,7 @@ namespace UnityEPL {
         protected Task<Z> DoGet<T, Z>(Func<T, Z> func, T t)
                 where T : struct
                 where Z : struct {
-            AssertBlittable(t);
+            AssertBlittable<T, Z>();
             var tcs = new TaskCompletionSource<Z>();
             manager.events.Enqueue(TaskTrigger(tcs, func, t));
             return tcs.Task;
@@ -821,7 +817,7 @@ namespace UnityEPL {
                 where T : struct
                 where U : struct
                 where Z : struct {
-            AssertBlittable(t, u);
+            AssertBlittable<T, U, Z>();
             var tcs = new TaskCompletionSource<Z>();
             manager.events.Enqueue(TaskTrigger(tcs, func, t, u));
             return tcs.Task;
@@ -831,7 +827,7 @@ namespace UnityEPL {
                 where U : struct
                 where V : struct
                 where Z : struct {
-            AssertBlittable(t, u, v);
+            AssertBlittable<T, U, V, Z>();
             var tcs = new TaskCompletionSource<Z>();
             manager.events.Enqueue(TaskTrigger(tcs, func, t, u, v));
             return tcs.Task;
@@ -842,7 +838,7 @@ namespace UnityEPL {
                 where V : struct
                 where W : struct
                 where Z : struct {
-            AssertBlittable(t, u, v, w);
+            AssertBlittable<T, U, V, W, Z>();
             var tcs = new TaskCompletionSource<Z>();
             manager.events.Enqueue(TaskTrigger(tcs, func, t, u, v, w));
             return tcs.Task;
@@ -851,6 +847,7 @@ namespace UnityEPL {
 #if EVENTMONOBEHAVIOR_TASK_OPERATORS
         protected Task<Z> DoGet<Z>(Func<Task<Z>> func)
                 where Z : struct {
+            AssertBlittable<Z>();
             var tcs = new TaskCompletionSource<Z>();
             manager.events.Enqueue(TaskTrigger(tcs, func));
             return tcs.Task;
@@ -858,7 +855,7 @@ namespace UnityEPL {
         protected Task<Z> DoGet<T, Z>(Func<T, Task<Z>> func, T t)
                 where T : struct
                 where Z : struct {
-            AssertBlittable(t);
+            AssertBlittable<T, Z>();
             var tcs = new TaskCompletionSource<Z>();
             manager.events.Enqueue(TaskTrigger(tcs, func, t));
             return tcs.Task;
@@ -867,7 +864,7 @@ namespace UnityEPL {
                 where T : struct
                 where U : struct
                 where Z : struct {
-            AssertBlittable(t, u);
+            AssertBlittable<T, U, Z>();
             var tcs = new TaskCompletionSource<Z>();
             manager.events.Enqueue(TaskTrigger(tcs, func, t, u));
             return tcs.Task;
@@ -877,7 +874,7 @@ namespace UnityEPL {
                 where U : struct
                 where V : struct
                 where Z : struct {
-            AssertBlittable(t, u, v);
+            AssertBlittable<T, U, V, Z>();
             var tcs = new TaskCompletionSource<Z>();
             manager.events.Enqueue(TaskTrigger(tcs, func, t, u, v));
             return tcs.Task;
@@ -888,7 +885,7 @@ namespace UnityEPL {
                 where V : struct
                 where W : struct
                 where Z : struct {
-            AssertBlittable(t, u, v, w);
+            AssertBlittable<T, U, V, W, Z>();
             var tcs = new TaskCompletionSource<Z>();
             manager.events.Enqueue(TaskTrigger(tcs, func, t, u, v, w));
             return tcs.Task;
@@ -912,7 +909,7 @@ namespace UnityEPL {
         }
         protected Task DoWaitForManualTrigger<T>(Func<TaskCompletionSource<bool>, T, IEnumerator> func, T t)
                 where T : struct {
-            AssertBlittable(t);
+            AssertBlittable<T>();
             var tcs = new TaskCompletionSource<bool>();
             manager.events.Enqueue(func(tcs, t));
             return tcs.Task;
@@ -920,7 +917,7 @@ namespace UnityEPL {
         protected Task DoWaitForManualTrigger<T, U>(Func<TaskCompletionSource<bool>, T, U, IEnumerator> func, T t, U u)
                 where T : struct
                 where U : struct {
-            AssertBlittable(t, u);
+            AssertBlittable<T, U>();
             var tcs = new TaskCompletionSource<bool>();
             manager.events.Enqueue(func(tcs, t, u));
             return tcs.Task;
@@ -929,7 +926,7 @@ namespace UnityEPL {
                 where T : struct
                 where U : struct
                 where V : struct {
-            AssertBlittable(t, u, v);
+            AssertBlittable<T, U, V>();
             var tcs = new TaskCompletionSource<bool>();
             manager.events.Enqueue(func(tcs, t, u, v));
             return tcs.Task;
@@ -942,7 +939,7 @@ namespace UnityEPL {
         }
         protected Task DoWaitForManualTrigger<T>(Action<TaskCompletionSource<bool>, T> func, T t)
                 where T : struct {
-            AssertBlittable(t);
+            AssertBlittable<T>();
             var tcs = new TaskCompletionSource<bool>();
             manager.events.Enqueue(EnumeratorCaller(func, tcs, t));
             return tcs.Task;
@@ -950,7 +947,7 @@ namespace UnityEPL {
         protected Task DoWaitForManualTrigger<T, U>(Action<TaskCompletionSource<bool>, T, U> func, T t, U u)
                 where T : struct
                 where U : struct {
-            AssertBlittable(t, u);
+            AssertBlittable<T, U>();
             var tcs = new TaskCompletionSource<bool>();
             manager.events.Enqueue(EnumeratorCaller(func, tcs, t, u));
             return tcs.Task;
@@ -959,7 +956,7 @@ namespace UnityEPL {
                 where T : struct
                 where U : struct
                 where V : struct {
-            AssertBlittable(t, u, v);
+            AssertBlittable<T, U, V>();
             var tcs = new TaskCompletionSource<bool>();
             manager.events.Enqueue(EnumeratorCaller(func, tcs, t, u, v));
             return tcs.Task;
@@ -973,7 +970,7 @@ namespace UnityEPL {
         }
         protected Task DoWaitForManualTrigger<T>(Func<TaskCompletionSource<bool>, T, Task> func, T t)
                 where T : struct {
-            AssertBlittable(t);
+            AssertBlittable<T>();
             var tcs = new TaskCompletionSource<bool>();
             manager.events.Enqueue(EnumeratorCaller(func, tcs, t));
             return tcs.Task;
@@ -981,7 +978,7 @@ namespace UnityEPL {
         protected Task DoWaitForManualTrigger<T, U>(Func<TaskCompletionSource<bool>, T, U, Task> func, T t, U u)
                 where T : struct
                 where U : struct {
-            AssertBlittable(t, u);
+            AssertBlittable<T, U>();
             var tcs = new TaskCompletionSource<bool>();
             manager.events.Enqueue(EnumeratorCaller(func, tcs, t, u));
             return tcs.Task;
@@ -990,7 +987,7 @@ namespace UnityEPL {
                 where T : struct
                 where U : struct
                 where V : struct {
-            AssertBlittable(t, u, v);
+            AssertBlittable<T, U, V>();
             var tcs = new TaskCompletionSource<bool>();
             manager.events.Enqueue(EnumeratorCaller(func, tcs, t, u, v));
             return tcs.Task;
@@ -1018,7 +1015,7 @@ namespace UnityEPL {
         }
         protected Task<Z> DoGetManualTrigger<T, Z>(Func<TaskCompletionSource<Z>, T, IEnumerator> func, T t)
                 where T : struct {
-            AssertBlittable(t);
+            AssertBlittable<T>();
             var tcs = new TaskCompletionSource<Z>();
             manager.events.Enqueue(func(tcs, t));
             return tcs.Task;
@@ -1026,7 +1023,7 @@ namespace UnityEPL {
         protected Task<Z> DoGetManualTrigger<T, U, Z>(Func<TaskCompletionSource<Z>, T, U, IEnumerator> func, T t, U u)
                 where T : struct
                 where U : struct {
-            AssertBlittable(t, u);
+            AssertBlittable<T, U>();
             var tcs = new TaskCompletionSource<Z>();
             manager.events.Enqueue(func(tcs, t, u));
             return tcs.Task;
@@ -1035,7 +1032,7 @@ namespace UnityEPL {
                 where T : struct
                 where U : struct
                 where V : struct {
-            AssertBlittable(t, u, v);
+            AssertBlittable<T, U, V>();
             var tcs = new TaskCompletionSource<Z>();
             manager.events.Enqueue(func(tcs, t, u, v));
             return tcs.Task;
@@ -1050,7 +1047,7 @@ namespace UnityEPL {
         protected Task<Z> DoGetManualTrigger<T, Z>(Action<TaskCompletionSource<Z>, T> func, T t)
                 where T : struct
                 where Z : struct {
-            AssertBlittable(t);
+            AssertBlittable<T>();
             var tcs = new TaskCompletionSource<Z>();
             manager.events.Enqueue(EnumeratorCaller(func, tcs, t));
             return tcs.Task;
@@ -1059,7 +1056,7 @@ namespace UnityEPL {
                 where T : struct
                 where U : struct
                 where Z : struct {
-            AssertBlittable(t, u);
+            AssertBlittable<T, U>();
             var tcs = new TaskCompletionSource<Z>();
             manager.events.Enqueue(EnumeratorCaller(func, tcs, t, u));
             return tcs.Task;
@@ -1069,7 +1066,7 @@ namespace UnityEPL {
                 where U : struct
                 where V : struct
                 where Z : struct {
-            AssertBlittable(t, u, v);
+            AssertBlittable<T, U, V>();
             var tcs = new TaskCompletionSource<Z>();
             manager.events.Enqueue(EnumeratorCaller(func, tcs, t, u, v));
             return tcs.Task;
@@ -1085,7 +1082,7 @@ namespace UnityEPL {
         protected Task<Z> DoGetManualTrigger<T, Z>(Func<TaskCompletionSource<Z>, T, Task> func, T t)
                 where T : struct
                 where Z : struct {
-            AssertBlittable(t);
+            AssertBlittable<T>();
             var tcs = new TaskCompletionSource<Z>();
             manager.events.Enqueue(EnumeratorCaller(func, tcs, t));
             return tcs.Task;
@@ -1094,7 +1091,7 @@ namespace UnityEPL {
                 where T : struct
                 where U : struct
                 where Z : struct {
-            AssertBlittable(t, u);
+            AssertBlittable<T, U>();
             var tcs = new TaskCompletionSource<Z>();
             manager.events.Enqueue(EnumeratorCaller(func, tcs, t, u));
             return tcs.Task;
@@ -1104,7 +1101,7 @@ namespace UnityEPL {
                 where U : struct
                 where V : struct
                 where Z : struct {
-            AssertBlittable(t, u, v);
+            AssertBlittable<T, U, V>();
             var tcs = new TaskCompletionSource<Z>();
             manager.events.Enqueue(EnumeratorCaller(func, tcs, t, u, v));
             return tcs.Task;
@@ -1380,89 +1377,67 @@ namespace UnityEPL {
         }
 #endif // EVENTMONOBEHAVIOR_TASK_OPERATORS
 
-        private IEnumerator TaskTrigger<Z>(TaskCompletionSource<Z> tcs, IEnumerator func)
-        where Z : struct {
+        private IEnumerator TaskTrigger<Z>(TaskCompletionSource<Z> tcs, IEnumerator func) {
             yield return func;
             Z ret = (Z)func.Current;
-            AssertBlittable(ret);
             tcs.SetResult(ret);
         }
 
-        private IEnumerator TaskTrigger<Z>(TaskCompletionSource<Z> tcs, Func<Z> func)
-                where Z : struct {
+        private IEnumerator TaskTrigger<Z>(TaskCompletionSource<Z> tcs, Func<Z> func) {
             Z ret = func();
-            AssertBlittable(ret);
             tcs.SetResult(ret);
             yield break;
         }
-        private IEnumerator TaskTrigger<T, Z>(TaskCompletionSource<Z> tcs, Func<T, Z> func, T t)
-                where Z : struct {
+        private IEnumerator TaskTrigger<T, Z>(TaskCompletionSource<Z> tcs, Func<T, Z> func, T t) {
             Z ret = func(t);
-            AssertBlittable(ret);
             tcs.SetResult(ret);
             yield break;
         }
-        private IEnumerator TaskTrigger<T, U, Z>(TaskCompletionSource<Z> tcs, Func<T, U, Z> func, T t, U u)
-                where Z : struct {
+        private IEnumerator TaskTrigger<T, U, Z>(TaskCompletionSource<Z> tcs, Func<T, U, Z> func, T t, U u) {
             Z ret = func(t, u);
-            AssertBlittable(ret);
             tcs.SetResult(ret);
             yield break;
         }
-        private IEnumerator TaskTrigger<T, U, V, Z>(TaskCompletionSource<Z> tcs, Func<T, U, V, Z> func, T t, U u, V v)
-                where Z : struct {
+        private IEnumerator TaskTrigger<T, U, V, Z>(TaskCompletionSource<Z> tcs, Func<T, U, V, Z> func, T t, U u, V v) {
             Z ret = func(t, u, v);
-            AssertBlittable(ret);
             tcs.SetResult(ret);
             yield break;
         }
-        private IEnumerator TaskTrigger<T, U, V, W, Z>(TaskCompletionSource<Z> tcs, Func<T, U, V, W, Z> func, T t, U u, V v, W w)
-                where Z : struct {
+        private IEnumerator TaskTrigger<T, U, V, W, Z>(TaskCompletionSource<Z> tcs, Func<T, U, V, W, Z> func, T t, U u, V v, W w) {
             Z ret = func(t, u, v, w);
-            AssertBlittable(ret);
             tcs.SetResult(ret);
             yield break;
         }
 
 #if EVENTMONOBEHAVIOR_TASK_OPERATORS
-        private IEnumerator TaskTrigger<Z>(TaskCompletionSource<Z> tcs, Func<Task<Z>> func)
-                where Z : struct {
+        private IEnumerator TaskTrigger<Z>(TaskCompletionSource<Z> tcs, Func<Task<Z>> func) {
             var task = func();
             yield return task.ToEnumerator();
             Z ret = task.Result;
-            AssertBlittable(ret);
             tcs.SetResult(ret);
         }
-        private IEnumerator TaskTrigger<T, Z>(TaskCompletionSource<Z> tcs, Func<T, Task<Z>> func, T t)
-                where Z : struct {
+        private IEnumerator TaskTrigger<T, Z>(TaskCompletionSource<Z> tcs, Func<T, Task<Z>> func, T t) {
             var task = func(t);
             yield return task.ToEnumerator();
             Z ret = task.Result;
-            AssertBlittable(ret);
             tcs.SetResult(ret);
         }
-        private IEnumerator TaskTrigger<T, U, Z>(TaskCompletionSource<Z> tcs, Func<T, U, Task<Z>> func, T t, U u)
-                where Z : struct {
+        private IEnumerator TaskTrigger<T, U, Z>(TaskCompletionSource<Z> tcs, Func<T, U, Task<Z>> func, T t, U u) {
             var task = func(t, u);
             yield return task.ToEnumerator();
             Z ret = task.Result;
-            AssertBlittable(ret);
             tcs.SetResult(ret);
         }
-        private IEnumerator TaskTrigger<T, U, V, Z>(TaskCompletionSource<Z> tcs, Func<T, U, V, Task<Z>> func, T t, U u, V v)
-                where Z : struct {
+        private IEnumerator TaskTrigger<T, U, V, Z>(TaskCompletionSource<Z> tcs, Func<T, U, V, Task<Z>> func, T t, U u, V v) {
             var task = func(t, u, v);
             yield return task.ToEnumerator();
             Z ret = task.Result;
-            AssertBlittable(ret);
             tcs.SetResult(ret);
         }
-        private IEnumerator TaskTrigger<T, U, V, W, Z>(TaskCompletionSource<Z> tcs, Func<T, U, V, W, Task<Z>> func, T t, U u, V v, W w)
-                where Z : struct {
+        private IEnumerator TaskTrigger<T, U, V, W, Z>(TaskCompletionSource<Z> tcs, Func<T, U, V, W, Task<Z>> func, T t, U u, V v, W w) {
             var task = func(t, u, v, w);
             yield return task.ToEnumerator();
             Z ret = task.Result;
-            AssertBlittable(ret);
             tcs.SetResult(ret);
         }
 #endif // EVENTMONOBEHAVIOR_TASK_OPERATORS

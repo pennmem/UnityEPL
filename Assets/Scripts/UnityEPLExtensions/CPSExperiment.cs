@@ -10,10 +10,7 @@ using static UnityEPL.TextDisplayer;
 namespace UnityEPL {
 
     public class CPSExperiment : ExperimentBase {
-        private ElememInterface elememInterface;
-
         public CPSExperiment(InterfaceManager manager) {
-            CheckElememInUse();
             Run();
         }
 
@@ -29,56 +26,55 @@ namespace UnityEPL {
         }
 
         public override async Task MainStates() {
-            //SetVideo();
-            //await manager.videoControl.PlayVideo();
-
-            //elememInterface.SendTrialMessage(0, true);
-
-            await DoCPSVideo();
-
-            //elememInterface.SendExitMessage();
-            //textDisplayer.DisplayText("display end message", "Woo!  The experiment is over.");
-
+            await SetupExp();
+            await ShowVideo();
+            await FinishExp();
         }
 
-        private void CheckElememInUse() {
-            if (manager.hostPC is ElememInterface elememInterface) {
-                this.elememInterface = elememInterface;
-            } else {
-                throw new Exception("CPS experiment must use Elemem");
+        protected async Task SetupExp() {
+            if (manager.hostPC == null) {
+                throw new Exception("CPS experiment must use a Host PC.\n The hostPC is null");
             }
+            await manager.hostPC.SendTrialMsg(0, true);
         }
 
-        protected async Task DoCPSVideo() {
+        protected async Task FinishExp() {
+            await manager.hostPC.SendExitMsg();
+            await manager.textDisplayer.PressAnyKey("display end message", "Woo!  The experiment is over.\n\n Press any key to quit.");
+        }
+
+        protected async Task ShowVideo() {
             string startingPath = Path.Combine(manager.fileManager.ParticipantPath(), "..", "..", "CPS_Movies");
             var extensions = new[] {
                 new SFB.ExtensionFilter("Videos", "mp4", "mov"),
                 new SFB.ExtensionFilter("All Files", "*" ),
             };
 
-            //string[] videoPaths = new string[0];
-            //while (videoPaths.Length == 0) {
-            //    videoPaths = SFB.StandaloneFileBrowser.OpenFilePanel("Select Video To Watch", startingPath, extensions, false);
-            //}
-            //UnityEngine.Debug.Log(videoPaths[0].Replace("%20", " "));
-            //string videoPath = videoPaths[0].Replace("%20", " ");
-            var videoPath = await manager.FilePicker(startingPath, extensions);
-            manager.videoControl.SetVideo(videoPath);
-
-            // yield return PressAnyKey("In this experiment, you will watch a short educational film lasting about twenty-five minutes. Please pay attention to the film to the best of your ability. You will be asked a series of questions about the video after its completion. After the questionnaire, you will have the opportunity to take a break.\n\n Press any key to begin watching.");
-            // TODO: JPB: Display and wait for keypress
-
+            var videoPath = await manager.videoControl.SelectVideoFile(startingPath, extensions);
+            UnityEngine.Debug.Log(videoPath);
             Dictionary<string, object> movieInfo = new() {
                 { "movie title", Path.GetFileName(videoPath) },
                 { "movie path", Path.GetDirectoryName(videoPath)},
-                { "movie duration seconds", manager.videoControl.VideoLength()}
+                { "movie duration seconds", await manager.videoControl.VideoLength()}
             };
             manager.eventReporter.ReportScriptedEvent("movie", movieInfo);
 
-            //elememInterface.SetElememState("ENCODING", movieInfo);
+            // TODO: JPB: (needed) PressAnyKey doesn't display text correctly
+            // TODO: JPB: (needed) This crashes sometimes and doesn't show the video
+            UnityEngine.Debug.Log(0);
+            await manager.textDisplayer.PressAnyKey("instructions", "In this experiment, you will watch a short educational film lasting about twenty-five minutes. Please pay attention to the film to the best of your ability. You will be asked a series of questions about the video after its completion. After the questionnaire, you will have the opportunity to take a break.\n\n Press any key to begin watching.");
 
-            //elememInterface.SendCCLStartMessage(videoPlayer.VideoDurationSeconds() - 10); // Remove 10s to not overrun video legnth
+            UnityEngine.Debug.Log(1);
+            await manager.hostPC.SendStateMsg(HostPC.StateMsg.ENCODING, movieInfo);
+
+            // Remove 10s to not overrun video legnth
+            UnityEngine.Debug.Log(2);
+            var cclLength = await manager.videoControl.VideoLength() - 10.0;
+            UnityEngine.Debug.Log(3);
+            //await manager.hostPC.SendCCLStartMsg(Convert.ToInt32(cclLength));
+            UnityEngine.Debug.Log(4);
             await manager.videoControl.PlayVideo();
+            UnityEngine.Debug.Log(5);
         }
     }
 

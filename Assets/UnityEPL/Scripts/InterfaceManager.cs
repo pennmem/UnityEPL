@@ -1,11 +1,14 @@
+using Newtonsoft.Json;
 using System;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.CompilerServices;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
 using System.Threading.Tasks;
+using Unity.Collections;
 using UnityEngine;
 using UnityEngine.Profiling;
 using UnityEngine.SceneManagement;
@@ -42,7 +45,7 @@ namespace UnityEPL {
         // Devices that can be accessed by managed
         // scripts
         //////////
-        public NetworkInterface hostPC;
+        public HostPC hostPC;
         public VideoControl videoControl;
         public TextDisplayer textDisplayer;
         //public SoundRecorder recorder;
@@ -327,6 +330,7 @@ namespace UnityEPL {
         }
 
         public void Quit() {
+            hostPC?.Quit();
             Do(QuitHelper);
         }
         protected void QuitHelper() {
@@ -360,21 +364,12 @@ namespace UnityEPL {
 
                 // Connect to HostPC
                 if (Config.elememOn) {
-                    //var task = ElememInterface.Build();
-                    //task.Wait();
-                    //yield return null;
-                    //hostPC = task.Result;
-
-                    //var e = ElememInterface.Build().ToEnumerator();
-                    //yield return e;
-                    //hostPC = (ElememInterface)e.Current;
-                    var elememInterface = new ElememInterface();
-                    hostPC = elememInterface;
-                    yield return elememInterface.Configure().ToEnumerator();
+                    hostPC = new ElememInterface();
                 } else if (Config.ramulatorOn) {
                     // TODO: JPB: (needed) Add Ramulator integration
                     //hostPC = new RamulatorWrapper(this);
                 }
+                yield return hostPC?.Configure().ToEnumerator();
 
                 SceneManager.sceneLoaded -= onSceneLoaded;
                 SceneManager.sceneLoaded += onExperimentSceneLoaded;
@@ -389,21 +384,6 @@ namespace UnityEPL {
         public void LoadExperimentConfig(string name) {
             Config.experimentConfigName = name;
             Config.SetupExperimentConfig();
-        }
-
-        public string videoPath = "";
-        public async Task<string> FilePicker(string startingPath, SFB.ExtensionFilter[] extensions) {
-            await DoWaitFor(() => { return FilePickerHelper(startingPath, extensions); });
-            return videoPath;
-        }
-        protected Task FilePickerHelper(string startingPath, SFB.ExtensionFilter[] extensions) {
-            string[] videoPaths = new string[0];
-            while (videoPaths.Length != 1) {
-                videoPaths = SFB.StandaloneFileBrowser.OpenFilePanel("Select Video To Watch", startingPath, extensions, false);
-            }
-            UnityEngine.Debug.Log(videoPaths[0].Replace("%20", " "));
-            videoPath = videoPaths[0].Replace("%20", " ");
-            return Task.CompletedTask;
         }
     }
 

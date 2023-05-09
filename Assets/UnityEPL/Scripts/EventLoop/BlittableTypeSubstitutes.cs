@@ -1,5 +1,8 @@
 using System;
 using System.Collections;
+using System.IO;
+using System.Runtime.InteropServices;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
@@ -64,23 +67,80 @@ namespace UnityEPL {
         }
     }
 
+    // Blittable DateTime
+    public struct BlitDateTime {
+        private long ticks;
+
+        public DateTime Value {
+            get { return new(ticks); }
+            set { ticks = value.Ticks; }
+        }
+
+        public static implicit operator BlitDateTime(DateTime dt) {
+            return new() { Value = dt };
+        }
+        public static implicit operator DateTime(BlitDateTime bdt) {
+            return bdt.Value;
+        }
+
+        public override string ToString() {
+            return new DateTime(ticks).ToString();
+        }
+        public string ToString(string format) {
+            return new DateTime(ticks).ToString(format);
+        }
+        public string ToString(IFormatProvider formatProvider) {
+            return new DateTime(ticks).ToString(formatProvider);
+        }
+        public string ToString(string format, IFormatProvider formatProvider) {
+            return new DateTime(ticks).ToString(format, formatProvider);
+        }
+    }
+
+    
+
+    public static class ByteArray {
+        private static byte[] ObjectToByteArray(object obj) {
+            BinaryFormatter bf = new BinaryFormatter();
+            using (var ms = new MemoryStream()) {
+                bf.Serialize(ms, obj);
+
+                return ms.ToArray();
+            }
+        }
+        private static object ByteArrayToObject(byte[] arrBytes) {
+            using (var memStream = new MemoryStream()) {
+                var binForm = new BinaryFormatter();
+                memStream.Write(arrBytes, 0, arrBytes.Length);
+                memStream.Seek(0, SeekOrigin.Begin);
+                var obj = binForm.Deserialize(memStream);
+                return obj;
+            }
+        }
+    }
+
     public static class Blittability {
         // AssertBlittable
 
         public static bool IsPassable(Type t) {
-            return UnsafeUtility.IsBlittable(t);
+            Type genericTypeDefinition = null;
+            try {
+                genericTypeDefinition = t.GetGenericTypeDefinition();
+            } catch (InvalidOperationException) { }
+            return UnsafeUtility.IsBlittable(t)
+                | typeof(Mutex<>) == genericTypeDefinition;
         }
 
         // TODO: JPB: (feature) Maybe use IComponentData from com.unity.entities when it releases
         //            This will also allow for bool and char to be included in the structs
         //            https://docs.unity3d.com/Packages/com.unity.entities@0.17/api/Unity.Entities.IComponentData.html
-        public static void AssertBlittable<T>(T t)
+        public static void AssertBlittable<T>()
                 where T : struct {
             if (!IsPassable(typeof(T))) {
                 throw new ArgumentException($"The first argument is not a blittable type ({typeof(T)}).");
             }
         }
-        public static void AssertBlittable<T, U>(T t, U u)
+        public static void AssertBlittable<T, U>()
                 where T : struct
                 where U : struct {
             if (!IsPassable(typeof(T))) {
@@ -89,7 +149,7 @@ namespace UnityEPL {
                 throw new ArgumentException($"The second argument is not a blittable type ({typeof(U)}).");
             }
         }
-        public static void AssertBlittable<T, U, V>(T t, U u, V v)
+        public static void AssertBlittable<T, U, V>()
                 where T : struct
                 where U : struct
                 where V : struct {
@@ -101,7 +161,7 @@ namespace UnityEPL {
                 throw new ArgumentException($"The third argument is not a blittable type ({typeof(V)}).");
             }
         }
-        public static void AssertBlittable<T, U, V, W>(T t, U u, V v, W w)
+        public static void AssertBlittable<T, U, V, W>()
                 where T : struct
                 where U : struct
                 where V : struct
@@ -114,6 +174,23 @@ namespace UnityEPL {
                 throw new ArgumentException($"The third argument is not a blittable type ({typeof(V)}).");
             } else if (!IsPassable(typeof(W))) {
                 throw new ArgumentException($"The fourth argument is not a blittable type ({typeof(W)}).");
+            }
+        }
+        public static void AssertBlittable<T, U, V, W, Z>()
+                where T : struct
+                where U : struct
+                where V : struct
+                where W : struct {
+            if (!IsPassable(typeof(T))) {
+                throw new ArgumentException($"The first argument is not a blittable type ({typeof(T)}).");
+            } else if (!IsPassable(typeof(U))) {
+                throw new ArgumentException($"The second argument is not a blittable type ({typeof(U)}).");
+            } else if (!IsPassable(typeof(V))) {
+                throw new ArgumentException($"The third argument is not a blittable type ({typeof(V)}).");
+            } else if (!IsPassable(typeof(W))) {
+                throw new ArgumentException($"The fourth argument is not a blittable type ({typeof(W)}).");
+            } else if (!IsPassable(typeof(Z))) {
+                throw new ArgumentException($"The fifth argument is not a blittable type ({typeof(Z)}).");
             }
         }
     }

@@ -24,9 +24,12 @@ namespace UnityEPL {
         }
         protected void ErrorHelper(Mutex<Exception> exception) {
             Exception e = exception.Get();
-            gameObject.SetActive(true);
-            var textDisplayer = gameObject.GetComponent<TextDisplayer>();
-            textDisplayer.DisplayMB("Error", "Error", e.Message);
+            // Only show first error on screen, but report all errors
+            if (!gameObject.activeSelf) { 
+                gameObject.SetActive(true);
+                var textDisplayer = gameObject.GetComponent<TextDisplayer>();
+                textDisplayer.DisplayMB("Error", "Error", e.Message);
+            }
             manager.eventReporter.ReportScriptedEvent("Error",
                 new Dictionary<string, object>{
                     { "message", e.Message },

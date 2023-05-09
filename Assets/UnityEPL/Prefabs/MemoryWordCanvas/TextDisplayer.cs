@@ -5,7 +5,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Unity.Collections;
 using UnityEngine;
-
 namespace UnityEPL {
 
     public class TextDisplayer : EventMonoBehaviour {
@@ -69,12 +68,14 @@ namespace UnityEPL {
             DoMB(DisplayTextHelper, description.ToNativeText(), text.ToNativeText());
         }
         protected void DisplayTextHelper(NativeText description, NativeText text) {
+            var displayedText = text.ToString();
             if (OnText != null)
-                OnText(text.ToString());
+                OnText(displayedText);
 
-            textElement.text = text.ToString();
-            Dictionary<string, object> dataDict = new Dictionary<string, object>();
-            dataDict.Add("displayed text", text.ToString());
+            textElement.text = displayedText;
+            Dictionary<string, object> dataDict = new() {
+                { "displayed text", displayedText },
+            };
             if (scriptedEventReporter != null)
                 scriptedEventReporter.ReportScriptedEvent(description.ToString(), dataDict);
 
@@ -89,16 +90,18 @@ namespace UnityEPL {
             DoMB(DisplayTitleHelper, description.ToNativeText(), title.ToNativeText());
         }
         protected void DisplayTitleHelper(NativeText description, NativeText title) {
+            var displayedTitle = title.ToString();
             if (OnText != null)
-                OnText(title.ToString());
+                OnText(displayedTitle);
 
             if (titleElement == null) {
                 return;
             }
 
-            titleElement.text = title.ToString();
-            Dictionary<string, object> dataDict = new Dictionary<string, object>();
-            dataDict.Add("displayed title", title);
+            titleElement.text = displayedTitle;
+            Dictionary<string, object> dataDict = new() {
+                { "displayed title", displayedTitle },
+            };
             if (scriptedEventReporter != null)
                 scriptedEventReporter.ReportScriptedEvent(description.ToString(), dataDict);
 
@@ -113,17 +116,23 @@ namespace UnityEPL {
             DoMB(DisplayHelper, description.ToNativeText(), title.ToNativeText(), text.ToNativeText());
         }
         protected void DisplayHelper(NativeText description, NativeText title, NativeText text) {
-            if (OnText != null)
+            var displayedTitle = title.ToString();
+            var displayedText = text.ToString();
+            if (OnText != null) {
+                OnText(title.ToString());
                 OnText(text.ToString());
-
-            if (titleElement == null) {
+            }
+                
+            if (titleElement == null || textElement == null) {
                 return;
             }
 
-            titleElement.text = title.ToString();
-            textElement.text = text.ToString();
-            Dictionary<string, object> dataDict = new Dictionary<string, object>();
-            dataDict.Add("displayed title and text", text);
+            titleElement.text = displayedTitle;
+            textElement.text = displayedText;
+            Dictionary<string, object> dataDict = new() {
+                { "displayed title", displayedTitle },
+                { "displayed text", displayedText },
+            };
             if (scriptedEventReporter != null)
                 scriptedEventReporter.ReportScriptedEvent(description.ToString(), dataDict);
 
@@ -210,6 +219,21 @@ namespace UnityEPL {
             if (textElement == null)
                 throw new UnityException("There aren't any text elements assigned to this TextDisplayer.");
             return textElement.text.ToNativeText();
+        }
+
+        public Task PressAnyKey(string description, string displayText) {
+            return DoWaitFor(PressAnyKeyHelper, description.ToNativeText(), displayText.ToNativeText());
+        }
+        public Task PressAnyKeyMB(string description, string displayText) {
+            return DoWaitForMB(PressAnyKeyHelper, description.ToNativeText(), displayText.ToNativeText());
+        }
+        public async Task PressAnyKeyHelper(NativeText description, NativeText displayText) {
+            _ = manager.hostPC.SendStateMsg(HostPC.StateMsg.WAITING);
+            DisplayTextMB($"{description.ToString()} (press any key prompt)", displayText.ToString());
+            await InputManager.Instance.GetKey();
+            ClearTextMB();
+            description.Dispose();
+            displayText.Dispose();
         }
     }
 

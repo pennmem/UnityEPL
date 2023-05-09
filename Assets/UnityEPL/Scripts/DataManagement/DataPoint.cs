@@ -11,7 +11,7 @@ namespace UnityEPL {
     //data about the event is currently stored in a dictionary
     public struct DataPoint {
         public readonly string type;
-        public readonly DateTime time;
+        public readonly BlitDateTime time;
         public readonly int thisID;
         public readonly string json;
 

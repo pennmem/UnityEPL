@@ -8,6 +8,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using Unity.Collections;
 using UnityEngine;
 
 namespace UnityEPL {
@@ -15,6 +16,7 @@ namespace UnityEPL {
         private TcpClient tcpClient;
         private NetworkStream stream;
 
+        // TODO: JPB: (needed) NetworkInterface::stopListening variable may not be needed
         private bool stopListening = false;
         private readonly List<(string, TaskCompletionSource<JObject>)> receiveRequests = new();
 
@@ -26,8 +28,14 @@ namespace UnityEPL {
             Connect();
         }
         ~NetworkInterface() {
-            // TODO: JPB: (needed) NetworkInterface::stopListening variable may not be needed
             DisconnectHelper();
+        }
+
+        public async Task<bool> IsConnected() {
+            return await DoGet<Bool>(IsConnectedHelper);
+        }
+        public Bool IsConnectedHelper() {
+            return tcpClient.Connected;
         }
 
         protected void Connect() {
@@ -53,15 +61,17 @@ namespace UnityEPL {
             Do(DisconnectHelper);
         }
         private void DisconnectHelper() {
-            stopListening = true;
-            stream.Close();
-            tcpClient.Close();
+            if (tcpClient?.Connected ?? false) {
+                stopListening = true;
+                stream.Close();
+                tcpClient.Close();
+            }
         }
 
-        private void DoListenerForever() {
-            Do(ListenerHelper);
+        protected virtual void DoListenerForever() {
+            Do(ListenerHelperJson);
         }
-        private async Task ListenerHelper() {
+        private async Task ListenerHelperJson() {
             var buffer = new byte[8192];
             string messageBuffer = "";
             while (!stopListening && !cts.Token.IsCancellationRequested) {
@@ -114,16 +124,24 @@ namespace UnityEPL {
             return ReceiveJson(type);
         }
         protected Task<JObject> ReceiveJson(string type) {
+            return DoGetRelaxed(ReceiveJsonHelper, type.ToNativeText());
+        }
+        private Task<JObject> ReceiveJsonHelper(NativeText type) {
             TaskCompletionSource<JObject> tcs = new();
-            receiveRequests.Add((type, tcs));
+            receiveRequests.Add((type.ToString(), tcs));
             var timeoutMessage = $"{this.GetType().Name} didn't receive message after waiting {receiveTimeoutMs}ms";
+            type.Dispose();
             return TimeoutTask(tcs.Task, receiveTimeoutMs, timeoutMessage);
         }
 
+        // TODO: JPB: (needed) Make NetworkInterface::Send use Mutex
         protected virtual Task Send(string type, Dictionary<string, object> data = null) {
             return SendJson(type, data);
         }
         protected Task SendJson(string type, Dictionary<string, object> data = null) {
+            return DoWaitFor(() => { SendJsonHelper(type, data); });
+        }
+        private Task SendJsonHelper(string type, Dictionary<string, object> data = null) {
             DataPoint point = new DataPoint(type, data);
             string message = point.ToJSON();
 

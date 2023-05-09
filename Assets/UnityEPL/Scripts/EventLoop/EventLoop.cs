@@ -2,6 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Unity.Collections.LowLevel.Unsafe;
+using UnityEngine;
 using static UnityEPL.Blittability;
 
 namespace UnityEPL {
@@ -50,11 +51,14 @@ namespace UnityEPL {
         }
 
         protected async Task TimeoutTask(Task task, int timeoutMs, string timeoutMessage = null) {
+            UnityEngine.Debug.Log("1-4-0");
             Task timeoutTask = InterfaceManager.Delay(timeoutMs, cts.Token);
             if (await Task.WhenAny(task, timeoutTask) == timeoutTask) {
                 var msg = timeoutMessage ?? $"Task Timed out after {timeoutMs}ms";
+                UnityEngine.Debug.Log("1-4-ERROR");
                 throw new TimeoutException(timeoutMessage);
             }
+            UnityEngine.Debug.Log("1-4-2");
         }
         protected async Task<Z> TimeoutTask<Z>(Task<Z> task, int timeoutMs, string timeoutMessage = null) {
             Task timeoutTask = InterfaceManager.Delay(timeoutMs, cts.Token);
@@ -89,20 +93,20 @@ namespace UnityEPL {
         }
         protected void Do<T>(Action<T> func, T t)
                 where T : struct {
-            AssertBlittable(t);
+            AssertBlittable<T>();
             Do(() => { func(t); });
         }
         protected void Do<T, U>(Action<T, U> func, T t, U u)
                 where T : struct
                 where U : struct {
-            AssertBlittable(t, u);
+            AssertBlittable<T, U>();
             Do(() => { func(t, u); });
         }
         protected void Do<T, U, V>(Action<T, U, V> func, T t, U u, V v)
                 where T : struct
                 where U : struct
                 where V : struct {
-            AssertBlittable(t, u, v);
+            AssertBlittable<T, U, V>();
             Do(() => { func(t, u, v); });
         }
         protected void Do<T, U, V, W>(Action<T, U, V, W> func, T t, U u, V v, W w)
@@ -110,7 +114,7 @@ namespace UnityEPL {
                 where U : struct
                 where V : struct
                 where W : struct {
-            AssertBlittable(t, u, v, w);
+            AssertBlittable<T, U, V, W>();
             Do(() => { func(t, u, v, w); });
         }
 
@@ -126,20 +130,20 @@ namespace UnityEPL {
         }
         protected void Do<T>(Func<T, Task> func, T t)
                 where T : struct {
-            AssertBlittable(t);
+            AssertBlittable<T>();
             Do(async () => { await func(t); });
         }
         protected void Do<T, U>(Func<T, U, Task> func, T t, U u)
                 where T : struct
                 where U : struct {
-            AssertBlittable(t, u);
+            AssertBlittable<T, U>();
             Do(async () => { await func(t, u); });
         }
         protected void Do<T, U, V>(Func<T, U, V, Task> func, T t, U u, V v)
                 where T : struct
                 where U : struct
                 where V : struct {
-            AssertBlittable(t, u, v);
+            AssertBlittable<T, U, V>();
             Do(async () => { await func(t, u, v); });
         }
         protected void Do<T, U, V, W>(Func<T, U, V, W, Task> func, T t, U u, V v, W w)
@@ -147,7 +151,7 @@ namespace UnityEPL {
                 where U : struct
                 where V : struct
                 where W : struct {
-            AssertBlittable(t, u, v, w);
+            AssertBlittable<T, U, V, W>();
             Do(async () => { await func(t, u, v, w); });
         }
 
@@ -447,20 +451,20 @@ namespace UnityEPL {
         }
         protected Task DoWaitFor<T>(Action<T> func, T t)
                 where T : struct {
-            AssertBlittable(t);
+            AssertBlittable<T>();
             return DoWaitFor(() => { func(t); });
         }
         protected Task DoWaitFor<T, U>(Action<T, U> func, T t, U u)
                 where T : struct
                 where U : struct {
-            AssertBlittable(t, u);
+            AssertBlittable<T, U>();
             return DoWaitFor(() => { func(t, u); });
         }
         protected Task DoWaitFor<T, U, V>(Action<T, U, V> func, T t, U u, V v)
                 where T : struct
                 where U : struct
                 where V : struct {
-            AssertBlittable(t, u, v);
+            AssertBlittable<T, U, V>();
             return DoWaitFor(() => { func(t, u, v); });
         }
         protected Task DoWaitFor<T, U, V, W>(Action<T, U, V, W> func, T t, U u, V v, W w)
@@ -468,7 +472,7 @@ namespace UnityEPL {
                 where U : struct
                 where V : struct
                 where W : struct {
-            AssertBlittable(t, u, v, w);
+            AssertBlittable<T, U, V, W>();
             return DoWaitFor(() => { func(t, u, v, w); });
         }
 
@@ -484,20 +488,20 @@ namespace UnityEPL {
         }
         protected Task DoWaitFor<T>(Func<T, Task> func, T t)
                 where T : struct {
-            AssertBlittable(t);
+            AssertBlittable<T>();
             return DoWaitFor(async () => { await func(t); });
         }
         protected Task DoWaitFor<T, U>(Func<T, U, Task> func, T t, U u)
                 where T : struct
                 where U : struct {
-            AssertBlittable(t, u);
+            AssertBlittable<T, U>();
             return DoWaitFor(async () => { await func(t, u); });
         }
         protected Task DoWaitFor<T, U, V>(Func<T, U, V, Task> func, T t, U u, V v)
                 where T : struct
                 where U : struct
                 where V : struct {
-            AssertBlittable(t, u, v);
+            AssertBlittable<T, U, V>();
             return DoWaitFor(async () => { await func(t, u, v); });
         }
         protected Task DoWaitFor<T, U, V, W>(Func<T, U, V, W, Task> func, T t, U u, V v, W w)
@@ -505,7 +509,7 @@ namespace UnityEPL {
                 where U : struct
                 where V : struct
                 where W : struct {
-            AssertBlittable(t, u, v, w);
+            AssertBlittable<T, U, V, W>();
             return DoWaitFor(async () => { await func(t, u, v, w); });
         }
 
@@ -513,30 +517,24 @@ namespace UnityEPL {
 
         protected Task<Z> DoGet<Z>(Func<Z> func)
                 where Z : struct {
+            AssertBlittable<Z>();
 #if !UNITY_WEBGL || UNITY_EDITOR // System.Threading
-            Func<Z> safeFunc = () => {
-                var ret = func();
-                AssertBlittable(ret);
-                return ret;
-            };
-            return StartTask<Z>(safeFunc);
+            return StartTask<Z>(func);
 #else
-            var ret = func();
-            AssertBlittable(ret);
-            return ret;
+            return func();
 #endif
         }
         protected Task<Z> DoGet<T, Z>(Func<T, Z> func, T t)
                 where T : struct
                 where Z : struct {
-            AssertBlittable(t);
+            AssertBlittable<T>();
             return DoGet(() => { return func(t); });
         }
         protected Task<Z> DoGet<T, U, Z>(Func<T, U, Z> func, T t, U u)
                 where T : struct
                 where U : struct
                 where Z : struct {
-            AssertBlittable(t, u);
+            AssertBlittable<T, U>();
             return DoGet(() => { return func(t, u); });
         }
         protected Task<Z> DoGet<T, U, V, Z>(Func<T, U, V, Z> func, T t, U u, V v)
@@ -544,7 +542,7 @@ namespace UnityEPL {
                 where U : struct
                 where V : struct
                 where Z : struct {
-            AssertBlittable(t, u, v);
+            AssertBlittable<T, U, V>();
             return DoGet(() => { return func(t, u, v); });
         }
         protected Task<Z> DoGet<T, U, V, W, Z>(Func<T, U, V, W, Z> func, T t, U u, V v, W w)
@@ -553,36 +551,30 @@ namespace UnityEPL {
                 where V : struct
                 where W : struct
                 where Z : struct {
-            AssertBlittable(t, u, v, w);
+            AssertBlittable<T, U, V, W>();
             return DoGet(() => { return func(t, u, v, w); });
         }
 
         protected Task<Z> DoGet<Z>(Func<Task<Z>> func)
                 where Z : struct {
+            AssertBlittable<Z>();
 #if !UNITY_WEBGL || UNITY_EDITOR // System.Threading
-            Func<Task<Z>> safeFunc = async () => {
-                var ret = await func();
-                AssertBlittable(ret);
-                return ret;
-            };
-            return StartTask(safeFunc).Unwrap();
+            return StartTask(func).Unwrap();
 #else
-            var ret = func();
-            AssertBlittable(ret);
-            return ret;
+            return func();
 #endif
         }
         protected Task<Z> DoGet<T, Z>(Func<T, Task<Z>> func, T t)
                 where T : struct
                 where Z : struct {
-            AssertBlittable(t);
+            AssertBlittable<T>();
             return DoGet(async () => { return await func(t); });
         }
         protected Task<Z> DoGet<T, U, Z>(Func<T, U, Task<Z>> func, T t, U u)
                 where T : struct
                 where U : struct
                 where Z : struct {
-            AssertBlittable(t, u);
+            AssertBlittable<T, U>();
             return DoGet(async () => { return await func(t, u); });
         }
         protected Task<Z> DoGet<T, U, V, Z>(Func<T, U, V, Task<Z>> func, T t, U u, V v)
@@ -590,7 +582,7 @@ namespace UnityEPL {
                 where U : struct
                 where V : struct
                 where Z : struct {
-            AssertBlittable(t, u, v);
+            AssertBlittable<T, U, V>();
             return DoGet(async () => { return await func(t, u, v); });
         }
         protected Task<Z> DoGet<T, U, V, W, Z>(Func<T, U, V, W, Task<Z>> func, T t, U u, V v, W w)
@@ -599,8 +591,38 @@ namespace UnityEPL {
                 where V : struct
                 where W : struct
                 where Z : struct {
-            AssertBlittable(t, u, v, w);
+            AssertBlittable<T, U, V, W>();
             return DoGet(async () => { return await func(t, u, v, w); });
+        }
+
+
+        // DoGetRelaxed
+        // Only use these methods if you create the value in the function and you know it isn't used anywhere else
+        // TODO: JPB: (needed) Figure out how to handle non-blittable return types in DoGet
+
+        protected Task<Z> DoGetRelaxed<Z>(Func<Z> func) {
+#if !UNITY_WEBGL || UNITY_EDITOR // System.Threading
+            return StartTask<Z>(func);
+#else
+            return func();
+#endif
+        }
+        protected Task<Z> DoGetRelaxed<T, Z>(Func<T, Z> func, T t)
+                where T : struct {
+            return DoGetRelaxed(() => { return func(t); });
+        }
+
+        protected Task<Z> DoGetRelaxed<Z>(Func<Task<Z>> func) {
+#if !UNITY_WEBGL || UNITY_EDITOR // System.Threading
+            return StartTask(func).Unwrap();
+#else
+            return func();
+#endif
+        }
+        protected Task<Z> DoGetRelaxed<T, Z>(Func<T, Task<Z>> func, T t)
+                where T : struct {
+            AssertBlittable<T>();
+            return DoGetRelaxed(async () => { return await func(t); });
         }
 
 

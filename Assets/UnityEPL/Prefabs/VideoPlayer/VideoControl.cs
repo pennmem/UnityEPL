@@ -13,6 +13,7 @@ namespace UnityEPL {
         public VideoPlayer videoPlayer;
 
         protected bool skippable;
+        protected string videoPath;
         protected KeyCode pauseToggleKey = KeyCode.P;
         protected KeyCode deactivateKey = KeyCode.Space;
         protected TaskCompletionSource<bool> videoFinished;
@@ -45,6 +46,25 @@ namespace UnityEPL {
             videoPlayer.errorReceived -= OnErrorReceived;
         }
 
+        // TODO: JPB: (needed) Fix FilePicker to not be a super hack
+        public async Task<string> SelectVideoFile(string startingPath, SFB.ExtensionFilter[] extensions, bool skippable = false) {
+            await DoWaitFor(() => { return SelectVideoFileHelper(startingPath, extensions, skippable); });
+            return videoPath;
+        }
+        public async Task<string> SelectVideoFileMB(string startingPath, SFB.ExtensionFilter[] extensions, bool skippable = false) {
+            await DoWaitForMB(SelectVideoFileHelper, startingPath, extensions, skippable);
+            return videoPath;
+        }
+        protected Task SelectVideoFileHelper(string startingPath, SFB.ExtensionFilter[] extensions, bool skippable) {
+            string[] videoPaths = new string[0];
+            while (videoPaths.Length != 1) {
+                videoPaths = SFB.StandaloneFileBrowser.OpenFilePanel("Select Video To Watch", startingPath, extensions, false);
+            }
+            var videoPath = videoPaths[0].Replace("%20", " ");
+            SetVideoMB(videoPath, skippable);
+            return Task.CompletedTask;
+        }
+
         public void SetVideo(string videoPath, bool skippable = false) {
             Do(SetVideoHelper, videoPath.ToNativeText(), (Bool)skippable);
         }
@@ -52,6 +72,7 @@ namespace UnityEPL {
             DoMB(SetVideoHelper, videoPath.ToNativeText(), (Bool)skippable);
         }
         protected void SetVideoHelper(NativeText videoPath, Bool skippable) {
+            this.videoPath = videoPath.ToString();
             this.videoPlayer.url = "file://" + videoPath;
             this.skippable = skippable;
             videoPath.Dispose();
@@ -64,6 +85,8 @@ namespace UnityEPL {
             return DoWaitForMB(PlayVideoHelper);
         }
         protected async Task PlayVideoHelper() {
+            Debug.Log("PlayVideoHelper");
+
             videoFinished = new();
 
             gameObject.SetActive(true);
