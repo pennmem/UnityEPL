@@ -35,7 +35,6 @@ namespace UnityEPL {
                     { "message", e.Message },
                     { "stackTrace", e.StackTrace } });
             manager.Pause(true);
-            throw e;
         }
 
         public static void Warning(Exception exception) {

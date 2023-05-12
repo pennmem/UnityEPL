@@ -33,7 +33,7 @@ namespace UnityEPL {
             if (dropdown.captionText.text != "Select Task...") {
                 Debug.Log("Task chosen");
 
-                manager.LoadExperimentConfig(dropdown.captionText.text);
+                manager.LoadExperimentConfigMB(dropdown.captionText.text);
             }
         }
     }

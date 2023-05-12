@@ -53,6 +53,43 @@ namespace UnityEPL {
             }
         }
 
+        /// <summary>
+        /// Run an iterator function that might throw an exception.
+        /// Handle the exception by using the ErrorNotifier
+        /// Handle pausing as well
+        /// https://www.jacksondunstan.com/articles/3718
+        /// If for some reason this project needs a to define a custom Enumerator instead of using this function,
+        /// it is also defined in this webpage (this may also be more efficient...)
+        /// </summary>
+        /// <param name="enumerator">Iterator function to run</param>
+        /// <returns>An enumerator that runs the given enumerator</returns>
+        /// /// TODO: JPB: (needed) Implement pausing in MakeEventEnumerator
+        private IEnumerator MakeEventEnumerator(IEnumerator enumerator) {
+            while (true) {
+                object current;
+                try {
+                    if (enumerator.MoveNext() == false) {
+                        break;
+                    }
+                    current = enumerator.Current;
+                } catch (Exception e) {
+                    ErrorNotifier.Error(e);
+                    yield break;
+                }
+                yield return current;
+            }
+        }
+        /// <summary>
+        /// This replaces the normal MonoBehaviour::StartCoroutine and adds other features,
+        /// such as exception handling and pausing
+        /// </summary>
+        /// <param name="enumerator"></param>
+        /// <returns></returns>
+        /// TODO: JPB: (needed) (bug) Add error safety to DoMB, DoRepeatingMB, DoWaitForMB, and DoGetMB
+        protected new Coroutine StartCoroutine(IEnumerator enumerator) {
+            return base.StartCoroutine(MakeEventEnumerator(enumerator));
+        }
+
 
         // -------------------------------------
         // DoMB
@@ -62,23 +99,44 @@ namespace UnityEPL {
 
         protected void DoMB(Action func) {
             MonoBehaviourSafetyCheck();
-            func();
+            try {
+                func();
+            } catch (Exception e) {
+                ErrorNotifier.Error(e);
+            }
+            
         }
         protected void DoMB<T>(Action<T> func, T t) {
             MonoBehaviourSafetyCheck();
-            func(t);
+            try {
+                func(t);
+            } catch (Exception e) {
+                ErrorNotifier.Error(e);
+            }
         }
         protected void DoMB<T, U>(Action<T, U> func, T t, U u) {
             MonoBehaviourSafetyCheck();
-            func(t, u);
+            try {
+                func(t, u);
+            } catch (Exception e) {
+                ErrorNotifier.Error(e);
+            }
         }
         protected void DoMB<T, U, V>(Action<T, U, V> func, T t, U u, V v) {
             MonoBehaviourSafetyCheck();
-            func(t, u, v);
+            try {
+                func(t, u, v);
+            } catch (Exception e) {
+                ErrorNotifier.Error(e);
+            }
         }
         protected void DoMB<T, U, V, W>(Action<T, U, V, W> func, T t, U u, V v, W w) {
             MonoBehaviourSafetyCheck();
-            func(t, u, v, w);
+            try {
+                func(t, u, v, w);
+            } catch (Exception e) {
+                ErrorNotifier.Error(e);
+            }
         }
 
 
@@ -90,6 +148,7 @@ namespace UnityEPL {
         private void DoHelper(IEnumerator enumerator) {
             manager.events.Enqueue(enumerator);
         }
+
         protected void Do(Func<IEnumerator> func) {
             DoHelper(func());
         }
@@ -229,7 +288,7 @@ namespace UnityEPL {
 
             if (delayMs == 0) {
                 var startTime = Clock.UtcNow;
-                yield return func();
+                yield return MakeEventEnumerator(func());
                 delayMs = intervalMs - (int)(Clock.UtcNow - startTime).TotalMilliseconds;
                 if (delayMs < 0) {
                     throw new TimeoutException("DoRepeating execution took longer than the interval assigned");
@@ -250,7 +309,7 @@ namespace UnityEPL {
 
             if (delayMs == 0) {
                 var startTime = Clock.UtcNow;
-                yield return func(t);
+                yield return MakeEventEnumerator(func(t));
                 delayMs = intervalMs - (int)(Clock.UtcNow - startTime).TotalMilliseconds;
                 if (delayMs < 0) {
                     throw new TimeoutException("DoRepeating execution took longer than the interval assigned");
@@ -271,7 +330,7 @@ namespace UnityEPL {
 
             if (delayMs == 0) {
                 var startTime = Clock.UtcNow;
-                yield return func(t, u);
+                yield return MakeEventEnumerator(func(t, u));
                 delayMs = intervalMs - (int)(Clock.UtcNow - startTime).TotalMilliseconds;
                 if (delayMs < 0) {
                     throw new TimeoutException("DoRepeating execution took longer than the interval assigned");
@@ -292,7 +351,7 @@ namespace UnityEPL {
 
             if (delayMs == 0) {
                 var startTime = Clock.UtcNow;
-                yield return func(t, u, v);
+                yield return MakeEventEnumerator(func(t, u, v));
                 delayMs = intervalMs - (int)(Clock.UtcNow - startTime).TotalMilliseconds;
                 if (delayMs < 0) {
                     throw new TimeoutException("DoRepeating execution took longer than the interval assigned");
@@ -313,7 +372,7 @@ namespace UnityEPL {
 
             if (delayMs == 0) {
                 var startTime = Clock.UtcNow;
-                yield return func(t, u, v, w);
+                yield return MakeEventEnumerator(func(t, u, v, w));
                 delayMs = intervalMs - (int)(Clock.UtcNow - startTime).TotalMilliseconds;
                 if (delayMs < 0) {
                     throw new TimeoutException("DoRepeating execution took longer than the interval assigned");
@@ -540,45 +599,70 @@ namespace UnityEPL {
 
         protected IEnumerator DoWaitForMB(Func<IEnumerator> func) {
             MonoBehaviourSafetyCheck();
-            yield return func();
+            yield return MakeEventEnumerator(func());
         }
         protected IEnumerator DoWaitForMB<T>(Func<T, IEnumerator> func, T t) {
             MonoBehaviourSafetyCheck();
-            yield return func(t);
+            yield return MakeEventEnumerator(func(t));
         }
         protected IEnumerator DoWaitForMB<T, U>(Func<T, U, IEnumerator> func, T t, U u) {
             MonoBehaviourSafetyCheck();
-            yield return func(t, u);
+            yield return MakeEventEnumerator(func(t, u));
         }
         protected IEnumerator DoWaitForMB<T, U, V>(Func<T, U, V, IEnumerator> func, T t, U u, V v) {
             MonoBehaviourSafetyCheck();
-            yield return func(t, u, v);
+            yield return MakeEventEnumerator(func(t, u, v));
         }
         protected IEnumerator DoWaitForMB<T, U, V, W>(Func<T, U, V, W, IEnumerator> func, T t, U u, V v, W w) {
             MonoBehaviourSafetyCheck();
-            yield return func(t, u, v, w);
+            yield return MakeEventEnumerator(func(t, u, v, w));
         }
 
 #if EVENTMONOBEHAVIOR_TASK_OPERATORS
-        protected Task DoWaitForMB(Func<Task> func) {
+        protected async Task DoWaitForMB(Func<Task> func) {
             MonoBehaviourSafetyCheck();
-            return func();
+            try {
+                await func();
+            } catch (Exception e) {
+                ErrorNotifier.Error(e);
+                throw e; // This is a duplication, but C# can't tell Error always throws an exception
+            }
         }
-        protected Task DoWaitForMB<T>(Func<T, Task> func, T t) {
+        protected async Task DoWaitForMB<T>(Func<T, Task> func, T t) {
             MonoBehaviourSafetyCheck();
-            return func(t);
+            try {
+                await func(t);
+            } catch (Exception e) {
+                ErrorNotifier.Error(e);
+                throw e; // This is a duplication, but C# can't tell Error always throws an exception
+            }
         }
-        protected Task DoWaitForMB<T, U>(Func<T, U, Task> func, T t, U u) {
+        protected async Task DoWaitForMB<T, U>(Func<T, U, Task> func, T t, U u) {
             MonoBehaviourSafetyCheck();
-            return func(t, u);
+            try {
+                await func(t, u);
+            } catch (Exception e) {
+                ErrorNotifier.Error(e);
+                throw e; // This is a duplication, but C# can't tell Error always throws an exception
+            }
         }
-        protected Task DoWaitForMB<T, U, V>(Func<T, U, V, Task> func, T t, U u, V v) {
+        protected async Task DoWaitForMB<T, U, V>(Func<T, U, V, Task> func, T t, U u, V v) {
             MonoBehaviourSafetyCheck();
-            return func(t, u, v);
+            try {
+                await func(t, u, v);
+            } catch (Exception e) {
+                ErrorNotifier.Error(e);
+                throw e; // This is a duplication, but C# can't tell Error always throws an exception
+            }
         }
-        protected Task DoWaitForMB<T, U, V, W>(Func<T, U, V, W, Task> func, T t, U u, V v, W w) {
+        protected async Task DoWaitForMB<T, U, V, W>(Func<T, U, V, W, Task> func, T t, U u, V v, W w) {
             MonoBehaviourSafetyCheck();
-            return func(t, u, v, w);
+            try {
+                await func(t, u, v, w);
+            } catch (Exception e) {
+                ErrorNotifier.Error(e);
+                throw e; // This is a duplication, but C# can't tell Error always throws an exception
+            }
         }
 #endif // EVENTMONOBEHAVIOR_TASK_OPERATORS
 
@@ -710,45 +794,95 @@ namespace UnityEPL {
 
         protected Z DoGetMB<Z>(Func<Z> func) {
             MonoBehaviourSafetyCheck();
-            return func();
+            try {
+                return func();
+            } catch (Exception e) {
+                ErrorNotifier.Error(e);
+                throw e; // This is a duplication, but C# can't tell Error always throws an exception
+            }
         }
         protected Z DoGetMB<T, Z>(Func<T, Z> func, T t) {
             MonoBehaviourSafetyCheck();
-            return func(t);
+            try {
+                return func(t);
+            } catch (Exception e) {
+                ErrorNotifier.Error(e);
+                throw e; // This is a duplication, but C# can't tell Error always throws an exception
+            }
         }
         protected Z DoGetMB<T, U, Z>(Func<T, U, Z> func, T t, U u) {
             MonoBehaviourSafetyCheck();
-            return func(t, u);
+            try {
+                return func(t, u);
+            } catch (Exception e) {
+                ErrorNotifier.Error(e);
+                throw e; // This is a duplication, but C# can't tell Error always throws an exception
+            }
         }
         protected Z DoGetMB<T, U, V, Z>(Func<T, U, V, Z> func, T t, U u, V v) {
             MonoBehaviourSafetyCheck();
-            return func(t, u, v);
+            try {
+                return func(t, u, v);
+            } catch (Exception e) {
+                ErrorNotifier.Error(e);
+                throw e; // This is a duplication, but C# can't tell Error always throws an exception
+            }
         }
         protected Z DoGetMB<T, U, V, W, Z>(Func<T, U, V, W, Z> func, T t, U u, V v, W w) {
             MonoBehaviourSafetyCheck();
-            return func(t, u, v, w);
+            try {
+                return func(t, u, v, w);
+            } catch (Exception e) {
+                ErrorNotifier.Error(e);
+                throw e; // This is a duplication, but C# can't tell Error always throws an exception
+            }
         }
 
 #if EVENTMONOBEHAVIOR_TASK_OPERATORS
-        protected Task<Z> DoGetMB<Z>(Func<Task<Z>> func) {
+        protected async Task<Z> DoGetMB<Z>(Func<Task<Z>> func) {
             MonoBehaviourSafetyCheck();
-            return func();
+            try {
+                return await func();
+            } catch (Exception e) {
+                ErrorNotifier.Error(e);
+                throw e; // This is a duplication, but C# can't tell Error always throws an exception
+            }
         }
-        protected Task<Z> DoGetMB<T, Z>(Func<T, Task<Z>> func, T t) {
+        protected async Task<Z> DoGetMB<T, Z>(Func<T, Task<Z>> func, T t) {
             MonoBehaviourSafetyCheck();
-            return func(t);
+            try {
+                return await func(t);
+            } catch (Exception e) {
+                ErrorNotifier.Error(e);
+                throw e; // This is a duplication, but C# can't tell Error always throws an exception
+            }
         }
-        protected Task<Z> DoGetMB<T, U, Z>(Func<T, U, Task<Z>> func, T t, U u) {
+        protected async Task<Z> DoGetMB<T, U, Z>(Func<T, U, Task<Z>> func, T t, U u) {
             MonoBehaviourSafetyCheck();
-            return func(t, u);
+            try {
+                return await func(t, u);
+            } catch (Exception e) {
+                ErrorNotifier.Error(e);
+                throw e; // This is a duplication, but C# can't tell Error always throws an exception
+            }
         }
-        protected Task<Z> DoGetMB<T, U, V, Z>(Func<T, U, V, Task<Z>> func, T t, U u, V v) {
+        protected async Task<Z> DoGetMB<T, U, V, Z>(Func<T, U, V, Task<Z>> func, T t, U u, V v) {
             MonoBehaviourSafetyCheck();
-            return func(t, u, v);
+            try {
+                return await func(t, u, v);
+            } catch (Exception e) {
+                ErrorNotifier.Error(e);
+                throw e; // This is a duplication, but C# can't tell Error always throws an exception
+            }
         }
-        protected Task<Z> DoGetMB<T, U, V, W, Z>(Func<T, U, V, W, Task<Z>> func, T t, U u, V v, W w) {
+        protected async Task<Z> DoGetMB<T, U, V, W, Z>(Func<T, U, V, W, Task<Z>> func, T t, U u, V v, W w) {
             MonoBehaviourSafetyCheck();
-            return func(t, u, v, w);
+            try {
+                return await func(t, u, v, w);
+            } catch (Exception e) {
+                ErrorNotifier.Error(e);
+                throw e; // This is a duplication, but C# can't tell Error always throws an exception
+            }
         }
 #endif // EVENTMONOBEHAVIOR_TASK_OPERATORS
 
@@ -1192,7 +1326,7 @@ namespace UnityEPL {
             var initTime = Clock.UtcNow;
             for (int i = 0; i < totalIterations; ++i) {
                 if (cts.IsCancellationRequested) { break; }
-                yield return func();
+                yield return MakeEventEnumerator(func());
                 var delayTime = (i + 1) * intervalMs - (Clock.UtcNow - initTime).TotalMilliseconds;
                 if (delayTime < 0) { throw new TimeoutException("DoRepeating execution took longer than the interval assigned"); }
                 yield return InterfaceManager.DelayE((int)delayTime);
@@ -1205,7 +1339,7 @@ namespace UnityEPL {
             var initTime = Clock.UtcNow;
             for (int i = 0; i < totalIterations; ++i) {
                 if (cts.IsCancellationRequested) { break; }
-                yield return func(t);
+                yield return MakeEventEnumerator(func(t));
                 var delayTime = (i + 1) * intervalMs - (Clock.UtcNow - initTime).TotalMilliseconds;
                 if (delayTime < 0) { throw new TimeoutException("DoRepeating execution took longer than the interval assigned"); }
                 yield return InterfaceManager.DelayE((int)delayTime);
@@ -1218,7 +1352,7 @@ namespace UnityEPL {
             var initTime = Clock.UtcNow;
             for (int i = 0; i < totalIterations; ++i) {
                 if (cts.IsCancellationRequested) { break; }
-                yield return func(t, u);
+                yield return MakeEventEnumerator(func(t, u));
                 var delayTime = (i + 1) * intervalMs - (Clock.UtcNow - initTime).TotalMilliseconds;
                 if (delayTime < 0) { throw new TimeoutException("DoRepeating execution took longer than the interval assigned"); }
                 yield return InterfaceManager.DelayE((int)delayTime);
@@ -1231,7 +1365,7 @@ namespace UnityEPL {
             var initTime = Clock.UtcNow;
             for (int i = 0; i < totalIterations; ++i) {
                 if (cts.IsCancellationRequested) { break; }
-                yield return func(t, u, v);
+                yield return MakeEventEnumerator(func(t, u, v));
                 var delayTime = (i + 1) * intervalMs - (Clock.UtcNow - initTime).TotalMilliseconds;
                 if (delayTime < 0) { throw new TimeoutException("DoRepeating execution took longer than the interval assigned"); }
                 yield return InterfaceManager.DelayE((int)delayTime);
@@ -1244,7 +1378,7 @@ namespace UnityEPL {
             var initTime = Clock.UtcNow;
             for (int i = 0; i < totalIterations; ++i) {
                 if (cts.IsCancellationRequested) { break; }
-                yield return func(t, u, v, w);
+                yield return MakeEventEnumerator(func(t, u, v, w));
                 var delayTime = (i + 1) * intervalMs - (Clock.UtcNow - initTime).TotalMilliseconds;
                 if (delayTime < 0) { throw new TimeoutException("DoRepeating execution took longer than the interval assigned"); }
                 yield return InterfaceManager.DelayE((int)delayTime);

@@ -84,7 +84,6 @@ namespace UnityEPL {
             }
 #if !UNITY_WEBGL || UNITY_EDITOR // System.Threading
             StartTask(func);
-            //StartTask(() => { ErrorNotifier.Error(new Exception("Test")); func(); });
 #else
         func();
 #endif

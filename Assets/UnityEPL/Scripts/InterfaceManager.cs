@@ -28,7 +28,8 @@ namespace UnityEPL {
         ////////// 
         // global random number source, wrapped so that out of thread 
         // access doesn't break generation
-        public static ThreadLocal<System.Random> rnd = new ThreadLocal<System.Random>(() => new System.Random());
+        public static ThreadLocal<System.Random> rnd { get; private set; } = new();
+        public static ThreadLocal<System.Random> stableRnd { get; private set; } = null;
 
         //////////
         // ???
@@ -75,10 +76,6 @@ namespace UnityEPL {
 
         void Update() {
             while (events.TryDequeue(out IEnumerator e)) {
-                // TODO: JPB: (needed) Wrap all Coroutines in IEnumerator that displays Errors on exception
-                //            This will be far more complicated because you can't yield inside a try catch
-                //            To fix this, I will have to make my own Couroutine calling class
-                //            This will be needed anyway to implement pausing and guarantees on thread ordering anyway
                 StartCoroutine(e);
             }
         }
@@ -237,6 +234,7 @@ namespace UnityEPL {
         }
 
         public static IEnumerator DelayE(int millisecondsDelay) {
+            //yield return new WaitForSeconds(millisecondsDelay / 1000.0f);
             yield return InterfaceManager.Delay(millisecondsDelay).ToEnumerator();
         }
 
@@ -253,7 +251,7 @@ namespace UnityEPL {
 
         var tcs = new TaskCompletionSource<bool>();
         float seconds = ((float)millisecondsDelay) / 1000;
-        _instance.StartCoroutine(WaitForSeconds(seconds, tcs));
+        Instance.StartCoroutine(WaitForSeconds(seconds, tcs));
         await tcs.Task;
     }
 
@@ -266,7 +264,7 @@ namespace UnityEPL {
 
         var tcs = new TaskCompletionSource<bool>();
         float seconds = ((float)millisecondsDelay) / 1000;
-        _instance.StartCoroutine(WaitForSeconds(seconds, cancellationToken, tcs));
+        Instance.StartCoroutine(WaitForSeconds(seconds, cancellationToken, tcs));
         await tcs.Task;
     }
 
@@ -351,6 +349,7 @@ namespace UnityEPL {
 
             // Check if settings are loaded
             if (Config.IsExperimentConfigSetup()) {
+                stableRnd = new(() => new(Config.subject.GetHashCode()));
 
                 UnityEngine.Cursor.visible = false;
                 Application.runInBackground = true;
@@ -380,9 +379,10 @@ namespace UnityEPL {
             }
         }
 
-        // These should only be called by other EventMonoBehaviors
-
-        public void LoadExperimentConfig(string name) {
+        public void LoadExperimentConfigMB(string name) {
+            DoMB(LoadExperimentConfigHelper, name);
+        }
+        public void LoadExperimentConfigHelper(string name) {
             Config.experimentConfigName = name;
             Config.SetupExperimentConfig();
         }
