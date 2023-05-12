@@ -596,6 +596,7 @@ namespace UnityEPL {
         // DoGetRelaxed
         // Only use these methods if you create the value in the function and you know it isn't used anywhere else
         // TODO: JPB: (needed) Figure out how to handle non-blittable return types in DoGet
+        //            And add tests for these
 
         protected Task<Z> DoGetRelaxed<Z>(Func<Z> func) {
 #if !UNITY_WEBGL || UNITY_EDITOR // System.Threading

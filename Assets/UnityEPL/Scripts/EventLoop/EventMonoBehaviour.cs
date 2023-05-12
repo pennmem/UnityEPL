@@ -1026,6 +1026,130 @@ namespace UnityEPL {
         }
 #endif // EVENTMONOBEHAVIOR_TASK_OPERATORS
 
+        // -------------------------------------
+        // DoGetRelaxed
+        // -------------------------------------
+        // Only use these methods if you create the value in the function and you know it isn't used anywhere else
+        // TODO: JPB: (needed) Figure out how to handle non-blittable return types in DoGet
+        //            And add tests for these
+
+        private Task<Z> DoGetRelaxedHelper<Z>(IEnumerator enumerator) {
+            var tcs = new TaskCompletionSource<Z>();
+            manager.events.Enqueue(TaskTrigger(tcs, enumerator));
+            return tcs.Task;
+        }
+        protected Task<Z> DoGetRelaxed<Z>(Func<IEnumerator> func) {
+            return DoGetRelaxedHelper<Z>(func());
+        }
+        protected Task<Z> DoGetDoGetRelaxed<T, Z>(Func<T, IEnumerator> func, T t)
+                where T : struct {
+            AssertBlittable<T>();
+            return DoGetRelaxedHelper<Z>(func(t));
+        }
+        protected Task<Z> DoGetDoGetRelaxed<T, U, Z>(Func<T, U, IEnumerator> func, T t, U u)
+                where T : struct
+                where U : struct {
+            AssertBlittable<T, U>();
+            return DoGetRelaxedHelper<Z>(func(t, u));
+        }
+        protected Task<Z> DoGetDoGetRelaxed<T, U, V, Z>(Func<T, U, V, IEnumerator> func, T t, U u, V v)
+                where T : struct
+                where U : struct
+                where V : struct {
+            AssertBlittable<T, U, V>();
+            return DoGetRelaxedHelper<Z>(func(t, u, v));
+        }
+        protected Task<Z> DoGetRelaxed<T, U, V, W, Z>(Func<T, U, V, W, IEnumerator> func, T t, U u, V v, W w)
+                where T : struct
+                where U : struct
+                where V : struct
+                where W : struct {
+            AssertBlittable<T, U, V, W>();
+            return DoGetRelaxedHelper<Z>(func(t, u, v, w));
+        }
+
+        protected Task<Z> DoGetRelaxed<Z>(Func<Z> func) {
+            var tcs = new TaskCompletionSource<Z>();
+            manager.events.Enqueue(TaskTrigger(tcs, func));
+            return tcs.Task;
+        }
+        protected Task<Z> DoGetRelaxed<T, Z>(Func<T, Z> func, T t)
+                where T : struct {
+            AssertBlittable<T>();
+            var tcs = new TaskCompletionSource<Z>();
+            manager.events.Enqueue(TaskTrigger(tcs, func, t));
+            return tcs.Task;
+        }
+        protected Task<Z> DoGetRelaxed<T, U, Z>(Func<T, U, Z> func, T t, U u)
+                where T : struct
+                where U : struct {
+            AssertBlittable<T, U>();
+            var tcs = new TaskCompletionSource<Z>();
+            manager.events.Enqueue(TaskTrigger(tcs, func, t, u));
+            return tcs.Task;
+        }
+        protected Task<Z> DoGetRelaxed<T, U, V, Z>(Func<T, U, V, Z> func, T t, U u, V v)
+                where T : struct
+                where U : struct
+                where V : struct {
+            AssertBlittable<T, U, V>();
+            var tcs = new TaskCompletionSource<Z>();
+            manager.events.Enqueue(TaskTrigger(tcs, func, t, u, v));
+            return tcs.Task;
+        }
+        protected Task<Z> DoGetRelaxed<T, U, V, W, Z>(Func<T, U, V, W, Z> func, T t, U u, V v, W w)
+                where T : struct
+                where U : struct
+                where V : struct
+                where W : struct {
+            AssertBlittable<T, U, V, W>();
+            var tcs = new TaskCompletionSource<Z>();
+            manager.events.Enqueue(TaskTrigger(tcs, func, t, u, v, w));
+            return tcs.Task;
+        }
+
+#if EVENTMONOBEHAVIOR_TASK_OPERATORS
+        protected Task<Z> DoGetRelaxed<Z>(Func<Task<Z>> func) {
+            var tcs = new TaskCompletionSource<Z>();
+            manager.events.Enqueue(TaskTrigger(tcs, func));
+            return tcs.Task;
+        }
+        protected Task<Z> DoGetRelaxed<T, Z>(Func<T, Task<Z>> func, T t)
+                where T : struct {
+            AssertBlittable<T>();
+            var tcs = new TaskCompletionSource<Z>();
+            manager.events.Enqueue(TaskTrigger(tcs, func, t));
+            return tcs.Task;
+        }
+        protected Task<Z> DoGetRelaxed<T, U, Z>(Func<T, U, Task<Z>> func, T t, U u)
+                where T : struct
+                where U : struct {
+            AssertBlittable<T, U>();
+            var tcs = new TaskCompletionSource<Z>();
+            manager.events.Enqueue(TaskTrigger(tcs, func, t, u));
+            return tcs.Task;
+        }
+        protected Task<Z> DoGetRelaxed<T, U, V, Z>(Func<T, U, V, Task<Z>> func, T t, U u, V v)
+                where T : struct
+                where U : struct
+                where V : struct {
+            AssertBlittable<T, U, V>();
+            var tcs = new TaskCompletionSource<Z>();
+            manager.events.Enqueue(TaskTrigger(tcs, func, t, u, v));
+            return tcs.Task;
+        }
+        protected Task<Z> DoGetRelaxed<T, U, V, W, Z>(Func<T, U, V, W, Task<Z>> func, T t, U u, V v, W w)
+                where T : struct
+                where U : struct
+                where V : struct
+                where W : struct {
+            AssertBlittable<T, U, V, W>();
+            var tcs = new TaskCompletionSource<Z>();
+            manager.events.Enqueue(TaskTrigger(tcs, func, t, u, v, w));
+            return tcs.Task;
+        }
+#endif // EVENTMONOBEHAVIOR_TASK_OPERATORS
+
 #if EVENTMONOBEHAVIOR_MANUAL_RESULT_SET
         // -------------------------------------
         // DoWaitForManualTrigger

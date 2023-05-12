@@ -40,6 +40,7 @@ namespace UnityEPL {
         //////////
         // Testing things
         //////////
+        // TODO: JPB: (needed) (refactor) Remove TestTextDisplayer
         public TestTextDisplayer testTextDisplayer;
 
         //////////
@@ -49,11 +50,7 @@ namespace UnityEPL {
         public HostPC hostPC;
         public VideoControl videoControl;
         public TextDisplayer textDisplayer;
-        //public SoundRecorder recorder;
-        public AudioSource highBeep;
-        public AudioSource lowBeep;
-        public AudioSource lowerBeep;
-        public AudioSource playback;
+        public SoundRecorder recorder;
         //public RamulatorInterface ramulator;
         public ISyncBox syncBox;
 
@@ -65,6 +62,27 @@ namespace UnityEPL {
         public InputReporter inputReporter;
         public UIDataReporter uiReporter;
         private int eventsPerFrame;
+
+        // TODO: JPB: (needed) (refactor) Move below variables out of Interface Manager
+        protected AudioSource highBeep;
+        protected AudioSource lowBeep;
+        protected AudioSource lowerBeep;
+        protected AudioSource playback;
+        public Task PlayLowBeep() {
+            return DoWaitFor(PlayLowBeepHelper);
+        }
+        public IEnumerator PlayLowBeepHelper() {
+            lowBeep.Play();
+            yield return InterfaceManager.DelayE((int)(lowBeep.clip.length * 1000) + 100);
+        }
+        public void SetPlayback(AudioClip audioClip) {
+            Do(() => { playback.clip = audioClip; });
+        }
+        public void PlayPlayback() {
+            Do(playback.Play);
+        }
+
+
 
         public ConcurrentBag<EventLoop> eventLoops = new();
 
@@ -179,11 +197,11 @@ namespace UnityEPL {
             }
 
             // Sound Recorder
-            //GameObject soundRecorder = GameObject.Find("SoundRecorder");
-            //if (soundRecorder != null) {
-            //    recorder = soundRecorder.GetComponent<SoundRecorder>();
-            //    Debug.Log("Found Sound Recorder");
-            //}
+            GameObject soundRecorder = GameObject.Find("SoundRecorder");
+            if (soundRecorder != null) {
+                recorder = soundRecorder.GetComponent<SoundRecorder>();
+                Debug.Log("Found Sound Recorder");
+            }
 
             // Ramulator Interface
             //GameObject ramulatorObject = GameObject.Find("RamulatorInterface");
