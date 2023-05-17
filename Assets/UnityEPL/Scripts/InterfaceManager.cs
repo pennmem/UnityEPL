@@ -84,6 +84,8 @@ namespace UnityEPL {
 
 
 
+
+
         public ConcurrentBag<EventLoop> eventLoops = new();
 
         public ConcurrentQueue<IEnumerator> events = new();
@@ -403,6 +405,20 @@ namespace UnityEPL {
         public void LoadExperimentConfigHelper(string name) {
             Config.experimentConfigName = name;
             Config.SetupExperimentConfig();
+        }
+
+
+        // Helpful functions
+
+        public void LockCursor(CursorLockMode isLocked) {
+            Do(LockCursorHelper, isLocked);
+        }
+        public void LockCursorMB(CursorLockMode isLocked) {
+            DoMB(LockCursorHelper, isLocked);
+        }
+        public void LockCursorHelper(CursorLockMode isLocked) {
+            UnityEngine.Cursor.lockState = isLocked;
+            UnityEngine.Cursor.visible = isLocked == CursorLockMode.None;
         }
     }
 

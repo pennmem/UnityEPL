@@ -23,6 +23,7 @@ namespace UnityEPL {
             //    ReportScriptedEventHelper(type, timestamp, data);
             //}, type.ToNativeText(), TimeStamp());
         }
+        // TODO: JPB: (needed) Should ReportScriptedEventMB exist? Should everything be queued?
         public void ReportScriptedEventMB(string type, Dictionary<string, object> data = null) {
             DoMB(ReportScriptedEventHelper, type.ToNativeText(), TimeStamp(), data);
         }

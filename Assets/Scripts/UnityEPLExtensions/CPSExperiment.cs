@@ -25,11 +25,14 @@ namespace UnityEPL {
             manager.videoControl.SetVideo(videoPath, true);
         }
 
-        public override async Task MainStates() {
+        protected override async Task TrialStates() {
             await SetupExp();
             await ShowVideo();
             await FinishExp();
         }
+
+        protected override Task PreTrials() { return Task.CompletedTask; }
+        protected override Task PostTrials() { return Task.CompletedTask; }
 
         protected async Task SetupExp() {
             if (manager.hostPC == null) {

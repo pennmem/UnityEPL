@@ -84,6 +84,10 @@ namespace UnityEPL {
 
     public static class MonoBehaviourExtensions {
 
+        /// <summary>
+        /// Quits the game
+        /// </summary>
+        /// <param name="monoBehaviour"></param>
         public static void Quit(this MonoBehaviour monoBehaviour) {
             Debug.Log("Quitting");
 #if UNITY_EDITOR
@@ -91,6 +95,24 @@ namespace UnityEPL {
 #else
             Application.Quit();
 #endif
+        }
+    }
+
+    public static class RandomExtensions {
+        public static double NextDouble(this System.Random random, double max) {
+            return random.NextDouble() * max;
+        }
+        public static double NextDouble(this System.Random random, double min, double max) {
+            return random.NextDouble() * (max - min) + min;
+        }
+        public static float NextFloat(this System.Random random) {
+            return (float) random.NextDouble();
+        }
+        public static float NextFloat(this System.Random random, float max) {
+            return random.NextFloat() * max;
+        }
+        public static float NextFloat(this System.Random random, float min, float max) {
+            return random.NextFloat() * (max - min) + min;
         }
     }
 }

@@ -12,13 +12,16 @@ namespace UnityEPL {
             Run();
         }
 
+        protected override Task PostTrials() { return Task.CompletedTask; }
+        protected override Task PreTrials() { return Task.CompletedTask; }
+
         protected async Task RepeatedGetKey() {
             var key = await inputManager.GetKey();
             UnityEngine.Debug.Log("Got key " + key);
             Do(RepeatedGetKey);
         }
 
-        public override async Task MainStates() {
+        protected override async Task TrialStates() {
             //await manager.textDisplayer.AwaitableUpdateText("AwaitableUpdateText");
             //await InterfaceManager2.Delay(1000);
             //manager.textDisplayer.UpdateText("DONE");

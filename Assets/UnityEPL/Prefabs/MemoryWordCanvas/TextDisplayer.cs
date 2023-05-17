@@ -50,7 +50,7 @@ namespace UnityEPL {
             textElement.color = originalColors[0];
             titleElement.color = originalColors[1];
             if (scriptedEventReporter != null)
-                scriptedEventReporter.ReportScriptedEvent("restore original text color", new Dictionary<string, object>());
+                scriptedEventReporter.ReportScriptedEventMB("restore original text color", new Dictionary<string, object>());
         }
 
 
@@ -77,7 +77,7 @@ namespace UnityEPL {
                 { "displayed text", displayedText },
             };
             if (scriptedEventReporter != null)
-                scriptedEventReporter.ReportScriptedEvent(description.ToString(), dataDict);
+                scriptedEventReporter.ReportScriptedEventMB(description.ToString(), dataDict);
 
             description.Dispose();
             text.Dispose();
@@ -103,7 +103,7 @@ namespace UnityEPL {
                 { "displayed title", displayedTitle },
             };
             if (scriptedEventReporter != null)
-                scriptedEventReporter.ReportScriptedEvent(description.ToString(), dataDict);
+                scriptedEventReporter.ReportScriptedEventMB(description.ToString(), dataDict);
 
             description.Dispose();
             title.Dispose();
@@ -134,7 +134,7 @@ namespace UnityEPL {
                 { "displayed text", displayedText },
             };
             if (scriptedEventReporter != null)
-                scriptedEventReporter.ReportScriptedEvent(description.ToString(), dataDict);
+                scriptedEventReporter.ReportScriptedEventMB(description.ToString(), dataDict);
 
             description.Dispose();
             title.Dispose();
@@ -154,7 +154,7 @@ namespace UnityEPL {
         protected void ClearTextHelper() {
             textElement.text = "";
             if (scriptedEventReporter != null)
-                scriptedEventReporter.ReportScriptedEvent("text display cleared", new Dictionary<string, object>());
+                scriptedEventReporter.ReportScriptedEventMB("text display cleared", new Dictionary<string, object>());
         }
 
         public void ClearTitle() {
@@ -166,7 +166,7 @@ namespace UnityEPL {
         protected void ClearTitleHelper() {
             titleElement.text = "";
             if (scriptedEventReporter != null)
-                scriptedEventReporter.ReportScriptedEvent("title display cleared", new Dictionary<string, object>());
+                scriptedEventReporter.ReportScriptedEventMB("title display cleared", new Dictionary<string, object>());
         }
 
         public void Clear() {
@@ -179,7 +179,7 @@ namespace UnityEPL {
             titleElement.text = "";
             textElement.text = "";
             if (scriptedEventReporter != null)
-                scriptedEventReporter.ReportScriptedEvent("title display cleared", new Dictionary<string, object>());
+                scriptedEventReporter.ReportScriptedEventMB("title display cleared", new Dictionary<string, object>());
         }
 
         /// <summary>
@@ -197,7 +197,7 @@ namespace UnityEPL {
             Dictionary<string, object> dataDict = new Dictionary<string, object>();
             dataDict.Add("new color", newColor.ToString());
             if (scriptedEventReporter != null)
-                scriptedEventReporter.ReportScriptedEvent("text color changed", dataDict);
+                scriptedEventReporter.ReportScriptedEventMB("text color changed", dataDict);
         }
 
         /// <summary>

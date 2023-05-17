@@ -26,12 +26,28 @@ namespace UnityEPL {
             this.inputManager = InputManager.Instance;
         }
 
+        private bool endTrials = false;
+        protected uint trialNum { get; private set; } = 0;
+
+        protected abstract Task PreTrials();
+        protected abstract Task TrialStates();
+        protected abstract Task PostTrials();
+
+        protected void EndTrials() {
+            endTrials = true;
+        }
+
         protected async void Run() {
-            await DoWaitFor(MainStates);
+            await PreTrials();
+            while (!endTrials) {
+                trialNum++;
+                await DoWaitFor(TrialStates);
+            }
+            await PostTrials();
             manager.Quit();
         }
 
-        public abstract Task MainStates();
+
 
         public Task<KeyMsg> WaitOnKey(TaskCompletionSource<KeyMsg> tcs) {
             return DoGet(async () => {

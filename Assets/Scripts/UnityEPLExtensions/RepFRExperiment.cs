@@ -24,12 +24,15 @@ namespace UnityEPL {
             manager.videoControl.SetVideo(videoPath, true);
         }
 
-        public override async Task MainStates() {
+        protected override async Task TrialStates() {
             await RecordTest();
             //SetVideo();
             //await manager.videoControl.PlayVideo();
             UnityEngine.Debug.Log("Video Done");
         }
+
+        protected override Task PreTrials() { return Task.CompletedTask; }
+        protected override Task PostTrials() { return Task.CompletedTask; }
 
         // NOTE: rather than use flags for the audio test, this is entirely based off of timings.
         // Since there is processing latency (which seems to be unity version dependent), this
