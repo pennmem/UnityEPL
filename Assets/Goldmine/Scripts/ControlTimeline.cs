@@ -60,7 +60,7 @@ public class ControlTimeline : MonoBehaviour {
                 continue;
             }
             float itemTime = GetItemTime(item.transform);
-            items.Add(new Dictionary<string, object> { { "name", item.name }, { "chosenTime", itemTime }, { "actualTime", 0 } });
+            items.Add(new(){ { "name", item.name }, { "chosenTime", itemTime }, { "actualTime", 0 } });
         }
 
         return items;
@@ -156,7 +156,7 @@ public class ControlTimeline : MonoBehaviour {
         }
 
         // Randomize positions and move the items
-        positions.Shuffle();
+        positions.ShuffleInPlace();
         foreach (int i in Enumerable.Range(0, items.Count())) {
             items[i].transform.position = positions[i];
         }

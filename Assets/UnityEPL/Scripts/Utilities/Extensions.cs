@@ -13,7 +13,6 @@ namespace UnityEPL {
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="list"></param>
-        /// <param name="rng"></param>
         public static IList<T> Shuffle<T>(this IList<T> list) {
             var shuf = new List<T>(list);
             for (int i = shuf.Count - 1; i > 0; i--) {
@@ -32,7 +31,6 @@ namespace UnityEPL {
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="list"></param>
-        /// <param name="rng"></param>
         public static List<T> Shuffle<T>(this List<T> list) {
             var shuf = new List<T>(list);
             for (int i = shuf.Count - 1; i > 0; i--) {
@@ -43,6 +41,57 @@ namespace UnityEPL {
             }
 
             return shuf;
+        }
+
+        /// <summary>
+        /// Knuth (Fisher-Yates) Shuffle
+        /// Shuffles the element order of the specified list.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        public static IList<T> ShuffleInPlace<T>(this IList<T> list) {
+            var count = list.Count;
+            for (int i = 0; i < count; ++i) {
+                int r = InterfaceManager.rnd.Value.Next(i, count);
+                T tmp = list[i];
+                list[i] = list[r];
+                list[r] = tmp;
+            }
+            return list;
+        }
+
+        /// <summary>
+        /// Knuth (Fisher-Yates) Shuffle
+        /// Shuffles the element order of the specified list.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        public static List<T> ShuffleInPlace<T>(this List<T> list) {
+            var count = list.Count;
+            for (int i = 0; i < count; ++i) {
+                int r = InterfaceManager.rnd.Value.Next(i, count);
+                T tmp = list[i];
+                list[i] = list[r];
+                list[r] = tmp;
+            }
+            return list;
+        }
+    }
+
+    public static class ArrayExtensions {
+        /// <summary>
+        /// Knuth (Fisher-Yates) Shuffle
+        /// Shuffles the element order of the specified array.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        public static T[] ShuffleInPlace<T>(this T[] array) {
+            int n = array.Length;
+            while (n > 1) {
+                _ = InterfaceManager.rnd.Value.Next(2);
+                int k = InterfaceManager.rnd.Value.Next(n--);
+                T temp = array[n];
+                array[n] = array[k];
+                array[k] = temp;
+            }
+            return array;
         }
     }
 
@@ -68,7 +117,12 @@ namespace UnityEPL {
         /// </summary>
         /// <param name="task"></param>
         public static IEnumerator ToEnumerator(this Task task) {
-            yield return new WaitUntil(() => task.IsCompleted);
+            yield return new WaitUntil(() => {
+                if (task.IsFaulted) {
+                    ErrorNotifier.Error(task.Exception);
+                }
+                return task.IsCompleted;
+            });
         }
 
         /// <summary>
@@ -78,7 +132,12 @@ namespace UnityEPL {
         /// <typeparam name="T"></typeparam>
         /// <param name="task"></param>
         public static IEnumerator ToEnumerator<T>(this Task<T> task) {
-            yield return new WaitUntil(() => task.IsCompleted);
+            yield return new WaitUntil(() => {
+                if (task.IsFaulted) {
+                    ErrorNotifier.Error(task.Exception);
+                }
+                return task.IsCompleted;
+            });
         }
     }
 

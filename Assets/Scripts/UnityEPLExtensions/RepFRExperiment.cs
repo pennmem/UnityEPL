@@ -8,8 +8,10 @@ using UnityEngine;
 
 namespace UnityEPL {
 
-    public class RepFRExperiment : ExperimentBase {
-        public RepFRExperiment(InterfaceManager manager) {
+    public class RepFRExperiment : ExperimentBase<RepFRExperiment> {
+        protected override void AwakeOverride() { }
+
+        protected void Start() {
             Run();
         }
 

@@ -13,8 +13,8 @@ namespace UnityEPL {
         public bool reportMouseClicks = false;
         public bool reportMousePosition = false;
         public int framesPerMousePositionReport = 60;
-        private Dictionary<int, bool> keyDownStates = new Dictionary<int, bool>();
-        private Dictionary<int, bool> mouseDownStates = new Dictionary<int, bool>();
+        private Dictionary<int, bool> keyDownStates = new();
+        private Dictionary<int, bool> mouseDownStates = new();
 
         private int lastMousePositionReportFrame;
 

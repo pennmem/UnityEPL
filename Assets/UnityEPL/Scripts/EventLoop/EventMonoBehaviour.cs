@@ -85,7 +85,6 @@ namespace UnityEPL {
         /// </summary>
         /// <param name="enumerator"></param>
         /// <returns></returns>
-        /// TODO: JPB: (needed) (bug) Add error safety to DoMB, DoRepeatingMB, DoWaitForMB, and DoGetMB
         protected new Coroutine StartCoroutine(IEnumerator enumerator) {
             return base.StartCoroutine(MakeEventEnumerator(enumerator));
         }
@@ -146,7 +145,7 @@ namespace UnityEPL {
         // TODO: JPB: (feature) Add support for cancellation tokens in EventMonoBehavior Do functions
 
         private void DoHelper(IEnumerator enumerator) {
-            manager.events.Enqueue(enumerator);
+            manager.events.Enqueue(MakeEventEnumerator(enumerator));
         }
 
         protected void Do(Func<IEnumerator> func) {

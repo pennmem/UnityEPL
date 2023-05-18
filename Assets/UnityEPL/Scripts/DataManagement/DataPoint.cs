@@ -58,10 +58,11 @@ namespace UnityEPL {
         private string GenJSON(Dictionary<string, object> data) {
             double unixTimestamp = ConvertToMillisecondsSinceEpoch(time);
 
-            var dataPointjson = new Dictionary<string, object> {
-            { "type", type },
-            { "time", unixTimestamp.ToString() },
-            { "data", data } };
+            Dictionary<string, object> dataPointjson = new() {
+                { "type", type },
+                { "time", unixTimestamp.ToString() },
+                { "data", data }
+            };
             return JsonConvert.SerializeObject(dataPointjson);
         }
 

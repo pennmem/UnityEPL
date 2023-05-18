@@ -6,6 +6,8 @@ using UnityEngine;
 using UnityEPL;
 using static UnityEditor.FilePathAttribute;
 
+
+// TODO: JPB: (needed) Fix SpawnItems (it's an EventMonoBehaviour with no DoMB)?
 public class SpawnItems : EventMonoBehaviour {
     public float xMinRange = 1.5f;
     public float xMaxRange = 31.5f;
@@ -18,26 +20,21 @@ public class SpawnItems : EventMonoBehaviour {
 
     protected override void AwakeOverride() { }
 
-    public void SpawnGold(int nItems) {
-        Do(SpawnGoldHelper, nItems);
-    }
-    public void SpawnGoldHelper(int nItems) {
+    public void SpawnGold(uint nItems) {
         manager.eventReporter.ReportScriptedEventMB("goldSpawned", new() { { "nItems", nItems } });
         for (int i = 0; i < nItems; i++) {
             SpawnItem(goldObject);
         }
-    }
+    }    
 
-    
-
-    public void SpawnGems(int nItems) {
+    public void SpawnGems(uint nItems) {
         if (nItems > gemObjects.Length) {
             ErrorNotifier.Error(new InvalidOperationException("The game is trying to spawn repeat gems."));
         }
 
-        manager.eventReporter.ReportScriptedEvent("gemsSpawned", new Dictionary<string, object> { { "nItems", nItems } });
+        manager.eventReporter.ReportScriptedEvent("gemsSpawned", new() { { "nItems", nItems } });
         var indices = Enumerable.Range(0, gemObjects.Length).ToList();
-        indices.Shuffle();
+        indices.ShuffleInPlace();
         for (int i = 0; i < nItems; i++) {
             SpawnItem(gemObjects[indices[i]], 2);
         }
@@ -78,7 +75,7 @@ public class SpawnItems : EventMonoBehaviour {
 
         // Misc
         numItemsSpawned++;
-        manager.eventReporter.ReportScriptedEvent(item.name + "Location", new Dictionary<string, object> {
+        manager.eventReporter.ReportScriptedEvent(item.name + "Location", new() {
                 {"reportingId", spawnedItem.GetComponent<WorldDataReporter>().reportingID},
                 { "positionX", spawnPosition.x },
                 { "positionZ", spawnPosition.z }

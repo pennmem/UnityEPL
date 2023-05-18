@@ -7,8 +7,10 @@ using UnityEngine;
 
 namespace UnityEPL {
 
-    public class TestExperiment : ExperimentBase {
-        public TestExperiment(InterfaceManager manager) {
+    public class TestExperiment : ExperimentBase<TestExperiment> {
+        protected override void AwakeOverride() {  }
+
+        protected void Start() {
             Run();
         }
 
@@ -18,7 +20,7 @@ namespace UnityEPL {
         protected async Task RepeatedGetKey() {
             var key = await inputManager.GetKey();
             UnityEngine.Debug.Log("Got key " + key);
-            Do(RepeatedGetKey);
+            _ = DoWaitFor(RepeatedGetKey);
         }
 
         protected override async Task TrialStates() {

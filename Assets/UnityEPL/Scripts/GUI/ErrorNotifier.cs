@@ -30,10 +30,9 @@ namespace UnityEPL {
                 var textDisplayer = gameObject.GetComponent<TextDisplayer>();
                 textDisplayer.DisplayMB("Error", "Error", e.Message);
             }
-            manager.eventReporter.ReportScriptedEventMB("Error",
-                new Dictionary<string, object>{
-                    { "message", e.Message },
-                    { "stackTrace", e.StackTrace } });
+            manager.eventReporter.ReportScriptedEventMB("Error", new() {
+                { "message", e.Message },
+                { "stackTrace", e.StackTrace } });
             manager.Pause(true);
         }
 
@@ -53,10 +52,9 @@ namespace UnityEPL {
             var textDisplayer = gameObject.GetComponent<TextDisplayer>();
             textDisplayer.DisplayMB("Warning", "Warning", message.ToString());
             Debug.Log($"Warning: {message}\n{stackTrace}");
-            manager.eventReporter.ReportScriptedEventMB("Warning",
-                new Dictionary<string, object>{
-                    { "message", message.ToString() },
-                    { "stackTrace", stackTrace.ToString() } });
+            manager.eventReporter.ReportScriptedEventMB("Warning", new() {
+                { "message", message.ToString() },
+                { "stackTrace", stackTrace.ToString() } });
             manager.Pause(true);
             message.Dispose();
             stackTrace.Dispose();

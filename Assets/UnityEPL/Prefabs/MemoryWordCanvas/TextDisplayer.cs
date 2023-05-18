@@ -50,7 +50,7 @@ namespace UnityEPL {
             textElement.color = originalColors[0];
             titleElement.color = originalColors[1];
             if (scriptedEventReporter != null)
-                scriptedEventReporter.ReportScriptedEventMB("restore original text color", new Dictionary<string, object>());
+                scriptedEventReporter.ReportScriptedEventMB("restore original text color", new());
         }
 
 
@@ -154,7 +154,7 @@ namespace UnityEPL {
         protected void ClearTextHelper() {
             textElement.text = "";
             if (scriptedEventReporter != null)
-                scriptedEventReporter.ReportScriptedEventMB("text display cleared", new Dictionary<string, object>());
+                scriptedEventReporter.ReportScriptedEventMB("text display cleared", new());
         }
 
         public void ClearTitle() {
@@ -166,7 +166,7 @@ namespace UnityEPL {
         protected void ClearTitleHelper() {
             titleElement.text = "";
             if (scriptedEventReporter != null)
-                scriptedEventReporter.ReportScriptedEventMB("title display cleared", new Dictionary<string, object>());
+                scriptedEventReporter.ReportScriptedEventMB("title display cleared", new());
         }
 
         public void Clear() {
@@ -179,7 +179,7 @@ namespace UnityEPL {
             titleElement.text = "";
             textElement.text = "";
             if (scriptedEventReporter != null)
-                scriptedEventReporter.ReportScriptedEventMB("title display cleared", new Dictionary<string, object>());
+                scriptedEventReporter.ReportScriptedEventMB("title display cleared", new());
         }
 
         /// <summary>
@@ -194,7 +194,7 @@ namespace UnityEPL {
         }
         protected void ChangeColorHelper(Color newColor) {
             textElement.color = newColor;
-            Dictionary<string, object> dataDict = new Dictionary<string, object>();
+            Dictionary<string, object> dataDict = new();
             dataDict.Add("new color", newColor.ToString());
             if (scriptedEventReporter != null)
                 scriptedEventReporter.ReportScriptedEventMB("text color changed", dataDict);

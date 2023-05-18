@@ -1,4 +1,5 @@
 using System;
+using UnityEPL;
 
 
 class DoorShuffle {
@@ -15,8 +16,7 @@ class DoorShuffle {
             trialParamsArray[i] = (byte)((i < timedSplit ? 0b_1000 : 0b_0000) | (0b_0001 << i % 3));
         }
 
-        var rng = new Random();
-        Extensions.Shuffle<byte>(rng, trialParamsArray);
+        trialParamsArray.ShuffleInPlace();
 
         return trialParamsArray;
     } 
@@ -40,19 +40,5 @@ class DoorShuffle {
         }
 
         return 1;
-    }
-}
-
-public static class Extensions {
-    public static void Shuffle<T> (this Random rng, T[] array)
-    {
-        int n = array.Length;
-        while (n > 1) 
-        {
-            int k = rng.Next(n--);
-            T temp = array[n];
-            array[n] = array[k];
-            array[k] = temp;
-        }
     }
 }

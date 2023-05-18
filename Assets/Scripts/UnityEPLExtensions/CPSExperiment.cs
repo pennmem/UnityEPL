@@ -9,8 +9,10 @@ using static UnityEPL.TextDisplayer;
 
 namespace UnityEPL {
 
-    public class CPSExperiment : ExperimentBase {
-        public CPSExperiment(InterfaceManager manager) {
+    public class CPSExperiment : ExperimentBase<CPSExperiment> {
+        protected override void AwakeOverride() { }
+
+        protected void Start() {
             Run();
         }
 

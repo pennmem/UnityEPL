@@ -91,7 +91,7 @@ namespace UnityEPL {
         public static void SaveConfigs(ScriptedEventReporter scriptedEventReporter, string path) {
             if (experimentConfig != null) {
                 if (scriptedEventReporter != null)
-                    scriptedEventReporter.ReportScriptedEvent("experimentConfig", new Dictionary<string, object>(experimentConfig));
+                    scriptedEventReporter.ReportScriptedEvent("experimentConfig", new(experimentConfig));
 #if !UNITY_WEBGL // System.IO
                 FlexibleConfig.WriteToText(experimentConfig, Path.Combine(path, experimentConfigName + ".json"));
 #endif // !UNITY_WEBGL
@@ -99,7 +99,7 @@ namespace UnityEPL {
 
             if (systemConfig != null) {
                 if (scriptedEventReporter != null)
-                    scriptedEventReporter.ReportScriptedEvent("systemConfig", new Dictionary<string, object>(systemConfig));
+                    scriptedEventReporter.ReportScriptedEvent("systemConfig", new(systemConfig));
 #if !UNITY_WEBGL // System.IO
                 FlexibleConfig.WriteToText(systemConfig, Path.Combine(path, SYSTEM_CONFIG_NAME));
 #endif // !UNITY_WEBGL

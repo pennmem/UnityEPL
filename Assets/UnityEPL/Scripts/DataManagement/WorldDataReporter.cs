@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace UnityEPL {
 
-    [AddComponentMenu("UnityEPL/Reporters/World Data Reporter2")]
+    [AddComponentMenu("UnityEPL/Reporters/World Data Reporter")]
     public class WorldDataReporter : DataReporter {
         public bool reportTransform = true;
         public int framesPerTransformReport = 30;

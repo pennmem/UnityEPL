@@ -14,4 +14,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/RepFR.unity
     guid: a9d8a7c8b7abd47cd9a1f9ceb062bcf5
+  - enabled: 1
+    path: Assets/Goldmine/Scenes/SMaze2.unity
+    guid: 640f4f518a47d499f8185474a723b161
+  - enabled: 1
+    path: Assets/Goldmine/Scenes/Tutorial.unity
+    guid: 75c98ebf653c844aea54c0194b3bc781
   m_configObjects: {}

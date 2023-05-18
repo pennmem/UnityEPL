@@ -66,16 +66,17 @@ public class ControlPlayer : MonoBehaviour {
         // TODO: JPB: (needed) Fix pickup, digging, and log player position
 
         // Determine if player has clicked the mouse
-        //if (!paused && (Input.GetButtonDown("Fire1") || Input.GetButtonDown("Jump"))) {
-        //    // If the player fires, then relock the cursor
-        //    // LockCursor(true);
+        if (!paused && (Input.GetButtonDown("Fire1") || Input.GetButtonDown("Jump"))) {
+        //if (!paused && (Input.GetKeyDown(KeyCode.Space))) {
+            // If the player fires, then relock the cursor
+            // LockCursor(true);
 
-        //    // Initiate pickup
-        //    GameManager.gm.gameEvents.Do(new EventBase(GameManager.gm.PickupItem));
+            // Initiate pickup
+            GoldmineExperiment.Instance.PickupItem();
 
-        //    // Initiate digging
-        //    GameManager.gm.gameEvents.Do(new EventBase(GameManager.gm.DigForItem));
-        //}
+            // Initiate digging
+            GoldmineExperiment.Instance.DigForItem();
+        }
 
         //// Log player position
         //if ((GameManager.gm.playerActive) && (Time.frameCount % framesPerTransformReport == 0)) {

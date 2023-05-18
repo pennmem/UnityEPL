@@ -28,13 +28,12 @@ namespace UnityEPL {
         ////////// 
         // global random number source, wrapped so that out of thread 
         // access doesn't break generation
-        public static ThreadLocal<System.Random> rnd { get; private set; } = new();
+        public static ThreadLocal<System.Random> rnd { get; private set; } = new(() => { return new(); });
         public static ThreadLocal<System.Random> stableRnd { get; private set; } = null;
 
         //////////
         // ???
         //////////
-        private ExperimentBase exp;
         public FileManager fileManager;
 
         //////////
@@ -216,9 +215,10 @@ namespace UnityEPL {
         private void onExperimentSceneLoaded(Scene scene, LoadSceneMode mode) {
             onSceneLoaded(scene, mode);
 
-            string className = $"{typeof(ExperimentBase).Namespace}.{Config.experimentClass}";
+            // TODO: JPB: (needed) Remove {typeof(ExperimentBase).Namespace} from className
+            string className = $"{typeof(ExperimentBase<TestExperiment>).Namespace}.{Config.experimentClass}";
             Type classType = Type.GetType(className);
-            exp = (ExperimentBase)Activator.CreateInstance(classType, new object[] { this });
+            Activator.CreateInstance(classType);
 
             LogExperimentInfo();
 
