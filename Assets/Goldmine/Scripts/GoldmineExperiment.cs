@@ -3,7 +3,6 @@
 #define TIMED_TRIAL_SYSTEM
 #define SCALE_DIFFICULY_SYSTEM
 
-using Codice.Client.BaseCommands.Merge.Xml;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -11,7 +10,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Unity.VisualScripting.YamlDotNet.Core;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using UnityEngine.UI;
@@ -25,14 +23,6 @@ namespace UnityEPL {
         public enum ItemType {
             gold,
             gems
-        }
-
-        protected override void AwakeOverride() {
-            CollectReferences();
-        }
-
-        public void Start() {
-            Run();
         }
 
         // Version number
@@ -107,7 +97,52 @@ namespace UnityEPL {
         private AudioSource digAudioSource;
 
 
+        // Setup functions
 
+        protected override void AwakeOverride() {
+            CollectReferences();
+        }
+
+        public void Start() {
+            Run();
+        }
+
+        protected void Update() {
+            // Track how much time is left in the current game state
+            if (showCountdown) {
+                timeLeft -= Time.deltaTime;
+                timerDisplay.text = timeLeft.ToString("0.00");
+            }
+
+            // Track whether the player is in an active game state
+            //baseReporter.reportView = playerActive;
+
+            // See if we need to toggle the door open/close states
+            if (playerActive) {
+                if ((controlPlayer.playerInMine) && (!controlBase.allDoorsOpen)) {
+                    // Open all doors
+                    controlBase.OpenDoors(new bool[] { true, true, true });
+                } else if ((controlPlayer.playerAtBase) && (controlBase.allDoorsOpen)) {
+                    // Open the trial door
+                    bool[] iDoors = { false, false, false };
+                    iDoors[doorIndex] = true;
+                    controlBase.OpenDoors(iDoors);
+                }
+            }
+        }
+
+        private void CollectReferences() {
+            // Get quick access to other object functions
+            GameObject player = GameObject.FindGameObjectWithTag("Player");
+            controlPlayer = player.GetComponent<ControlPlayer>();
+            spawnItems = spawner.GetComponent<SpawnItems>();
+            controlBase = mineBase.GetComponent<ControlBase>();
+            controlMainCanvas = mainCanvas.GetComponent<ControlCanvas>();
+            pickupAudioSource = gameObject.GetComponents<AudioSource>()[0];
+            digAudioSource = gameObject.GetComponents<AudioSource>()[1];
+            //baseReporter = mineBase.GetComponent<WorldDataReporter>();
+            controlTimeline = timelineCanvas.transform.Find("Timeline").GetComponent<ControlTimeline>();
+        }
 
 
         // Trial functions
@@ -117,22 +152,24 @@ namespace UnityEPL {
             await PreEncodingDelayMsg();
             //await Delay();
             await Encoding();
-            //            await ReturnToBase();
-            //            DoWaitForReturn,
-            //            await PreTimelineMsg();
-            //#if TIMELINE_SYSTEM
-            //            await Timeline();
-            //#endif // TIMELINE_SYSTEM
-            //            await PreRetrievalDelayMsg();
-            //            await Delay();
-            //            await Retrieval();
-            //            await ReturnToBase();
-            //            DoWaitForReturn,
+//            await ReturnToBase();
+//            DoWaitForReturn,
+//            await PreTimelineMsg();
+//#if TIMELINE_SYSTEM
+//            await Timeline();
+//#endif // TIMELINE_SYSTEM
+//            await PreRetrievalDelayMsg();
+//            await Delay();
+//            await Retrieval();
+//            await ReturnToBase();
+//            DoWaitForReturn,
             EndTrial();
         }
 
         protected override Task PreTrials() {
             // Report experiment info
+            LogExperimentInfo();
+
             string experimentName = "";
 #if TIMELINE_SYSTEM
             experimentName += "Timeline";
@@ -184,43 +221,6 @@ namespace UnityEPL {
             controlEndOfGameCanvas.playAudio(true);
 
             return Task.CompletedTask;
-        }
-
-        private void CollectReferences() {
-            // Get quick access to other object functions
-            GameObject player = GameObject.FindGameObjectWithTag("Player");
-            controlPlayer = player.GetComponent<ControlPlayer>();
-            spawnItems = spawner.GetComponent<SpawnItems>();
-            controlBase = mineBase.GetComponent<ControlBase>();
-            controlMainCanvas = mainCanvas.GetComponent<ControlCanvas>();
-            pickupAudioSource = gameObject.GetComponents<AudioSource>()[0];
-            digAudioSource = gameObject.GetComponents<AudioSource>()[1];
-            //baseReporter = mineBase.GetComponent<WorldDataReporter>();
-            controlTimeline = timelineCanvas.transform.Find("Timeline").GetComponent<ControlTimeline>();
-        }
-
-        protected void Update() {
-            // Track how much time is left in the current game state
-            if (showCountdown) {
-                timeLeft -= Time.deltaTime;
-                timerDisplay.text = timeLeft.ToString("0.00");
-            }
-
-            // Track whether the player is in an active game state
-            //baseReporter.reportView = playerActive;
-
-            // See if we need to toggle the door open/close states
-            if (playerActive) {
-                if ((controlPlayer.playerInMine) && (!controlBase.allDoorsOpen)) {
-                    // Open all doors
-                    controlBase.OpenDoors(new bool[] { true, true, true });
-                } else if ((controlPlayer.playerAtBase) && (controlBase.allDoorsOpen)) {
-                    // Open the trial door
-                    bool[] iDoors = { false, false, false };
-                    iDoors[doorIndex] = true;
-                    controlBase.OpenDoors(iDoors);
-                }
-            }
         }
 
         // Actions that occur at the beginning of a trial

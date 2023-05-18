@@ -211,23 +211,6 @@ namespace UnityEPL {
             //    Debug.Log("Found Ramulator");
             //}
         }
-
-        private void onExperimentSceneLoaded(Scene scene, LoadSceneMode mode) {
-            onSceneLoaded(scene, mode);
-
-            // TODO: JPB: (needed) Remove {typeof(ExperimentBase).Namespace} from className
-            string className = $"{typeof(ExperimentBase<TestExperiment>).Namespace}.{Config.experimentClass}";
-            Type classType = Type.GetType(className);
-            Activator.CreateInstance(classType);
-
-            LogExperimentInfo();
-
-            // Start Syncbox
-            //syncBox.StartPulse();
-
-            SceneManager.sceneLoaded -= onExperimentSceneLoaded;
-            SceneManager.sceneLoaded += onSceneLoaded;
-        }
         
 
         // TODO: JPB: (feature) Make InterfaceManager.Delay() pause aware
@@ -322,21 +305,6 @@ namespace UnityEPL {
             SceneManager.LoadScene(Config.launcherScene);
         }
 
-        protected void LogExperimentInfo() {
-            //write versions to logfile
-            Dictionary<string, object> versionsData = new() {
-                { "application version", Application.version },
-                { "build date", BuildInfo.ToString() }, // compiler magic, gives compile date
-                { "experiment version", Config.experimentName },
-                { "logfile version", "0" },
-                { "participant", Config.subject },
-                { "session", Config.session },
-            };
-
-            eventReporter.ReportScriptedEvent("session start", versionsData);
-        }
-
-
         // These can be called by anything
         public void Pause(bool pause) {
             Do<Bool>(PauseHelper, pause);
@@ -391,8 +359,6 @@ namespace UnityEPL {
                 yield return hostPC?.Connect().ToEnumerator();
                 yield return hostPC?.Configure().ToEnumerator();
 
-                SceneManager.sceneLoaded -= onSceneLoaded;
-                SceneManager.sceneLoaded += onExperimentSceneLoaded;
                 SceneManager.LoadScene(Config.experimentScene);
             } else {
                 throw new Exception("No experiment configuration loaded");

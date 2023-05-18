@@ -51,6 +51,20 @@ namespace UnityEPL {
             await PostTrials();
             manager.Quit();
         }
+
+        protected void LogExperimentInfo() {
+            //write versions to logfile
+            Dictionary<string, object> versionsData = new() {
+                { "application version", Application.version },
+                { "build date", BuildInfo.ToString() }, // compiler magic, gives compile date
+                { "experiment version", Config.experimentName },
+                { "logfile version", "0" },
+                { "participant", Config.subject },
+                { "session", Config.session },
+            };
+
+            manager.eventReporter.ReportScriptedEvent("session start", versionsData);
+        }
     }
 
 }

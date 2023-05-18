@@ -1,5 +1,4 @@
-﻿using Codice.CM.Client.Differences.Graphic;
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
