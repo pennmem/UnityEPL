@@ -1,7 +1,7 @@
 #define TIMELINE_SYSTEM
 #define PICKUP_SYSTEM
-#define TIMED_TRIAL_SYSTEM
-#define SCALE_DIFFICULY_SYSTEM
+//#define TIMED_TRIAL_SYSTEM
+//#define SCALE_DIFFICULY_SYSTEM
 
 using System;
 using System.Collections;
@@ -33,7 +33,8 @@ namespace UnityEPL {
         protected const int delayDurationMs = 10000; // duration of the delay phases
         protected const int timelineDurationMs = 18000; // duration of the timeline phase
         protected const int timelineScoreDurationMs = 2000; // duration of the timeline score display
-        protected const int taskDurationMs = 30000; // duration of the task phases (encoding, retrieval)
+        protected const int encodingDurationMs = 30000; // duration of the encoding phase
+        protected const int retrievalDurationMs = 30000; // duration of the retrieval phase
         protected const int returnToBasePenalty = -5; // penalty for not eturning to the base in time
         protected const int wrongDigPenalty = -2; // penalty for digging in the wrong place
         protected const int goldFoundReward = 10; // points for each gold piece found
@@ -150,19 +151,17 @@ namespace UnityEPL {
         protected override async Task TrialStates() {
             InitTrial();
             await PreEncodingDelayMsg();
-            //await Delay();
+            await Delay();
             await Encoding();
-//            await ReturnToBase();
-//            DoWaitForReturn,
-//            await PreTimelineMsg();
-//#if TIMELINE_SYSTEM
-//            await Timeline();
-//#endif // TIMELINE_SYSTEM
-//            await PreRetrievalDelayMsg();
-//            await Delay();
-//            await Retrieval();
-//            await ReturnToBase();
-//            DoWaitForReturn,
+            await ReturnToBase();
+            await PreTimelineMsg();
+#if TIMELINE_SYSTEM
+            await Timeline();
+#endif // TIMELINE_SYSTEM
+            await PreRetrievalDelayMsg();
+            await Delay();
+            await Retrieval();
+            await ReturnToBase();
             EndTrial();
         }
 
@@ -185,7 +184,6 @@ namespace UnityEPL {
             // Randomize half of the trials to timed and half to untimed.
             // Then, separately for timed and untimed trials, randomly assign 1/3 to each door index.
             bytes = DoorShuffle.TrialParameters(numTrialsInGame);
-            UnityEngine.Debug.Log(bytes);
 
             // Setup the starting displays
             mainCanvas.SetActive(true);
@@ -280,7 +278,7 @@ namespace UnityEPL {
 
             // Update canvas display
             controlMainCanvas.ShowBackground(2f);
-            controlMainCanvas.SetCentralDisplay2("Get ready to\nsearch for " + GetItemTypeStr(), "default", 2f);
+            controlMainCanvas.SetCentralDisplay2($"Get ready to\nsearch for {GetItemTypeStr()}", "default", 2f);
 
             await InterfaceManager.Delay(2000);
         }
@@ -353,12 +351,203 @@ namespace UnityEPL {
 #endif // TIMED_TRIAL_SYSTEM
 
             // Display countdown
-            timeLeft = taskDurationMs;
+            timeLeft = encodingDurationMs;
             showCountdown = true;
 
-            await InterfaceManager.Delay(taskDurationMs);
+            await InterfaceManager.Delay(encodingDurationMs);
         }
 
+        // Execute the return to base interval
+        protected async Task ReturnToBase() {
+            // Log
+            manager.eventReporter.ReportScriptedEvent("gameState", new() { { "stateName", "ReturnToBase" } });
+
+            playerActive = true;
+
+            // Find and hide gold pieces in the environment
+            spawnItems.HideItems();
+            pickupEnabled = false;
+            digEnabled = false;
+            digCrosshair.SetActive(false);
+
+            if (controlPlayer.playerInMine) {
+                controlMainCanvas.SetTaskDirectionsDisplay("RETURN TO BASE");
+                controlMainCanvas.SetCentralDisplay("RETURN TO BASE", "default", 1.5f);
+                if (isTimedTrial) {
+                    UpdateScore(returnToBasePenalty);
+                }
+            }
+
+            await DoWaitWhile(() => controlPlayer.playerInMine);
+            //await new WaitWhile(() => controlPlayer.playerInMine).ToTask();
+            //await DoWaitWhile(() => controlPlayer.playerInMine);
+        }
+
+        // Execute the pre-encoding message 
+        protected async Task PreTimelineMsg() {
+            // Log
+            manager.eventReporter.ReportScriptedEvent("gameState", new() { { "stateName", "PreTimelineMsg" } });
+
+            // Update canvas display
+            controlMainCanvas.ShowBackground(2f);
+            controlMainCanvas.SetCentralDisplay2($"Get ready to\nplace {GetItemTypeStr()} on timeline", "default", 2f);
+
+            await InterfaceManager.Delay(2000);
+        }
+
+        // Timeline
+        protected async Task Timeline() {
+            // Setup
+
+            // Log
+            manager.eventReporter.ReportScriptedEvent("gameState", new() { { "stateName", "Timeline" } });
+
+            // Reset the player
+            FreezeAtBase();
+
+            // Set scale of timeline
+            controlTimeline.scale = encodingDurationMs / 1000f;
+
+            // Show the timeline
+            timelineCanvas.SetActive(true);
+            // The following two lines are a hack because unity wasn't displaying the camera correctly
+            timelineCanvas.GetComponent<Canvas>().worldCamera.enabled = false;
+            timelineCanvas.GetComponent<Canvas>().worldCamera.enabled = true;
+
+            // Spawn the timeline items
+            switch (itemType) {
+                case ItemType.gold:
+                    controlTimeline.SpawnTimelineItems(spawnItems.goldObject, 8);
+                    break;
+                case ItemType.gems:
+                    controlTimeline.SpawnTimelineItems(spawnItems.gemObjects);
+                    break;
+            }
+
+            // Unlock the mouse
+            manager.LockCursor(CursorLockMode.None);
+
+            // Update canvas displays
+            controlMainCanvas.SetTaskDirectionsDisplay($"PLACE {GetItemTypeStr().ToUpper()} ON TIMELINE");
+
+            // Display countdown
+            timeLeft = timelineDurationMs;
+            showCountdown = true;
+
+
+            // Player does the timeline
+
+            await InterfaceManager.Delay(timelineDurationMs);
+
+
+            // Teardown
+
+            // Report item times
+            var timelineItems = controlTimeline.GetItemTimes();
+            manager.eventReporter.ReportScriptedEvent("timeline", new() { { "chosenTimelineItems", timelineItems } });
+            //Debug.Log(JsonConvert.SerializeObject(new Dictionary<string, object> { { "items", timelineItems } }));
+
+            // Update the score
+            // TODO: JPB: (bug) There is a bug in the gold only timeline for points
+            // TODO: JPB: (feature) Add scoring for how close item is to actual time
+            //                      +5 on timeline, +1 to +5 for closeness, -2 not on timeline, -2 incorrect on timeline
+            // Note: make sure changes here happen in TutorialTimelineEnd too
+            int scoreDelta = 0;
+            var spawnableItems = new GameObject[0];
+
+            switch (itemType) {
+                case ItemType.gold:
+                    spawnableItems = Enumerable.Repeat(spawnItems.goldObject, 3).ToArray();
+                    break;
+                case ItemType.gems:
+                    spawnableItems = spawnItems.gemObjects;
+                    break;
+            }
+
+            var spawnedItems = spawnItems.GetItems();
+            foreach (var item in spawnableItems) {
+                bool isItemInTimeline = timelineItems.Any(x => (string)x["name"] == item.name);
+                bool isItemSpawnedAndPickedUp = spawnedItems.Any(x => (x.name == item.name) && x.GetComponent<PickupItem>().isPickedUp);
+                UnityEngine.Debug.Log(item.name + " " + isItemInTimeline + " " + isItemSpawnedAndPickedUp);
+
+                if (isItemSpawnedAndPickedUp && isItemInTimeline) {
+                    // Item correctly placed on timeline
+                    scoreDelta += correctTimelineReward;
+                } else if (!isItemSpawnedAndPickedUp && isItemInTimeline) {
+                    // Item incorrectly placed on timeline
+                    scoreDelta += wrongTimelinePenalty;
+                } else if (isItemSpawnedAndPickedUp && !isItemInTimeline) {
+                    // Item not placed on timeline when it should be
+                    scoreDelta += wrongTimelinePenalty;
+                }
+            }
+            UpdateScore(scoreDelta);
+
+            // Lock the mouse
+            manager.LockCursor(CursorLockMode.Locked);
+
+            // Show timeline score
+            await InterfaceManager.Delay(timelineScoreDurationMs);
+
+            // Delete timeline items
+            foreach (var item in controlTimeline.GetTimelineItems()) {
+                Destroy(item);
+            }
+
+            // Hide the timeline 
+            timelineCanvas.SetActive(false);
+        }
+
+        // Execute the pre-retrieval delay message
+        protected async Task PreRetrievalDelayMsg() {
+            // Log
+            manager.eventReporter.ReportScriptedEvent("gameState", new() { { "stateName", "PreRetrievalDelayMsg" } });
+
+            // Reset the player
+            FreezeAtBase();
+
+            // Reset displays
+            controlMainCanvas.ResetCentralDisplay();
+
+            // Update canvas display
+            controlMainCanvas.ShowBackground(2f);
+            controlMainCanvas.SetCentralDisplay2($"Visualize a path\nto the {GetItemTypeStr()}", "default", 2f);
+
+            await InterfaceManager.Delay(2000);
+        }
+
+        // Execute the retrieval interval
+        protected async Task Retrieval() {
+            // Log
+            manager.eventReporter.ReportScriptedEvent("gameState", new() { { "stateName", "Retrieval" } });
+
+            playerActive = true;
+            digEnabled = true;
+
+            // Unfreeze the player
+            controlPlayer.Freeze(false);
+
+            // Show the dig crosshair
+            digCrosshair.SetActive(true);
+
+            // Open one door at random
+            bool[] iDoors = { false, false, false };
+            iDoors[doorIndex] = true;
+            controlBase.OpenDoors(iDoors, true, true);
+
+            // Update canvas displays
+            controlMainCanvas.SetTopDisplay($"DIG FOR {GetItemTypeStr().ToUpper()}", "default", 0.75f);
+            controlMainCanvas.SetTaskDirectionsDisplay($"DIG FOR {GetItemTypeStr().ToUpper()}: {itemsPickedUpThisTrial} LEFT");
+
+            if (isTimedTrial) {
+                controlMainCanvas.SetTimedTrialDisplay("TIME PENALTY", "negative");
+                controlMainCanvas.SetBottomDisplay("TIME PENALTY", "negative", 0.75f);
+            } else {
+                //controlMainCanvas.SetTimedTrialDisplay("NO TIME PENALTY", "positive");
+            }
+
+            await InterfaceManager.Delay(retrievalDurationMs);
+        }
 
         // Helper Functions
 
@@ -380,8 +569,6 @@ namespace UnityEPL {
 #if SCALE_DIFFICULY_SYSTEM
             pastTrialPerformance.Dequeue();
             pastTrialPerformance.Enqueue(itemsDugUpThisTrial == itemsSpawnedThisTrial);
-            pastTrialPerformance.All(x => x);
-
             if (pastTrialPerformance.All(x => x)) {
                 itemsSpawnedThisTrial++;
             } else if (pastTrialPerformance.All(x => !x) && itemsSpawnedThisTrial > 1) {
@@ -554,13 +741,13 @@ namespace UnityEPL {
                     {"nearestItemPositionZ", minDistanceItem.transform.position.z},
                     {"nearestItemName", minDistanceItem.name}});
                 itemsDugUpThisTrial++;
-                controlMainCanvas.SetTaskDirectionsDisplay("DIG FOR " + GetItemTypeStr().ToUpper() + ": " + (items.Length - 1).ToString() + " LEFT");
+                var itemsLeft = itemsPickedUpThisTrial - itemsDugUpThisTrial;
+                controlMainCanvas.SetTaskDirectionsDisplay($"DIG FOR {GetItemTypeStr().ToUpper()}: {itemsLeft} LEFT");
                 if (itemFoundEffect) {
                     Instantiate(itemFoundEffect, minDistanceItem.transform.position, Quaternion.identity);
                 }
                 Destroy(minDistanceItem);
-            } else if (minDistance == float.MaxValue) // i.e. all items have been dug
-              {
+            } else if (minDistance == float.MaxValue) { // i.e. all items have been dug
                 UpdateScore(wrongDigPenalty);
                 manager.eventReporter.ReportScriptedEvent("dig", new() {
                     {"successful", false},

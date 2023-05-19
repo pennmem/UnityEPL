@@ -89,6 +89,48 @@ namespace UnityEPL {
             return base.StartCoroutine(MakeEventEnumerator(enumerator));
         }
 
+        // -------------------------------------
+        // Unity Wait functions
+        // -------------------------------------
+
+        /// <summary>
+        /// Converts an IEnumerator to an awaitable task that runs in a coroutine
+        /// Only call this internally!
+        /// TODO: JPB: (needed) Decide if this should be more efficient and call StartCoroutine right away
+        ///            or if it should be put into queue
+        /// </summary>
+        /// <param name="enumerator">The enumerator to be turned to a task</param>
+        /// <returns>The task to await</returns>
+        ///
+        protected Task ToTask(IEnumerator enumerator) {
+            return ToTaskHelper(enumerator);
+        }
+        private Task ToTaskHelper(IEnumerator enumerator) {
+            var tcs = new TaskCompletionSource<bool>();
+            MonoBehaviourSafetyCheck();
+            StartCoroutine(TaskTrigger(tcs, enumerator));
+            //manager.events.Enqueue(TaskTrigger(tcs, enumerator));
+            return tcs.Task;
+        }
+
+        /// <summary>
+        /// Acts just like Unity's WaitWhile class
+        /// </summary>
+        /// <param name="conditional">The condition to wait while it's true</param>
+        /// <returns>The task to await</returns>
+        protected Task DoWaitWhile(Func<bool> conditional) {
+            return ToTask(new WaitWhile(conditional));
+        }
+
+        /// <summary>
+        /// Acts just like Unity's WaitUntil class
+        /// </summary>
+        /// <param name="conditional">The condition to wait until it's true</param>
+        /// <returns>The task to await</returns>
+        protected Task DoWaitUntil(Func<bool> conditional) {
+            return ToTask(new WaitUntil(conditional));
+        }
+        
 
         // -------------------------------------
         // DoMB

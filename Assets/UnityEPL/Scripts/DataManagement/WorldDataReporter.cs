@@ -67,11 +67,11 @@ namespace UnityEPL {
                 Collider objectCollider = GetComponent<Collider>();
 
                 // raycast to center mass
-                Physics.Linecast(thisCamera.transform.position, gameObject.transform.position, out RaycastHit lineOfSightHit);
+                if (!Physics.Linecast(thisCamera.transform.position, gameObject.transform.position, out RaycastHit lineOfSightHit)){
+                    continue;
+                }
                 bool lineOfSight = lineOfSightHit.collider.Equals(gameObject.GetComponent<Collider>());
                 bool inView = GeometryUtility.TestPlanesAABB(frustrumPlanes, objectCollider.bounds) && lineOfSight;
-
-                string eventName = "";
 
                 if (!reportView)
                     continue;
@@ -80,7 +80,7 @@ namespace UnityEPL {
                     { "cameraName", thisCamera.name },
                     { "isInView", inView },
                 };
-                eventName = gameObject.name.ToLower() + "InView";
+                var eventName = gameObject.name.ToLower() + "InView";
                 eventQueue.Enqueue(new DataPoint(eventName, dataDict));
             }
         }

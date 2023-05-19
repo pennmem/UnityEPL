@@ -4,10 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEPL;
-using static UnityEditor.FilePathAttribute;
 
-
-// TODO: JPB: (needed) Fix SpawnItems (it's an EventMonoBehaviour with no DoMB)?
 public class SpawnItems : EventMonoBehaviour {
     public float xMinRange = 1.5f;
     public float xMaxRange = 31.5f;
