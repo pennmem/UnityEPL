@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace UnityEPL {
 
+#if !UNITY_WEBGL // Microphone
     public class SoundRecorder : EventMonoBehaviour {
         protected override void AwakeOverride() { }
 
@@ -130,16 +131,29 @@ namespace UnityEPL {
                 // block
             }
 
-            if (audioFile.isNetworkError) {
-                throw new System.Exception(audioFile.error);
-            }
-            if (audioFile.isHttpError) {
-                throw new System.Exception(audioFile.responseCode.ToString());
+            switch (audioFile.result) {
+                case UnityWebRequest.Result.ProtocolError:
+                case UnityWebRequest.Result.DataProcessingError:
+                case UnityWebRequest.Result.ConnectionError:
+                    throw new Exception($"{audioFile.responseCode}\n{audioFile.error}");
             }
 
             datapath.Dispose();
             return DownloadHandlerAudioClip.GetContent(audioFile);
         }
     }
+#else
+    public class SoundRecorder : EventMonoBehaviour {
+        protected override void AwakeOverride() { }
+
+        public void StartRecording(string outputFilePath) { throw new NotImplementedException(); }
+
+        public async Task<AudioClip> StopRecording() { throw new NotImplementedException(); }
+
+        public async Task<float[]> GetLastSamples(int howManySamples) { throw new NotImplementedException(); }
+
+        protected AudioClip AudioClipFromDatapathHelper(string datapath) { throw new NotImplementedException(); }
+    }
+#endif // !UNITY_WEBGL
 
 }

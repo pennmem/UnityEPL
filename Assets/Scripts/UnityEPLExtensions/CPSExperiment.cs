@@ -23,7 +23,7 @@ namespace UnityEPL {
             if (videoPath == null) {
                 throw new Exception("Video resource not found");
             }
-            
+
             manager.videoControl.SetVideo(videoPath, true);
         }
 
@@ -76,5 +76,4 @@ namespace UnityEPL {
             await manager.videoControl.PlayVideo();
         }
     }
-
 }

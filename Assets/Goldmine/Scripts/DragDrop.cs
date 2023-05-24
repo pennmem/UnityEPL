@@ -6,7 +6,7 @@ using UnityEngine.UI;
 using UnityEPL;
 
 public class DragDrop : MonoBehaviour {
-    public Camera camera;
+    public new Camera camera;
 
     protected Vector3 originalPos;
     protected Vector3 lastMousePos;

@@ -1,3 +1,4 @@
+
 using Newtonsoft.Json;
 using System;
 using System.Collections;
@@ -90,8 +91,6 @@ namespace UnityEPL {
         public void PlayPlayback() {
             Do(playback.Play);
         }
-
-
 
 
 
@@ -281,6 +280,14 @@ namespace UnityEPL {
         await tcs.Task;
     }
 
+    public static IEnumerator DelayE(int millisecondsDelay) {
+        yield return InterfaceManager.Delay(millisecondsDelay).ToEnumerator();
+    }
+
+    public static IEnumerator DelayE(int millisecondsDelay, CancellationToken cancellationToken) {
+        yield return InterfaceManager.Delay(millisecondsDelay, cancellationToken).ToEnumerator();
+    }
+
     protected static IEnumerator WaitForSeconds(float seconds, TaskCompletionSource<bool> tcs) {
         yield return new WaitForSeconds(seconds);
         tcs?.SetResult(true);
@@ -396,6 +403,34 @@ namespace UnityEPL {
             UnityEngine.Cursor.lockState = isLocked;
             UnityEngine.Cursor.visible = isLocked == CursorLockMode.None;
         }
+
+
+
+
+
+        // -------------------------------------
+        // CODE FOR POSTER
+
+        public class LightController {
+            public async Task StartClosedLoop(int durationMS) { await Delay(1); }
+        }
+        public LightController lightController;
+
+        SFB.ExtensionFilter[] fileExtensions = new[] {
+            new SFB.ExtensionFilter("Videos", "mp4", "mov"),
+            new SFB.ExtensionFilter("All Files", "*" ),
+        };
+
+        protected async Task ClosedLoopVideo() {
+            await manager.videoControl.SelectVideoFile(Config.dataPath, fileExtensions);
+            await manager.textDisplayer.PressAnyKey("Start Video", "Press a button to play the video");
+            await manager.lightController.StartClosedLoop(manager.videoControl.videoLength);
+            await manager.videoControl.PlayVideo();
+            var loggingMsg = new Dictionary<string, object> { { "length", manager.videoControl.videoLength } };
+            manager.eventReporter.ReportScriptedEvent("Video Info", loggingMsg);
+        }
+
+        // -------------------------------------
     }
 
 }

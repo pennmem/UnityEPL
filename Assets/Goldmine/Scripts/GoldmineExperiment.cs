@@ -379,8 +379,7 @@ namespace UnityEPL {
             }
 
             await DoWaitWhile(() => controlPlayer.playerInMine);
-            //await new WaitWhile(() => controlPlayer.playerInMine).ToTask();
-            //await DoWaitWhile(() => controlPlayer.playerInMine);
+            //await ToCoroutineTask(new WaitWhile(() => controlPlayer.playerInMine));
         }
 
         // Execute the pre-encoding message 

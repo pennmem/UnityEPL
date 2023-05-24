@@ -114,6 +114,11 @@ namespace UnityEPL {
             return gameObject.activeSelf;
         }
 
+        // FOR TESTING PURPOSES ONLY
+        public int videoLength {
+            get { return (int)videoPlayer.length; }
+        }
+
         public async Task<double> VideoLength() {
             return await DoGet(VideoLengthHelper);
         }

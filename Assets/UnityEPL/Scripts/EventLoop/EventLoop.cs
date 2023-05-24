@@ -82,11 +82,7 @@ namespace UnityEPL {
             if (cts.IsCancellationRequested) {
                 throw new OperationCanceledException("EventLoop has been stopped already.");
             }
-#if !UNITY_WEBGL || UNITY_EDITOR // System.Threading
             StartTask(func);
-#else
-        func();
-#endif
         }
         protected void Do<T>(Action<T> func, T t)
                 where T : struct {
@@ -119,11 +115,7 @@ namespace UnityEPL {
             if (cts.IsCancellationRequested) {
                 throw new OperationCanceledException("EventLoop has been stopped already.");
             }
-#if !UNITY_WEBGL || UNITY_EDITOR // System.Threading
             StartTask(func);
-#else
-        func();
-#endif
         }
         protected void Do<T>(Func<T, Task> func, T t)
                 where T : struct {
@@ -440,11 +432,7 @@ namespace UnityEPL {
             if (cts.IsCancellationRequested) {
                 throw new OperationCanceledException("EventLoop has been stopped already.");
             }
-#if !UNITY_WEBGL || UNITY_EDITOR // System.Threading
             return StartTask(func);
-#else
-        return func();
-#endif
         }
         protected Task DoWaitFor<T>(Action<T> func, T t)
                 where T : struct {
@@ -477,11 +465,7 @@ namespace UnityEPL {
             if (cts.IsCancellationRequested) {
                 throw new OperationCanceledException("EventLoop has been stopped already.");
             }
-#if !UNITY_WEBGL || UNITY_EDITOR // System.Threading
             await await StartTask(func);
-#else
-        return func();
-#endif
         }
         protected Task DoWaitFor<T>(Func<T, Task> func, T t)
                 where T : struct {
@@ -515,11 +499,7 @@ namespace UnityEPL {
         protected Task<Z> DoGet<Z>(Func<Z> func)
                 where Z : struct {
             AssertBlittable<Z>();
-#if !UNITY_WEBGL || UNITY_EDITOR // System.Threading
             return StartTask<Z>(func);
-#else
-            return func();
-#endif
         }
         protected Task<Z> DoGet<T, Z>(Func<T, Z> func, T t)
                 where T : struct
@@ -555,11 +535,7 @@ namespace UnityEPL {
         protected async Task<Z> DoGet<Z>(Func<Task<Z>> func)
                 where Z : struct {
             AssertBlittable<Z>();
-#if !UNITY_WEBGL || UNITY_EDITOR // System.Threading
             return await await StartTask(func);
-#else
-            return func();
-#endif
         }
         protected Task<Z> DoGet<T, Z>(Func<T, Task<Z>> func, T t)
                 where T : struct
@@ -599,11 +575,7 @@ namespace UnityEPL {
         //            And add tests for these
 
         protected Task<Z> DoGetRelaxed<Z>(Func<Z> func) {
-#if !UNITY_WEBGL || UNITY_EDITOR // System.Threading
             return StartTask<Z>(func);
-#else
-            return func();
-#endif
         }
         protected Task<Z> DoGetRelaxed<T, Z>(Func<T, Z> func, T t)
                 where T : struct {
@@ -611,11 +583,7 @@ namespace UnityEPL {
         }
 
         protected async Task<Z> DoGetRelaxed<Z>(Func<Task<Z>> func) {
-#if !UNITY_WEBGL || UNITY_EDITOR // System.Threading
             return await await StartTask(func);
-#else
-            return func();
-#endif
         }
         protected Task<Z> DoGetRelaxed<T, Z>(Func<T, Task<Z>> func, T t)
                 where T : struct {
@@ -669,6 +637,7 @@ namespace UnityEPL {
             };
         }
 
+#if !UNITY_WEBGL && !UNITY_EDITOR // System.Threading
         private Task StartTask(Action func) {
             return Task.Factory.StartNew(TaskErrorHandler(func), cts.Token, TaskCreationOptions.DenyChildAttach, scheduler);
         }
@@ -681,6 +650,20 @@ namespace UnityEPL {
         private Task<Z> StartTask<Z>(Func<Z> func) {
             return Task.Factory.StartNew(TaskErrorHandler(func), cts.Token, TaskCreationOptions.DenyChildAttach, scheduler);
         }
-    }
+#else
+        private Task StartTask(Action func) {
+            return Task.Factory.StartNew(TaskErrorHandler(func), cts.Token);
+        }
+        private Task<Task> StartTask(Func<Task> func) {
+            return Task.Factory.StartNew(TaskErrorHandler(func), cts.Token);
+        }
+        private Task<Task<Z>> StartTask<Z>(Func<Task<Z>> func) {
+            return Task.Factory.StartNew(TaskErrorHandler(func), cts.Token);
+        }
+        private Task<Z> StartTask<Z>(Func<Z> func) {
+            return Task.Factory.StartNew(TaskErrorHandler(func), cts.Token);
+        }
+#endif
 
+    }
 }

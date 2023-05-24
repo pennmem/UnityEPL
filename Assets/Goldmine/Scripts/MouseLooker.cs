@@ -16,7 +16,6 @@ public class MouseLooker : MonoBehaviour {
     private Quaternion m_CameraTargetRot;
     private Transform character;
     private Transform cameraTransform;
-    private bool paused = false;
 
     void Awake() {
         // get a reference to the character's transform (which this script should be attached to)

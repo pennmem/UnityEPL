@@ -102,12 +102,8 @@ namespace UnityEPL {
         /// <param name="enumerator">The enumerator to be turned to a task</param>
         /// <returns>The task to await</returns>
         ///
-        protected Task ToTask(IEnumerator enumerator) {
-            return ToTaskHelper(enumerator);
-        }
-        private Task ToTaskHelper(IEnumerator enumerator) {
+        protected Task ToCoroutineTask(IEnumerator enumerator) {
             var tcs = new TaskCompletionSource<bool>();
-            MonoBehaviourSafetyCheck();
             StartCoroutine(TaskTrigger(tcs, enumerator));
             //manager.events.Enqueue(TaskTrigger(tcs, enumerator));
             return tcs.Task;
@@ -119,7 +115,7 @@ namespace UnityEPL {
         /// <param name="conditional">The condition to wait while it's true</param>
         /// <returns>The task to await</returns>
         protected Task DoWaitWhile(Func<bool> conditional) {
-            return ToTask(new WaitWhile(conditional));
+            return ToCoroutineTask(new WaitWhile(conditional));
         }
 
         /// <summary>
@@ -128,7 +124,7 @@ namespace UnityEPL {
         /// <param name="conditional">The condition to wait until it's true</param>
         /// <returns>The task to await</returns>
         protected Task DoWaitUntil(Func<bool> conditional) {
-            return ToTask(new WaitUntil(conditional));
+            return ToCoroutineTask(new WaitUntil(conditional));
         }
         
 

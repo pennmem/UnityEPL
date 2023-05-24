@@ -1,7 +1,10 @@
 using System;
+using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using UnityEngine;
+using UnityEngine.Networking;
 
 namespace UnityEPL {
 
@@ -14,6 +17,9 @@ namespace UnityEPL {
         private static ConcurrentDictionary<string, object> systemConfig = null;
         private static ConcurrentDictionary<string, object> experimentConfig = null;
         private static string configPath = "CONFIG_PATH_NOT_SET";
+
+        public static string onlineSystemConfigText = null;
+        public static string onlineExperimentConfigText = null;
 
         // Public Internal Variables
         public static string experimentConfigName = null;
@@ -85,7 +91,7 @@ namespace UnityEPL {
 
         // ElememInterface.cs
         public static string stimMode { get { return Config.GetSetting<string>("stimMode"); } }
-        
+
 
         // Functions
         public static void SaveConfigs(ScriptedEventReporter scriptedEventReporter, string path) {
@@ -135,35 +141,35 @@ namespace UnityEPL {
         }
 
 #if UNITY_WEBGL // System.IO
-    private static IEnumerator SetupOnlineSystemConfig() {
-        string systemConfigPath = System.IO.Path.Combine(configPath, SYSTEM_CONFIG_NAME);
-        UnityWebRequest systemWWW = UnityWebRequest.Get(systemConfigPath);
-        yield return systemWWW.SendWebRequest();
+        private static IEnumerator SetupOnlineSystemConfig() {
+            string systemConfigPath = System.IO.Path.Combine(configPath, SYSTEM_CONFIG_NAME);
+            UnityWebRequest systemWWW = UnityWebRequest.Get(systemConfigPath);
+            yield return systemWWW.SendWebRequest();
 
-        if (systemWWW.result != UnityWebRequest.Result.Success) {
-            Debug.Log("Network error " + systemWWW.error);
-        } else {
-            var onlineSystemConfigText = systemWWW.downloadHandler.text;
-            Debug.Log("Online System Config fetched!!");
-            Debug.Log(onlineSystemConfigText);
-            systemConfig = new ConcurrentDictionary<string, dynamic>(FlexibleConfig.LoadFromText(onlineSystemConfigText));
+            if (systemWWW.result != UnityWebRequest.Result.Success) {
+                Debug.Log("Network error " + systemWWW.error);
+            } else {
+                var onlineSystemConfigText = systemWWW.downloadHandler.text;
+                Debug.Log("Online System Config fetched!!");
+                Debug.Log(onlineSystemConfigText);
+                systemConfig = new ConcurrentDictionary<string, dynamic>(FlexibleConfig.LoadFromText(onlineSystemConfigText));
+            }
         }
-    }
 
-    private static IEnumerator SetupOnlineExperimentConfig() {
-        string experimentConfigPath = System.IO.Path.Combine(configPath, experimentConfigName);
-        UnityWebRequest experimentWWW = UnityWebRequest.Get(experimentConfigPath);
-        yield return experimentWWW.SendWebRequest();
+        private static IEnumerator SetupOnlineExperimentConfig() {
+            string experimentConfigPath = System.IO.Path.Combine(configPath, experimentConfigName);
+            UnityWebRequest experimentWWW = UnityWebRequest.Get(experimentConfigPath);
+            yield return experimentWWW.SendWebRequest();
 
-        if (experimentWWW.result != UnityWebRequest.Result.Success){
-            Debug.Log("Network error " + experimentWWW.error);
-        } else {
-            var onlineExperimentConfigText = experimentWWW.downloadHandler.text;
-            Debug.Log("Online Experiment Config fetched!!");
-            Debug.Log(onlineExperimentConfigText);
-            experimentConfig = new ConcurrentDictionary<string, dynamic>(FlexibleConfig.LoadFromText(onlineExperimentConfigText));
+            if (experimentWWW.result != UnityWebRequest.Result.Success) {
+                Debug.Log("Network error " + experimentWWW.error);
+            } else {
+                var onlineExperimentConfigText = experimentWWW.downloadHandler.text;
+                Debug.Log("Online Experiment Config fetched!!");
+                Debug.Log(onlineExperimentConfigText);
+                experimentConfig = new ConcurrentDictionary<string, dynamic>(FlexibleConfig.LoadFromText(onlineExperimentConfigText));
+            }
         }
-    }
 #endif // UNITY_WEBGL
 
         private static Nullable<T> GetNullableSetting<T>(string setting) where T : struct {
@@ -229,7 +235,7 @@ namespace UnityEPL {
                     systemConfig = new ConcurrentDictionary<string, dynamic>(FlexibleConfig.LoadFromText(onlineSystemConfigText));
 #endif
             }
-            return (IDictionary<string, object>)systemConfig;
+            return systemConfig;
         }
 
         private static IDictionary<string, object> GetExperimentConfig() {
@@ -245,8 +251,55 @@ namespace UnityEPL {
                     experimentConfig = new ConcurrentDictionary<string, dynamic>(FlexibleConfig.LoadFromText(onlineExperimentConfigText));
 #endif
             }
-            return (IDictionary<string, object>)experimentConfig;
+            return experimentConfig;
         }
-    }
 
+        // TODO: JPB: Refactor this to be of the singleton form (likely needs to use the new threading system)
+        public static IEnumerator GetOnlineConfig() {
+            Debug.Log("setting web request");
+            string systemConfigPath = Path.Combine(Application.streamingAssetsPath, "config.json");
+
+#if !UNITY_EDITOR
+            UnityWebRequest systemWWW = UnityWebRequest.Get(systemConfigPath);
+            yield return systemWWW.SendWebRequest();
+
+            // TODO: LC: 
+            if (systemWWW.result != UnityWebRequest.Result.Success)
+            // if (systemWWW.isNetworkError || systemWWW.isHttpError)
+            {
+                Debug.Log("Network error " + systemWWW.error);
+            } else {
+                onlineSystemConfigText = systemWWW.downloadHandler.text;
+                Debug.Log("Online System Config fetched!!");
+                Debug.Log(onlineSystemConfigText);
+            }
+#else
+            yield return new WaitForSeconds(1f);
+            onlineSystemConfigText = File.ReadAllText(systemConfigPath);
+#endif
+
+            string experimentConfigPath = Path.Combine(Application.streamingAssetsPath, "CourierOnline.json");
+
+#if !UNITY_EDITOR
+            UnityWebRequest experimentWWW = UnityWebRequest.Get(experimentConfigPath);
+            yield return experimentWWW.SendWebRequest();
+
+            // TODO: LC: 
+            if (experimentWWW.result != UnityWebRequest.Result.Success)
+            // if (experimentWWW.isNetworkError || experimentWWW.isHttpError)
+            {
+                Debug.Log("Network error " + experimentWWW.error);
+            } else {
+                onlineExperimentConfigText = experimentWWW.downloadHandler.text;
+                Debug.Log("Online Experiment Config fetched!!");
+                Debug.Log(Config.onlineExperimentConfigText);
+            }
+#else
+            yield return new WaitForSeconds(1f);
+            onlineExperimentConfigText = File.ReadAllText(experimentConfigPath);
+#endif
+
+        }
+
+    }
 }
