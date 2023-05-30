@@ -60,7 +60,7 @@ namespace UnityEPL {
             Dictionary<string, object> movieInfo = new() {
                 { "movie title", Path.GetFileName(videoPath) },
                 { "movie path", Path.GetDirectoryName(videoPath)},
-                { "movie duration seconds", await manager.videoControl.VideoLength()}
+                { "movie duration seconds", manager.videoControl.VideoLength()}
             };
             manager.eventReporter.ReportScriptedEvent("movie", movieInfo);
 
@@ -71,7 +71,7 @@ namespace UnityEPL {
 
             // Remove 10s to not overrun video legnth
             UnityEngine.Debug.Log(2);
-            var cclLength = await manager.videoControl.VideoLength() - 10.0;
+            var cclLength = manager.videoControl.VideoLength() - 10.0;
             await manager.hostPC.SendCCLStartMsg(Convert.ToInt32(cclLength));
             await manager.videoControl.PlayVideo();
         }

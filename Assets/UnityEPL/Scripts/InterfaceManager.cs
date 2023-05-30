@@ -99,7 +99,7 @@ namespace UnityEPL {
         public ConcurrentQueue<IEnumerator> events = new();
 
         private void OnDestroy() {
-            Quit();
+            QuitTS();
         }
 
         void Update() {
@@ -323,7 +323,7 @@ namespace UnityEPL {
         }
 
         // These can be called by anything
-        public void Pause(bool pause) {
+        public void PauseTS(bool pause) {
             Do<Bool>(PauseHelper, pause);
         }
         protected void PauseHelper(Bool pause) {
@@ -332,7 +332,7 @@ namespace UnityEPL {
             else Time.timeScale = 1;
         }
 
-        public void Quit() {
+        public void QuitTS() {
             hostPC?.Quit();
             Do(QuitHelper);
         }
@@ -344,7 +344,7 @@ namespace UnityEPL {
             ((MonoBehaviour)this).Quit();
         }
 
-        public void LaunchExperiment() {
+        public void LaunchExperimentTS() {
             Do(LaunchExperimentHelper);
         }
         protected IEnumerator LaunchExperimentHelper() {
@@ -382,7 +382,7 @@ namespace UnityEPL {
             }
         }
 
-        public void LoadExperimentConfigMB(string name) {
+        public void LoadExperimentConfig(string name) {
             DoMB(LoadExperimentConfigHelper, name);
         }
         public void LoadExperimentConfigHelper(string name) {
@@ -394,10 +394,10 @@ namespace UnityEPL {
         // Helpful functions
 
         public void LockCursor(CursorLockMode isLocked) {
-            Do(LockCursorHelper, isLocked);
-        }
-        public void LockCursorMB(CursorLockMode isLocked) {
             DoMB(LockCursorHelper, isLocked);
+        }
+        public void LockCursorTS(CursorLockMode isLocked) {
+            Do(LockCursorHelper, isLocked);
         }
         public void LockCursorHelper(CursorLockMode isLocked) {
             UnityEngine.Cursor.lockState = isLocked;

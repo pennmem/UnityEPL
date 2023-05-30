@@ -41,11 +41,11 @@ namespace UnityEPL {
         /// Returns the color of the assigned text elements to whatever they were when this monobehavior initialized (usually scene load).
         /// </summary>
         public void OriginalColor() {
-            Do(OriginalColorHelper);
-        }
-        public void OriginalColorMB() {
             DoMB(OriginalColorHelper);
         }
+        public void OriginalColorTS() {
+            Do(OriginalColorHelper);
+        }     
         protected void OriginalColorHelper() {
             textElement.color = originalColors[0];
             titleElement.color = originalColors[1];
@@ -62,10 +62,10 @@ namespace UnityEPL {
         /// <param name="description">Description.</param>
         /// <param name="text">Text.</param>
         public void DisplayText(string description, string text) {
-            Do(DisplayTextHelper, description.ToNativeText(), text.ToNativeText());
-        }
-        public void DisplayTextMB(string description, string text) {
             DoMB(DisplayTextHelper, description.ToNativeText(), text.ToNativeText());
+        }
+        public void DisplayTextTS(string description, string text) {
+            Do(DisplayTextHelper, description.ToNativeText(), text.ToNativeText());
         }
         protected void DisplayTextHelper(NativeText description, NativeText text) {
             var displayedText = text.ToString();
@@ -84,10 +84,10 @@ namespace UnityEPL {
         }
 
         public void DisplayTitle(string description, string title) {
-            Do(DisplayTitleHelper, description.ToNativeText(), title.ToNativeText());
-        }
-        public void DisplayTitleMB(string description, string title) {
             DoMB(DisplayTitleHelper, description.ToNativeText(), title.ToNativeText());
+        }
+        public void DisplayTitleTS(string description, string title) {
+            Do(DisplayTitleHelper, description.ToNativeText(), title.ToNativeText());
         }
         protected void DisplayTitleHelper(NativeText description, NativeText title) {
             var displayedTitle = title.ToString();
@@ -110,10 +110,10 @@ namespace UnityEPL {
         }
 
         public void Display(string description, string title, string text) {
-            Do(DisplayHelper, description.ToNativeText(), title.ToNativeText(), text.ToNativeText());
-        }
-        public void DisplayMB(string description, string title, string text) {
             DoMB(DisplayHelper, description.ToNativeText(), title.ToNativeText(), text.ToNativeText());
+        }
+        public void DisplayTS(string description, string title, string text) {
+            Do(DisplayHelper, description.ToNativeText(), title.ToNativeText(), text.ToNativeText());
         }
         protected void DisplayHelper(NativeText description, NativeText title, NativeText text) {
             var displayedTitle = title.ToString();
@@ -146,22 +146,22 @@ namespace UnityEPL {
         /// Clears the text of all textElements.  This is logged if the wordEventReporter field is populated in the editor.
         /// </summary>
         public void ClearText() {
-            Do(ClearTextHelper);
-        }
-        public void ClearTextMB() {
             DoMB(ClearTextHelper);
+        }
+        public void ClearTextTS() {
+            Do(ClearTextHelper);
         }
         protected void ClearTextHelper() {
             textElement.text = "";
             if (scriptedEventReporter != null)
                 scriptedEventReporter.ReportScriptedEventMB("text display cleared", new());
         }
-
+       
         public void ClearTitle() {
-            Do(ClearTitleHelper);
-        }
-        public void ClearTitleMB() {
             DoMB(ClearTitleHelper);
+        }
+        public void ClearTitleTS() {
+            Do(ClearTitleHelper);
         }
         protected void ClearTitleHelper() {
             titleElement.text = "";
@@ -170,10 +170,10 @@ namespace UnityEPL {
         }
 
         public void Clear() {
-            Do(ClearHelper);
-        }
-        public void ClearMB() {
             DoMB(ClearHelper);
+        }
+        public void ClearTS() {
+            Do(ClearHelper);
         }
         protected void ClearHelper() {
             titleElement.text = "";
@@ -187,10 +187,10 @@ namespace UnityEPL {
         /// </summary>
         /// <param name="newColor">New color.</param>
         public void ChangeColor(Color newColor) {
-            Do(ChangeColorHelper, newColor);
-        }
-        public void ChangeColorMB(Color newColor) {
             DoMB(ChangeColorHelper, newColor);
+        }
+        public void ChangeColorTS(Color newColor) {
+            Do(ChangeColorHelper, newColor);
         }
         protected void ChangeColorHelper(Color newColor) {
             textElement.color = newColor;
@@ -203,35 +203,35 @@ namespace UnityEPL {
         /// <summary>
         /// Returns the current text being displayed on the first textElement.  Throws an error if there are no textElements.
         /// </summary>
-        public async Task<string> CurrentText() {
-            var text = await DoGet(CurrentTextHelper);
-            var ret = text.ToString();
-            text.Dispose();
-            return ret;
-        }
-        public string CurrentTextMB() {
+        public string CurrentText() {
             var text = DoGetMB(CurrentTextHelper);
             var ret = text.ToString();
             text.Dispose();
             return ret;
         }
-        public NativeText CurrentTextHelper() {
+        public async Task<string> CurrentTextTS() {
+            var text = await DoGet(CurrentTextHelper);
+            var ret = text.ToString();
+            text.Dispose();
+            return ret;
+        }
+        protected NativeText CurrentTextHelper() {
             if (textElement == null)
                 throw new UnityException("There aren't any text elements assigned to this TextDisplayer.");
             return textElement.text.ToNativeText();
         }
 
         public Task PressAnyKey(string description, string displayText) {
-            return DoWaitFor(PressAnyKeyHelper, description.ToNativeText(), displayText.ToNativeText());
-        }
-        public Task PressAnyKeyMB(string description, string displayText) {
             return DoWaitForMB(PressAnyKeyHelper, description.ToNativeText(), displayText.ToNativeText());
         }
-        public async Task PressAnyKeyHelper(NativeText description, NativeText displayText) {
+        public Task PressAnyKeyTS(string description, string displayText) {
+            return DoWaitFor(PressAnyKeyHelper, description.ToNativeText(), displayText.ToNativeText());
+        }
+        protected async Task PressAnyKeyHelper(NativeText description, NativeText displayText) {
             _ = manager.hostPC.SendStateMsg(HostPC.StateMsg.WAITING);
-            DisplayTextMB($"{description.ToString()} (press any key prompt)", displayText.ToString());
+            DisplayText($"{description.ToString()} (press any key prompt)", displayText.ToString());
             await InputManager.Instance.GetKey();
-            ClearTextMB();
+            ClearText();
             description.Dispose();
             displayText.Dispose();
         }

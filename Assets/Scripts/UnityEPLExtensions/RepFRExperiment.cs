@@ -49,7 +49,7 @@ namespace UnityEPL {
             await InterfaceManager.Delay(Config.micTestDuration);
 
             manager.textDisplayer.DisplayText("microphone test playing", "<color=green>Playing...</color>");
-            manager.SetPlayback(await manager.recorder.StopRecording());
+            manager.SetPlayback(manager.recorder.StopRecording());
             manager.PlayPlayback();
             await InterfaceManager.Delay(Config.micTestDuration);
         }

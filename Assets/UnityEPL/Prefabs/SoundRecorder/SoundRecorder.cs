@@ -45,11 +45,12 @@ namespace UnityEPL {
         //            Record(int duration, string outputFilePath)
 
         //using the system's default device
+
         public void StartRecording(string outputFilePath) {
-            Do(StartRecordingHelper, outputFilePath.ToNativeText());
-        }
-        public void StartRecordingMB(string outputFilePath) {
             DoMB(StartRecordingHelper, outputFilePath.ToNativeText());
+        }
+        public void StartRecordingTS(string outputFilePath) {
+            Do(StartRecordingHelper, outputFilePath.ToNativeText());
         }
         protected void StartRecordingHelper(NativeText outputFilePath) {
             if (isRecording) {
@@ -62,12 +63,12 @@ namespace UnityEPL {
             isRecording = true;
             outputFilePath.Dispose();
         }
-
-        public Task<AudioClip> StopRecording() {
-            return DoGetRelaxed(StopRecordingHelper);
-        }
-        public AudioClip StopRecordingMB() {
+      
+        public AudioClip StopRecording() {
             return DoGetMB(StopRecordingHelper);
+        }
+        public Task<AudioClip> StopRecordingTS() {
+            return DoGetRelaxed(StopRecordingHelper);
         }
         protected AudioClip StopRecordingHelper() {
             if (!isRecording) {
@@ -80,7 +81,7 @@ namespace UnityEPL {
             int outputLength = Mathf.RoundToInt(SAMPLE_RATE * recordingLength);
             AudioClip croppedClip = AudioClip.Create("cropped recording", outputLength, 1, SAMPLE_RATE, false);
 
-            float[] saveData = GetLastSamplesMB(outputLength);
+            float[] saveData = GetLastSamples(outputLength);
 
             croppedClip.SetData(saveData, 0);
 
@@ -88,11 +89,11 @@ namespace UnityEPL {
             return croppedClip;
         }
 
-        public Task<float[]> GetLastSamples(int howManySamples) {
-            return DoGetRelaxed(GetLastSamplesHelper, howManySamples);
-        }
-        public float[] GetLastSamplesMB(int howManySamples) {
+        public float[] GetLastSamples(int howManySamples) {
             return DoGetMB(GetLastSamplesHelper, howManySamples);
+        }
+        public Task<float[]> GetLastSamplesTS(int howManySamples) {
+            return DoGetRelaxed(GetLastSamplesHelper, howManySamples);
         }
         public float[] GetLastSamplesHelper(int howManySamples) {
             float[] lastSamples = new float[howManySamples];
@@ -111,12 +112,12 @@ namespace UnityEPL {
             return lastSamples;
         }
 
-        // TODO: JPB: (bug) Fix AudioClipFromDatapathHelper and make it public 
-        private Task<AudioClip> AudioClipFromDatapath(string datapath) {
-            return DoGetRelaxed(AudioClipFromDatapathHelper, datapath.ToNativeText());
-        }
-        private AudioClip AudioClipFromDatapathMB(string datapath) {
+        // TODO: JPB: (bug) Fix AudioClipFromDatapathHelper and make it public
+        private AudioClip AudioClipFromDatapath(string datapath) {
             return DoGetMB(AudioClipFromDatapathHelper, datapath.ToNativeText());
+        }
+        private Task<AudioClip> AudioClipFromDatapathTS(string datapath) {
+            return DoGetRelaxed(AudioClipFromDatapathHelper, datapath.ToNativeText());
         }
         protected AudioClip AudioClipFromDatapathHelper(NativeText datapath) {
             string url = "file:///" + datapath.ToString();

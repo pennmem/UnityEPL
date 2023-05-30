@@ -28,12 +28,12 @@ namespace UnityEPL {
             if (!gameObject.activeSelf) { 
                 gameObject.SetActive(true);
                 var textDisplayer = gameObject.GetComponent<TextDisplayer>();
-                textDisplayer.DisplayMB("Error", "Error", e.Message);
+                textDisplayer.Display("Error", "Error", e.Message);
             }
             manager.eventReporter.ReportScriptedEventMB("Error", new() {
                 { "message", e.Message },
                 { "stackTrace", e.StackTrace } });
-            manager.Pause(true);
+            manager.PauseTS(true);
         }
 
         public static void Warning(Exception exception) {
@@ -50,12 +50,12 @@ namespace UnityEPL {
         protected void WarningHelper(NativeText message, NativeText stackTrace) {
             gameObject.SetActive(true);
             var textDisplayer = gameObject.GetComponent<TextDisplayer>();
-            textDisplayer.DisplayMB("Warning", "Warning", message.ToString());
+            textDisplayer.Display("Warning", "Warning", message.ToString());
             Debug.Log($"Warning: {message}\n{stackTrace}");
             manager.eventReporter.ReportScriptedEventMB("Warning", new() {
                 { "message", message.ToString() },
                 { "stackTrace", stackTrace.ToString() } });
-            manager.Pause(true);
+            manager.PauseTS(true);
             message.Dispose();
             stackTrace.Dispose();
         }

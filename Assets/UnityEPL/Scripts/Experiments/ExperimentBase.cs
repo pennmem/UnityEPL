@@ -49,7 +49,7 @@ namespace UnityEPL {
                 await TrialStates();
             }
             await PostTrials();
-            manager.Quit();
+            manager.QuitTS();
         }
 
         protected void LogExperimentInfo() {

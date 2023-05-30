@@ -71,7 +71,7 @@ public class StartGame : MonoBehaviour {
         if (SetParticipantData()) {
             //manager.ChangeSetting("sceneToLaunch", (string)manager.GetSetting("tutorialScene"));
 
-            manager.LaunchExperiment();
+            manager.LaunchExperimentTS();
             //ShowConfirmation();
         } else {
             ErrorNotifier.Warning(new InvalidOperationException("Please set participant code and session"));
@@ -83,7 +83,7 @@ public class StartGame : MonoBehaviour {
         if (SetParticipantData()) {
             //manager.ChangeSetting("sceneToLaunch", Config.experimentScene);
             //ShowConfirmation();
-            manager.LaunchExperiment();
+            manager.LaunchExperimentTS();
         } else {
             ErrorNotifier.Warning(new InvalidOperationException("Please set participant code and session"));
             //manager.Do(new EventBase<string, int>(manager.ShowWarning, "Please set participant code and session", 5000));
@@ -105,7 +105,7 @@ public class StartGame : MonoBehaviour {
     }
 
     public void Quit() {
-        manager.Quit();
+        manager.QuitTS();
     }
 
     public void Continue() {

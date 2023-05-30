@@ -79,7 +79,7 @@ namespace UnityEPL {
             launchButton.SetActive(false);
             loadingButton.SetActive(true);
 
-            manager.LaunchExperiment();
+            manager.LaunchExperimentTS();
         }
 
         private bool isValidParticipant(string name) {

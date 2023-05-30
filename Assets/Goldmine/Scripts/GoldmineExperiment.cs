@@ -591,11 +591,11 @@ namespace UnityEPL {
             scheduledPauseCanvas.SetActive(true);
             manager.eventReporter.ReportScriptedEvent("canvasActive", new() { { "canvasName", "MainCanvas" }, { "isActive", false } });
             manager.eventReporter.ReportScriptedEvent("canvasActive", new() { { "canvasName", "ScheduledPauseCanvas" }, { "isActive", true } });
-            manager.Pause(true);
+            manager.PauseTS(true);
 
             await InputManager.Instance.WaitForKey();
 
-            manager.Pause(false);
+            manager.PauseTS(false);
             manager.eventReporter.ReportScriptedEvent("gamePaused", new() { { "isPaused", false }, { "pauseType", "scheduledPause" } });
             mainCanvas.SetActive(true);
             scheduledPauseCanvas.SetActive(false);
