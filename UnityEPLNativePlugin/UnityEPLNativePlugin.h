@@ -1,1 +1,0 @@
-float TestNativePluginFunctionC(void);

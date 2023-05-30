@@ -1,3 +1,0 @@
-Use of the penn syncbox relies on exodriver.  The installation package in this repo has been tested on MacOS 10.13.2, and should be installed in order to use the penn syncbox.  ASimplePlugin created by Corey Novich interfaces with the penn syncbox.  The built version (in the "plugins" folder here) has been tested on MacOS 10.13.2.  There is code here: https://github.com/jacobslab/EEG-Syncbox-XCode-Plugin but building from this code has not been tested.
-
-The freiburg syncbox relies on libusbdotnet.  The libusbdotnet plugin in the plugins folder here has been tested on MacOS 10.13.2.
