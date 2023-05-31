@@ -35,9 +35,12 @@ Adding Config variables
 #. Add asmref for UnityEPL in Scripts
 #. Create a partial class named Config
 #. Implement each item in your config, so that it looks like this
-```csharp
-public static bool elememOn { get { return Config.GetSetting<bool>("elememOn"); } }
-```
+
+.. code:: csharp
+
+    public static bool elememOn { get { return Config.GetSetting<bool>("elememOn"); } }
+
+
 =============
 Types of Experiments and Components Available
 =============
