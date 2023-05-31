@@ -23,18 +23,18 @@ It's really easy to start making a basic experiment.
 Basic Instructions
 =============
 
-1. git submodule add git@github.com:pennmem/UnityEPL.git Assets/
-1. Add asmref for UnityEPL in Scripts
-1. Intherit ExperimentBase on your main experiment class
-1. Implement the abstract methods PreTrials, TrialStates, and PostTrials
+#. git submodule add git@github.com:pennmem/UnityEPL.git Assets/
+#. Add asmref for UnityEPL in Scripts
+#. Intherit ExperimentBase on your main experiment class
+#. Implement the abstract methods PreTrials, TrialStates, and PostTrials
 
 =============
 Adding Config variables
 =============
 
-1. Add asmref for UnityEPL in Scripts
-1. Create a partial class named Config
-1. Implement each item in your config, so that it looks like this
+#. Add asmref for UnityEPL in Scripts
+#. Create a partial class named Config
+#. Implement each item in your config, so that it looks like this
 ```csharp
 public static bool elememOn { get { return Config.GetSetting<bool>("elememOn"); } }
 ```
