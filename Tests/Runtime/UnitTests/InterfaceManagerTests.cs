@@ -12,15 +12,32 @@ using UnityEPL;
 namespace UnityEPLTests {
 
     public class InterfaceManagerTests {
+        // -------------------------------------
+        // Globals
+        // -------------------------------------
+
+        bool isSetup = false;
+
         const double ONE_FRAME_MS = 1000.0 / 120.0;
         const double DELAY_JITTER_MS = 9;
         // TODO: JPB: (bug) The acceptable jitter for InterfaceManager.Delay() should be less than 9ms
 
+        // -------------------------------------
+        // Setup
+        // -------------------------------------
+
         [UnitySetUp]
         public IEnumerator Setup() {
-            if (InterfaceManager.Instance == null) SceneManager.LoadScene("manager");
-            yield return null; // Wait for InterfaceManager Awake call
+            if (!isSetup) {
+                isSetup = true;
+                SceneManager.LoadScene("manager");
+                yield return null; // Wait for InterfaceManager Awake call
+            }
         }
+
+        // -------------------------------------
+        // General Tests
+        // -------------------------------------
 
         [Test]
         public void Creation() {

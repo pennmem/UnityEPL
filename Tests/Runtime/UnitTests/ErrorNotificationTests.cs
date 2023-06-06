@@ -14,17 +14,32 @@ using UnityEPL;
 namespace UnityEPLTests {
 
     public class ErrorNotifierTests {
+        // -------------------------------------
+        // Globals
+        // -------------------------------------
+
+        bool isSetup = false;
+
+        // -------------------------------------
+        // Setup
+        // -------------------------------------
+
         [UnitySetUp]
         public IEnumerator Setup() {
-            if (InterfaceManager.Instance == null) SceneManager.LoadScene("manager");
-            yield return null; // Wait for InterfaceManager Awake call
+            if (!isSetup) {
+                isSetup = true;
+                SceneManager.LoadScene("manager");
+                yield return null; // Wait for InterfaceManager Awake call
+            }
         }
+
+        // -------------------------------------
+        // General Tests
+        // -------------------------------------
 
         [UnityTest]
         public IEnumerator MakeErrorNotification() {
             var inputText = "TESTING";
-
-            LogAssert.Expect(LogType.Exception, new Regex("Exception: .*"));
 
             Assert.Throws<Exception>(() => {
                 ErrorNotifier.Error(new Exception(inputText));

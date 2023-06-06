@@ -27,6 +27,7 @@ namespace UnityEPLTests {
         // -------------------------------------
 
         EMB emb;
+        bool isSetup = false;
 
         // TODO: JPB: (bug) Things should probably never take two frames
         const double ONE_FRAME_MS = 1000.0 / 120.0;
@@ -38,8 +39,11 @@ namespace UnityEPLTests {
 
         [UnitySetUp]
         public IEnumerator Setup() {
-            if (InterfaceManager.Instance == null) SceneManager.LoadScene("manager");
-            yield return null; // Wait for InterfaceManager Awake call
+            if (!isSetup) {
+                isSetup = true;
+                SceneManager.LoadScene("manager");
+                yield return null; // Wait for InterfaceManager Awake call
+            }
 
             if (emb == null) emb = new GameObject().AddComponent<EMB>();
         }
@@ -128,9 +132,9 @@ namespace UnityEPLTests {
         [UnityTest]
         public IEnumerator DoGetTaskMBSafetyCheck() {
             Exception exception = null;
-            var thread = new Thread(() => {
+            var thread = new Thread(async () => {
                 try {
-                    emb.GetMutexValTaskMB();
+                    await emb.GetMutexValTaskMB();
                 } catch (InvalidOperationException e) {
                     exception = e;
                 }
@@ -450,10 +454,10 @@ namespace UnityEPLTests {
         [UnityTest]
         public IEnumerator DoWaitForTaskMBSafetyCheck() {
             Exception exception = null;
-            var thread = new Thread(() => {
+            var thread = new Thread(async () => {
                 try {
-                    emb.DelayedIncAndWaitTaskMB(1000);
-                } catch (InvalidOperationException e) {
+                    await emb.DelayedIncAndWaitTaskMB(1000);
+                } catch (Exception e) {
                     exception = e;
                 }
             });

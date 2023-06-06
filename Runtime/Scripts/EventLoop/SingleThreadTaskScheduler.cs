@@ -1,4 +1,6 @@
+using Palmmedia.ReportGenerator.Core.Parser.Analysis;
 using System;
+using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,9 +26,9 @@ namespace UnityEPL {
 
         public SingleThreadTaskScheduler(CancellationToken cancellationToken) {
             this._cancellationToken = cancellationToken;
-            this._taskQueue = new BlockingCollection<Task>();
-            _singleThread = new Thread(RunOnCurrentThread) { Name = "STTS Thread", IsBackground = true };
-            _singleThread.Start();
+            this._taskQueue = new(new ConcurrentQueue<Task>());
+            this._singleThread = new(RunOnCurrentThread) { Name = "STTS Thread", IsBackground = true };
+            this._singleThread.Start();
         }
 
         public void Abort() {

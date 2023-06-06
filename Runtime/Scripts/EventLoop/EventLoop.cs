@@ -115,7 +115,10 @@ namespace UnityEPL {
             if (cts.IsCancellationRequested) {
                 throw new OperationCanceledException("EventLoop has been stopped already.");
             }
-            StartTask(func);
+
+            var t = StartTask(func);
+            //Debug.Log($"Starting Do: {t.Id}");
+            //StartTask(func);
         }
         protected void Do<T>(Func<T, Task> func, T t)
                 where T : struct {
@@ -641,27 +644,27 @@ namespace UnityEPL {
         private Task StartTask(Action func) {
             return Task.Factory.StartNew(TaskErrorHandler(func), cts.Token, TaskCreationOptions.DenyChildAttach, scheduler);
         }
-        private Task<Task> StartTask(Func<Task> func) {
-            return Task.Factory.StartNew(TaskErrorHandler(func), cts.Token, TaskCreationOptions.DenyChildAttach, scheduler);
-        }
-        private Task<Task<Z>> StartTask<Z>(Func<Task<Z>> func) {
-            return Task.Factory.StartNew(TaskErrorHandler(func), cts.Token, TaskCreationOptions.DenyChildAttach, scheduler);
-        }
+        //private Task<Task> StartTask(Func<Task> func) {
+        //    return Task.Factory.StartNew(TaskErrorHandler(func), cts.Token, TaskCreationOptions.DenyChildAttach, scheduler);
+        //}
+        //private Task<Task<Z>> StartTask<Z>(Func<Task<Z>> func) {
+        //    return Task.Factory.StartNew(TaskErrorHandler(func), cts.Token, TaskCreationOptions.DenyChildAttach, scheduler);
+        //}
         private Task<Z> StartTask<Z>(Func<Z> func) {
             return Task.Factory.StartNew(TaskErrorHandler(func), cts.Token, TaskCreationOptions.DenyChildAttach, scheduler);
         }
 #else
         private Task StartTask(Action func) {
-            return Task.Factory.StartNew(TaskErrorHandler(func), cts.Token);
+            return Task.Factory.StartNew(TaskErrorHandler(func), cts.Token, TaskCreationOptions.DenyChildAttach, scheduler);
         }
-        private Task<Task> StartTask(Func<Task> func) {
-            return Task.Factory.StartNew(TaskErrorHandler(func), cts.Token);
-        }
-        private Task<Task<Z>> StartTask<Z>(Func<Task<Z>> func) {
-            return Task.Factory.StartNew(TaskErrorHandler(func), cts.Token);
-        }
+        //private Task<Task> StartTask(Func<Task> func) {
+        //    return Task.Factory.StartNew(TaskErrorHandler(func), cts.Token);
+        //}
+        //private Task<Task<Z>> StartTask<Z>(Func<Task<Z>> func) {
+        //    return Task.Factory.StartNew(TaskErrorHandler(func), cts.Token);
+        //}
         private Task<Z> StartTask<Z>(Func<Z> func) {
-            return Task.Factory.StartNew(TaskErrorHandler(func), cts.Token);
+            return Task.Factory.StartNew(TaskErrorHandler(func), cts.Token, TaskCreationOptions.DenyChildAttach, scheduler);
         }
 #endif
 

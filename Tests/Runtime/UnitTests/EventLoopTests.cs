@@ -4,19 +4,37 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 
 using UnityEPL;
 
 namespace UnityEPLTests {
 
+    // TODO: JPB: (refactor) Convert all EventLoopTests to async Task and remove Task.Run
+
     public class EventLoopTests {
         // -------------------------------------
         // Globals
         // -------------------------------------
 
-        const double DELAY_JITTER_MS = 2;
+        bool isSetup = false;
 
+        const double DELAY_JITTER_MS = 2;
+        InterfaceManager im = new();
+
+
+        // -------------------------------------
+        // Setup
+        // -------------------------------------
+        [UnitySetUp]
+        public IEnumerator Setup() {
+            if (!isSetup) {
+                isSetup = true;
+                SceneManager.LoadScene("manager");
+                yield return null; // Wait for InterfaceManager Awake call
+            }
+        }
 
         // -------------------------------------
         // DoGet Tests
@@ -87,7 +105,6 @@ namespace UnityEPLTests {
                 var i = await el.GetI();
 
                 el.IncTask();
-                //await InterfaceManager.Delay(100);
 
                 Assert.AreEqual(i + 1, await el.GetI());
             }).Wait();
@@ -299,7 +316,7 @@ namespace UnityEPLTests {
         }
 
         public void DelayedIncAct(int millisecondsDelay) {
-            DoIn(millisecondsDelay, IncActHelper);
+            DoIn(millisecondsDelay, DelayedIncActHelper);
         }
         protected void DelayedIncActHelper() {
             i += 1;

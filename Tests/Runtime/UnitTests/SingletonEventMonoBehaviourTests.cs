@@ -13,12 +13,28 @@ using UnityEPL;
 namespace UnityEPLTests {
 
     public class SingletonEventMonoBehaviorTests {
+        // -------------------------------------
+        // Globals
+        // -------------------------------------
+
+        bool isSetup = false;
+
+        // -------------------------------------
+        // Setup
+        // -------------------------------------
 
         [UnitySetUp]
         public IEnumerator Setup() {
-            if (InterfaceManager.Instance == null) SceneManager.LoadScene("manager");
-            yield return null; // Wait for InterfaceManager Awake call
+            if (!isSetup) {
+                isSetup = true;
+                SceneManager.LoadScene("manager");
+                yield return null; // Wait for InterfaceManager Awake call
+            }
         }
+
+        // -------------------------------------
+        // General Tests
+        // -------------------------------------
 
         [Test]
         public void Creation() {
