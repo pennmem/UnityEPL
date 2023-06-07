@@ -117,12 +117,8 @@ namespace UnityEPL {
         /// </summary>
         /// <param name="task"></param>
         public static IEnumerator ToEnumerator(this Task task) {
-            yield return new WaitUntil(() => {
-                if (task.IsFaulted) {
-                    ErrorNotifier.Error(task.Exception);
-                }
-                return task.IsCompleted;
-            });
+            while(!task.IsCompleted) { yield return null; }
+            if (task.IsFaulted) { ErrorNotifier.Error(task.Exception.InnerException); }
         }
 
         /// <summary>
@@ -132,17 +128,12 @@ namespace UnityEPL {
         /// <typeparam name="T"></typeparam>
         /// <param name="task"></param>
         public static IEnumerator ToEnumerator<T>(this Task<T> task) {
-            yield return new WaitUntil(() => {
-                if (task.IsFaulted) {
-                    ErrorNotifier.Error(task.Exception);
-                }
-                return task.IsCompleted;
-            });
+            while (!task.IsCompleted) { yield return null; }
+            if (task.IsFaulted) { ErrorNotifier.Error(task.Exception.InnerException); }
         }
     }
 
     public static class MonoBehaviourExtensions {
-
         /// <summary>
         /// Quits the game
         /// </summary>
@@ -154,6 +145,20 @@ namespace UnityEPL {
 #else
             Application.Quit();
 #endif
+        }
+    }
+
+    public static class AudioSourceExtentions {
+        /// <summary>
+        /// Plays a provided audio clip.
+        /// </summary>
+        /// <param name="audioSource">The audio source</param>
+        /// <param name="audioClip">The audio clip to play</param>
+        /// <returns>The audio clip length</returns>
+        public static float Play(this AudioSource audioSource, AudioClip audioClip) {
+            audioSource.clip = audioClip;
+            audioSource.Play();
+            return audioClip.length;
         }
     }
 

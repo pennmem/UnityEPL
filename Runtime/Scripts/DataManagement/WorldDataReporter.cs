@@ -28,8 +28,8 @@ namespace UnityEPL {
         }
 
 
-        public void DoTransformReportMB(Dictionary<string, object> extraData = null) {
-            DoMB(DoTransformReportHelper, extraData);
+        public void DoTransformReport(Dictionary<string, object> extraData = null) {
+            Do(DoTransformReportHelper, extraData);
         }
         public void DoTransformReportHelper(Dictionary<string, object> extraData = null) {
             var transformDict = (extraData != null) ? new Dictionary<string, object>(extraData) : new();
@@ -48,7 +48,7 @@ namespace UnityEPL {
 
         private void CheckTransformReport() {
             if (Time.frameCount % framesPerTransformReport == 0) {
-                DoTransformReportMB();
+                DoTransformReport();
             }
         }
 

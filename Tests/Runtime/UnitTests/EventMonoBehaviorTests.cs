@@ -790,7 +790,7 @@ namespace UnityEPLTests {
             // -------------------------------------
 
             public int GetMutexValFuncMB() {
-                return DoGetMB(GetMutexValFuncMBHelper);
+                return DoGet(GetMutexValFuncMBHelper);
             }
             protected int GetMutexValFuncMBHelper() {
                 return mutex.Get();
@@ -798,7 +798,7 @@ namespace UnityEPLTests {
 
 #if EVENTMONOBEHAVIOR_TASK_OPERATORS
             public Task<int> GetMutexValTaskMB() {
-                return DoGetMB<int>(GetMutexValTaskMBHelper);
+                return DoGet<int>(GetMutexValTaskMBHelper);
             }
             protected async Task<int> GetMutexValTaskMBHelper() {
                 await InterfaceManager.Delay(1);
@@ -807,14 +807,14 @@ namespace UnityEPLTests {
 #endif // EVENTMONOBEHAVIOR_TASK_OPERATORS
 
             public Task<int> GetMutexValEnum() {
-                return DoGet<int>(GetMutexValEnumHelper);
+                return DoGetTS<int>(GetMutexValEnumHelper);
             }
             protected IEnumerator<int> GetMutexValEnumHelper() {
                 yield return mutex.Get();
             }
 
             public Task<int> GetMutexValFunc() {
-                return DoGet<int>(GetMutexValFuncHelper);
+                return DoGetTS<int>(GetMutexValFuncHelper);
             }
             protected int GetMutexValFuncHelper() {
                 return mutex.Get();
@@ -822,7 +822,7 @@ namespace UnityEPLTests {
 
 #if EVENTMONOBEHAVIOR_TASK_OPERATORS
             public Task<int> GetMutexValTask() {
-                return DoGet<int>(GetMutexValTaskHelper);
+                return DoGetTS<int>(GetMutexValTaskHelper);
             }
             protected async Task<int> GetMutexValTaskHelper() {
                 await InterfaceManager.Delay(1);
@@ -831,7 +831,7 @@ namespace UnityEPLTests {
 #endif // EVENTMONOBEHAVIOR_TASK_OPERATORS
 
             public Task<int> GetMutexValManualTriggerEnum() {
-                return DoGetManualTrigger<int>(GetMutexValManualTriggerEnumHelper);
+                return DoGetManualTriggerTS<int>(GetMutexValManualTriggerEnumHelper);
             }
             protected IEnumerator GetMutexValManualTriggerEnumHelper(TaskCompletionSource<int> tcs) {
                 tcs.SetResult(mutex.Get());
@@ -840,7 +840,7 @@ namespace UnityEPLTests {
 
 #if EVENTMONOBEHAVIOR_MANUAL_RESULT_SET
             public Task<int> GetMutexValManualTriggerFunc() {
-                return DoGetManualTrigger<int>(GetMutexValManualTriggerFuncHelper);
+                return DoGetManualTriggerTS<int>(GetMutexValManualTriggerFuncHelper);
             }
             protected void GetMutexValManualTriggerFuncHelper(TaskCompletionSource<int> tcs) {
                 tcs.SetResult(mutex.Get());
@@ -848,7 +848,7 @@ namespace UnityEPLTests {
 
 #if EVENTMONOBEHAVIOR_TASK_OPERATORS
             public Task<int> GetMutexValManualTriggerTask() {
-                return DoGetManualTrigger<int>(GetMutexValManualTriggerTaskHelper);
+                return DoGetManualTriggerTS<int>(GetMutexValManualTriggerTaskHelper);
             }
             protected Task GetMutexValManualTriggerTaskHelper(TaskCompletionSource<int> tcs) {
                 tcs.SetResult(mutex.Get());
@@ -863,21 +863,21 @@ namespace UnityEPLTests {
             // -------------------------------------
 
             public int GetIMB() {
-                return DoGetMB(GetIMBHelper);
+                return DoGet(GetIMBHelper);
             }
             protected int GetIMBHelper() {
                 return i;
             }
 
             public void IncActMB() {
-                DoMB(IncActMBHelper);
+                Do(IncActMBHelper);
             }
             protected void IncActMBHelper() {
                 i += 1;
             }
 
             public IEnumerator IncThreeTimesEnumMB(int delayMs, int intervalMs, uint? iterations) {
-                yield return DoRepeatingMB(delayMs, intervalMs, iterations, IncThreeTimesEnumMBHelper);
+                yield return DoRepeating(delayMs, intervalMs, iterations, IncThreeTimesEnumMBHelper);
             }
             protected IEnumerator IncThreeTimesEnumMBHelper() {
                 i += 1;
@@ -885,14 +885,14 @@ namespace UnityEPLTests {
             }
 
             public void IncThreeTimesActMB(int delayMs, int intervalMs, uint? iterations) {
-                DoRepeatingMB(delayMs, intervalMs, iterations, IncThreeTimesActMBHelper);
+                DoRepeating(delayMs, intervalMs, iterations, IncThreeTimesActMBHelper);
             }
             protected void IncThreeTimesActMBHelper() {
                 i += 1;
             }
 
             public IEnumerator DelayedIncAndWaitEnumMB(int millisecondsDelay) {
-                yield return DoWaitForMB(DelayedIncAndWaitEnumMBHelper, millisecondsDelay);
+                yield return DoWaitFor(DelayedIncAndWaitEnumMBHelper, millisecondsDelay);
             }
             protected IEnumerator DelayedIncAndWaitEnumMBHelper(int millisecondsDelay) {
                 yield return InterfaceManager.DelayE(1000);
@@ -901,7 +901,7 @@ namespace UnityEPLTests {
 
 #if EVENTMONOBEHAVIOR_TASK_OPERATORS
             public Task DelayedIncAndWaitTaskMB(int millisecondsDelay) {
-                return DoWaitForMB(DelayedIncAndWaitTaskMBHelper, millisecondsDelay);
+                return DoWaitFor(DelayedIncAndWaitTaskMBHelper, millisecondsDelay);
             }
             protected async Task DelayedIncAndWaitTaskMBHelper(int millisecondsDelay) {
                 await InterfaceManager.Delay(1000);
@@ -914,14 +914,14 @@ namespace UnityEPLTests {
             // -------------------------------------
 
             public async Task<int> GetI() {
-                return await DoGet<int>(GetIHelper);
+                return await DoGetTS<int>(GetIHelper);
             }
             protected IEnumerator<int> GetIHelper() {
                 yield return i;
             }
 
             public void IncEnum() {
-                Do(IncEnumHelper);
+                DoTS(IncEnumHelper);
             }
             protected IEnumerator IncEnumHelper() {
                 i += 1;
@@ -929,14 +929,14 @@ namespace UnityEPLTests {
             }
 
             public void IncAct() {
-                Do(IncActHelper);
+                DoTS(IncActHelper);
             }
             protected void IncActHelper() {
                 i += 1;
             }
 
             public void DelayedIncEnum(int millisecondsDelay) {
-                DoIn(millisecondsDelay, DelayedIncEnumHelper);
+                DoInTS(millisecondsDelay, DelayedIncEnumHelper);
             }
             protected IEnumerator DelayedIncEnumHelper() {
                 i += 1;
@@ -944,14 +944,14 @@ namespace UnityEPLTests {
             }
 
             public void DelayedIncAct(int millisecondsDelay) {
-                DoIn(millisecondsDelay, DelayedIncActHelper);
+                DoInTS(millisecondsDelay, DelayedIncActHelper);
             }
             protected void DelayedIncActHelper() {
                 i += 1;
             }
 
             public void IncThreeTimesEnum(int delayMs, int intervalMs, uint? iterations) {
-                DoRepeating(delayMs, intervalMs, iterations, IncThreeTimesEnumHelper);
+                DoRepeatingTS(delayMs, intervalMs, iterations, IncThreeTimesEnumHelper);
             }
             protected IEnumerator IncThreeTimesEnumHelper() {
                 i += 1;
@@ -959,14 +959,14 @@ namespace UnityEPLTests {
             }
 
             public void IncThreeTimesAct(int delayMs, int intervalMs, uint? iterations) {
-                DoRepeating(delayMs, intervalMs, iterations, IncThreeTimesActHelper);
+                DoRepeatingTS(delayMs, intervalMs, iterations, IncThreeTimesActHelper);
             }
             protected void IncThreeTimesActHelper() {
                 i += 1;
             }
 
             public async Task DelayedIncAndWaitEnum(int millisecondsDelay) {
-                await DoWaitFor(DelayedIncAndWaitEnumHelper, millisecondsDelay);
+                await DoWaitForTS(DelayedIncAndWaitEnumHelper, millisecondsDelay);
             }
             protected IEnumerator DelayedIncAndWaitEnumHelper(int millisecondsDelay) {
                 yield return InterfaceManager.DelayE(1000);
@@ -974,7 +974,7 @@ namespace UnityEPLTests {
             }
 
             public async Task DelayedIncAndWaitAct(int millisecondsDelay) {
-                await DoWaitFor(DelayedIncAndWaitActHelper, millisecondsDelay);
+                await DoWaitForTS(DelayedIncAndWaitActHelper, millisecondsDelay);
             }
             protected void DelayedIncAndWaitActHelper(int millisecondsDelay) {
                 var start = Clock.UtcNow;
@@ -984,7 +984,7 @@ namespace UnityEPLTests {
 
 #if EVENTMONOBEHAVIOR_TASK_OPERATORS
             public Task DelayedIncAndWaitTask(int millisecondsDelay) {
-                return DoWaitFor(DelayedIncAndWaitTaskHelper, millisecondsDelay);
+                return DoWaitForTS(DelayedIncAndWaitTaskHelper, millisecondsDelay);
             }
             protected async Task DelayedIncAndWaitTaskHelper(int millisecondsDelay) {
                 await InterfaceManager.Delay(1000);
@@ -995,7 +995,7 @@ namespace UnityEPLTests {
 
 #if EVENTMONOBEHAVIOR_MANUAL_RESULT_SET
             public Task DelayedIncAndWaitManualTriggerEnum(int millisecondsDelay) {
-                return DoWaitForManualTrigger(DelayedIncAndWaitManualTriggerEnumHelper, millisecondsDelay);
+                return DoWaitForManualTriggerTS(DelayedIncAndWaitManualTriggerEnumHelper, millisecondsDelay);
             }
             protected IEnumerator DelayedIncAndWaitManualTriggerEnumHelper(TaskCompletionSource<bool> tcs, int millisecondsDelay) {
                 yield return InterfaceManager.DelayE(1000);
@@ -1004,7 +1004,7 @@ namespace UnityEPLTests {
             }
 
             public Task DelayedIncAndWaitManualTriggerAct(int millisecondsDelay) {
-                return DoWaitForManualTrigger(DelayedIncAndWaitManualTriggerActHelper, millisecondsDelay);
+                return DoWaitForManualTriggerTS(DelayedIncAndWaitManualTriggerActHelper, millisecondsDelay);
             }
             protected void DelayedIncAndWaitManualTriggerActHelper(TaskCompletionSource<bool> tcs, int millisecondsDelay) {
                 var start = Clock.UtcNow;
@@ -1015,7 +1015,7 @@ namespace UnityEPLTests {
 
 #if EVENTMONOBEHAVIOR_TASK_OPERATORS
             public Task DelayedIncAndWaitManualTriggerTask(int millisecondsDelay) {
-                return DoWaitForManualTrigger(DelayedIncAndWaitManualTriggerTaskHelper, millisecondsDelay);
+                return DoWaitForManualTriggerTS(DelayedIncAndWaitManualTriggerTaskHelper, millisecondsDelay);
             }
             protected async Task DelayedIncAndWaitManualTriggerTaskHelper(TaskCompletionSource<bool> tcs, int millisecondsDelay) {
                 await InterfaceManager.Delay(1000);

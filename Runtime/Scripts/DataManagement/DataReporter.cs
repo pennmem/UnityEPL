@@ -47,14 +47,14 @@ namespace UnityEPL {
 
             if (reportTo) {
                 // TODO: JPB: (needed) (bug) Figure out why DataReporter::OnEnable crashes when I call AddReporterMB
-                //reportTo.AddReporterMB(this);
+                //reportTo.AddReporter(this);
             }
         }
 
         protected void OnDisable() {
             if (reportTo) {
                 eventQueue.Enqueue(new DataPoint(reportingID + "Disabled"));
-                reportTo.RemoveReporterMB(this);
+                reportTo.RemoveReporter(this);
             }
         }
 
@@ -64,8 +64,8 @@ namespace UnityEPL {
         /// Datapoints are dequeued when read. (Usually when  handled by a DataHandler.)
         /// </summary>
         /// <returns>The data point count.</returns>
-        public int UnreadDataPointCountMB() {
-            return DoGetMB(UnreadDataPointCountHelper);
+        public int UnreadDataPointCount() {
+            return DoGet(UnreadDataPointCountHelper);
         }
         protected int UnreadDataPointCountHelper() {
             return eventQueue.Count;
@@ -78,8 +78,8 @@ namespace UnityEPL {
         /// </summary>
         /// <returns>The data points.</returns>
         /// <param name="count">How many data points to read.</param>
-        public DataPoint[] ReadDataPointsMB(int count) {
-            return DoGetMB(ReadDataPointsHelper, count);
+        public DataPoint[] ReadDataPoints(int count) {
+            return DoGet(ReadDataPointsHelper, count);
         }
         protected DataPoint[] ReadDataPointsHelper(int count) {
             if (eventQueue.Count < count) {
@@ -99,8 +99,8 @@ namespace UnityEPL {
             return dataPoints;
         }
 
-        public void DoReportMB(Dictionary<string, object> extraData = null) {
-            DoMB(DoReportHelper, extraData);
+        public void DoReport(Dictionary<string, object> extraData = null) {
+            Do(DoReportHelper, extraData);
         }
         protected void DoReportHelper(Dictionary<string, object> extraData = null) {
             var transformDict = (extraData != null) ? new Dictionary<string, object>(extraData) : new();

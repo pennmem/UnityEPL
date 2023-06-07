@@ -47,10 +47,10 @@ namespace UnityEPL {
         //using the system's default device
 
         public void StartRecording(string outputFilePath) {
-            DoMB(StartRecordingHelper, outputFilePath.ToNativeText());
+            Do(StartRecordingHelper, outputFilePath.ToNativeText());
         }
         public void StartRecordingTS(string outputFilePath) {
-            Do(StartRecordingHelper, outputFilePath.ToNativeText());
+            DoTS(StartRecordingHelper, outputFilePath.ToNativeText());
         }
         protected void StartRecordingHelper(NativeText outputFilePath) {
             if (isRecording) {
@@ -65,10 +65,10 @@ namespace UnityEPL {
         }
       
         public AudioClip StopRecording() {
-            return DoGetMB(StopRecordingHelper);
+            return DoGet(StopRecordingHelper);
         }
         public Task<AudioClip> StopRecordingTS() {
-            return DoGetRelaxed(StopRecordingHelper);
+            return DoGetRelaxedTS(StopRecordingHelper);
         }
         protected AudioClip StopRecordingHelper() {
             if (!isRecording) {
@@ -90,10 +90,10 @@ namespace UnityEPL {
         }
 
         public float[] GetLastSamples(int howManySamples) {
-            return DoGetMB(GetLastSamplesHelper, howManySamples);
+            return DoGet(GetLastSamplesHelper, howManySamples);
         }
         public Task<float[]> GetLastSamplesTS(int howManySamples) {
-            return DoGetRelaxed(GetLastSamplesHelper, howManySamples);
+            return DoGetRelaxedTS(GetLastSamplesHelper, howManySamples);
         }
         public float[] GetLastSamplesHelper(int howManySamples) {
             float[] lastSamples = new float[howManySamples];
@@ -114,10 +114,10 @@ namespace UnityEPL {
 
         // TODO: JPB: (bug) Fix AudioClipFromDatapathHelper and make it public
         private AudioClip AudioClipFromDatapath(string datapath) {
-            return DoGetMB(AudioClipFromDatapathHelper, datapath.ToNativeText());
+            return DoGet(AudioClipFromDatapathHelper, datapath.ToNativeText());
         }
         private Task<AudioClip> AudioClipFromDatapathTS(string datapath) {
-            return DoGetRelaxed(AudioClipFromDatapathHelper, datapath.ToNativeText());
+            return DoGetRelaxedTS(AudioClipFromDatapathHelper, datapath.ToNativeText());
         }
         protected AudioClip AudioClipFromDatapathHelper(NativeText datapath) {
             string url = "file:///" + datapath.ToString();
@@ -148,8 +148,10 @@ namespace UnityEPL {
         protected override void AwakeOverride() { }
 
         public void StartRecording(string outputFilePath) { throw new NotImplementedException(); }
+        public void StartRecordingTS(string outputFilePath) { throw new NotImplementedException(); }
 
         public async Task<AudioClip> StopRecording() { throw new NotImplementedException(); }
+        public async Task<AudioClip> StopRecordingTS() { throw new NotImplementedException(); }
 
         public async Task<float[]> GetLastSamples(int howManySamples) { throw new NotImplementedException(); }
 

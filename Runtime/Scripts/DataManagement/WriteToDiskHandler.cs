@@ -21,13 +21,14 @@ namespace UnityEPL {
         [SerializeField]
         private uint framesPerWrite = 30;
 
+        // TODO: JPB: (refactor) Why doesn't WriteToDiskHandler just use DataHandler::eventQueue here?
         private Queue<DataPoint> waitingPoints = new Queue<DataPoint>();
 
         public void SetFormat(FORMAT format) {
             Do(SetFormatHelper, format);
         }
-        public void SetFormatMB(FORMAT format) {
-            DoMB(SetFormatHelper, format);
+        public void SetFormatTS(FORMAT format) {
+            DoTS(SetFormatHelper, format);
         }
         protected void SetFormatHelper(FORMAT format) {
             outputFormat = format;
@@ -36,18 +37,18 @@ namespace UnityEPL {
         public void SetWriteAutomatically(Bool enable) {
             Do(SetWriteAutomaticallyHelper, enable);
         }
-        public void SetWriteAutomaticallyMB(Bool enable) {
-            DoMB(SetWriteAutomaticallyHelper, enable);
+        public void SetWriteAutomaticallyTS(Bool enable) {
+            DoTS(SetWriteAutomaticallyHelper, enable);
         }
         protected void SetWriteAutomaticallyHelper(Bool enable) {
             writeAutomatically = enable;
         }
 
-        public async Task<bool> GetWriteAutomatically() {
-            return await DoGet(GetWriteAutomaticallyHelper);
+        public bool GetWriteAutomatically() {
+            return DoGet(GetWriteAutomaticallyHelper);
         }
-        public bool GetWriteAutomaticallyMB() {
-            return DoGetMB(GetWriteAutomaticallyHelper);
+        public async Task<bool> GetWriteAutomaticallyTS() {
+            return await DoGetTS(GetWriteAutomaticallyHelper);
         }
         protected Bool GetWriteAutomaticallyHelper() {
             return writeAutomatically;
@@ -56,18 +57,18 @@ namespace UnityEPL {
         public void SetFramesPerWrite(uint framesPerWrite) {
             Do(SetFramesPerWriteHelper, framesPerWrite);
         }
-        public void SetFramesPerWriteMB(uint framesPerWrite) {
-            DoMB(SetFramesPerWriteHelper, framesPerWrite);
+        public void SetFramesPerWriteTS(uint framesPerWrite) {
+            DoTS(SetFramesPerWriteHelper, framesPerWrite);
         }
         protected void SetFramesPerWriteHelper(uint framesPerWrite) {
             this.framesPerWrite = framesPerWrite;
         }
 
-        public async Task<uint> GetFramesPerWrite() {
-            return await DoGet(GetFramesPerWriteHelper);
+        public uint GetFramesPerWrite() {
+            return DoGet(GetFramesPerWriteHelper);
         }
-        public uint GetFramesPerWriteMB() {
-            return DoGetMB(GetFramesPerWriteHelper);
+        public async Task<uint> GetFramesPerWriteTS() {
+            return await DoGetTS(GetFramesPerWriteHelper);
         }
         protected uint GetFramesPerWriteHelper() {
             return framesPerWrite;

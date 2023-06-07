@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
@@ -34,11 +35,8 @@ namespace UnityEPL {
         const string SYSTEM_CONFIG = "config.json";
 
         //////////
-        // Experiment Settings and Experiment object
-        // that is instantiated once launch is called
+        // Random Number Generators
         ////////// 
-        // global random number source, wrapped so that out of thread 
-        // access doesn't break generation
         public static ThreadLocal<System.Random> rnd { get; private set; } = new(() => { return new(); });
         public static ThreadLocal<System.Random> stableRnd { get; private set; } = null;
 
@@ -46,12 +44,6 @@ namespace UnityEPL {
         // ???
         //////////
         public FileManager fileManager;
-
-        //////////
-        // Testing things
-        //////////
-        // TODO: JPB: (needed) (refactor) Remove TestTextDisplayer
-        public TestTextDisplayer testTextDisplayer;
 
         //////////
         // Devices that can be accessed by managed
@@ -73,30 +65,23 @@ namespace UnityEPL {
         public UIDataReporter uiReporter;
         private int eventsPerFrame;
 
-        // TODO: JPB: (needed) (refactor) Move below variables out of Interface Manager
-        protected AudioSource highBeep;
-        protected AudioSource lowBeep;
-        protected AudioSource lowerBeep;
-        protected AudioSource playback;
-        public Task PlayLowBeep() {
-            return DoWaitFor(PlayLowBeepHelper);
-        }
-        public IEnumerator PlayLowBeepHelper() {
-            lowBeep.Play();
-            yield return InterfaceManager.DelayE((int)(lowBeep.clip.length * 1000) + 100);
-        }
-        public void SetPlayback(AudioClip audioClip) {
-            Do(() => { playback.clip = audioClip; });
-        }
-        public void PlayPlayback() {
-            Do(playback.Play);
-        }
+        //////////
+        // Provided AudioSources
+        //////////
+        public AudioSource highBeep;
+        public AudioSource lowBeep;
+        public AudioSource lowerBeep;
+        public AudioSource playback;
 
-
-
+        //////////
+        // Event Loop Handling
+        //////////
         public ConcurrentBag<EventLoop> eventLoops = new();
-
         public ConcurrentQueue<IEnumerator> events = new();
+
+        //////////
+        // Setup
+        //////////
 
         private void OnDestroy() {
             QuitTS();
@@ -158,7 +143,7 @@ namespace UnityEPL {
         }
 
         //////////
-        // collect references to managed objects
+        // Collect references to managed objects
         // and release references to non-active objects
         //////////
         private void onSceneLoaded(Scene scene, LoadSceneMode mode) {
@@ -219,6 +204,16 @@ namespace UnityEPL {
             //    ramulator = ramulatorObject.GetComponent<RamulatorInterface>();
             //    Debug.Log("Found Ramulator");
             //}
+
+            // Experiment Manager
+            try {
+                var expManager = scene.GetRootGameObjects().Where(go => go.name == Config.experimentClass).First();
+                expManager.SetActive(true);
+            } catch (InvalidOperationException exception) {
+                ErrorNotifier.Error(new Exception(
+                    $"Missing experiment GameObject that is the same name as the experiment class ({Config.experimentClass})",
+                    exception));
+            }
         }
         
 
@@ -324,7 +319,7 @@ namespace UnityEPL {
 
         // These can be called by anything
         public void PauseTS(bool pause) {
-            Do<Bool>(PauseHelper, pause);
+            DoTS<Bool>(PauseHelper, pause);
         }
         protected void PauseHelper(Bool pause) {
             // TODO: JPB: (needed) Implement pause functionality correctly
@@ -334,7 +329,7 @@ namespace UnityEPL {
 
         public void QuitTS() {
             hostPC?.Quit();
-            Do(QuitHelper);
+            DoTS(QuitHelper);
         }
         protected void QuitHelper() {
             foreach (var eventLoop in eventLoops) {
@@ -345,7 +340,7 @@ namespace UnityEPL {
         }
 
         public void LaunchExperimentTS() {
-            Do(LaunchExperimentHelper);
+            DoTS(LaunchExperimentHelper);
         }
         protected IEnumerator LaunchExperimentHelper() {
             // launch scene with exp, 
@@ -383,7 +378,7 @@ namespace UnityEPL {
         }
 
         public void LoadExperimentConfig(string name) {
-            DoMB(LoadExperimentConfigHelper, name);
+            Do(LoadExperimentConfigHelper, name);
         }
         public void LoadExperimentConfigHelper(string name) {
             Config.experimentConfigName = name;
@@ -394,10 +389,10 @@ namespace UnityEPL {
         // Helpful functions
 
         public void LockCursor(CursorLockMode isLocked) {
-            DoMB(LockCursorHelper, isLocked);
+            Do(LockCursorHelper, isLocked);
         }
         public void LockCursorTS(CursorLockMode isLocked) {
-            Do(LockCursorHelper, isLocked);
+            DoTS(LockCursorHelper, isLocked);
         }
         public void LockCursorHelper(CursorLockMode isLocked) {
             UnityEngine.Cursor.lockState = isLocked;
@@ -427,7 +422,7 @@ namespace UnityEPL {
             await manager.lightController.StartClosedLoop(manager.videoControl.videoLength);
             await manager.videoControl.PlayVideo();
             var loggingMsg = new Dictionary<string, object> { { "length", manager.videoControl.videoLength } };
-            manager.eventReporter.ReportScriptedEvent("Video Info", loggingMsg);
+            manager.eventReporter.ReportTS("Video Info", loggingMsg);
         }
 
         // -------------------------------------

@@ -38,8 +38,8 @@ namespace UnityEPL {
             endTrials = true;
         }
 
-        protected void Run() {
-            _ = DoWaitFor(RunHelper);
+        protected async void Run() {
+            await DoWaitForTS(RunHelper);
         }
 
         protected async Task RunHelper() {
@@ -63,7 +63,7 @@ namespace UnityEPL {
                 { "session", Config.session },
             };
 
-            manager.eventReporter.ReportScriptedEvent("session start", versionsData);
+            manager.eventReporter.ReportTS("session start", versionsData);
         }
     }
 

@@ -11,8 +11,8 @@ namespace UnityEPL {
         /// This can be subscribed to Unity UI buttons, etc.
         /// </summary>
         /// <param name="name">Name of the event to log.</param>
-        public void LogUIEventMB(string name) {
-            DoMB(LogUIEventHelper, name.ToNativeText());
+        public void LogUIEvent(string name) {
+            Do(LogUIEventHelper, name.ToNativeText());
         }
         protected void LogUIEventHelper(NativeText name) {
             eventQueue.Enqueue(new DataPoint(name.ToString()));

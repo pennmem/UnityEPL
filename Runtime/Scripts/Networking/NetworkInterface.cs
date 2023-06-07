@@ -183,7 +183,7 @@ namespace UnityEPL {
             UnityEngine.Debug.Log($"{this.GetType().Name} {sendStr} Network Message: {type}\n{string.Join(Environment.NewLine, message)}");
 #endif // NETWORKINTERFACE_DEBUG_MESSAGES
 
-            manager.eventReporter.ReportScriptedEvent("network", time, dict);
+            manager.eventReporter.ReportTS("network", time, dict);
         }
     }
 

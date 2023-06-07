@@ -50,11 +50,11 @@ namespace UnityEPL {
 
         // TODO: JPB: (needed) Fix FilePicker to not be a super hack
         public async Task<string> SelectVideoFile(string startingPath, SFB.ExtensionFilter[] extensions, bool skippable = false) {
-            await DoWaitForMB(SelectVideoFileHelper, startingPath, extensions, skippable);
+            await DoWaitFor(SelectVideoFileHelper, startingPath, extensions, skippable);
             return videoPath;
         }
         public async Task<string> SelectVideoFileTS(string startingPath, SFB.ExtensionFilter[] extensions, bool skippable = false) {
-            await DoWaitFor(() => { return SelectVideoFileHelper(startingPath, extensions, skippable); });
+            await DoWaitForTS(() => { return SelectVideoFileHelper(startingPath, extensions, skippable); });
             return videoPath;
         }
         protected Task SelectVideoFileHelper(string startingPath, SFB.ExtensionFilter[] extensions, bool skippable) {
@@ -73,10 +73,10 @@ namespace UnityEPL {
         }
 
         public void SetVideo(string videoPath, bool skippable = false) {
-            DoMB(SetVideoHelper, videoPath.ToNativeText(), (Bool)skippable);
+            Do(SetVideoHelper, videoPath.ToNativeText(), (Bool)skippable);
         }
         public void SetVideoTS(string videoPath, bool skippable = false) {
-            Do(SetVideoHelper, videoPath.ToNativeText(), (Bool)skippable);
+            DoTS(SetVideoHelper, videoPath.ToNativeText(), (Bool)skippable);
         }
         protected void SetVideoHelper(NativeText videoPath, Bool skippable) {
             this.videoPath = videoPath.ToString();
@@ -86,10 +86,10 @@ namespace UnityEPL {
         }
 
         public Task PlayVideo() {
-            return DoWaitForMB(PlayVideoHelper);
+            return DoWaitFor(PlayVideoHelper);
         }
         public Task PlayVideoTS() {
-            return DoWaitFor(PlayVideoHelper);
+            return DoWaitForTS(PlayVideoHelper);
         }
         protected async Task PlayVideoHelper() {
             Debug.Log("PlayVideoHelper");
@@ -105,10 +105,10 @@ namespace UnityEPL {
         }
 
         public bool IsPlaying() {
-            return DoGetMB(IsPlayingHelper);
+            return DoGet(IsPlayingHelper);
         }
         public async Task<bool> IsPlayingTS() {
-            return await DoGet(IsPlayingHelper);
+            return await DoGetTS(IsPlayingHelper);
         }
         protected Bool IsPlayingHelper() {
             return gameObject.activeSelf;
@@ -121,10 +121,10 @@ namespace UnityEPL {
         // FOR TESTING PURPOSES ONLY
 
         public double VideoLength() {
-            return DoGetMB(VideoLengthHelper);
+            return DoGet(VideoLengthHelper);
         }
         public async Task<double> VideoLengthTS() {
-            return await DoGet(VideoLengthHelper);
+            return await DoGetTS(VideoLengthHelper);
         }
         protected double VideoLengthHelper() {
             return videoPlayer.length;

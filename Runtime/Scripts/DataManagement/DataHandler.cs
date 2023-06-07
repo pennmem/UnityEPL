@@ -20,8 +20,8 @@ namespace UnityEPL {
             }
 
             foreach (DataReporter reporter in reportersToHandle) {
-                if (reporter.UnreadDataPointCountMB() > 0) {
-                    DataPoint[] newPoints = reporter.ReadDataPointsMB(reporter.UnreadDataPointCountMB());
+                if (reporter.UnreadDataPointCount() > 0) {
+                    DataPoint[] newPoints = reporter.ReadDataPoints(reporter.UnreadDataPointCount());
                     HandleDataPoints(newPoints);
                 }
             }
@@ -36,24 +36,24 @@ namespace UnityEPL {
         // TODO: JPB: (needed) (bug) Make QueuePoint use a blittable type instead of DataPoint
         //            Or at least have it use Mutex
         public void QueuePoint(DataPoint data) {
-            Do(() => { QueuePointHelper(data); });
+            Do(QueuePointHelper, data);
         }
-        public void QueuePointMB(DataPoint data) {
-            DoMB(QueuePointHelper, data);
+        public void QueuePointTS(DataPoint data) {
+            DoTS(() => { QueuePointHelper(data); });
         }
         protected void QueuePointHelper(DataPoint data) {
             eventQueue.Enqueue(data);
         }
 
-        public void AddReporterMB(DataReporter add) {
-            DoMB(AddReporterHelper, add);
+        public void AddReporter(DataReporter add) {
+            Do(AddReporterHelper, add);
         }
         public void AddReporterHelper(DataReporter add) {
             toAdd.Enqueue(add);
         }
 
-        public void RemoveReporterMB(DataReporter remove) {
-            DoMB(RemoveReporterHelper, remove);
+        public void RemoveReporter(DataReporter remove) {
+            Do(RemoveReporterHelper, remove);
         }
         public void RemoveReporterHelper(DataReporter remove) {
             toRemove.Enqueue(remove);

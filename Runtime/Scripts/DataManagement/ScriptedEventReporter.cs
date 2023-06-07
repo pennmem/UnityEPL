@@ -10,37 +10,23 @@ namespace UnityEPL {
     public class ScriptedEventReporter : DataReporter {
 
         // TODO: JPB: (needed) (bug) Make ReportScriptedEvent use a blittable type instead of Dictionary
-        //            Or at least have it use Mutex
-        //            And the NativeText as well...
-        //            And Datetime....
+        //            Or at least have it use Mutex.
         //            Even better, just make DataPoint a Native type and then use that
-        public void ReportScriptedEvent(string type, Dictionary<string, object> data = null) {
+        public void ReportTS(string type, Dictionary<string, object> data = null) {
             var time = TimeStamp();
-            Do(() => {
-                ReportScriptedEventHelper(type.ToNativeText(), time, data);
-            });
-            //Do((type, timestamp) => {
-            //    ReportScriptedEventHelper(type, timestamp, data);
-            //}, type.ToNativeText(), TimeStamp());
+            ReportTS(type, time, data);
         }
-        // TODO: JPB: (needed) Should ReportScriptedEventMB exist? Should everything be queued?
-        public void ReportScriptedEventMB(string type, Dictionary<string, object> data = null) {
-            DoMB(ReportScriptedEventHelper, type.ToNativeText(), TimeStamp(), data);
-        }
-
-        public void ReportScriptedEvent(string type, DateTime time, Dictionary<string, object> data = null) {
-            Do(() => {
-                ReportScriptedEventHelper(type.ToNativeText(), time, data);
+        public void ReportTS(string type, DateTime time, Dictionary<string, object> data = null) {
+            DoTS(() => {
+                ReportHelper(type.ToNativeText(), time, data);
             });
-            //Do((type, time) => {
-            //    ReportScriptedEventHelper(type, time, data);
+            //DoTS((type, time) => {
+            //    ReportHelper(type, time, data);
             //}, type.ToNativeText(), time);
-        }
-        public void ReportScriptedEventMB(string type, DateTime time, Dictionary<string, object> data = null) {
-            DoMB(ReportScriptedEventHelper, type.ToNativeText(), time, data);
+            //DoTS<NativeText, BlitDateTime, Dictionary<string, object>>(ReportScriptedEventHelper, type.ToNativeText(), time, data);
         }
 
-        protected void ReportScriptedEventHelper(NativeText type, DateTime time, Dictionary<string, object> data = null) {
+        protected void ReportHelper(NativeText type, BlitDateTime time, Dictionary<string, object> data = null) {
             eventQueue.Enqueue(new DataPoint(type.ToString(), time, data));
             type.Dispose();
         }

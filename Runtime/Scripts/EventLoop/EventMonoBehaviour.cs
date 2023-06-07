@@ -32,18 +32,19 @@ namespace UnityEPL {
         }
 
         // This function is used to check if an EventMonoBehvaiour has finished it's awake call
-        public async Task<bool> IsAwakeCompleted() {
-            return await DoGet(IsAwakeCompletedHelper);
+        public bool IsAwakeCompleted() {
+            return DoGet(IsAwakeCompletedHelper);
         }
-        public bool IsAwakeCompletedMB() {
-            return DoGetMB(IsAwakeCompletedHelper);
+        public async Task<bool> IsAwakeCompletedTS() {
+            return await DoGetTS(IsAwakeCompletedHelper);
         }
         protected Bool IsAwakeCompletedHelper() {
             return awakeCompleted;
         }
 
-        // This function is used to guarentee that a function is being called from
-        // the main unity thread
+        /// <summary>
+        /// Guarentees that a function is being called from the main unity thread
+        /// </summary>
         protected void MonoBehaviourSafetyCheck() {
             //Debug.Log($"{threadID} {Thread.CurrentThread.ManagedThreadId}");
             if (threadID != Thread.CurrentThread.ManagedThreadId) {
@@ -51,6 +52,14 @@ namespace UnityEPL {
                     "Cannot call this function from a non-unity thread.\n" +
                     "Try using the thread safe version of this method"));
             }
+        }
+
+        /// <summary>
+        /// Retuns whether the calling function is on the main unity thread
+        /// </summary>
+        /// <returns>if calling function is on unity thread</returns>
+        protected bool OnUnityThread() {
+            return threadID == Thread.CurrentThread.ManagedThreadId;
         }
 
         /// <summary>
@@ -73,6 +82,7 @@ namespace UnityEPL {
                     }
                     current = enumerator.Current;
                 } catch (Exception e) {
+                    Debug.Log(e);
                     ErrorNotifier.Error(e);
                     yield break;
                 }
@@ -126,24 +136,22 @@ namespace UnityEPL {
         protected Task DoWaitUntil(Func<bool> conditional) {
             return ToCoroutineTask(new WaitUntil(conditional));
         }
-        
+
 
         // -------------------------------------
-        // DoMB
+        // Do
         // Acts just like a function call, but guarentees thread safety
         // -------------------------------------
-        // TODO: JPB: (feature) Add support for cancellation tokens in EventMonoBehavior DoMB functions
-
-        protected void DoMB(Action func) {
+        // TODO: JPB: (feature) Add support for cancellation tokens in EventMonoBehavior Do functions
+        protected void Do(Action func) {
             MonoBehaviourSafetyCheck();
             try {
                 func();
             } catch (Exception e) {
                 ErrorNotifier.Error(e);
             }
-            
         }
-        protected void DoMB<T>(Action<T> func, T t) {
+        protected void Do<T>(Action<T> func, T t) {
             MonoBehaviourSafetyCheck();
             try {
                 func(t);
@@ -151,7 +159,7 @@ namespace UnityEPL {
                 ErrorNotifier.Error(e);
             }
         }
-        protected void DoMB<T, U>(Action<T, U> func, T t, U u) {
+        protected void Do<T, U>(Action<T, U> func, T t, U u) {
             MonoBehaviourSafetyCheck();
             try {
                 func(t, u);
@@ -159,7 +167,7 @@ namespace UnityEPL {
                 ErrorNotifier.Error(e);
             }
         }
-        protected void DoMB<T, U, V>(Action<T, U, V> func, T t, U u, V v) {
+        protected void Do<T, U, V>(Action<T, U, V> func, T t, U u, V v) {
             MonoBehaviourSafetyCheck();
             try {
                 func(t, u, v);
@@ -167,7 +175,7 @@ namespace UnityEPL {
                 ErrorNotifier.Error(e);
             }
         }
-        protected void DoMB<T, U, V, W>(Action<T, U, V, W> func, T t, U u, V v, W w) {
+        protected void Do<T, U, V, W>(Action<T, U, V, W> func, T t, U u, V v, W w) {
             MonoBehaviourSafetyCheck();
             try {
                 func(t, u, v, w);
@@ -178,7 +186,7 @@ namespace UnityEPL {
 
 
         // -------------------------------------
-        // Do
+        // DoTS
         // -------------------------------------
         // TODO: JPB: (feature) Add support for cancellation tokens in EventMonoBehavior Do functions
 
@@ -186,28 +194,28 @@ namespace UnityEPL {
             manager.events.Enqueue(MakeEventEnumerator(enumerator));
         }
 
-        protected void Do(Func<IEnumerator> func) {
+        protected void DoTS(Func<IEnumerator> func) {
             DoHelper(func());
         }
-        protected void Do<T>(Func<T, IEnumerator> func, T t)
+        protected void DoTS<T>(Func<T, IEnumerator> func, T t)
                 where T : struct {
             AssertBlittable<T>();
             DoHelper(func(t));
         }
-        protected void Do<T, U>(Func<T, U, IEnumerator> func, T t, U u)
+        protected void DoTS<T, U>(Func<T, U, IEnumerator> func, T t, U u)
                 where T : struct
                 where U : struct {
             AssertBlittable<T, U>();
             DoHelper(func(t, u));
         }
-        protected void Do<T, U, V>(Func<T, U, V, IEnumerator> func, T t, U u, V v)
+        protected void DoTS<T, U, V>(Func<T, U, V, IEnumerator> func, T t, U u, V v)
                 where T : struct
                 where U : struct
                 where V : struct {
             AssertBlittable<T, U, V>();
             DoHelper(func(t, u, v));
         }
-        protected void Do<T, U, V, W>(Func<T, U, V, W, IEnumerator> func, T t, U u, V v, W w)
+        protected void DoTS<T, U, V, W>(Func<T, U, V, W, IEnumerator> func, T t, U u, V v, W w)
                 where T : struct
                 where U : struct
                 where V : struct
@@ -216,28 +224,28 @@ namespace UnityEPL {
             DoHelper(func(t, u, v, w));
         }
 
-        protected void Do(Action func) {
+        protected void DoTS(Action func) {
             DoHelper(EnumeratorCaller(func));
         }
-        protected void Do<T>(Action<T> func, T t)
+        protected void DoTS<T>(Action<T> func, T t)
                 where T : struct {
             AssertBlittable<T>();
             DoHelper(EnumeratorCaller(func, t));
         }
-        protected void Do<T, U>(Action<T, U> func, T t, U u)
+        protected void DoTS<T, U>(Action<T, U> func, T t, U u)
                 where T : struct
                 where U : struct {
             AssertBlittable<T, U>();
             DoHelper(EnumeratorCaller(func, t, u));
         }
-        protected void Do<T, U, V>(Action<T, U, V> func, T t, U u, V v)
+        protected void DoTS<T, U, V>(Action<T, U, V> func, T t, U u, V v)
                 where T : struct
                 where U : struct
                 where V : struct {
             AssertBlittable<T, U, V>();
             DoHelper(EnumeratorCaller(func, t, u, v));
         }
-        protected void Do<T, U, V, W>(Action<T, U, V, W> func, T t, U u, V v, W w)
+        protected void DoTS<T, U, V, W>(Action<T, U, V, W> func, T t, U u, V v, W w)
                 where T : struct
                 where U : struct
                 where V : struct
@@ -251,29 +259,107 @@ namespace UnityEPL {
         // DoIn
         // -------------------------------------
 
-        protected void DoIn(int millisecondsDelay, Func<IEnumerator> func) {
-            DoHelper(DelayedEnumeratorCaller(millisecondsDelay, func()));
-            ;
+        protected IEnumerator DoIn(int millisecondsDelay, Func<IEnumerator> func) {
+            MonoBehaviourSafetyCheck();
+            yield return DelayedEnumeratorCaller(millisecondsDelay, func());
         }
-        protected void DoIn<T>(int millisecondsDelay, Func<T, IEnumerator> func, T t)
+        protected IEnumerator DoIn<T>(int millisecondsDelay, Func<T, IEnumerator> func, T t) {
+            MonoBehaviourSafetyCheck();
+            yield return DelayedEnumeratorCaller(millisecondsDelay, func(t));
+        }
+        protected IEnumerator DoIn<T, U>(int millisecondsDelay, Func<T, U, IEnumerator> func, T t, U u) {
+            MonoBehaviourSafetyCheck();
+            yield return DelayedEnumeratorCaller(millisecondsDelay, func(t, u));
+        }
+        protected IEnumerator DoIn<T, U, V>(int millisecondsDelay, Func<T, U, V, IEnumerator> func, T t, U u, V v) {
+            MonoBehaviourSafetyCheck();
+            yield return DelayedEnumeratorCaller(millisecondsDelay, func(t, u, v));
+        }
+        protected IEnumerator DoIn<T, U, V, W>(int millisecondsDelay, Func<T, U, V, W, IEnumerator> func, T t, U u, V v, W w) {
+            MonoBehaviourSafetyCheck();
+            yield return DelayedEnumeratorCaller(millisecondsDelay, func(t, u, v, w));
+        }
+
+#if EVENTMONOBEHAVIOR_TASK_OPERATORS
+        protected async Task DoIn(int millisecondsDelay, Func<Task> func) {
+            MonoBehaviourSafetyCheck();
+            try {
+                await InterfaceManager.Delay(millisecondsDelay);
+                await func();
+            } catch (Exception e) {
+                ErrorNotifier.Error(e);
+                throw e; // This is a duplication, but C# can't tell Error always throws an exception
+            }
+        }
+        protected async Task DoIn<T>(int millisecondsDelay, Func<T, Task> func, T t) {
+            MonoBehaviourSafetyCheck();
+            try {
+                await InterfaceManager.Delay(millisecondsDelay);
+                await func(t);
+            } catch (Exception e) {
+                ErrorNotifier.Error(e);
+                throw e; // This is a duplication, but C# can't tell Error always throws an exception
+            }
+        }
+        protected async Task DoIn<T, U>(int millisecondsDelay, Func<T, U, Task> func, T t, U u) {
+            MonoBehaviourSafetyCheck();
+            try {
+                await InterfaceManager.Delay(millisecondsDelay);
+                await func(t, u);
+            } catch (Exception e) {
+                ErrorNotifier.Error(e);
+                throw e; // This is a duplication, but C# can't tell Error always throws an exception
+            }
+        }
+        protected async Task DoIn<T, U, V>(int millisecondsDelay, Func<T, U, V, Task> func, T t, U u, V v) {
+            MonoBehaviourSafetyCheck();
+            try {
+                await InterfaceManager.Delay(millisecondsDelay);
+                await func(t, u, v);
+            } catch (Exception e) {
+                ErrorNotifier.Error(e);
+                throw e; // This is a duplication, but C# can't tell Error always throws an exception
+            }
+        }
+        protected async Task DoIn<T, U, V, W>(int millisecondsDelay, Func<T, U, V, W, Task> func, T t, U u, V v, W w) {
+            MonoBehaviourSafetyCheck();
+            try {
+                await InterfaceManager.Delay(millisecondsDelay);
+                await func(t, u, v, w);
+            } catch (Exception e) {
+                ErrorNotifier.Error(e);
+                throw e; // This is a duplication, but C# can't tell Error always throws an exception
+            }
+        }
+#endif // EVENTMONOBEHAVIOR_TASK_OPERATORS
+
+
+        // -------------------------------------
+        // DoInTS
+        // -------------------------------------
+
+        protected void DoInTS(int millisecondsDelay, Func<IEnumerator> func) {
+            DoHelper(DelayedEnumeratorCaller(millisecondsDelay, func()));
+        }
+        protected void DoInTS<T>(int millisecondsDelay, Func<T, IEnumerator> func, T t)
                 where T : struct {
             AssertBlittable<T>();
             DoHelper(DelayedEnumeratorCaller(millisecondsDelay, func(t)));
         }
-        protected void DoIn<T, U>(int millisecondsDelay, Func<T, U, IEnumerator> func, T t, U u)
+        protected void DoInTS<T, U>(int millisecondsDelay, Func<T, U, IEnumerator> func, T t, U u)
                 where T : struct
                 where U : struct {
             AssertBlittable<T, U>();
             DoHelper(DelayedEnumeratorCaller(millisecondsDelay, func(t, u)));
         }
-        protected void DoIn<T, U, V>(int millisecondsDelay, Func<T, U, V, IEnumerator> func, T t, U u, V v)
+        protected void DoInTS<T, U, V>(int millisecondsDelay, Func<T, U, V, IEnumerator> func, T t, U u, V v)
                 where T : struct
                 where U : struct
                 where V : struct {
             AssertBlittable<T, U, V>();
             DoHelper(DelayedEnumeratorCaller(millisecondsDelay, func(t, u, v)));
         }
-        protected void DoIn<T, U, V, W>(int millisecondsDelay, Func<T, U, V, W, IEnumerator> func, T t, U u, V v, W w)
+        protected void DoInTS<T, U, V, W>(int millisecondsDelay, Func<T, U, V, W, IEnumerator> func, T t, U u, V v, W w)
                 where T : struct
                 where U : struct
                 where V : struct
@@ -282,28 +368,28 @@ namespace UnityEPL {
             DoHelper(DelayedEnumeratorCaller(millisecondsDelay, func(t, u, v, w)));
         }
 
-        protected void DoIn(int millisecondsDelay, Action func) {
+        protected void DoInTS(int millisecondsDelay, Action func) {
             DoHelper(DelayedEnumeratorCaller(millisecondsDelay, func));
         }
-        protected void DoIn<T>(int millisecondsDelay, Action<T> func, T t)
+        protected void DoInTS<T>(int millisecondsDelay, Action<T> func, T t)
                 where T : struct {
             AssertBlittable<T>();
             DoHelper(DelayedEnumeratorCaller(millisecondsDelay, func, t));
         }
-        protected void DoIn<T, U>(int millisecondsDelay, Action<T, U> func, T t, U u)
+        protected void DoInTS<T, U>(int millisecondsDelay, Action<T, U> func, T t, U u)
                 where T : struct
                 where U : struct {
             AssertBlittable<T, U>();
             DoHelper(DelayedEnumeratorCaller(millisecondsDelay, func, t, u));
         }
-        protected void DoIn<T, U, V>(int millisecondsDelay, Action<T, U, V> func, T t, U u, V v)
+        protected void DoInTS<T, U, V>(int millisecondsDelay, Action<T, U, V> func, T t, U u, V v)
                 where T : struct
                 where U : struct
                 where V : struct {
             AssertBlittable<T, U, V>();
             DoHelper(DelayedEnumeratorCaller(millisecondsDelay, func, t, u, v));
         }
-        protected void DoIn<T, U, V, W>(int millisecondsDelay, Action<T, U, V, W> func, T t, U u, V v, W w)
+        protected void DoInTS<T, U, V, W>(int millisecondsDelay, Action<T, U, V, W> func, T t, U u, V v, W w)
                 where T : struct
                 where U : struct
                 where V : struct
@@ -314,10 +400,10 @@ namespace UnityEPL {
 
 
         // -------------------------------------
-        // DoRepeatingMB
+        // DoRepeating
         // -------------------------------------
 
-        protected IEnumerator DoRepeatingMB(int delayMs, int intervalMs, uint? iterations, Func<IEnumerator> func) {
+        protected IEnumerator DoRepeating(int delayMs, int intervalMs, uint? iterations, Func<IEnumerator> func) {
             MonoBehaviourSafetyCheck();
             if (intervalMs <= 0) { throw new ArgumentOutOfRangeException($"intervalMs <= 0 ({intervalMs})"); }
 
@@ -338,7 +424,7 @@ namespace UnityEPL {
 
             yield return cts;
         }
-        protected IEnumerator DoRepeatingMB<T>(int delayMs, int intervalMs, uint? iterations, Func<T, IEnumerator> func, T t) {
+        protected IEnumerator DoRepeating<T>(int delayMs, int intervalMs, uint? iterations, Func<T, IEnumerator> func, T t) {
             MonoBehaviourSafetyCheck();
             if (intervalMs <= 0) { throw new ArgumentOutOfRangeException($"intervalMs <= 0 ({intervalMs})"); }
 
@@ -359,7 +445,7 @@ namespace UnityEPL {
 
             yield return cts;
         }
-        protected IEnumerator DoRepeatingMB<T, U>(int delayMs, int intervalMs, uint? iterations, Func<T, U, IEnumerator> func, T t, U u) {
+        protected IEnumerator DoRepeating<T, U>(int delayMs, int intervalMs, uint? iterations, Func<T, U, IEnumerator> func, T t, U u) {
             MonoBehaviourSafetyCheck();
             if (intervalMs <= 0) { throw new ArgumentOutOfRangeException($"intervalMs <= 0 ({intervalMs})"); }
 
@@ -380,7 +466,7 @@ namespace UnityEPL {
 
             yield return cts;
         }
-        protected IEnumerator DoRepeatingMB<T, U, V>(int delayMs, int intervalMs, uint? iterations, Func<T, U, V, IEnumerator> func, T t, U u, V v) {
+        protected IEnumerator DoRepeating<T, U, V>(int delayMs, int intervalMs, uint? iterations, Func<T, U, V, IEnumerator> func, T t, U u, V v) {
             MonoBehaviourSafetyCheck();
             if (intervalMs <= 0) { throw new ArgumentOutOfRangeException($"intervalMs <= 0 ({intervalMs})"); }
 
@@ -401,7 +487,7 @@ namespace UnityEPL {
 
             yield return cts;
         }
-        protected IEnumerator DoRepeatingMB<T, U, V, W>(int delayMs, int intervalMs, uint? iterations, Func<T, U, V, W, IEnumerator> func, T t, U u, V v, W w) {
+        protected IEnumerator DoRepeating<T, U, V, W>(int delayMs, int intervalMs, uint? iterations, Func<T, U, V, W, IEnumerator> func, T t, U u, V v, W w) {
             MonoBehaviourSafetyCheck();
             if (intervalMs <= 0) { throw new ArgumentOutOfRangeException($"intervalMs <= 0 ({intervalMs})"); }
 
@@ -423,7 +509,7 @@ namespace UnityEPL {
             yield return cts;
         }
 
-        protected CancellationTokenSource DoRepeatingMB(int delayMs, int intervalMs, uint? iterations, Action func) {
+        protected CancellationTokenSource DoRepeating(int delayMs, int intervalMs, uint? iterations, Action func) {
             MonoBehaviourSafetyCheck();
             if (intervalMs <= 0) { throw new ArgumentOutOfRangeException($"intervalMs <= 0 ({intervalMs})"); }
 
@@ -443,7 +529,7 @@ namespace UnityEPL {
 
             return cts;
         }
-        protected CancellationTokenSource DoRepeatingMB<T>(int delayMs, int intervalMs, uint? iterations, Action<T> func, T t) {
+        protected CancellationTokenSource DoRepeating<T>(int delayMs, int intervalMs, uint? iterations, Action<T> func, T t) {
             MonoBehaviourSafetyCheck();
             if (intervalMs <= 0) { throw new ArgumentOutOfRangeException($"intervalMs <= 0 ({intervalMs})"); }
 
@@ -463,7 +549,7 @@ namespace UnityEPL {
 
             return cts;
         }
-        protected CancellationTokenSource DoRepeatingMB<T, U>(int delayMs, int intervalMs, uint? iterations, Action<T, U> func, T t, U u) {
+        protected CancellationTokenSource DoRepeating<T, U>(int delayMs, int intervalMs, uint? iterations, Action<T, U> func, T t, U u) {
             MonoBehaviourSafetyCheck();
             if (intervalMs <= 0) { throw new ArgumentOutOfRangeException($"intervalMs <= 0 ({intervalMs})"); }
 
@@ -483,7 +569,7 @@ namespace UnityEPL {
 
             return cts;
         }
-        protected CancellationTokenSource DoRepeatingMB<T, U, V>(int delayMs, int intervalMs, uint? iterations, Action<T, U, V> func, T t, U u, V v) {
+        protected CancellationTokenSource DoRepeating<T, U, V>(int delayMs, int intervalMs, uint? iterations, Action<T, U, V> func, T t, U u, V v) {
             MonoBehaviourSafetyCheck();
             if (intervalMs <= 0) { throw new ArgumentOutOfRangeException($"intervalMs <= 0 ({intervalMs})"); }
 
@@ -503,7 +589,7 @@ namespace UnityEPL {
 
             return cts;
         }
-        protected CancellationTokenSource DoRepeatingMB<T, U, V, W>(int delayMs, int intervalMs, uint? iterations, Action<T, U, V, W> func, T t, U u, V v, W w) {
+        protected CancellationTokenSource DoRepeating<T, U, V, W>(int delayMs, int intervalMs, uint? iterations, Action<T, U, V, W> func, T t, U u, V v, W w) {
             MonoBehaviourSafetyCheck();
             if (intervalMs <= 0) { throw new ArgumentOutOfRangeException($"intervalMs <= 0 ({intervalMs})"); }
 
@@ -526,17 +612,17 @@ namespace UnityEPL {
 
 
         // -------------------------------------
-        // DoRepeating
+        // DoRepeatingTS
         // -------------------------------------
 
-        protected CancellationTokenSource DoRepeating(int delayMs, int intervalMs, uint? iterations, Func<IEnumerator> func) {
+        protected CancellationTokenSource DoRepeatingTS(int delayMs, int intervalMs, uint? iterations, Func<IEnumerator> func) {
             if (intervalMs <= 0) { throw new ArgumentOutOfRangeException($"intervalMs <= 0 ({intervalMs})"); }
 
             CancellationTokenSource cts = new();
             DoHelper(RepeatingEnumeratorCaller(cts, delayMs, intervalMs, iterations, func));
             return cts;
         }
-        protected CancellationTokenSource DoRepeating<T>(int delayMs, int intervalMs, uint? iterations, Func<T, IEnumerator> func, T t)
+        protected CancellationTokenSource DoRepeatingTS<T>(int delayMs, int intervalMs, uint? iterations, Func<T, IEnumerator> func, T t)
                 where T : struct {
             AssertBlittable<T>();
             if (intervalMs <= 0) { throw new ArgumentOutOfRangeException($"intervalMs <= 0 ({intervalMs})"); }
@@ -545,7 +631,7 @@ namespace UnityEPL {
             DoHelper(RepeatingEnumeratorCaller(cts, delayMs, intervalMs, iterations, func, t));
             return cts;
         }
-        protected CancellationTokenSource DoRepeating<T, U>(int delayMs, int intervalMs, uint? iterations, Func<T, U, IEnumerator> func, T t, U u)
+        protected CancellationTokenSource DoRepeatingTS<T, U>(int delayMs, int intervalMs, uint? iterations, Func<T, U, IEnumerator> func, T t, U u)
                 where T : struct
                 where U : struct {
             AssertBlittable<T, U>();
@@ -555,7 +641,7 @@ namespace UnityEPL {
             DoHelper(RepeatingEnumeratorCaller(cts, delayMs, intervalMs, iterations, func, t, u));
             return cts;
         }
-        protected CancellationTokenSource DoRepeating<T, U, V>(int delayMs, int intervalMs, uint? iterations, Func<T, U, V, IEnumerator> func, T t, U u, V v)
+        protected CancellationTokenSource DoRepeatingTS<T, U, V>(int delayMs, int intervalMs, uint? iterations, Func<T, U, V, IEnumerator> func, T t, U u, V v)
                 where T : struct
                 where U : struct
                 where V : struct {
@@ -566,7 +652,7 @@ namespace UnityEPL {
             DoHelper(RepeatingEnumeratorCaller(cts, delayMs, intervalMs, iterations, func, t, u, v));
             return cts;
         }
-        protected CancellationTokenSource DoRepeating<T, U, V, W>(int delayMs, int intervalMs, uint? iterations, Func<T, U, V, W, IEnumerator> func, T t, U u, V v, W w)
+        protected CancellationTokenSource DoRepeatingTS<T, U, V, W>(int delayMs, int intervalMs, uint? iterations, Func<T, U, V, W, IEnumerator> func, T t, U u, V v, W w)
                 where T : struct
                 where U : struct
                 where V : struct
@@ -579,14 +665,14 @@ namespace UnityEPL {
             return cts;
         }
 
-        protected CancellationTokenSource DoRepeating(int delayMs, int intervalMs, uint? iterations, Action func) {
+        protected CancellationTokenSource DoRepeatingTS(int delayMs, int intervalMs, uint? iterations, Action func) {
             if (intervalMs <= 0) { throw new ArgumentOutOfRangeException($"intervalMs <= 0 ({intervalMs})"); }
 
             CancellationTokenSource cts = new();
             DoHelper(RepeatingEnumeratorCaller(cts, delayMs, intervalMs, iterations, func));
             return cts;
         }
-        protected CancellationTokenSource DoRepeating<T>(int delayMs, int intervalMs, uint? iterations, Action<T> func, T t)
+        protected CancellationTokenSource DoRepeatingTS<T>(int delayMs, int intervalMs, uint? iterations, Action<T> func, T t)
                 where T : struct {
             AssertBlittable<T>();
             if (intervalMs <= 0) { throw new ArgumentOutOfRangeException($"intervalMs <= 0 ({intervalMs})"); }
@@ -595,7 +681,7 @@ namespace UnityEPL {
             DoHelper(RepeatingEnumeratorCaller(cts, delayMs, intervalMs, iterations, func, t));
             return cts;
         }
-        protected CancellationTokenSource DoRepeating<T, U>(int delayMs, int intervalMs, uint? iterations, Action<T, U> func, T t, U u)
+        protected CancellationTokenSource DoRepeatingTS<T, U>(int delayMs, int intervalMs, uint? iterations, Action<T, U> func, T t, U u)
                 where T : struct
                 where U : struct {
             AssertBlittable<T, U>();
@@ -605,7 +691,7 @@ namespace UnityEPL {
             DoHelper(RepeatingEnumeratorCaller(cts, delayMs, intervalMs, iterations, func, t, u));
             return cts;
         }
-        protected CancellationTokenSource DoRepeating<T, U, V>(int delayMs, int intervalMs, uint? iterations, Action<T, U, V> func, T t, U u, V v)
+        protected CancellationTokenSource DoRepeatingTS<T, U, V>(int delayMs, int intervalMs, uint? iterations, Action<T, U, V> func, T t, U u, V v)
                 where T : struct
                 where U : struct
                 where V : struct {
@@ -616,7 +702,7 @@ namespace UnityEPL {
             DoHelper(RepeatingEnumeratorCaller(cts, delayMs, intervalMs, iterations, func, t, u, v));
             return cts;
         }
-        protected CancellationTokenSource DoRepeating<T, U, V, W>(int delayMs, int intervalMs, uint? iterations, Action<T, U, V, W> func, T t, U u, V v, W w)
+        protected CancellationTokenSource DoRepeatingTS<T, U, V, W>(int delayMs, int intervalMs, uint? iterations, Action<T, U, V, W> func, T t, U u, V v, W w)
                 where T : struct
                 where U : struct
                 where V : struct
@@ -631,32 +717,32 @@ namespace UnityEPL {
 
 
         // -------------------------------------
-        // DoWaitForMB
+        // DoWaitFor
         // -------------------------------------
 
-        protected IEnumerator DoWaitForMB(Func<IEnumerator> func) {
+        protected IEnumerator DoWaitFor(Func<IEnumerator> func) {
             MonoBehaviourSafetyCheck();
             yield return MakeEventEnumerator(func());
         }
-        protected IEnumerator DoWaitForMB<T>(Func<T, IEnumerator> func, T t) {
+        protected IEnumerator DoWaitFor<T>(Func<T, IEnumerator> func, T t) {
             MonoBehaviourSafetyCheck();
             yield return MakeEventEnumerator(func(t));
         }
-        protected IEnumerator DoWaitForMB<T, U>(Func<T, U, IEnumerator> func, T t, U u) {
+        protected IEnumerator DoWaitFor<T, U>(Func<T, U, IEnumerator> func, T t, U u) {
             MonoBehaviourSafetyCheck();
             yield return MakeEventEnumerator(func(t, u));
         }
-        protected IEnumerator DoWaitForMB<T, U, V>(Func<T, U, V, IEnumerator> func, T t, U u, V v) {
+        protected IEnumerator DoWaitFor<T, U, V>(Func<T, U, V, IEnumerator> func, T t, U u, V v) {
             MonoBehaviourSafetyCheck();
             yield return MakeEventEnumerator(func(t, u, v));
         }
-        protected IEnumerator DoWaitForMB<T, U, V, W>(Func<T, U, V, W, IEnumerator> func, T t, U u, V v, W w) {
+        protected IEnumerator DoWaitFor<T, U, V, W>(Func<T, U, V, W, IEnumerator> func, T t, U u, V v, W w) {
             MonoBehaviourSafetyCheck();
             yield return MakeEventEnumerator(func(t, u, v, w));
         }
 
 #if EVENTMONOBEHAVIOR_TASK_OPERATORS
-        protected async Task DoWaitForMB(Func<Task> func) {
+        protected async Task DoWaitFor(Func<Task> func) {
             MonoBehaviourSafetyCheck();
             try {
                 await func();
@@ -665,7 +751,7 @@ namespace UnityEPL {
                 throw e; // This is a duplication, but C# can't tell Error always throws an exception
             }
         }
-        protected async Task DoWaitForMB<T>(Func<T, Task> func, T t) {
+        protected async Task DoWaitFor<T>(Func<T, Task> func, T t) {
             MonoBehaviourSafetyCheck();
             try {
                 await func(t);
@@ -674,7 +760,7 @@ namespace UnityEPL {
                 throw e; // This is a duplication, but C# can't tell Error always throws an exception
             }
         }
-        protected async Task DoWaitForMB<T, U>(Func<T, U, Task> func, T t, U u) {
+        protected async Task DoWaitFor<T, U>(Func<T, U, Task> func, T t, U u) {
             MonoBehaviourSafetyCheck();
             try {
                 await func(t, u);
@@ -683,7 +769,7 @@ namespace UnityEPL {
                 throw e; // This is a duplication, but C# can't tell Error always throws an exception
             }
         }
-        protected async Task DoWaitForMB<T, U, V>(Func<T, U, V, Task> func, T t, U u, V v) {
+        protected async Task DoWaitFor<T, U, V>(Func<T, U, V, Task> func, T t, U u, V v) {
             MonoBehaviourSafetyCheck();
             try {
                 await func(t, u, v);
@@ -692,7 +778,7 @@ namespace UnityEPL {
                 throw e; // This is a duplication, but C# can't tell Error always throws an exception
             }
         }
-        protected async Task DoWaitForMB<T, U, V, W>(Func<T, U, V, W, Task> func, T t, U u, V v, W w) {
+        protected async Task DoWaitFor<T, U, V, W>(Func<T, U, V, W, Task> func, T t, U u, V v, W w) {
             MonoBehaviourSafetyCheck();
             try {
                 await func(t, u, v, w);
@@ -704,7 +790,7 @@ namespace UnityEPL {
 #endif // EVENTMONOBEHAVIOR_TASK_OPERATORS
 
         // -------------------------------------
-        // DoWaitFor
+        // DoWaitForTS
         // -------------------------------------
 
         private Task DoWaitForHelper(IEnumerator enumerator) {
@@ -712,28 +798,29 @@ namespace UnityEPL {
             manager.events.Enqueue(TaskTrigger(tcs, enumerator));
             return tcs.Task;
         }
-        protected Task DoWaitFor(Func<IEnumerator> func) {
+
+        protected Task DoWaitForTS(Func<IEnumerator> func) {
             return DoWaitForHelper(func());
         }
-        protected Task DoWaitFor<T>(Func<T, IEnumerator> func, T t)
+        protected Task DoWaitForTS<T>(Func<T, IEnumerator> func, T t)
                 where T : struct {
             AssertBlittable<T>();
             return DoWaitForHelper(func(t));
         }
-        protected Task DoWaitFor<T, U>(Func<T, U, IEnumerator> func, T t, U u)
+        protected Task DoWaitForTS<T, U>(Func<T, U, IEnumerator> func, T t, U u)
                 where T : struct
                 where U : struct {
             AssertBlittable<T, U>();
             return DoWaitForHelper(func(t, u));
         }
-        protected Task DoWaitFor<T, U, V>(Func<T, U, V, IEnumerator> func, T t, U u, V v)
+        protected Task DoWaitForTS<T, U, V>(Func<T, U, V, IEnumerator> func, T t, U u, V v)
                 where T : struct
                 where U : struct
                 where V : struct {
             AssertBlittable<T, U, V>();
             return DoWaitForHelper(func(t, u, v));
         }
-        protected Task DoWaitFor<T, U, V, W>(Func<T, U, V, W, IEnumerator> func, T t, U u, V v, W w)
+        protected Task DoWaitForTS<T, U, V, W>(Func<T, U, V, W, IEnumerator> func, T t, U u, V v, W w)
                 where T : struct
                 where U : struct
                 where V : struct
@@ -742,19 +829,19 @@ namespace UnityEPL {
             return DoWaitForHelper(func(t, u, v, w));
         }
 
-        protected Task DoWaitFor(Action func) {
+        protected Task DoWaitForTS(Action func) {
             var tcs = new TaskCompletionSource<bool>();
             manager.events.Enqueue(TaskTrigger(tcs, func));
             return tcs.Task;
         }
-        protected Task DoWaitFor<T>(Action<T> func, T t)
+        protected Task DoWaitForTS<T>(Action<T> func, T t)
                 where T : struct {
             AssertBlittable<T>();
             var tcs = new TaskCompletionSource<bool>();
             manager.events.Enqueue(TaskTrigger(tcs, func, t));
             return tcs.Task;
         }
-        protected Task DoWaitFor<T, U>(Action<T, U> func, T t, U u)
+        protected Task DoWaitForTS<T, U>(Action<T, U> func, T t, U u)
                 where T : struct
                 where U : struct {
             AssertBlittable<T, U>();
@@ -762,7 +849,7 @@ namespace UnityEPL {
             manager.events.Enqueue(TaskTrigger(tcs, func, t, u));
             return tcs.Task;
         }
-        protected Task DoWaitFor<T, U, V>(Action<T, U, V> func, T t, U u, V v)
+        protected Task DoWaitForTS<T, U, V>(Action<T, U, V> func, T t, U u, V v)
                 where T : struct
                 where U : struct
                 where V : struct {
@@ -771,7 +858,7 @@ namespace UnityEPL {
             manager.events.Enqueue(TaskTrigger(tcs, func, t, u, v));
             return tcs.Task;
         }
-        protected Task DoWaitFor<T, U, V, W>(Action<T, U, V, W> func, T t, U u, V v, W w)
+        protected Task DoWaitForTS<T, U, V, W>(Action<T, U, V, W> func, T t, U u, V v, W w)
                 where T : struct
                 where U : struct
                 where V : struct
@@ -783,19 +870,19 @@ namespace UnityEPL {
         }
 
 #if EVENTMONOBEHAVIOR_TASK_OPERATORS
-        protected Task DoWaitFor(Func<Task> func) {
+        protected Task DoWaitForTS(Func<Task> func) {
             var tcs = new TaskCompletionSource<bool>();
             manager.events.Enqueue(TaskTrigger(tcs, func));
             return tcs.Task;
         }
-        protected Task DoWaitFor<T>(Func<T, Task> func, T t)
+        protected Task DoWaitForTS<T>(Func<T, Task> func, T t)
                 where T : struct {
             AssertBlittable<T>();
             var tcs = new TaskCompletionSource<bool>();
             manager.events.Enqueue(TaskTrigger(tcs, func, t));
             return tcs.Task;
         }
-        protected Task DoWaitFor<T, U>(Func<T, U, Task> func, T t, U u)
+        protected Task DoWaitForTS<T, U>(Func<T, U, Task> func, T t, U u)
                 where T : struct
                 where U : struct {
             AssertBlittable<T, U>();
@@ -803,7 +890,7 @@ namespace UnityEPL {
             manager.events.Enqueue(TaskTrigger(tcs, func, t, u));
             return tcs.Task;
         }
-        protected Task DoWaitFor<T, U, V>(Func<T, U, V, Task> func, T t, U u, V v)
+        protected Task DoWaitForTS<T, U, V>(Func<T, U, V, Task> func, T t, U u, V v)
                 where T : struct
                 where U : struct
                 where V : struct {
@@ -812,7 +899,7 @@ namespace UnityEPL {
             manager.events.Enqueue(TaskTrigger(tcs, func, t, u, v));
             return tcs.Task;
         }
-        protected Task DoWaitFor<T, U, V, W>(Func<T, U, V, W, Task> func, T t, U u, V v, W w)
+        protected Task DoWaitForTS<T, U, V, W>(Func<T, U, V, W, Task> func, T t, U u, V v, W w)
                 where T : struct
                 where U : struct
                 where V : struct
@@ -826,10 +913,10 @@ namespace UnityEPL {
 
 
         // -------------------------------------
-        // DoGetMB
+        // DoGet
         // -------------------------------------
 
-        protected Z DoGetMB<Z>(Func<Z> func) {
+        protected Z DoGet<Z>(Func<Z> func) {
             MonoBehaviourSafetyCheck();
             try {
                 return func();
@@ -838,7 +925,7 @@ namespace UnityEPL {
                 throw e; // This is a duplication, but C# can't tell Error always throws an exception
             }
         }
-        protected Z DoGetMB<T, Z>(Func<T, Z> func, T t) {
+        protected Z DoGet<T, Z>(Func<T, Z> func, T t) {
             MonoBehaviourSafetyCheck();
             try {
                 return func(t);
@@ -847,7 +934,7 @@ namespace UnityEPL {
                 throw e; // This is a duplication, but C# can't tell Error always throws an exception
             }
         }
-        protected Z DoGetMB<T, U, Z>(Func<T, U, Z> func, T t, U u) {
+        protected Z DoGet<T, U, Z>(Func<T, U, Z> func, T t, U u) {
             MonoBehaviourSafetyCheck();
             try {
                 return func(t, u);
@@ -856,7 +943,7 @@ namespace UnityEPL {
                 throw e; // This is a duplication, but C# can't tell Error always throws an exception
             }
         }
-        protected Z DoGetMB<T, U, V, Z>(Func<T, U, V, Z> func, T t, U u, V v) {
+        protected Z DoGet<T, U, V, Z>(Func<T, U, V, Z> func, T t, U u, V v) {
             MonoBehaviourSafetyCheck();
             try {
                 return func(t, u, v);
@@ -865,7 +952,7 @@ namespace UnityEPL {
                 throw e; // This is a duplication, but C# can't tell Error always throws an exception
             }
         }
-        protected Z DoGetMB<T, U, V, W, Z>(Func<T, U, V, W, Z> func, T t, U u, V v, W w) {
+        protected Z DoGet<T, U, V, W, Z>(Func<T, U, V, W, Z> func, T t, U u, V v, W w) {
             MonoBehaviourSafetyCheck();
             try {
                 return func(t, u, v, w);
@@ -876,7 +963,7 @@ namespace UnityEPL {
         }
 
 #if EVENTMONOBEHAVIOR_TASK_OPERATORS
-        protected async Task<Z> DoGetMB<Z>(Func<Task<Z>> func) {
+        protected async Task<Z> DoGet<Z>(Func<Task<Z>> func) {
             MonoBehaviourSafetyCheck();
             try {
                 return await func();
@@ -885,7 +972,7 @@ namespace UnityEPL {
                 throw e; // This is a duplication, but C# can't tell Error always throws an exception
             }
         }
-        protected async Task<Z> DoGetMB<T, Z>(Func<T, Task<Z>> func, T t) {
+        protected async Task<Z> DoGet<T, Z>(Func<T, Task<Z>> func, T t) {
             MonoBehaviourSafetyCheck();
             try {
                 return await func(t);
@@ -894,7 +981,7 @@ namespace UnityEPL {
                 throw e; // This is a duplication, but C# can't tell Error always throws an exception
             }
         }
-        protected async Task<Z> DoGetMB<T, U, Z>(Func<T, U, Task<Z>> func, T t, U u) {
+        protected async Task<Z> DoGet<T, U, Z>(Func<T, U, Task<Z>> func, T t, U u) {
             MonoBehaviourSafetyCheck();
             try {
                 return await func(t, u);
@@ -903,7 +990,7 @@ namespace UnityEPL {
                 throw e; // This is a duplication, but C# can't tell Error always throws an exception
             }
         }
-        protected async Task<Z> DoGetMB<T, U, V, Z>(Func<T, U, V, Task<Z>> func, T t, U u, V v) {
+        protected async Task<Z> DoGet<T, U, V, Z>(Func<T, U, V, Task<Z>> func, T t, U u, V v) {
             MonoBehaviourSafetyCheck();
             try {
                 return await func(t, u, v);
@@ -912,7 +999,7 @@ namespace UnityEPL {
                 throw e; // This is a duplication, but C# can't tell Error always throws an exception
             }
         }
-        protected async Task<Z> DoGetMB<T, U, V, W, Z>(Func<T, U, V, W, Task<Z>> func, T t, U u, V v, W w) {
+        protected async Task<Z> DoGet<T, U, V, W, Z>(Func<T, U, V, W, Task<Z>> func, T t, U u, V v, W w) {
             MonoBehaviourSafetyCheck();
             try {
                 return await func(t, u, v, w);
@@ -924,7 +1011,7 @@ namespace UnityEPL {
 #endif // EVENTMONOBEHAVIOR_TASK_OPERATORS
 
         // -------------------------------------
-        // DoGet
+        // DoGetTS
         // -------------------------------------
 
         private Task<Z> DoGetHelper<Z>(IEnumerator enumerator)
@@ -934,24 +1021,25 @@ namespace UnityEPL {
             manager.events.Enqueue(TaskTrigger(tcs, enumerator));
             return tcs.Task;
         }
-        protected Task<Z> DoGet<Z>(Func<IEnumerator> func)
+
+        protected Task<Z> DoGetTS<Z>(Func<IEnumerator> func)
                 where Z : struct {
             return DoGetHelper<Z>(func());
         }
-        protected Task<Z> DoGet<T, Z>(Func<T, IEnumerator> func, T t)
+        protected Task<Z> DoGetTS<T, Z>(Func<T, IEnumerator> func, T t)
                 where T : struct
                 where Z : struct {
             AssertBlittable<T>();
             return DoGetHelper<Z>(func(t));
         }
-        protected Task<Z> DoGet<T, U, Z>(Func<T, U, IEnumerator> func, T t, U u)
+        protected Task<Z> DoGetTS<T, U, Z>(Func<T, U, IEnumerator> func, T t, U u)
                 where T : struct
                 where U : struct
                 where Z : struct {
             AssertBlittable<T, U>();
             return DoGetHelper<Z>(func(t, u));
         }
-        protected Task<Z> DoGet<T, U, V, Z>(Func<T, U, V, IEnumerator> func, T t, U u, V v)
+        protected Task<Z> DoGetTS<T, U, V, Z>(Func<T, U, V, IEnumerator> func, T t, U u, V v)
                 where T : struct
                 where U : struct
                 where V : struct
@@ -959,7 +1047,7 @@ namespace UnityEPL {
             AssertBlittable<T, U, V>();
             return DoGetHelper<Z>(func(t, u, v));
         }
-        protected Task<Z> DoGet<T, U, V, W, Z>(Func<T, U, V, W, IEnumerator> func, T t, U u, V v, W w)
+        protected Task<Z> DoGetTS<T, U, V, W, Z>(Func<T, U, V, W, IEnumerator> func, T t, U u, V v, W w)
                 where T : struct
                 where U : struct
                 where V : struct
@@ -969,14 +1057,14 @@ namespace UnityEPL {
             return DoGetHelper<Z>(func(t, u, v, w));
         }
 
-        protected Task<Z> DoGet<Z>(Func<Z> func)
+        protected Task<Z> DoGetTS<Z>(Func<Z> func)
                 where Z : struct {
             AssertBlittable<Z>();
             var tcs = new TaskCompletionSource<Z>();
             manager.events.Enqueue(TaskTrigger(tcs, func));
             return tcs.Task;
         }
-        protected Task<Z> DoGet<T, Z>(Func<T, Z> func, T t)
+        protected Task<Z> DoGetTS<T, Z>(Func<T, Z> func, T t)
                 where T : struct
                 where Z : struct {
             AssertBlittable<T, Z>();
@@ -984,7 +1072,7 @@ namespace UnityEPL {
             manager.events.Enqueue(TaskTrigger(tcs, func, t));
             return tcs.Task;
         }
-        protected Task<Z> DoGet<T, U, Z>(Func<T, U, Z> func, T t, U u)
+        protected Task<Z> DoGetTS<T, U, Z>(Func<T, U, Z> func, T t, U u)
                 where T : struct
                 where U : struct
                 where Z : struct {
@@ -993,7 +1081,7 @@ namespace UnityEPL {
             manager.events.Enqueue(TaskTrigger(tcs, func, t, u));
             return tcs.Task;
         }
-        protected Task<Z> DoGet<T, U, V, Z>(Func<T, U, V, Z> func, T t, U u, V v)
+        protected Task<Z> DoGetTS<T, U, V, Z>(Func<T, U, V, Z> func, T t, U u, V v)
                 where T : struct
                 where U : struct
                 where V : struct
@@ -1003,7 +1091,7 @@ namespace UnityEPL {
             manager.events.Enqueue(TaskTrigger(tcs, func, t, u, v));
             return tcs.Task;
         }
-        protected Task<Z> DoGet<T, U, V, W, Z>(Func<T, U, V, W, Z> func, T t, U u, V v, W w)
+        protected Task<Z> DoGetTS<T, U, V, W, Z>(Func<T, U, V, W, Z> func, T t, U u, V v, W w)
                 where T : struct
                 where U : struct
                 where V : struct
@@ -1016,14 +1104,14 @@ namespace UnityEPL {
         }
 
 #if EVENTMONOBEHAVIOR_TASK_OPERATORS
-        protected Task<Z> DoGet<Z>(Func<Task<Z>> func)
+        protected Task<Z> DoGetTS<Z>(Func<Task<Z>> func)
                 where Z : struct {
             AssertBlittable<Z>();
             var tcs = new TaskCompletionSource<Z>();
             manager.events.Enqueue(TaskTrigger(tcs, func));
             return tcs.Task;
         }
-        protected Task<Z> DoGet<T, Z>(Func<T, Task<Z>> func, T t)
+        protected Task<Z> DoGetTS<T, Z>(Func<T, Task<Z>> func, T t)
                 where T : struct
                 where Z : struct {
             AssertBlittable<T, Z>();
@@ -1031,7 +1119,7 @@ namespace UnityEPL {
             manager.events.Enqueue(TaskTrigger(tcs, func, t));
             return tcs.Task;
         }
-        protected Task<Z> DoGet<T, U, Z>(Func<T, U, Task<Z>> func, T t, U u)
+        protected Task<Z> DoGetTS<T, U, Z>(Func<T, U, Task<Z>> func, T t, U u)
                 where T : struct
                 where U : struct
                 where Z : struct {
@@ -1040,7 +1128,7 @@ namespace UnityEPL {
             manager.events.Enqueue(TaskTrigger(tcs, func, t, u));
             return tcs.Task;
         }
-        protected Task<Z> DoGet<T, U, V, Z>(Func<T, U, V, Task<Z>> func, T t, U u, V v)
+        protected Task<Z> DoGetTS<T, U, V, Z>(Func<T, U, V, Task<Z>> func, T t, U u, V v)
                 where T : struct
                 where U : struct
                 where V : struct
@@ -1050,7 +1138,7 @@ namespace UnityEPL {
             manager.events.Enqueue(TaskTrigger(tcs, func, t, u, v));
             return tcs.Task;
         }
-        protected Task<Z> DoGet<T, U, V, W, Z>(Func<T, U, V, W, Task<Z>> func, T t, U u, V v, W w)
+        protected Task<Z> DoGetTS<T, U, V, W, Z>(Func<T, U, V, W, Task<Z>> func, T t, U u, V v, W w)
                 where T : struct
                 where U : struct
                 where V : struct
@@ -1064,7 +1152,7 @@ namespace UnityEPL {
 #endif // EVENTMONOBEHAVIOR_TASK_OPERATORS
 
         // -------------------------------------
-        // DoGetRelaxed
+        // DoGetRelaxedTS
         // -------------------------------------
         // Only use these methods if you create the value in the function and you know it isn't used anywhere else
         // TODO: JPB: (needed) Figure out how to handle non-blittable return types in DoGet
@@ -1075,28 +1163,29 @@ namespace UnityEPL {
             manager.events.Enqueue(TaskTrigger(tcs, enumerator));
             return tcs.Task;
         }
-        protected Task<Z> DoGetRelaxed<Z>(Func<IEnumerator> func) {
+
+        protected Task<Z> DoGetRelaxedTS<Z>(Func<IEnumerator> func) {
             return DoGetRelaxedHelper<Z>(func());
         }
-        protected Task<Z> DoGetDoGetRelaxed<T, Z>(Func<T, IEnumerator> func, T t)
+        protected Task<Z> DoGetRelaxedTS<T, Z>(Func<T, IEnumerator> func, T t)
                 where T : struct {
             AssertBlittable<T>();
             return DoGetRelaxedHelper<Z>(func(t));
         }
-        protected Task<Z> DoGetDoGetRelaxed<T, U, Z>(Func<T, U, IEnumerator> func, T t, U u)
+        protected Task<Z> DoGetRelaxedTS<T, U, Z>(Func<T, U, IEnumerator> func, T t, U u)
                 where T : struct
                 where U : struct {
             AssertBlittable<T, U>();
             return DoGetRelaxedHelper<Z>(func(t, u));
         }
-        protected Task<Z> DoGetDoGetRelaxed<T, U, V, Z>(Func<T, U, V, IEnumerator> func, T t, U u, V v)
+        protected Task<Z> DoGetRelaxedTS<T, U, V, Z>(Func<T, U, V, IEnumerator> func, T t, U u, V v)
                 where T : struct
                 where U : struct
                 where V : struct {
             AssertBlittable<T, U, V>();
             return DoGetRelaxedHelper<Z>(func(t, u, v));
         }
-        protected Task<Z> DoGetRelaxed<T, U, V, W, Z>(Func<T, U, V, W, IEnumerator> func, T t, U u, V v, W w)
+        protected Task<Z> DoGetRelaxedTS<T, U, V, W, Z>(Func<T, U, V, W, IEnumerator> func, T t, U u, V v, W w)
                 where T : struct
                 where U : struct
                 where V : struct
@@ -1105,19 +1194,19 @@ namespace UnityEPL {
             return DoGetRelaxedHelper<Z>(func(t, u, v, w));
         }
 
-        protected Task<Z> DoGetRelaxed<Z>(Func<Z> func) {
+        protected Task<Z> DoGetRelaxedTS<Z>(Func<Z> func) {
             var tcs = new TaskCompletionSource<Z>();
             manager.events.Enqueue(TaskTrigger(tcs, func));
             return tcs.Task;
         }
-        protected Task<Z> DoGetRelaxed<T, Z>(Func<T, Z> func, T t)
+        protected Task<Z> DoGetRelaxedTS<T, Z>(Func<T, Z> func, T t)
                 where T : struct {
             AssertBlittable<T>();
             var tcs = new TaskCompletionSource<Z>();
             manager.events.Enqueue(TaskTrigger(tcs, func, t));
             return tcs.Task;
         }
-        protected Task<Z> DoGetRelaxed<T, U, Z>(Func<T, U, Z> func, T t, U u)
+        protected Task<Z> DoGetRelaxedTS<T, U, Z>(Func<T, U, Z> func, T t, U u)
                 where T : struct
                 where U : struct {
             AssertBlittable<T, U>();
@@ -1125,7 +1214,7 @@ namespace UnityEPL {
             manager.events.Enqueue(TaskTrigger(tcs, func, t, u));
             return tcs.Task;
         }
-        protected Task<Z> DoGetRelaxed<T, U, V, Z>(Func<T, U, V, Z> func, T t, U u, V v)
+        protected Task<Z> DoGetRelaxedTS<T, U, V, Z>(Func<T, U, V, Z> func, T t, U u, V v)
                 where T : struct
                 where U : struct
                 where V : struct {
@@ -1134,7 +1223,7 @@ namespace UnityEPL {
             manager.events.Enqueue(TaskTrigger(tcs, func, t, u, v));
             return tcs.Task;
         }
-        protected Task<Z> DoGetRelaxed<T, U, V, W, Z>(Func<T, U, V, W, Z> func, T t, U u, V v, W w)
+        protected Task<Z> DoGetRelaxedTS<T, U, V, W, Z>(Func<T, U, V, W, Z> func, T t, U u, V v, W w)
                 where T : struct
                 where U : struct
                 where V : struct
@@ -1146,19 +1235,19 @@ namespace UnityEPL {
         }
 
 #if EVENTMONOBEHAVIOR_TASK_OPERATORS
-        protected Task<Z> DoGetRelaxed<Z>(Func<Task<Z>> func) {
+        protected Task<Z> DoGetRelaxedTS<Z>(Func<Task<Z>> func) {
             var tcs = new TaskCompletionSource<Z>();
             manager.events.Enqueue(TaskTrigger(tcs, func));
             return tcs.Task;
         }
-        protected Task<Z> DoGetRelaxed<T, Z>(Func<T, Task<Z>> func, T t)
+        protected Task<Z> DoGetRelaxedTS<T, Z>(Func<T, Task<Z>> func, T t)
                 where T : struct {
             AssertBlittable<T>();
             var tcs = new TaskCompletionSource<Z>();
             manager.events.Enqueue(TaskTrigger(tcs, func, t));
             return tcs.Task;
         }
-        protected Task<Z> DoGetRelaxed<T, U, Z>(Func<T, U, Task<Z>> func, T t, U u)
+        protected Task<Z> DoGetRelaxedTS<T, U, Z>(Func<T, U, Task<Z>> func, T t, U u)
                 where T : struct
                 where U : struct {
             AssertBlittable<T, U>();
@@ -1166,7 +1255,7 @@ namespace UnityEPL {
             manager.events.Enqueue(TaskTrigger(tcs, func, t, u));
             return tcs.Task;
         }
-        protected Task<Z> DoGetRelaxed<T, U, V, Z>(Func<T, U, V, Task<Z>> func, T t, U u, V v)
+        protected Task<Z> DoGetRelaxedTS<T, U, V, Z>(Func<T, U, V, Task<Z>> func, T t, U u, V v)
                 where T : struct
                 where U : struct
                 where V : struct {
@@ -1175,7 +1264,7 @@ namespace UnityEPL {
             manager.events.Enqueue(TaskTrigger(tcs, func, t, u, v));
             return tcs.Task;
         }
-        protected Task<Z> DoGetRelaxed<T, U, V, W, Z>(Func<T, U, V, W, Task<Z>> func, T t, U u, V v, W w)
+        protected Task<Z> DoGetRelaxedTS<T, U, V, W, Z>(Func<T, U, V, W, Task<Z>> func, T t, U u, V v, W w)
                 where T : struct
                 where U : struct
                 where V : struct
@@ -1189,7 +1278,7 @@ namespace UnityEPL {
 
 #if EVENTMONOBEHAVIOR_MANUAL_RESULT_SET
         // -------------------------------------
-        // DoWaitForManualTrigger
+        // DoWaitForManualTriggerTS
         // 
         // User is responsible for triggering these TaskCompletionSources
         // Do NOT use this unless you really know what you're doing (and there is no other option)
@@ -1197,19 +1286,19 @@ namespace UnityEPL {
         // // JPB: This is currently used in the InputManager
         // -------------------------------------
 
-        protected Task DoWaitForManualTrigger(Func<TaskCompletionSource<bool>, IEnumerator> func) {
+        protected Task DoWaitForManualTriggerTS(Func<TaskCompletionSource<bool>, IEnumerator> func) {
             var tcs = new TaskCompletionSource<bool>();
             manager.events.Enqueue(func(tcs));
             return tcs.Task;
         }
-        protected Task DoWaitForManualTrigger<T>(Func<TaskCompletionSource<bool>, T, IEnumerator> func, T t)
+        protected Task DoWaitForManualTriggerTS<T>(Func<TaskCompletionSource<bool>, T, IEnumerator> func, T t)
                 where T : struct {
             AssertBlittable<T>();
             var tcs = new TaskCompletionSource<bool>();
             manager.events.Enqueue(func(tcs, t));
             return tcs.Task;
         }
-        protected Task DoWaitForManualTrigger<T, U>(Func<TaskCompletionSource<bool>, T, U, IEnumerator> func, T t, U u)
+        protected Task DoWaitForManualTriggerTS<T, U>(Func<TaskCompletionSource<bool>, T, U, IEnumerator> func, T t, U u)
                 where T : struct
                 where U : struct {
             AssertBlittable<T, U>();
@@ -1217,7 +1306,7 @@ namespace UnityEPL {
             manager.events.Enqueue(func(tcs, t, u));
             return tcs.Task;
         }
-        protected Task DoWaitForManualTrigger<T, U, V>(Func<TaskCompletionSource<bool>, T, U, V, IEnumerator> func, T t, U u, V v)
+        protected Task DoWaitForManualTriggerTS<T, U, V>(Func<TaskCompletionSource<bool>, T, U, V, IEnumerator> func, T t, U u, V v)
                 where T : struct
                 where U : struct
                 where V : struct {
@@ -1227,19 +1316,19 @@ namespace UnityEPL {
             return tcs.Task;
         }
 
-        protected Task DoWaitForManualTrigger(Action<TaskCompletionSource<bool>> func) {
+        protected Task DoWaitForManualTriggerTS(Action<TaskCompletionSource<bool>> func) {
             var tcs = new TaskCompletionSource<bool>();
             manager.events.Enqueue(EnumeratorCaller(func, tcs));
             return tcs.Task;
         }
-        protected Task DoWaitForManualTrigger<T>(Action<TaskCompletionSource<bool>, T> func, T t)
+        protected Task DoWaitForManualTriggerTS<T>(Action<TaskCompletionSource<bool>, T> func, T t)
                 where T : struct {
             AssertBlittable<T>();
             var tcs = new TaskCompletionSource<bool>();
             manager.events.Enqueue(EnumeratorCaller(func, tcs, t));
             return tcs.Task;
         }
-        protected Task DoWaitForManualTrigger<T, U>(Action<TaskCompletionSource<bool>, T, U> func, T t, U u)
+        protected Task DoWaitForManualTriggerTS<T, U>(Action<TaskCompletionSource<bool>, T, U> func, T t, U u)
                 where T : struct
                 where U : struct {
             AssertBlittable<T, U>();
@@ -1247,7 +1336,7 @@ namespace UnityEPL {
             manager.events.Enqueue(EnumeratorCaller(func, tcs, t, u));
             return tcs.Task;
         }
-        protected Task DoWaitForManualTrigger<T, U, V>(Action<TaskCompletionSource<bool>, T, U, V> func, T t, U u, V v)
+        protected Task DoWaitForManualTriggerTS<T, U, V>(Action<TaskCompletionSource<bool>, T, U, V> func, T t, U u, V v)
                 where T : struct
                 where U : struct
                 where V : struct {
@@ -1258,19 +1347,19 @@ namespace UnityEPL {
         }
 
 #if EVENTMONOBEHAVIOR_TASK_OPERATORS
-        protected Task DoWaitForManualTrigger(Func<TaskCompletionSource<bool>, Task> func) {
+        protected Task DoWaitForManualTriggerTS(Func<TaskCompletionSource<bool>, Task> func) {
             var tcs = new TaskCompletionSource<bool>();
             manager.events.Enqueue(EnumeratorCaller(func, tcs));
             return tcs.Task;
         }
-        protected Task DoWaitForManualTrigger<T>(Func<TaskCompletionSource<bool>, T, Task> func, T t)
+        protected Task DoWaitForManualTriggerTS<T>(Func<TaskCompletionSource<bool>, T, Task> func, T t)
                 where T : struct {
             AssertBlittable<T>();
             var tcs = new TaskCompletionSource<bool>();
             manager.events.Enqueue(EnumeratorCaller(func, tcs, t));
             return tcs.Task;
         }
-        protected Task DoWaitForManualTrigger<T, U>(Func<TaskCompletionSource<bool>, T, U, Task> func, T t, U u)
+        protected Task DoWaitForManualTriggerTS<T, U>(Func<TaskCompletionSource<bool>, T, U, Task> func, T t, U u)
                 where T : struct
                 where U : struct {
             AssertBlittable<T, U>();
@@ -1278,7 +1367,7 @@ namespace UnityEPL {
             manager.events.Enqueue(EnumeratorCaller(func, tcs, t, u));
             return tcs.Task;
         }
-        protected Task DoWaitForManualTrigger<T, U, V>(Func<TaskCompletionSource<bool>, T, U, V, Task> func, T t, U u, V v)
+        protected Task DoWaitForManualTriggerTS<T, U, V>(Func<TaskCompletionSource<bool>, T, U, V, Task> func, T t, U u, V v)
                 where T : struct
                 where U : struct
                 where V : struct {
@@ -1290,7 +1379,7 @@ namespace UnityEPL {
 #endif // EVENTMONOBEHAVIOR_TASK_OPERATORS
 
         // -------------------------------------
-        // DoGetManualTrigger
+        // DoGetManualTriggerTS
         // 
         // User is responsible for triggering these TaskCompletionSources with the result
         // Do NOT use this unless you really know what you're doing (and there is no other option)
@@ -1303,19 +1392,19 @@ namespace UnityEPL {
         // The calling passed in IEnumerator/Func has to call AssertBlittable on the result
         // -------------------------------------
 
-        protected Task<Z> DoGetManualTrigger<Z>(Func<TaskCompletionSource<Z>, IEnumerator> func) {
+        protected Task<Z> DoGetManualTriggerTS<Z>(Func<TaskCompletionSource<Z>, IEnumerator> func) {
             var tcs = new TaskCompletionSource<Z>();
             manager.events.Enqueue(func(tcs));
             return tcs.Task;
         }
-        protected Task<Z> DoGetManualTrigger<T, Z>(Func<TaskCompletionSource<Z>, T, IEnumerator> func, T t)
+        protected Task<Z> DoGetManualTriggerTS<T, Z>(Func<TaskCompletionSource<Z>, T, IEnumerator> func, T t)
                 where T : struct {
             AssertBlittable<T>();
             var tcs = new TaskCompletionSource<Z>();
             manager.events.Enqueue(func(tcs, t));
             return tcs.Task;
         }
-        protected Task<Z> DoGetManualTrigger<T, U, Z>(Func<TaskCompletionSource<Z>, T, U, IEnumerator> func, T t, U u)
+        protected Task<Z> DoGetManualTriggerTS<T, U, Z>(Func<TaskCompletionSource<Z>, T, U, IEnumerator> func, T t, U u)
                 where T : struct
                 where U : struct {
             AssertBlittable<T, U>();
@@ -1323,7 +1412,7 @@ namespace UnityEPL {
             manager.events.Enqueue(func(tcs, t, u));
             return tcs.Task;
         }
-        protected Task<Z> DoGetManualTrigger<T, U, V, Z>(Func<TaskCompletionSource<Z>, T, U, V, IEnumerator> func, T t, U u, V v)
+        protected Task<Z> DoGetManualTriggerTS<T, U, V, Z>(Func<TaskCompletionSource<Z>, T, U, V, IEnumerator> func, T t, U u, V v)
                 where T : struct
                 where U : struct
                 where V : struct {
@@ -1333,13 +1422,13 @@ namespace UnityEPL {
             return tcs.Task;
         }
 
-        protected Task<Z> DoGetManualTrigger<Z>(Action<TaskCompletionSource<Z>> func)
+        protected Task<Z> DoGetManualTriggerTS<Z>(Action<TaskCompletionSource<Z>> func)
                 where Z : struct {
             var tcs = new TaskCompletionSource<Z>();
             manager.events.Enqueue(EnumeratorCaller(func, tcs));
             return tcs.Task;
         }
-        protected Task<Z> DoGetManualTrigger<T, Z>(Action<TaskCompletionSource<Z>, T> func, T t)
+        protected Task<Z> DoGetManualTriggerTS<T, Z>(Action<TaskCompletionSource<Z>, T> func, T t)
                 where T : struct
                 where Z : struct {
             AssertBlittable<T>();
@@ -1347,7 +1436,7 @@ namespace UnityEPL {
             manager.events.Enqueue(EnumeratorCaller(func, tcs, t));
             return tcs.Task;
         }
-        protected Task<Z> DoGetManualTrigger<T, U, Z>(Action<TaskCompletionSource<Z>, T, U> func, T t, U u)
+        protected Task<Z> DoGetManualTriggerTS<T, U, Z>(Action<TaskCompletionSource<Z>, T, U> func, T t, U u)
                 where T : struct
                 where U : struct
                 where Z : struct {
@@ -1356,7 +1445,7 @@ namespace UnityEPL {
             manager.events.Enqueue(EnumeratorCaller(func, tcs, t, u));
             return tcs.Task;
         }
-        protected Task<Z> DoGetManualTrigger<T, U, V, Z>(Action<TaskCompletionSource<Z>, T, U, V> func, T t, U u, V v)
+        protected Task<Z> DoGetManualTriggerTS<T, U, V, Z>(Action<TaskCompletionSource<Z>, T, U, V> func, T t, U u, V v)
                 where T : struct
                 where U : struct
                 where V : struct
@@ -1368,13 +1457,13 @@ namespace UnityEPL {
         }
 
 #if EVENTMONOBEHAVIOR_TASK_OPERATORS
-        protected Task<Z> DoGetManualTrigger<Z>(Func<TaskCompletionSource<Z>, Task> func)
+        protected Task<Z> DoGetManualTriggerTS<Z>(Func<TaskCompletionSource<Z>, Task> func)
                 where Z : struct {
             var tcs = new TaskCompletionSource<Z>();
             manager.events.Enqueue(EnumeratorCaller(func, tcs));
             return tcs.Task;
         }
-        protected Task<Z> DoGetManualTrigger<T, Z>(Func<TaskCompletionSource<Z>, T, Task> func, T t)
+        protected Task<Z> DoGetManualTriggerTS<T, Z>(Func<TaskCompletionSource<Z>, T, Task> func, T t)
                 where T : struct
                 where Z : struct {
             AssertBlittable<T>();
@@ -1382,7 +1471,7 @@ namespace UnityEPL {
             manager.events.Enqueue(EnumeratorCaller(func, tcs, t));
             return tcs.Task;
         }
-        protected Task<Z> DoGetManualTrigger<T, U, Z>(Func<TaskCompletionSource<Z>, T, U, Task> func, T t, U u)
+        protected Task<Z> DoGetManualTriggerTS<T, U, Z>(Func<TaskCompletionSource<Z>, T, U, Task> func, T t, U u)
                 where T : struct
                 where U : struct
                 where Z : struct {
@@ -1391,7 +1480,7 @@ namespace UnityEPL {
             manager.events.Enqueue(EnumeratorCaller(func, tcs, t, u));
             return tcs.Task;
         }
-        protected Task<Z> DoGetManualTrigger<T, U, V, Z>(Func<TaskCompletionSource<Z>, T, U, V, Task> func, T t, U u, V v)
+        protected Task<Z> DoGetManualTriggerTS<T, U, V, Z>(Func<TaskCompletionSource<Z>, T, U, V, Task> func, T t, U u, V v)
                 where T : struct
                 where U : struct
                 where V : struct

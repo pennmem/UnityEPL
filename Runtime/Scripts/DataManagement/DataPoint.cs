@@ -7,7 +7,7 @@ using Unity.Collections;
 using Newtonsoft.Json;
 
 namespace UnityEPL {
-    //these datapoints represent behavioral events
+    //These datapoints represent behavioral events
     //data about the event is currently stored in a dictionary
     public struct DataPoint {
         public readonly string type;

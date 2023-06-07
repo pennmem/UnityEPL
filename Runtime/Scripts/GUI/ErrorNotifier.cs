@@ -19,7 +19,7 @@ namespace UnityEPL {
                 }
             }
 
-            Instance.Do(() => { Instance.ErrorHelper(new Mutex<Exception>(exception)); });
+            Instance.DoTS(() => { Instance.ErrorHelper(new Mutex<Exception>(exception)); });
             throw exception;
         }
         protected void ErrorHelper(Mutex<Exception> exception) {
@@ -28,9 +28,10 @@ namespace UnityEPL {
             if (!gameObject.activeSelf) { 
                 gameObject.SetActive(true);
                 var textDisplayer = gameObject.GetComponent<TextDisplayer>();
-                textDisplayer.Display("Error", "Error", e.Message);
+                var msg = e.Message == "" ? e.GetType().Name : e.Message;
+                textDisplayer.Display("Error", "Error", msg);
             }
-            manager.eventReporter.ReportScriptedEventMB("Error", new() {
+            manager.eventReporter.ReportTS("Error", new() {
                 { "message", e.Message },
                 { "stackTrace", e.StackTrace } });
             manager.PauseTS(true);
@@ -45,14 +46,14 @@ namespace UnityEPL {
                 }
             }
 
-            Instance.Do(Instance.WarningHelper, exception.Message.ToNativeText(), exception.StackTrace.ToNativeText());
+            Instance.DoTS(Instance.WarningHelper, exception.Message.ToNativeText(), exception.StackTrace.ToNativeText());
         }
         protected void WarningHelper(NativeText message, NativeText stackTrace) {
             gameObject.SetActive(true);
             var textDisplayer = gameObject.GetComponent<TextDisplayer>();
             textDisplayer.Display("Warning", "Warning", message.ToString());
             Debug.Log($"Warning: {message}\n{stackTrace}");
-            manager.eventReporter.ReportScriptedEventMB("Warning", new() {
+            manager.eventReporter.ReportTS("Warning", new() {
                 { "message", message.ToString() },
                 { "stackTrace", stackTrace.ToString() } });
             manager.PauseTS(true);

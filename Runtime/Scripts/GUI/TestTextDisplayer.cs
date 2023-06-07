@@ -13,7 +13,7 @@ namespace UnityEPL {
         public TextMesh tm;
 
         public void UpdateText(string ss) {
-            Do(UpdateTextHelper, ss.ToNativeText());
+            DoTS(UpdateTextHelper, ss.ToNativeText());
         }
         protected IEnumerator UpdateTextHelper(NativeText ss) {
             tm.text = ss.ToString();
@@ -24,7 +24,7 @@ namespace UnityEPL {
 
 
         public Task AwaitableUpdateText(string ss) {
-            return DoWaitFor(AwaitableUpdateTextHelper, ss.ToNativeText());
+            return DoWaitForTS(AwaitableUpdateTextHelper, ss.ToNativeText());
         }
         protected IEnumerator AwaitableUpdateTextHelper(NativeText ss) {
             Debug.Log(1 + " - " + DateTime.Now);
@@ -40,7 +40,7 @@ namespace UnityEPL {
         }
 
         public Task<int> ReturnableUpdateText(string ss) {
-            return DoGet<NativeText, int>(ReturnableUpdateTextHelper, ss.ToNativeText());
+            return DoGetTS<NativeText, int>(ReturnableUpdateTextHelper, ss.ToNativeText());
         }
         protected IEnumerator ReturnableUpdateTextHelper(NativeText ss) {
             Debug.Log(1 + " - " + DateTime.Now);

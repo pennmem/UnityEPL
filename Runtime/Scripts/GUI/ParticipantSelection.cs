@@ -34,16 +34,16 @@ namespace UnityEPL {
             }
         }
 
-        public void ExperimentUpdatedMB() {
-            DoMB(ExperimentUpdatedHelper);
+        public void ExperimentUpdated() {
+            Do(ExperimentUpdatedHelper);
         }
         protected void ExperimentUpdatedHelper() {
             experimentUpdated = true;
         }
 
         
-        public void ParticipantSelectedMB() {
-            DoMB(ParticipantSelectedHelper);
+        public void ParticipantSelected() {
+            Do(ParticipantSelectedHelper);
         }
         protected void ParticipantSelectedHelper() {
             Dropdown dropdown = GetComponent<Dropdown>();
@@ -55,8 +55,8 @@ namespace UnityEPL {
         }
 
 
-        public void DecreaseSessionNumberMB() {
-            DoMB(DecreaseSessionNumberHelper);
+        public void DecreaseSessionNumber() {
+            Do(DecreaseSessionNumberHelper);
         }
         protected void DecreaseSessionNumberHelper() {
             if (nextSessionNumber > 0)
@@ -64,8 +64,8 @@ namespace UnityEPL {
             LoadSession();
         }
 
-        public void IncreaseSessionNumberMB() {
-            DoMB(IncreaseSessionNumberHelper);
+        public void IncreaseSessionNumber() {
+            Do(IncreaseSessionNumberHelper);
         }
         protected void IncreaseSessionNumberHelper() {
             nextSessionNumber++;

@@ -20,12 +20,12 @@ namespace UnityEPL {
 
             dropdown.AddOptions(new List<string>(new string[] { "Select Task..." }));
             dropdown.AddOptions(experiments);
-            SetExperimentMB();
+            SetExperiment();
         }
 
 
-        public void SetExperimentMB() {
-            DoMB(SetExperimentHelper);
+        public void SetExperiment() {
+            Do(SetExperimentHelper);
         }
         protected void SetExperimentHelper() {
             Dropdown dropdown = GetComponent<Dropdown>();

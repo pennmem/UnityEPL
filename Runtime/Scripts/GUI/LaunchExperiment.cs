@@ -32,8 +32,8 @@ namespace UnityEPL {
             }
         }
 
-        public async void DoSyncBoxTestMB() {
-            await DoWaitForMB(DoSyncBoxTestHelper);
+        public async void DoSyncBoxTest() {
+            await DoWaitFor(DoSyncBoxTestHelper);
         }
         protected async Task DoSyncBoxTestHelper() {
             if (!manager.syncBox?.IsRunning() ?? false) {
@@ -50,8 +50,8 @@ namespace UnityEPL {
         }
 
         // activated by UI launch button
-        public void DoLaunchExperimentMB() {
-            DoMB(DoLaunchExperimentHelper);
+        public void DoLaunchExperiment() {
+            Do(DoLaunchExperimentHelper);
         }
         protected void DoLaunchExperimentHelper() {
             if (manager.syncBox?.IsRunning() ?? false) {

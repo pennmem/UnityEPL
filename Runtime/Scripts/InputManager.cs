@@ -29,10 +29,10 @@ namespace UnityEPL {
         }
 
         public Task WaitForKey() {
-            return DoGetManualTrigger<KeyCode>(GetKeyHelper);
+            return DoGetManualTriggerTS<KeyCode>(GetKeyHelper);
         }
         public Task<KeyCode> GetKey() {
-            return DoGetManualTrigger<KeyCode>(GetKeyHelper);
+            return DoGetManualTriggerTS<KeyCode>(GetKeyHelper);
         }
         protected IEnumerator GetKeyHelper(TaskCompletionSource<KeyCode> tcs) {
             tempKeyRequests.AddLast(tcs);

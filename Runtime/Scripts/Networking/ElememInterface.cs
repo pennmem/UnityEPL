@@ -91,7 +91,7 @@ namespace UnityEPL {
                 { "mean_latency_ms", mean },
                 { "resolution_ns", acc },
             };
-            manager.eventReporter.ReportScriptedEvent("latency check", dict);
+            manager.eventReporter.ReportTS("latency check", dict);
             UnityEngine.Debug.Log(string.Join(Environment.NewLine, dict));
         }
 
