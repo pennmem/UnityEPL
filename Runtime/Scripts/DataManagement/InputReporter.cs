@@ -8,7 +8,7 @@ using UnityEngine;
 namespace UnityEPL {
 
     [AddComponentMenu("UnityEPL/Reporters/Input Reporter")]
-    public class InputReporter : DataReporter {
+    public class InputReporter : DataReporter<InputReporter> {
         public bool reportKeyStrokes = true;
         public bool reportMouseClicks = false;
         public bool reportMousePosition = false;

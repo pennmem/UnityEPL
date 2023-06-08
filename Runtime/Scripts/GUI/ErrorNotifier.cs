@@ -19,22 +19,34 @@ namespace UnityEPL {
                 }
             }
 
+            if (!IsInstatiated) {
+                throw new Exception("THIS SHOULD NOT HAPPEN! ErrorNotifier was accessed before it's awake method has been called.", exception);
+            }
+
             Instance.DoTS(() => { Instance.ErrorHelper(new Mutex<Exception>(exception)); });
             throw exception;
         }
         protected void ErrorHelper(Mutex<Exception> exception) {
-            Exception e = exception.Get();
-            // Only show first error on screen, but report all errors
-            if (!gameObject.activeSelf) { 
-                gameObject.SetActive(true);
-                var textDisplayer = gameObject.GetComponent<TextDisplayer>();
-                var msg = e.Message == "" ? e.GetType().Name : e.Message;
-                textDisplayer.Display("Error", "Error", msg);
+            try {
+                Exception e = exception.Get();
+                // Only show first error on screen, but report all errors
+                if (!gameObject.activeSelf) {
+                    gameObject.SetActive(true);
+                    var msg = e.Message == "" ? e.GetType().Name : e.Message;
+                    TextDisplayer.Instance.Display("Error", "<color=red><b>Error</b></color>", msg);
+                    Debug.Log($"Warning: {msg}\n{e.StackTrace}");
+                }
+                manager.eventReporter.ReportTS("Error", new() {
+                    { "message", e.Message },
+                    { "stackTrace", e.StackTrace } });
+                manager.PauseTS(true);
+            } catch (Exception e) {
+                Debug.Log("UNSAVEABLE ERROR IN ErrorHelper... Quitting...\n" + e);
+                Debug.Assert(gameObject != null);
+                Debug.Assert(manager != null);
+                Debug.Assert(manager.eventReporter != null);
+                manager.Quit();
             }
-            manager.eventReporter.ReportTS("Error", new() {
-                { "message", e.Message },
-                { "stackTrace", e.StackTrace } });
-            manager.PauseTS(true);
         }
 
         public static void Warning(Exception exception) {
@@ -49,9 +61,7 @@ namespace UnityEPL {
             Instance.DoTS(Instance.WarningHelper, exception.Message.ToNativeText(), exception.StackTrace.ToNativeText());
         }
         protected void WarningHelper(NativeText message, NativeText stackTrace) {
-            gameObject.SetActive(true);
-            var textDisplayer = gameObject.GetComponent<TextDisplayer>();
-            textDisplayer.Display("Warning", "Warning", message.ToString());
+            TextDisplayer.Instance.Display("Warning", "<color=yellow><b>Warning</b></color>", message.ToString());
             Debug.Log($"Warning: {message}\n{stackTrace}");
             manager.eventReporter.ReportTS("Warning", new() {
                 { "message", message.ToString() },

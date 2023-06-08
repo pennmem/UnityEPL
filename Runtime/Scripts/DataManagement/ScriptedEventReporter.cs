@@ -7,13 +7,13 @@ using UnityEngine;
 namespace UnityEPL {
 
     [AddComponentMenu("UnityEPL/Reporters/Scripted Event Reporter")]
-    public class ScriptedEventReporter : DataReporter {
+    public class ScriptedEventReporter : DataReporter<ScriptedEventReporter> {
 
         // TODO: JPB: (needed) (bug) Make ReportScriptedEvent use a blittable type instead of Dictionary
         //            Or at least have it use Mutex.
         //            Even better, just make DataPoint a Native type and then use that
         public void ReportTS(string type, Dictionary<string, object> data = null) {
-            var time = TimeStamp();
+            var time = Clock.UtcNow;
             ReportTS(type, time, data);
         }
         public void ReportTS(string type, DateTime time, Dictionary<string, object> data = null) {

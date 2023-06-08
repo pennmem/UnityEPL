@@ -5,21 +5,22 @@ using UnityEngine;
 
 namespace UnityEPL {
 
-    public abstract class DataHandler : EventMonoBehaviour {
-        protected List<DataReporter> reportersToHandle = new();
-        protected Queue<DataReporter> toAdd = new();
-        protected Queue<DataReporter> toRemove = new();
+    public abstract class DataHandler<T> : EventMonoBehaviour
+            where T : DataReporter<T> {
+        protected List<DataReporter<T>> reportersToHandle = new();
+        protected Queue<DataReporter<T>> toAdd = new();
+        protected Queue<DataReporter<T>> toRemove = new();
         protected Queue<DataPoint> eventQueue = new();
 
         // TODO: JPB: (needed) (bug) DataHandler Update is overriden by child classes
         protected virtual void Update() {
-            DataReporter result;
+            DataReporter<T> result;
 
             if (toAdd.TryDequeue(out result)) {
                 reportersToHandle.Add(result);
             }
 
-            foreach (DataReporter reporter in reportersToHandle) {
+            foreach (DataReporter<T> reporter in reportersToHandle) {
                 if (reporter.UnreadDataPointCount() > 0) {
                     DataPoint[] newPoints = reporter.ReadDataPoints(reporter.UnreadDataPointCount());
                     HandleDataPoints(newPoints);
@@ -45,17 +46,17 @@ namespace UnityEPL {
             eventQueue.Enqueue(data);
         }
 
-        public void AddReporter(DataReporter add) {
+        public void AddReporter(DataReporter<T> add) {
             Do(AddReporterHelper, add);
         }
-        public void AddReporterHelper(DataReporter add) {
+        public void AddReporterHelper(DataReporter<T> add) {
             toAdd.Enqueue(add);
         }
 
-        public void RemoveReporter(DataReporter remove) {
+        public void RemoveReporter(DataReporter<T> remove) {
             Do(RemoveReporterHelper, remove);
         }
-        public void RemoveReporterHelper(DataReporter remove) {
+        public void RemoveReporterHelper(DataReporter<T> remove) {
             toRemove.Enqueue(remove);
         }
 

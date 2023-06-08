@@ -5,7 +5,8 @@ using UnityEngine;
 namespace UnityEPL {
 
     [AddComponentMenu("UnityEPL/Handlers/Debug Log Handler")]
-    public class DebugLogHandler : DataHandler {
+    public class DebugLogHandler<T> : DataHandler<T>
+            where T : DataReporter<T> {
         protected override void AwakeOverride() { }
 
         protected override void HandleDataPoints(DataPoint[] dataPoints) {

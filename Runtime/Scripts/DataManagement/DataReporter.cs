@@ -6,30 +6,18 @@ using UnityEngine;
 namespace UnityEPL {
 
     //this superclass implements an interface for retrieving behavioral events from a queue
-    // TODO: JPB: (needed) (bug) Refactor DataReporter to use Clock class for timing accuracy
-    public abstract class DataReporter : EventMonoBehaviour {
+    public abstract class DataReporter<T> : SingletonEventMonoBehaviour<T>
+            where T : DataReporter<T> {
         public string reportingID = "Object ID not set.";
-        private static DateTime realWorldStartTime;
-        private static Stopwatch stopwatch;
-
-        protected volatile static bool nativePluginRunning = false;
-        private static bool startTimeInitialized = false;
 
         protected Queue<DataPoint> eventQueue = new();
 
-        public DataHandler reportTo;
+        public DataHandler<T> reportTo;
 
         protected override void AwakeOverride() {
             // this can be set in the editor, change won't appear in code search
             if (reportingID == "Object ID not set.") {
                 GenerateDefaultName();
-            }
-
-            if (!startTimeInitialized) {
-                realWorldStartTime = DateTime.UtcNow;
-                stopwatch = new();
-                stopwatch.Start();
-                startTimeInitialized = true;
             }
 
             if (QualitySettings.vSyncCount == 0) {
@@ -41,7 +29,7 @@ namespace UnityEPL {
             if (!reportTo) {
                 GameObject data = GameObject.Find("DataManager");
                 if (data != null) {
-                    reportTo = (DataHandler)data.GetComponent("DataHandler");
+                    reportTo = (DataHandler<T>)data.GetComponent("DataHandler");
                 }
             }
 
@@ -112,15 +100,6 @@ namespace UnityEPL {
             transformDict.Add("rotationZ", transform.rotation.eulerAngles.z);
             transformDict.Add("object reporting id", reportingID);
             eventQueue.Enqueue(new DataPoint(gameObject.name + " transform", transformDict));
-        }
-
-        // TODO: JPB: (needed) (feature) Convert DataReporter::TimeStamp to use Clock class
-        public static DateTime TimeStamp() {
-            return GetStartTime().Add(stopwatch.Elapsed);
-        }
-
-        public static DateTime GetStartTime() {
-            return realWorldStartTime;
         }
 
         private void GenerateDefaultName() {

@@ -5,10 +5,14 @@ using System.Threading;
 using System.Threading.Tasks;
 using Unity.Collections;
 using UnityEngine;
+using UnityEngine.UI;
+
 namespace UnityEPL {
 
-    public class TextDisplayer : EventMonoBehaviour {
-        protected override void AwakeOverride() { }
+    public class TextDisplayer : SingletonEventMonoBehaviour<TextDisplayer> {
+        protected override void AwakeOverride() {
+            gameObject.SetActive(false);
+        }
 
         /// <summary>
         /// Subscribe to this event to be notified of changes in the displayed text.
@@ -26,8 +30,8 @@ namespace UnityEPL {
         /// <summary>
         /// These text elements will all be updated when this monobehaviors public methods are used.
         /// </summary>
-        public UnityEngine.UI.Text textElement;
-        public UnityEngine.UI.Text titleElement;
+        public Text textElement;
+        public Text titleElement;
 
         private Color[] originalColors;
 
@@ -76,6 +80,7 @@ namespace UnityEPL {
             Dictionary<string, object> dataDict = new() {
                 { "displayed text", displayedText },
             };
+            gameObject.SetActive(true);
             if (scriptedEventReporter != null)
                 scriptedEventReporter.ReportTS(description.ToString(), dataDict);
 
@@ -102,6 +107,7 @@ namespace UnityEPL {
             Dictionary<string, object> dataDict = new() {
                 { "displayed title", displayedTitle },
             };
+            gameObject.SetActive(true);
             if (scriptedEventReporter != null)
                 scriptedEventReporter.ReportTS(description.ToString(), dataDict);
 
@@ -133,6 +139,7 @@ namespace UnityEPL {
                 { "displayed title", displayedTitle },
                 { "displayed text", displayedText },
             };
+            gameObject.SetActive(true);
             if (scriptedEventReporter != null)
                 scriptedEventReporter.ReportTS(description.ToString(), dataDict);
 

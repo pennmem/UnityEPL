@@ -6,7 +6,7 @@ using UnityEngine;
 namespace UnityEPL {
 
     [AddComponentMenu("UnityEPL/Reporters/UI Data Reporter")]
-    public class UIDataReporter : DataReporter {
+    public class UIDataReporter : DataReporter<UIDataReporter> {
         /// <summary>
         /// This can be subscribed to Unity UI buttons, etc.
         /// </summary>

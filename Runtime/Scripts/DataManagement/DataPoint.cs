@@ -37,7 +37,7 @@ namespace UnityEPL {
             this.json = GenJSON(data ?? new());
         }
         public DataPoint(string type, Dictionary<string, object> data = null) :
-            this(type, DataReporter.TimeStamp(), data) { }
+            this(type, Clock.UtcNow, data) { }
 
         /// <summary>
         /// Returns a JSON string representing this datapoint.

@@ -101,7 +101,7 @@ namespace UnityEPL {
                     
                     // Report the message and send it to the waiting tasks
                     var msgType = json.GetValue("type").Value<string>();
-                    ReportNetworkMessage(msgType, message, DataReporter.TimeStamp(), false);
+                    ReportNetworkMessage(msgType, message, Clock.UtcNow, false);
                     for (int i = receiveRequests.Count - 1; i >= 0; i--) {
                         var (type, tcs) = receiveRequests[i];
                         if (type == msgType) {

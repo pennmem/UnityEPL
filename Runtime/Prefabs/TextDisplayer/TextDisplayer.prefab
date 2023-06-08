@@ -253,7 +253,7 @@ GameObject:
   - component: {fileID: 114176289682581468}
   - component: {fileID: 114487739435193272}
   m_Layer: 5
-  m_Name: MemoryWordCanvas
+  m_Name: TextDisplayer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

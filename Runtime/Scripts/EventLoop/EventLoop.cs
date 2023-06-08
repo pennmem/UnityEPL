@@ -23,6 +23,7 @@ namespace UnityEPL {
         protected SingleThreadTaskScheduler scheduler;
         protected CancellationTokenSource cts = new CancellationTokenSource();
         protected InterfaceManager manager;
+        protected DateTime startTime;
 
         public EventLoop() {
             scheduler = new SingleThreadTaskScheduler(cts.Token);
@@ -31,7 +32,7 @@ namespace UnityEPL {
 
             // Init threadlocal variables
             Do(async () => {
-                var _ = Clock.UtcNow;
+                startTime = Clock.UtcNow;
                 await InterfaceManager.Delay(1);
             });
         }

@@ -7,7 +7,8 @@ using UnityEngine;
 namespace UnityEPL {
 
     [AddComponentMenu("UnityEPL/Handlers/Write to Disk Handler")]
-    public class WriteToDiskHandler : DataHandler {
+    public class WriteToDiskHandler<T> : DataHandler<T>
+            where T : DataReporter<T> {
         protected override void AwakeOverride() { }
 
         //more output formats may be added in the future

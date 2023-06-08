@@ -19,7 +19,6 @@ using UnityEngine.UIElements;
 namespace UnityEPL {
 
     public class InterfaceManager : SingletonEventMonoBehaviour<InterfaceManager> {
-        protected override void AwakeOverride() { }
         public static new InterfaceManager Instance {
             get {
                 var instance = SingletonEventMonoBehaviour<InterfaceManager>.Instance;
@@ -80,10 +79,23 @@ namespace UnityEPL {
         public ConcurrentQueue<IEnumerator> events = new();
 
         //////////
+        // StartTime
+        //////////
+        public DateTime StartTimeTS { get; protected set; }
+        public TimeSpan TimeSinceStartupTS {
+            get { return Clock.UtcNow - StartTimeTS; }
+            protected set { }
+        }
+        public DateTime TimeStamp {
+            get { return StartTimeTS.Add(TimeSinceStartupTS); }
+            private set { }
+        }
+
+        //////////
         // Setup
         //////////
 
-        private void OnDestroy() {
+        protected void OnDestroy() {
             QuitTS();
         }
 
@@ -93,24 +105,36 @@ namespace UnityEPL {
             }
         }
 
+        protected override void AwakeOverride() {
+            StartTimeTS = Clock.UtcNow;
+        }
+
         protected void Start() {
             // Unity internal event handling
             SceneManager.sceneLoaded += onSceneLoaded;
 
-            // create objects not tied to unity
+            // Create objects not tied to unity
             fileManager = new FileManager(this);
-            
-            // Setup configs
+
+            // Setup Text Displayer
+            textDisplayer = TextDisplayer.Instance;
+
+            // Setup Input Reporters
+            eventReporter = ScriptedEventReporter.Instance;
+            inputReporter = InputReporter.Instance;
+            //uiReporter = UIDataReporter.Instance;
+
+            // Setup Configs
             var configs = SetupConfigs();
             GetExperiments(configs);
-
             eventsPerFrame = Config.eventsPerFrame ?? 5;
 
-            // Syncbox interface
+            // Setup Syncbox Interface
             if (!Config.isTest && !Config.noSyncbox) {
                 syncBox.Init();
             }
 
+            // Launch Startup Scene
             LaunchLauncher();
         }
 
@@ -147,24 +171,9 @@ namespace UnityEPL {
         // and release references to non-active objects
         //////////
         private void onSceneLoaded(Scene scene, LoadSceneMode mode) {
+            Debug.Log("onSceneLoaded");
             // TODO: JPB: (needed) Check
             //onKey = new ConcurrentQueue<Action<string, bool>>(); // clear keyhandler queue on scene change
-
-            // Text Displayer
-            GameObject canvas = GameObject.Find("MemoryWordCanvas");
-            if (canvas != null) {
-                textDisplayer = canvas.GetComponent<TextDisplayer>();
-                Debug.Log("Found TextDisplay");
-            }
-
-            // Input Reporters
-            GameObject inputReporters = GameObject.Find("DataManager");
-            if (inputReporters != null) {
-                eventReporter = inputReporters.GetComponent<ScriptedEventReporter>();
-                inputReporter = inputReporters.GetComponent<InputReporter>();
-                uiReporter = inputReporters.GetComponent<UIDataReporter>();
-                Debug.Log("Found InputReporters");
-            }
 
             // Voice Activity Detector
             //GameObject voice = GameObject.Find("VAD");
@@ -204,6 +213,10 @@ namespace UnityEPL {
             //    ramulator = ramulatorObject.GetComponent<RamulatorInterface>();
             //    Debug.Log("Found Ramulator");
             //}
+        }
+
+        private void onExperimentSceneLoaded(Scene scene, LoadSceneMode mode) {
+            Debug.Log("onExperimentSceneLoaded");
 
             // Experiment Manager
             try {
@@ -214,8 +227,9 @@ namespace UnityEPL {
                     $"Missing experiment GameObject that is the same name as the experiment class ({Config.experimentClass})",
                     exception));
             }
+
+            SceneManager.sceneLoaded -= onExperimentSceneLoaded;
         }
-        
 
         // TODO: JPB: (feature) Make InterfaceManager.Delay() pause aware
         // https://devblogs.microsoft.com/pfxteam/cooperatively-pausing-async-methods/
@@ -371,6 +385,7 @@ namespace UnityEPL {
                 yield return hostPC?.Connect().ToEnumerator();
                 yield return hostPC?.Configure().ToEnumerator();
 
+                SceneManager.sceneLoaded += onExperimentSceneLoaded;
                 SceneManager.LoadScene(Config.experimentScene);
             } else {
                 throw new Exception("No experiment configuration loaded");
