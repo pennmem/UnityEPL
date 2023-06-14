@@ -505,7 +505,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 114266094678627528, guid: e6672ad97ff294adba0eb53a61d1502f, type: 3}
       propertyPath: m_Text
-      value: ---
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 114266094678627528, guid: e6672ad97ff294adba0eb53a61d1502f, type: 3}
       propertyPath: m_FontData.m_MaxSize
@@ -702,4 +702,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e953a612378b646aab6fbbef7379b6c0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  textElement: {fileID: 1695510986}
+  textElement: {fileID: 0}
