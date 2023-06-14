@@ -8,7 +8,6 @@ using UnityEngine.EventSystems;
 using SFB;
 using UnityEngine.Networking;
 using System;
-using System.Security.Policy;
 
 [RequireComponent(typeof(Button))]
 public class CanvasSampleOpenFileTextMultiple : MonoBehaviour, IPointerDownHandler {
