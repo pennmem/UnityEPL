@@ -224,7 +224,8 @@ namespace UnityEPL {
                 expManager.SetActive(true);
             } catch (InvalidOperationException exception) {
                 ErrorNotifier.Error(new Exception(
-                    $"Missing experiment GameObject that is the same name as the experiment class ({Config.experimentClass})",
+                    $"Missing experiment GameObject that is the same name as the experiment class ({Config.experimentClass})" +
+                    "If it exists, did you set it to un-active (this is needed incase you have multiple experiments per scene)",
                     exception));
             }
 

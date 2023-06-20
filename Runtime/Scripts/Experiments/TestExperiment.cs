@@ -18,7 +18,7 @@ namespace UnityEPL {
         protected override Task PreTrials() { return Task.CompletedTask; }
 
         protected async Task RepeatedGetKey() {
-            var key = await inputManager.GetKey();
+            var key = await inputManager.GetKeyTS();
             UnityEngine.Debug.Log("Got key " + key);
             _ = DoWaitForTS(RepeatedGetKey);
         }
@@ -31,9 +31,9 @@ namespace UnityEPL {
             //UnityEngine.Debug.Log("DoGet: " + a);
 
             var cts = DoRepeatingTS(1000, 500, 10, () => { UnityEngine.Debug.Log("Repeat"); });
-            await inputManager.GetKey();
+            await inputManager.GetKeyTS();
             cts.Cancel();
-            await inputManager.GetKey();
+            await inputManager.GetKeyTS();
 
             //var key = await manager.inputManager.GetKey();
             //UnityEngine.Debug.Log("Got key " + key);

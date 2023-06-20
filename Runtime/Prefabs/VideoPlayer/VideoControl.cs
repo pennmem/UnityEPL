@@ -118,7 +118,7 @@ namespace UnityEPL {
         public int videoLength {
             get { return (int)videoPlayer.length; }
         }
-        // FOR TESTING PURPOSES ONLY
+        // END FOR TESTING PURPOSES ONLY
 
         public double VideoLength() {
             return DoGet(VideoLengthHelper);

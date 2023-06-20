@@ -42,6 +42,19 @@ namespace UnityEPL {
         }
 
         /// <summary>
+        /// Hides the Text display by deactivating it
+        /// </summary>
+        public void Hide() {
+            Do(HideHelper);
+        }
+        public void HideTS() {
+            DoTS(HideHelper);
+        }
+        protected void HideHelper() {
+            gameObject.SetActive(false);
+        }
+
+        /// <summary>
         /// Returns the color of the assigned text elements to whatever they were when this monobehavior initialized (usually scene load).
         /// </summary>
         public void OriginalColor() {
@@ -189,6 +202,17 @@ namespace UnityEPL {
                 scriptedEventReporter.ReportTS("title display cleared", new());
         }
 
+        public void ClearAndHide() {
+            Do(ClearAndHideHelper);
+        }
+        public void ClearAndHideTS() {
+            DoTS(ClearAndHideHelper);
+        }
+        protected void ClearAndHideHelper() {
+            Hide();
+            Clear();
+        }
+
         /// <summary>
         /// Changes the color of all textElements.  This is logged if the wordEventReporter field is populated in the editor.
         /// </summary>
@@ -236,8 +260,8 @@ namespace UnityEPL {
         }
         protected async Task PressAnyKeyHelper(NativeText description, NativeText displayText) {
             _ = manager.hostPC.SendStateMsg(HostPC.StateMsg.WAITING);
-            DisplayText($"{description.ToString()} (press any key prompt)", displayText.ToString());
-            await InputManager.Instance.GetKey();
+            Display($"{description.ToString()} (press any key prompt)", "", displayText.ToString());
+            await InputManager.Instance.GetKeyTS();
             ClearText();
             description.Dispose();
             displayText.Dispose();

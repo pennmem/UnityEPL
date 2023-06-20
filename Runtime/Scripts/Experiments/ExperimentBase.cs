@@ -22,9 +22,15 @@ namespace UnityEPL {
         TaskCompletionSource<KeyMsg> tcs = new TaskCompletionSource<KeyMsg>();
 
         protected InputManager inputManager;
+        protected TextDisplayer textDisplayer;
+        protected ErrorNotifier errorNotifier;
+        protected ScriptedEventReporter scriptedEventReporter;
 
         public ExperimentBase() {
             this.inputManager = InputManager.Instance;
+            this.textDisplayer = TextDisplayer.Instance;
+            this.errorNotifier = ErrorNotifier.Instance;
+            this.scriptedEventReporter = ScriptedEventReporter.Instance;
         }
 
         private bool endTrials = false;
