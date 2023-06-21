@@ -59,7 +59,7 @@ namespace UnityEPL {
         // Input reporters
         //////////
         //public VoiceActivityDetection voiceActity;
-        public ScriptedEventReporter eventReporter;
+        public EventReporter eventReporter;
         public InputReporter inputReporter;
         public UIDataReporter uiReporter;
         private int eventsPerFrame;
@@ -120,7 +120,7 @@ namespace UnityEPL {
             textDisplayer = TextDisplayer.Instance;
 
             // Setup Input Reporters
-            eventReporter = ScriptedEventReporter.Instance;
+            eventReporter = EventReporter.Instance;
             inputReporter = InputReporter.Instance;
             //uiReporter = UIDataReporter.Instance;
 
@@ -344,13 +344,16 @@ namespace UnityEPL {
 
         public void QuitTS() {
             hostPC?.Quit();
-            DoTS(QuitHelper);
+            DoWaitForTS(QuitHelper);
         }
-        protected void QuitHelper() {
+        protected async Task QuitHelper() {
             foreach (var eventLoop in eventLoops) {
                 //eventLoop.Stop();
                 eventLoop.Abort();
             }
+
+            EventReporter.Instance.LogTS("experiment quitted");
+            await Delay(500);
             ((MonoBehaviour)this).Quit();
         }
 
@@ -438,7 +441,7 @@ namespace UnityEPL {
             await manager.lightController.StartClosedLoop(manager.videoControl.videoLength);
             await manager.videoControl.PlayVideo();
             var loggingMsg = new Dictionary<string, object> { { "length", manager.videoControl.videoLength } };
-            manager.eventReporter.ReportTS("Video Info", loggingMsg);
+            manager.eventReporter.LogTS("Video Info", loggingMsg);
         }
 
         // -------------------------------------

@@ -24,37 +24,46 @@ namespace UnityEPL {
         protected InputManager inputManager;
         protected TextDisplayer textDisplayer;
         protected ErrorNotifier errorNotifier;
-        protected ScriptedEventReporter scriptedEventReporter;
+        protected EventReporter eventReporter;
 
         public ExperimentBase() {
             this.inputManager = InputManager.Instance;
             this.textDisplayer = TextDisplayer.Instance;
             this.errorNotifier = ErrorNotifier.Instance;
-            this.scriptedEventReporter = ScriptedEventReporter.Instance;
+            this.eventReporter = EventReporter.Instance;
         }
 
         private bool endTrials = false;
+        private bool endPracticeTrials = false;
         protected uint trialNum { get; private set; } = 0;
+        protected uint practiceTrialNum { get; private set; } = 0;
 
-        protected abstract Task PreTrials();
+        protected abstract Task PreTrialStates();
+        protected abstract Task PracticeTrialStates();
         protected abstract Task TrialStates();
-        protected abstract Task PostTrials();
+        protected abstract Task PostTrialStates();
 
         protected void EndTrials() {
             endTrials = true;
+        }
+        protected void EndPracticeTrials() {
+            endPracticeTrials = true;
         }
 
         protected async void Run() {
             await DoWaitForTS(RunHelper);
         }
-
         protected async Task RunHelper() {
-            await PreTrials();
+            await PreTrialStates();
+            while (!endPracticeTrials) {
+                practiceTrialNum++;
+                await PracticeTrialStates();
+            }
             while (!endTrials) {
                 trialNum++;
                 await TrialStates();
             }
-            await PostTrials();
+            await PostTrialStates();
             manager.QuitTS();
         }
 
@@ -69,7 +78,18 @@ namespace UnityEPL {
                 { "session", Config.session },
             };
 
-            manager.eventReporter.ReportTS("session start", versionsData);
+            manager.eventReporter.LogTS("session start", versionsData);
+        }
+
+        protected async Task RepeatOnRequest(Func<Task> func, string description, string displayText) {
+            var repeat = true;
+            while (repeat) {
+                await func();
+
+                textDisplayer.Display(description, "", displayText);
+                var keyCode = await inputManager.GetKeyTS(new() { KeyCode.Y, KeyCode.N });
+                repeat = keyCode == KeyCode.Y;
+            }
         }
     }
 

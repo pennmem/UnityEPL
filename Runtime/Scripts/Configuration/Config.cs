@@ -92,18 +92,16 @@ namespace UnityEPL {
 
 
         // Functions
-        public static void SaveConfigs(ScriptedEventReporter scriptedEventReporter, string path) {
+        public static void SaveConfigs(string path) {
             if (experimentConfig != null) {
-                if (scriptedEventReporter != null)
-                    scriptedEventReporter.ReportTS("experimentConfig", new(experimentConfig));
+                EventReporter.Instance.LogTS("experimentConfig", new(experimentConfig));
 #if !UNITY_WEBGL // System.IO
                 FlexibleConfig.WriteToText(experimentConfig, Path.Combine(path, experimentConfigName + ".json"));
 #endif // !UNITY_WEBGL
             }
 
             if (systemConfig != null) {
-                if (scriptedEventReporter != null)
-                    scriptedEventReporter.ReportTS("systemConfig", new(systemConfig));
+                EventReporter.Instance.LogTS("systemConfig", new(systemConfig));
 #if !UNITY_WEBGL // System.IO
                 FlexibleConfig.WriteToText(systemConfig, Path.Combine(path, SYSTEM_CONFIG_NAME));
 #endif // !UNITY_WEBGL

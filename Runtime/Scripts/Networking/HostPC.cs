@@ -11,7 +11,7 @@ namespace UnityEPL {
     public abstract class HostPC : NetworkInterface {
         public enum StateMsg {
             // No extra data
-            REST, ORIENT, COUNTDOWN, TRIALEND, DISTRACT, INSTRUCT, WAITING, SYNC, VOCALIZATION,
+            REST, ORIENT, COUNTDOWN, TRIAL, TRIALEND, DISTRACT, INSTRUCT, WAITING, SYNC, VOCALIZATION,
             // No extra data, ramulator copy over (likely unused)
             ENCODING, RETRIEVAL,
             // extra data: (float duration)
