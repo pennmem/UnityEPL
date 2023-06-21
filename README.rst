@@ -79,6 +79,12 @@ Random values that are consistent per participant
 
 
 *************
+FAQ
+*************
+See the FAQ Document
+
+
+*************
 Authors
 *************
 James Bruska, Connor Keane, Ryan Colyer
