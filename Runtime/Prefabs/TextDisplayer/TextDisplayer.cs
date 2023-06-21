@@ -25,7 +25,7 @@ namespace UnityEPL {
         /// <summary>
         /// Drag a scripted event reporter here to have this monobehavior automatically report when text is displayed or cleared.
         /// </summary>
-        public ScriptedEventReporter scriptedEventReporter = null;
+        public EventReporter eventReporter = null;
 
         /// <summary>
         /// These text elements will all be updated when this monobehaviors public methods are used.
@@ -66,8 +66,8 @@ namespace UnityEPL {
         protected void OriginalColorHelper() {
             textElement.color = originalColors[0];
             titleElement.color = originalColors[1];
-            if (scriptedEventReporter != null)
-                scriptedEventReporter.ReportTS("restore original text color", new());
+            if (eventReporter != null)
+                eventReporter.LogTS("restore original text color", new());
         }
 
 
@@ -94,8 +94,8 @@ namespace UnityEPL {
                 { "displayed text", displayedText },
             };
             gameObject.SetActive(true);
-            if (scriptedEventReporter != null)
-                scriptedEventReporter.ReportTS(description.ToString(), dataDict);
+            if (eventReporter != null)
+                eventReporter.LogTS(description.ToString(), dataDict);
 
             description.Dispose();
             text.Dispose();
@@ -121,8 +121,8 @@ namespace UnityEPL {
                 { "displayed title", displayedTitle },
             };
             gameObject.SetActive(true);
-            if (scriptedEventReporter != null)
-                scriptedEventReporter.ReportTS(description.ToString(), dataDict);
+            if (eventReporter != null)
+                eventReporter.LogTS(description.ToString(), dataDict);
 
             description.Dispose();
             title.Dispose();
@@ -153,8 +153,8 @@ namespace UnityEPL {
                 { "displayed text", displayedText },
             };
             gameObject.SetActive(true);
-            if (scriptedEventReporter != null)
-                scriptedEventReporter.ReportTS(description.ToString(), dataDict);
+            if (eventReporter != null)
+                eventReporter.LogTS(description.ToString(), dataDict);
 
             description.Dispose();
             title.Dispose();
@@ -173,8 +173,8 @@ namespace UnityEPL {
         }
         protected void ClearTextHelper() {
             textElement.text = "";
-            if (scriptedEventReporter != null)
-                scriptedEventReporter.ReportTS("text display cleared", new());
+            if (eventReporter != null)
+                eventReporter.LogTS("text display cleared", new());
         }
        
         public void ClearTitle() {
@@ -185,8 +185,8 @@ namespace UnityEPL {
         }
         protected void ClearTitleHelper() {
             titleElement.text = "";
-            if (scriptedEventReporter != null)
-                scriptedEventReporter.ReportTS("title display cleared", new());
+            if (eventReporter != null)
+                eventReporter.LogTS("title display cleared", new());
         }
 
         public void Clear() {
@@ -198,8 +198,8 @@ namespace UnityEPL {
         protected void ClearHelper() {
             titleElement.text = "";
             textElement.text = "";
-            if (scriptedEventReporter != null)
-                scriptedEventReporter.ReportTS("title display cleared", new());
+            if (eventReporter != null)
+                eventReporter.LogTS("title display cleared", new());
         }
 
         public void ClearAndHide() {
@@ -227,8 +227,8 @@ namespace UnityEPL {
             textElement.color = newColor;
             Dictionary<string, object> dataDict = new();
             dataDict.Add("new color", newColor.ToString());
-            if (scriptedEventReporter != null)
-                scriptedEventReporter.ReportTS("text color changed", dataDict);
+            if (eventReporter != null)
+                eventReporter.LogTS("text color changed", dataDict);
         }
 
         /// <summary>
@@ -252,19 +252,34 @@ namespace UnityEPL {
             return textElement.text.ToNativeText();
         }
 
-        public Task PressAnyKey(string description, string displayText) {
-            return DoWaitFor(PressAnyKeyHelper, description.ToNativeText(), displayText.ToNativeText());
+        /// <summary>
+        /// Display a message and wait for keypress
+        /// </summary>
+        /// <param name="description"></param>
+        /// <param name="displayText"></param>
+        /// <param name="displayText"></param>
+        /// <returns></returns>
+        public Task<KeyCode> PressAnyKey(string description, string displayText) {
+            return PressAnyKey(description, "", displayText);
         }
-        public Task PressAnyKeyTS(string description, string displayText) {
-            return DoWaitForTS(PressAnyKeyHelper, description.ToNativeText(), displayText.ToNativeText());
+        public Task<KeyCode> PressAnyKeyTS(string description, string displayText) {
+            return PressAnyKeyTS(description, "", displayText);
         }
-        protected async Task PressAnyKeyHelper(NativeText description, NativeText displayText) {
+        public Task<KeyCode> PressAnyKey(string description, string displayTitle, string displayText) {
+            return DoGet(PressAnyKeyHelper, description.ToNativeText(), displayTitle.ToNativeText(), displayText.ToNativeText());
+        }
+        public Task<KeyCode> PressAnyKeyTS(string description, string displayTitle, string displayText) {
+            return DoGetTS(PressAnyKeyHelper, description.ToNativeText(), displayTitle.ToNativeText(), displayText.ToNativeText());
+        }
+        protected async Task<KeyCode> PressAnyKeyHelper(NativeText description, NativeText displayTitle, NativeText displayText) {
             _ = manager.hostPC.SendStateMsg(HostPC.StateMsg.WAITING);
-            Display($"{description.ToString()} (press any key prompt)", "", displayText.ToString());
-            await InputManager.Instance.GetKeyTS();
+            Display($"{description.ToString()} (press any key prompt)", displayTitle.ToString(), displayText.ToString());
+            var keyCode = await InputManager.Instance.GetKeyTS();
             ClearText();
             description.Dispose();
+            displayTitle.Dispose();
             displayText.Dispose();
+            return keyCode;
         }
     }
 

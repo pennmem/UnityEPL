@@ -14,8 +14,9 @@ namespace UnityEPL {
             Run();
         }
 
-        protected override Task PostTrials() { return Task.CompletedTask; }
-        protected override Task PreTrials() { return Task.CompletedTask; }
+        protected override Task PostTrialStates() { return Task.CompletedTask; }
+        protected override Task PracticeTrialStates() { return Task.CompletedTask; }
+        protected override Task PreTrialStates() { return Task.CompletedTask; }
 
         protected async Task RepeatedGetKey() {
             var key = await inputManager.GetKeyTS();

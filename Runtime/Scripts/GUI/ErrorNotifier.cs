@@ -36,7 +36,7 @@ namespace UnityEPL {
                     TextDisplayer.Instance.Display("Error", "<color=red><b>Error</b></color>", msg);
                     Debug.Log($"Warning: {msg}\n{e.StackTrace}");
                 }
-                manager.eventReporter.ReportTS("Error", new() {
+                manager.eventReporter.LogTS("Error", new() {
                     { "message", e.Message },
                     { "stackTrace", e.StackTrace } });
                 manager.PauseTS(true);
@@ -63,7 +63,7 @@ namespace UnityEPL {
         protected void WarningHelper(NativeText message, NativeText stackTrace) {
             TextDisplayer.Instance.Display("Warning", "<color=yellow><b>Warning</b></color>", message.ToString());
             Debug.Log($"Warning: {message}\n{stackTrace}");
-            manager.eventReporter.ReportTS("Warning", new() {
+            manager.eventReporter.LogTS("Warning", new() {
                 { "message", message.ToString() },
                 { "stackTrace", stackTrace.ToString() } });
             manager.PauseTS(true);
