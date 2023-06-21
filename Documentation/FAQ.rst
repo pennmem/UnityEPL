@@ -31,10 +31,10 @@ I'm not sure why this is needed, but it is.
 =============
 InterfaceManager accessed before Awake was called
 =============
-You need to click *Edit > Project Settings*
-Go to *Script Execution Order*
-Click the *+* to add a script and select UnityEPL.InterfaceManager
-Set the value of this new item to *-10* (or anything less than 0)
+#. Click *Edit > Project Settings*
+#. Go to *Script Execution Order*
+#. Click the *+* to add a script and select UnityEPL.InterfaceManager
+#. Set the value of this new item to *-10* (or anything less than 0)
 
 =============
 You start the experiment and it hangs
