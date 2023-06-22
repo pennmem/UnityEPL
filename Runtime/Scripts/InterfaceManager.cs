@@ -18,6 +18,7 @@ using UnityEngine.UIElements;
 
 namespace UnityEPL {
 
+    [DefaultExecutionOrder(-10)]
     public class InterfaceManager : SingletonEventMonoBehaviour<InterfaceManager> {
         public static new InterfaceManager Instance {
             get {
