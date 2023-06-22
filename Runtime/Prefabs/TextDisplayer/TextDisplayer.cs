@@ -272,7 +272,7 @@ namespace UnityEPL {
             return DoGetTS(PressAnyKeyHelper, description.ToNativeText(), displayTitle.ToNativeText(), displayText.ToNativeText());
         }
         protected async Task<KeyCode> PressAnyKeyHelper(NativeText description, NativeText displayTitle, NativeText displayText) {
-            _ = manager.hostPC.SendStateMsg(HostPC.StateMsg.WAITING);
+            _ = manager.hostPC?.SendStateMsg(HostPC.StateMsg.WAITING);
             Display($"{description.ToString()} (press any key prompt)", displayTitle.ToString(), displayText.ToString());
             var keyCode = await InputManager.Instance.GetKeyTS();
             ClearText();

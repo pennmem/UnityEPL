@@ -101,7 +101,18 @@ namespace UnityEPL {
             manager.eventReporter.LogTS("session start", versionsData);
         }
 
-        protected async Task RepeatOnRequest(Func<Task> func, string description, string displayText) {
+        protected async Task RepeatUntilNo(Func<Task> func, string description, string displayText) {
+            var repeat = true;
+            while (repeat) {
+                await func();
+
+                textDisplayer.Display(description, "", displayText);
+                var keyCode = await inputManager.GetKeyTS(new() { KeyCode.Y, KeyCode.N });
+                repeat = keyCode == KeyCode.N;
+            }
+        }
+
+        protected async Task RepeatUntilYes(Func<Task> func, string description, string displayText) {
             var repeat = true;
             while (repeat) {
                 await func();

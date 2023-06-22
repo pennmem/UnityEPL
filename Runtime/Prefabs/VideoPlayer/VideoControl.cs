@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using Unity.Collections;
 using UnityEngine;
 using UnityEngine.Video;
@@ -72,15 +74,19 @@ namespace UnityEPL {
             return Task.CompletedTask;
         }
 
-        public void SetVideo(string videoPath, bool skippable = false) {
-            Do(SetVideoHelper, videoPath.ToNativeText(), (Bool)skippable);
+        public void SetVideo(string videoPath, bool skippable = false, bool absolutePath=false) {
+            Do(SetVideoHelper, videoPath.ToNativeText(), (Bool)skippable, (Bool)absolutePath);
         }
-        public void SetVideoTS(string videoPath, bool skippable = false) {
-            DoTS(SetVideoHelper, videoPath.ToNativeText(), (Bool)skippable);
+        public void SetVideoTS(string videoPath, bool skippable = false, bool absolutePath=false) {
+            DoTS(SetVideoHelper, videoPath.ToNativeText(), (Bool)skippable, (Bool)absolutePath);
         }
-        protected void SetVideoHelper(NativeText videoPath, Bool skippable) {
+        protected void SetVideoHelper(NativeText videoPath, Bool skippable, Bool absolutePath) {
             this.videoPath = videoPath.ToString();
-            this.videoPlayer.url = "file://" + videoPath;
+            if (absolutePath) {
+                this.videoPlayer.url = "file://" + this.videoPath;
+            } else {
+                this.videoPlayer.url = "file://" + Path.Combine(manager.fileManager.ExperimentRoot(), this.videoPath);
+            } 
             this.skippable = skippable;
             videoPath.Dispose();
         }

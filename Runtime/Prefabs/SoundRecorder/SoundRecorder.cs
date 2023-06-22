@@ -84,8 +84,7 @@ namespace UnityEPL {
             float[] saveData = GetLastSamples(outputLength);
 
             croppedClip.SetData(saveData, 0);
-
-            ThreadPool.QueueUserWorkItem((state) => SavWav.Save(nextOutputPath, croppedClip));
+            SavWav.Save(nextOutputPath, croppedClip);
             return croppedClip;
         }
 
