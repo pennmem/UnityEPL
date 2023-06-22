@@ -37,6 +37,17 @@ InterfaceManager accessed before Awake was called
 #. Set the value of this new item to *-10* (or anything less than 0)
 
 =============
+You start the experiment, but all you see is the empty background
+=============
+You need to add the following code to start your experiment.
+
+.. code:: csharp
+
+    protected void Start() {
+        Run();
+    }
+
+=============
 You start the experiment and it hangs
 =============
 Check that you don't have two experiments active in your scene
