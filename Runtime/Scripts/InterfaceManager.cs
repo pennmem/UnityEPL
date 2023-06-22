@@ -114,29 +114,33 @@ namespace UnityEPL {
             // Unity internal event handling
             SceneManager.sceneLoaded += onSceneLoaded;
 
-            // Create objects not tied to unity
-            fileManager = new FileManager(this);
-
             // Setup Text Displayer
             textDisplayer = TextDisplayer.Instance;
 
-            // Setup Input Reporters
-            eventReporter = EventReporter.Instance;
-            inputReporter = InputReporter.Instance;
-            //uiReporter = UIDataReporter.Instance;
+            try {
+                // Create objects not tied to unity
+                fileManager = new FileManager(this);
 
-            // Setup Configs
-            var configs = SetupConfigs();
-            GetExperiments(configs);
-            eventsPerFrame = Config.eventsPerFrame ?? 5;
+                // Setup Input Reporters
+                eventReporter = EventReporter.Instance;
+                inputReporter = InputReporter.Instance;
+                //uiReporter = UIDataReporter.Instance;
 
-            // Setup Syncbox Interface
-            if (!Config.isTest && !Config.noSyncbox) {
-                syncBox.Init();
+                // Setup Configs
+                var configs = SetupConfigs();
+                GetExperiments(configs);
+                eventsPerFrame = Config.eventsPerFrame ?? 5;
+
+                // Setup Syncbox Interface
+                if (!Config.isTest && !Config.noSyncbox) {
+                    syncBox.Init();
+                }
+
+                // Launch Startup Scene
+                LaunchLauncher();
+            } catch(Exception e) {
+                ErrorNotifier.Error(e);
             }
-
-            // Launch Startup Scene
-            LaunchLauncher();
         }
 
         protected string[] SetupConfigs() {
