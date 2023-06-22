@@ -13,9 +13,9 @@ namespace UnityEPL {
             // No extra data
             REST, ORIENT, COUNTDOWN, TRIAL, TRIALEND, DISTRACT, INSTRUCT, WAITING, SYNC, VOCALIZATION,
             // No extra data, ramulator copy over (likely unused)
-            ENCODING, RETRIEVAL,
+            ENCODING, RETRIEVAL, WORD, MATH,
             // extra data: (float duration)
-            ISI, RECALL,
+            ISI, RECALL, FINAL_RECALL,
         }
         public enum CLMsg {
             STIM,

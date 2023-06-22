@@ -52,7 +52,7 @@ namespace UnityEPL {
             get { return Config.GetSetting<string>("subject"); }
             set { Config.SetSetting("subject", value); }
         }
-        public static int session {
+        public static int sessionNum {
             get { return Config.GetSetting<int>("session"); }
             set { Config.SetSetting("session", value); }
         }

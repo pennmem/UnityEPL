@@ -78,7 +78,7 @@ namespace UnityEPL {
         public string SessionPath() {
             string session;
             try {
-                session = Config.session.ToString();
+                session = Config.sessionNum.ToString();
             } catch (MissingFieldException) {
                 return null;
             }

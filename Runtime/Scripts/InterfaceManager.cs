@@ -171,7 +171,6 @@ namespace UnityEPL {
         // and release references to non-active objects
         //////////
         private void onSceneLoaded(Scene scene, LoadSceneMode mode) {
-            Debug.Log("onSceneLoaded");
             // TODO: JPB: (needed) Check
             //onKey = new ConcurrentQueue<Action<string, bool>>(); // clear keyhandler queue on scene change
 
@@ -216,16 +215,20 @@ namespace UnityEPL {
         }
 
         private void onExperimentSceneLoaded(Scene scene, LoadSceneMode mode) {
-            Debug.Log("onExperimentSceneLoaded");
-
             // Experiment Manager
+            // TODO: JPB: (bug) Fix issue where unity crashes if I check for multiple experiments
             try {
-                var expManager = scene.GetRootGameObjects().Where(go => go.name == Config.experimentClass).First();
-                expManager.SetActive(true);
+                // Use gameObject.scene to get values in DontDestroyOnLoad
+                var activeExperiments = gameObject.scene.GetRootGameObjects()
+                    .Where(go => go.name == Config.experimentClass && go.activeSelf);
+
+                if (activeExperiments.Count() == 0) {
+                    var expManager = scene.GetRootGameObjects().Where(go => go.name == Config.experimentClass).First();
+                    expManager.SetActive(true);
+                }
             } catch (InvalidOperationException exception) {
                 ErrorNotifier.Error(new Exception(
-                    $"Missing experiment GameObject that is the same name as the experiment class ({Config.experimentClass})" +
-                    "If it exists, did you set it to un-active (this is needed incase you have multiple experiments per scene)",
+                    $"Missing experiment GameObject that is the same name as the experiment class ({Config.experimentClass})",
                     exception));
             }
 

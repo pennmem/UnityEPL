@@ -17,6 +17,18 @@ namespace UnityEPL {
         }
     }
 
+    public static class ExperimentActive {
+        private static bool active = false;
+        public static bool isActive() { return active; }
+        public static void SetActive(bool val) {
+            if (val && active) {
+                throw new InvalidOperationException("Trying to make an experiment active when there is already an active experiment."
+                    + "If you have more than one experiment, make sure to make them all inactive in the editor.");
+            }
+            active = val;
+        }
+    }
+
     public abstract class ExperimentBase<T> : SingletonEventMonoBehaviour<T>
             where T : ExperimentBase<T> {
         TaskCompletionSource<KeyMsg> tcs = new TaskCompletionSource<KeyMsg>();
@@ -31,6 +43,14 @@ namespace UnityEPL {
             this.textDisplayer = TextDisplayer.Instance;
             this.errorNotifier = ErrorNotifier.Instance;
             this.eventReporter = EventReporter.Instance;
+        }
+
+        protected void OnEnable() {
+            ExperimentActive.SetActive(true);
+        }
+
+        protected void OnDisable() {
+            ExperimentActive.SetActive(false);
         }
 
         private bool endTrials = false;
@@ -75,7 +95,7 @@ namespace UnityEPL {
                 { "experiment version", Config.experimentName },
                 { "logfile version", "0" },
                 { "participant", Config.subject },
-                { "session", Config.session },
+                { "session", Config.sessionNum },
             };
 
             manager.eventReporter.LogTS("session start", versionsData);

@@ -74,7 +74,7 @@ namespace UnityEPL {
             int sessionNumber = ParticipantSelection.nextSessionNumber;
 
             Config.subject = participantNameInput.text;
-            Config.session = sessionNumber;
+            Config.sessionNum = sessionNumber;
 
             launchButton.SetActive(false);
             loadingButton.SetActive(true);

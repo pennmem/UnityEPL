@@ -22,7 +22,7 @@ namespace UnityEPL {
                 { "stim_mode", Config.stimMode },
                 { "experiment", Config.experimentName },
                 { "subject", Config.subject },
-                { "session", Config.session },
+                { "session", Config.sessionNum },
             };
             await SendAndReceive("CONFIGURE", configDict, "CONFIGURE_OK");
 
