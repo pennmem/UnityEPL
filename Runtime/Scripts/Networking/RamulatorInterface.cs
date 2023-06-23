@@ -8,8 +8,6 @@ using NetMQ;
 using Newtonsoft.Json.Linq;
 using System.Threading.Tasks;
 using System.Threading;
-using Codice.CM.ConfigureHelper;
-using Codice.CM.Client.Differences.Graphic;
 using static UnityEPL.HostPC;
 
 namespace UnityEPL { 
