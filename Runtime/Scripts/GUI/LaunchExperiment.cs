@@ -11,6 +11,7 @@ namespace UnityEPL {
     /// 
     /// DoLaunchExperiment is responsible for calling EditableExperiment.ConfigureExperiment with the proper parameters.
     /// </summary>
+    [AddComponentMenu("UnityEPL/Internal/LaunchExperiment")]
     public class LaunchExperiment : EventMonoBehaviour {
         protected override void AwakeOverride() { }
 

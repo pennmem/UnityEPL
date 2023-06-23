@@ -32,7 +32,7 @@ namespace UnityEPL {
         public async Task<bool> IsConnected() {
             return await DoGet<Bool>(IsConnectedHelper);
         }
-        public Bool IsConnectedHelper() {
+        private Bool IsConnectedHelper() {
             return tcpClient.Connected;
         }
 

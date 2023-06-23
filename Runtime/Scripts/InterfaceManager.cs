@@ -50,6 +50,7 @@ namespace UnityEPL {
         // scripts
         //////////
         public HostPC hostPC;
+        public RamulatorWrapper ramulator;
         public VideoControl videoControl;
         public TextDisplayer textDisplayer;
         public SoundRecorder recorder;
@@ -351,6 +352,7 @@ namespace UnityEPL {
         }
 
         public void QuitTS() {
+            ramulator?.SendExitMsg();
             hostPC?.Quit();
             DoWaitForTS(QuitHelper);
         }
@@ -389,10 +391,12 @@ namespace UnityEPL {
 
                 // Connect to HostPC
                 if (Config.elememOn) {
+                    textDisplayer.Display("Elemem connetion display", "", "Waiting for Elemem connection...");
                     hostPC = new ElememInterface();
                 } else if (Config.ramulatorOn) {
-                    // TODO: JPB: (needed) Add Ramulator integration
-                    //hostPC = new RamulatorWrapper(this);
+                    textDisplayer.Display("Ramulator connetion display", "", "Waiting for Ramulator connection...");
+                    ramulator = new RamulatorWrapper(this);
+                    yield return ramulator.BeginNewSession();
                 }
                 yield return hostPC?.Connect().ToEnumerator();
                 yield return hostPC?.Configure().ToEnumerator();
@@ -425,34 +429,6 @@ namespace UnityEPL {
             UnityEngine.Cursor.lockState = isLocked;
             UnityEngine.Cursor.visible = isLocked == CursorLockMode.None;
         }
-
-
-
-
-
-        // -------------------------------------
-        // CODE FOR POSTER
-
-        public class LightController {
-            public async Task StartClosedLoop(int durationMS) { await Delay(1); }
-        }
-        public LightController lightController;
-
-        SFB.ExtensionFilter[] fileExtensions = new[] {
-            new SFB.ExtensionFilter("Videos", "mp4", "mov"),
-            new SFB.ExtensionFilter("All Files", "*" ),
-        };
-
-        protected async Task ClosedLoopVideo() {
-            await manager.videoControl.SelectVideoFile(Config.dataPath, fileExtensions);
-            await manager.textDisplayer.PressAnyKey("Start Video", "Press a button to play the video");
-            await manager.lightController.StartClosedLoop(manager.videoControl.videoLength);
-            await manager.videoControl.PlayVideo();
-            var loggingMsg = new Dictionary<string, object> { { "length", manager.videoControl.videoLength } };
-            manager.eventReporter.LogTS("Video Info", loggingMsg);
-        }
-
-        // -------------------------------------
     }
 
 }

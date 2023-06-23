@@ -9,6 +9,7 @@ using UnityEngine.UI;
 
 namespace UnityEPL {
 
+    [AddComponentMenu("UnityEPL/Internal/TextDisplayer")]
     public class TextDisplayer : SingletonEventMonoBehaviour<TextDisplayer> {
         protected override void AwakeOverride() {
             gameObject.SetActive(false);
