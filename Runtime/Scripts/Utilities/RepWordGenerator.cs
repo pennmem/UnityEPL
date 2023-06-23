@@ -236,7 +236,7 @@ namespace UnityEPL {
 
 
     // A list of words which will each be repeated the specified number of times.
-    class RepWordList : StimWordList {
+    public class RepWordList : StimWordList {
         public int repeats;
 
         public RepWordList(int repeats_ = 1) {
@@ -255,7 +255,7 @@ namespace UnityEPL {
     }
 
     // Generates well-spaced RepFR wordlists with open-loop stimulation assigned.
-    class RepWordGenerator {
+    public class RepWordGenerator {
         // perm is the permutation to be assigned to the specified repword_lists,
         // interpreted in order.  If the first word in the first RepWordList is to
         // be repeated 3 times, the first three indices in perm are its locations

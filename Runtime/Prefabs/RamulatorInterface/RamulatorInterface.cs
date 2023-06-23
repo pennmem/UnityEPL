@@ -30,8 +30,9 @@ namespace UnityEPL {
             ramulatorInterface.BeginNewTrial(trialNumber);
         }
 
-        public void SendStateMsg(HostPC.StateMsg state, bool stateToggle, Dictionary<string, object> sessionData) {
-            ramulatorInterface.SetState(Enum.GetName(typeof(StateMsg), state), stateToggle, sessionData);
+        public void SendStateMsg(HostPC.StateMsg state, bool stateToggle, Dictionary<string, object> data = null) {
+            data ??= new();
+            ramulatorInterface.SetState(Enum.GetName(typeof(StateMsg), state), stateToggle, data);
         }
 
         public void SendMathMsg(string problem, string response, int responseTimeMs, bool correct) {

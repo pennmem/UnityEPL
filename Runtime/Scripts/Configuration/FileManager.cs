@@ -111,7 +111,7 @@ namespace UnityEPL {
 
         public string GetWordList() {
             string root = ExperimentRoot();
-            return System.IO.Path.Combine(root, Config.wordpool);
+            return Path.Combine(root, Config.wordpool);
         }
 
         public void CreateSession() {
