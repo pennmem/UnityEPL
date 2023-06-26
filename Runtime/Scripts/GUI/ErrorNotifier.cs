@@ -10,7 +10,7 @@ namespace UnityEPL {
             gameObject.SetActive(false);
         }
 
-        public static void Error(Exception exception) {
+        public static void ErrorTS(Exception exception) {
             if (exception.StackTrace == null) {
                 try { // This is used to get the stack trace
                     throw exception;
@@ -49,7 +49,7 @@ namespace UnityEPL {
             }
         }
 
-        public static void Warning(Exception exception) {
+        public static void WarningTS(Exception exception) {
             if (exception.StackTrace == null) {
                 try { // This is used to get the stack trace
                     throw exception;

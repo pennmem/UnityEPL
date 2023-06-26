@@ -25,7 +25,7 @@ namespace UnityEPL {
             try {
                 recording = Microphone.Start("", true, SECONDS_IN_MEMORY, SAMPLE_RATE);
             } catch (Exception e) { // TODO
-                ErrorNotifier.Error(e);
+                ErrorNotifier.ErrorTS(e);
             }
         }
 

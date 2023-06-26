@@ -168,7 +168,7 @@ namespace UnityEPL {
             if (unreceivedHeartbeats > unreceivedHeartbeatsToQuit) {
                 CancelInvoke("ReceiveHeartbeat");
                 CancelInvoke("SendHeartbeat");
-                ErrorNotifier.Error(new Exception("Too many missed heartbeats."));
+                ErrorNotifier.ErrorTS(new Exception("Too many missed heartbeats."));
             }
 
             string receivedMessage = "";

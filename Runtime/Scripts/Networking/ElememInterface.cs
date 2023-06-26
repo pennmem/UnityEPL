@@ -12,7 +12,7 @@ namespace UnityEPL {
         public ElememInterface() { }
 
         public override Task Configure() {
-            return DoWaitFor(ConfigureHelper);
+            return DoWaitForTS(ConfigureHelper);
         }
         protected async Task ConfigureHelper() {
             // Configure Elemem
@@ -43,7 +43,7 @@ namespace UnityEPL {
 
         private uint heartbeatCount = 0;
         protected override CancellationTokenSource DoHeartbeatsForever() {
-            return DoRepeating(0, Config.elememHeartbeatInterval, null, DoHeartbeatHelper);
+            return DoRepeatingTS(0, Config.elememHeartbeatInterval, null, DoHeartbeatHelper);
         }
         protected async Task DoHeartbeatHelper() {
             Dictionary<string, object> data = new() {
@@ -56,7 +56,7 @@ namespace UnityEPL {
         protected readonly static double maxSingleTimeMs = 20;
         protected readonly static double meanSingleTimeMs = 5;
         protected override Task DoLatencyCheck() {
-            return DoWaitFor(DoLatencyCheckHelper);
+            return DoWaitForTS(DoLatencyCheckHelper);
         }
         protected async Task DoLatencyCheckHelper() {
             DateTime startTime;

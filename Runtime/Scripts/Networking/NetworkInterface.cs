@@ -30,14 +30,14 @@ namespace UnityEPL {
         }
 
         public async Task<bool> IsConnected() {
-            return await DoGet<Bool>(IsConnectedHelper);
+            return await DoGetTS<Bool>(IsConnectedHelper);
         }
         private Bool IsConnectedHelper() {
             return tcpClient.Connected;
         }
 
         public Task Connect() {
-            return DoWaitFor(ConnectHelper);
+            return DoWaitForTS(ConnectHelper);
         }
         private async Task ConnectHelper() {
             tcpClient = new TcpClient();
@@ -56,7 +56,7 @@ namespace UnityEPL {
         }
 
         protected void Disconnect() {
-            Do(DisconnectHelper);
+            DoTS(DisconnectHelper);
         }
         private void DisconnectHelper() {
             if (tcpClient?.Connected ?? false) {
@@ -67,7 +67,7 @@ namespace UnityEPL {
         }
 
         protected virtual void DoListenerForever() {
-            Do(ListenerHelperJson);
+            DoTS(ListenerHelperJson);
         }
         private async Task ListenerHelperJson() {
             var buffer = new byte[8192];
@@ -127,7 +127,7 @@ namespace UnityEPL {
             return ReceiveJson(type);
         }
         protected Task<JObject> ReceiveJson(string type) {
-            return DoGetRelaxed(ReceiveJsonHelper, type.ToNativeText());
+            return DoGetRelaxedTS(ReceiveJsonHelper, type.ToNativeText());
         }
         private Task<JObject> ReceiveJsonHelper(NativeText type) {
             TaskCompletionSource<JObject> tcs = new();
@@ -142,7 +142,7 @@ namespace UnityEPL {
             return SendJson(type, data);
         }
         protected Task SendJson(string type, Dictionary<string, object> data = null) {
-            return DoWaitFor(() => { SendJsonHelper(type, data); });
+            return DoWaitForTS(() => { SendJsonHelper(type, data); });
         }
         private Task SendJsonHelper(string type, Dictionary<string, object> data = null) {
             DataPoint point = new DataPoint(type, data);

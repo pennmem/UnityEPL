@@ -48,7 +48,7 @@ namespace UnityEPL {
         protected void MonoBehaviourSafetyCheck() {
             //Debug.Log($"{threadID} {Thread.CurrentThread.ManagedThreadId}");
             if (threadID != Thread.CurrentThread.ManagedThreadId) {
-                ErrorNotifier.Error(new InvalidOperationException(
+                ErrorNotifier.ErrorTS(new InvalidOperationException(
                     "Cannot call this function from a non-unity thread.\n" +
                     "Try using the thread safe version of this method"));
             }
@@ -83,7 +83,7 @@ namespace UnityEPL {
                     current = enumerator.Current;
                 } catch (Exception e) {
                     Debug.Log(e);
-                    ErrorNotifier.Error(e);
+                    ErrorNotifier.ErrorTS(e);
                     yield break;
                 }
                 yield return current;
@@ -148,7 +148,7 @@ namespace UnityEPL {
             try {
                 func();
             } catch (Exception e) {
-                ErrorNotifier.Error(e);
+                ErrorNotifier.ErrorTS(e);
             }
         }
         protected void Do<T>(Action<T> func, T t) {
@@ -156,7 +156,7 @@ namespace UnityEPL {
             try {
                 func(t);
             } catch (Exception e) {
-                ErrorNotifier.Error(e);
+                ErrorNotifier.ErrorTS(e);
             }
         }
         protected void Do<T, U>(Action<T, U> func, T t, U u) {
@@ -164,7 +164,7 @@ namespace UnityEPL {
             try {
                 func(t, u);
             } catch (Exception e) {
-                ErrorNotifier.Error(e);
+                ErrorNotifier.ErrorTS(e);
             }
         }
         protected void Do<T, U, V>(Action<T, U, V> func, T t, U u, V v) {
@@ -172,7 +172,7 @@ namespace UnityEPL {
             try {
                 func(t, u, v);
             } catch (Exception e) {
-                ErrorNotifier.Error(e);
+                ErrorNotifier.ErrorTS(e);
             }
         }
         protected void Do<T, U, V, W>(Action<T, U, V, W> func, T t, U u, V v, W w) {
@@ -180,7 +180,7 @@ namespace UnityEPL {
             try {
                 func(t, u, v, w);
             } catch (Exception e) {
-                ErrorNotifier.Error(e);
+                ErrorNotifier.ErrorTS(e);
             }
         }
 
@@ -287,7 +287,7 @@ namespace UnityEPL {
                 await InterfaceManager.Delay(millisecondsDelay);
                 await func();
             } catch (Exception e) {
-                ErrorNotifier.Error(e);
+                ErrorNotifier.ErrorTS(e);
                 throw e; // This is a duplication, but C# can't tell Error always throws an exception
             }
         }
@@ -297,7 +297,7 @@ namespace UnityEPL {
                 await InterfaceManager.Delay(millisecondsDelay);
                 await func(t);
             } catch (Exception e) {
-                ErrorNotifier.Error(e);
+                ErrorNotifier.ErrorTS(e);
                 throw e; // This is a duplication, but C# can't tell Error always throws an exception
             }
         }
@@ -307,7 +307,7 @@ namespace UnityEPL {
                 await InterfaceManager.Delay(millisecondsDelay);
                 await func(t, u);
             } catch (Exception e) {
-                ErrorNotifier.Error(e);
+                ErrorNotifier.ErrorTS(e);
                 throw e; // This is a duplication, but C# can't tell Error always throws an exception
             }
         }
@@ -317,7 +317,7 @@ namespace UnityEPL {
                 await InterfaceManager.Delay(millisecondsDelay);
                 await func(t, u, v);
             } catch (Exception e) {
-                ErrorNotifier.Error(e);
+                ErrorNotifier.ErrorTS(e);
                 throw e; // This is a duplication, but C# can't tell Error always throws an exception
             }
         }
@@ -327,7 +327,7 @@ namespace UnityEPL {
                 await InterfaceManager.Delay(millisecondsDelay);
                 await func(t, u, v, w);
             } catch (Exception e) {
-                ErrorNotifier.Error(e);
+                ErrorNotifier.ErrorTS(e);
                 throw e; // This is a duplication, but C# can't tell Error always throws an exception
             }
         }
@@ -747,7 +747,7 @@ namespace UnityEPL {
             try {
                 await func();
             } catch (Exception e) {
-                ErrorNotifier.Error(e);
+                ErrorNotifier.ErrorTS(e);
                 throw e; // This is a duplication, but C# can't tell Error always throws an exception
             }
         }
@@ -756,7 +756,7 @@ namespace UnityEPL {
             try {
                 await func(t);
             } catch (Exception e) {
-                ErrorNotifier.Error(e);
+                ErrorNotifier.ErrorTS(e);
                 throw e; // This is a duplication, but C# can't tell Error always throws an exception
             }
         }
@@ -765,7 +765,7 @@ namespace UnityEPL {
             try {
                 await func(t, u);
             } catch (Exception e) {
-                ErrorNotifier.Error(e);
+                ErrorNotifier.ErrorTS(e);
                 throw e; // This is a duplication, but C# can't tell Error always throws an exception
             }
         }
@@ -774,7 +774,7 @@ namespace UnityEPL {
             try {
                 await func(t, u, v);
             } catch (Exception e) {
-                ErrorNotifier.Error(e);
+                ErrorNotifier.ErrorTS(e);
                 throw e; // This is a duplication, but C# can't tell Error always throws an exception
             }
         }
@@ -783,7 +783,7 @@ namespace UnityEPL {
             try {
                 await func(t, u, v, w);
             } catch (Exception e) {
-                ErrorNotifier.Error(e);
+                ErrorNotifier.ErrorTS(e);
                 throw e; // This is a duplication, but C# can't tell Error always throws an exception
             }
         }
@@ -921,7 +921,7 @@ namespace UnityEPL {
             try {
                 return func();
             } catch (Exception e) {
-                ErrorNotifier.Error(e);
+                ErrorNotifier.ErrorTS(e);
                 throw e; // This is a duplication, but C# can't tell Error always throws an exception
             }
         }
@@ -930,7 +930,7 @@ namespace UnityEPL {
             try {
                 return func(t);
             } catch (Exception e) {
-                ErrorNotifier.Error(e);
+                ErrorNotifier.ErrorTS(e);
                 throw e; // This is a duplication, but C# can't tell Error always throws an exception
             }
         }
@@ -939,7 +939,7 @@ namespace UnityEPL {
             try {
                 return func(t, u);
             } catch (Exception e) {
-                ErrorNotifier.Error(e);
+                ErrorNotifier.ErrorTS(e);
                 throw e; // This is a duplication, but C# can't tell Error always throws an exception
             }
         }
@@ -948,7 +948,7 @@ namespace UnityEPL {
             try {
                 return func(t, u, v);
             } catch (Exception e) {
-                ErrorNotifier.Error(e);
+                ErrorNotifier.ErrorTS(e);
                 throw e; // This is a duplication, but C# can't tell Error always throws an exception
             }
         }
@@ -957,7 +957,7 @@ namespace UnityEPL {
             try {
                 return func(t, u, v, w);
             } catch (Exception e) {
-                ErrorNotifier.Error(e);
+                ErrorNotifier.ErrorTS(e);
                 throw e; // This is a duplication, but C# can't tell Error always throws an exception
             }
         }
@@ -968,7 +968,7 @@ namespace UnityEPL {
             try {
                 return await func();
             } catch (Exception e) {
-                ErrorNotifier.Error(e);
+                ErrorNotifier.ErrorTS(e);
                 throw e; // This is a duplication, but C# can't tell Error always throws an exception
             }
         }
@@ -977,7 +977,7 @@ namespace UnityEPL {
             try {
                 return await func(t);
             } catch (Exception e) {
-                ErrorNotifier.Error(e);
+                ErrorNotifier.ErrorTS(e);
                 throw e; // This is a duplication, but C# can't tell Error always throws an exception
             }
         }
@@ -986,7 +986,7 @@ namespace UnityEPL {
             try {
                 return await func(t, u);
             } catch (Exception e) {
-                ErrorNotifier.Error(e);
+                ErrorNotifier.ErrorTS(e);
                 throw e; // This is a duplication, but C# can't tell Error always throws an exception
             }
         }
@@ -995,7 +995,7 @@ namespace UnityEPL {
             try {
                 return await func(t, u, v);
             } catch (Exception e) {
-                ErrorNotifier.Error(e);
+                ErrorNotifier.ErrorTS(e);
                 throw e; // This is a duplication, but C# can't tell Error always throws an exception
             }
         }
@@ -1004,7 +1004,7 @@ namespace UnityEPL {
             try {
                 return await func(t, u, v, w);
             } catch (Exception e) {
-                ErrorNotifier.Error(e);
+                ErrorNotifier.ErrorTS(e);
                 throw e; // This is a duplication, but C# can't tell Error always throws an exception
             }
         }

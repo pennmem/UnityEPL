@@ -23,7 +23,6 @@ namespace UnityEPL {
             SetExperiment();
         }
 
-
         public void SetExperiment() {
             Do(SetExperimentHelper);
         }

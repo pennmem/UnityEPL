@@ -276,14 +276,14 @@ namespace UnityEPLTests {
         // Test DoGet and DoGetManualTrigger with mutex
 
         public async Task<int> GetMutexValFunc() {
-            return await DoGet<int>(GetMutexValFuncHelper);
+            return await DoGetTS<int>(GetMutexValFuncHelper);
         }
         protected int GetMutexValFuncHelper() {
             return mutex.Get();
         }
 
         public async Task<int> GetMutexValTask() {
-            return await DoGet<int>(GetMutexValTaskHelper);
+            return await DoGetTS<int>(GetMutexValTaskHelper);
         }
         protected async Task<int> GetMutexValTaskHelper() {
             await InterfaceManager.Delay(1);
@@ -294,21 +294,21 @@ namespace UnityEPLTests {
         // Test the rest of the functions with i and GetI
 
         public async Task<int> GetI() {
-            return await DoGet<int>(GetIHelper);
+            return await DoGetTS<int>(GetIHelper);
         }
         protected int GetIHelper() {
             return i;
         }
 
         public void IncAct() {
-            Do(IncActHelper);
+            DoTS(IncActHelper);
         }
         protected void IncActHelper() {
             i += 1;
         }
 
         public void IncTask() {
-            Do(IncTaskHelper);
+            DoTS(IncTaskHelper);
         }
         protected Task IncTaskHelper() {
             i += 1;
@@ -316,14 +316,14 @@ namespace UnityEPLTests {
         }
 
         public void DelayedIncAct(int millisecondsDelay) {
-            DoIn(millisecondsDelay, DelayedIncActHelper);
+            DoInTS(millisecondsDelay, DelayedIncActHelper);
         }
         protected void DelayedIncActHelper() {
             i += 1;
         }
 
         public void DelayedIncTask(int millisecondsDelay) {
-            DoIn(millisecondsDelay, DelayedIncTaskHelper);
+            DoInTS(millisecondsDelay, DelayedIncTaskHelper);
         }
         protected Task DelayedIncTaskHelper() {
             i += 1;
@@ -331,14 +331,14 @@ namespace UnityEPLTests {
         }
 
         public void IncThreeTimesAct(int delayMs, int intervalMs, uint? iterations) {
-            DoRepeating(delayMs, intervalMs, iterations, IncThreeTimesActHelper);
+            DoRepeatingTS(delayMs, intervalMs, iterations, IncThreeTimesActHelper);
         }
         protected void IncThreeTimesActHelper() {
             i += 1;
         }
 
         public void IncThreeTimesTask(int delayMs, int intervalMs, uint? iterations) {
-            DoRepeating(delayMs, intervalMs, iterations, IncThreeTimesTaskHelper);
+            DoRepeatingTS(delayMs, intervalMs, iterations, IncThreeTimesTaskHelper);
         }
         protected Task IncThreeTimesTaskHelper() {
             i += 1;
@@ -346,7 +346,7 @@ namespace UnityEPLTests {
         }
 
         public async Task DelayedIncAndWaitAct(int millisecondsDelay) {
-            await DoWaitFor(DelayedIncAndWaitActHelper, millisecondsDelay);
+            await DoWaitForTS(DelayedIncAndWaitActHelper, millisecondsDelay);
         }
         protected void DelayedIncAndWaitActHelper(int millisecondsDelay) {
             var start = Clock.UtcNow;
@@ -355,7 +355,7 @@ namespace UnityEPLTests {
         }
 
         public async Task DelayedIncAndWaitTask(int millisecondsDelay) {
-            await DoWaitFor(DelayedIncAndWaitTaskHelper, millisecondsDelay);
+            await DoWaitForTS(DelayedIncAndWaitTaskHelper, millisecondsDelay);
         }
         protected async Task DelayedIncAndWaitTaskHelper(int millisecondsDelay) {
             await InterfaceManager.Delay(1000);

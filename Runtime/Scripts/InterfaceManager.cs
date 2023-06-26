@@ -140,7 +140,7 @@ namespace UnityEPL {
                 // Launch Startup Scene
                 LaunchLauncher();
             } catch(Exception e) {
-                ErrorNotifier.Error(e);
+                ErrorNotifier.ErrorTS(e);
             }
         }
 
@@ -155,7 +155,7 @@ namespace UnityEPL {
             string configPath = fileManager.ConfigPath();
             string[] configs = Directory.GetFiles(configPath, "*.json");
             if (configs.Length < 2) {
-                ErrorNotifier.Error(new Exception("Configuration File Error"));
+                ErrorNotifier.ErrorTS(new Exception("Configuration File Error"));
             }
             return configs;
         }
@@ -233,7 +233,7 @@ namespace UnityEPL {
                     expManager.SetActive(true);
                 }
             } catch (InvalidOperationException exception) {
-                ErrorNotifier.Error(new Exception(
+                ErrorNotifier.ErrorTS(new Exception(
                     $"Missing experiment GameObject that is the same name as the experiment class ({Config.experimentClass})",
                     exception));
             }

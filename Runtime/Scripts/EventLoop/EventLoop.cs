@@ -31,7 +31,7 @@ namespace UnityEPL {
             manager.eventLoops.Add(this);
 
             // Init threadlocal variables
-            Do(async () => {
+            DoTS(async () => {
                 startTime = Clock.UtcNow;
                 await InterfaceManager.Delay(1);
             });
@@ -79,40 +79,40 @@ namespace UnityEPL {
         //            This may also currently requires Roslyn https://forum.unity.com/threads/released-roslyn-c-runtime-c-compiler.651505/
         //            Intro to Source Generators: https://devblogs.microsoft.com/dotnet/introducing-c-source-generators/
 
-        protected void Do(Action func) {
+        protected void DoTS(Action func) {
             if (cts.IsCancellationRequested) {
                 throw new OperationCanceledException("EventLoop has been stopped already.");
             }
             StartTask(func);
         }
-        protected void Do<T>(Action<T> func, T t)
+        protected void DoTS<T>(Action<T> func, T t)
                 where T : struct {
             AssertBlittable<T>();
-            Do(() => { func(t); });
+            DoTS(() => { func(t); });
         }
-        protected void Do<T, U>(Action<T, U> func, T t, U u)
+        protected void DoTS<T, U>(Action<T, U> func, T t, U u)
                 where T : struct
                 where U : struct {
             AssertBlittable<T, U>();
-            Do(() => { func(t, u); });
+            DoTS(() => { func(t, u); });
         }
-        protected void Do<T, U, V>(Action<T, U, V> func, T t, U u, V v)
+        protected void DoTS<T, U, V>(Action<T, U, V> func, T t, U u, V v)
                 where T : struct
                 where U : struct
                 where V : struct {
             AssertBlittable<T, U, V>();
-            Do(() => { func(t, u, v); });
+            DoTS(() => { func(t, u, v); });
         }
-        protected void Do<T, U, V, W>(Action<T, U, V, W> func, T t, U u, V v, W w)
+        protected void DoTS<T, U, V, W>(Action<T, U, V, W> func, T t, U u, V v, W w)
                 where T : struct
                 where U : struct
                 where V : struct
                 where W : struct {
             AssertBlittable<T, U, V, W>();
-            Do(() => { func(t, u, v, w); });
+            DoTS(() => { func(t, u, v, w); });
         }
 
-        protected void Do(Func<Task> func) {
+        protected void DoTS(Func<Task> func) {
             if (cts.IsCancellationRequested) {
                 throw new OperationCanceledException("EventLoop has been stopped already.");
             }
@@ -121,112 +121,112 @@ namespace UnityEPL {
             //Debug.Log($"Starting Do: {t.Id}");
             //StartTask(func);
         }
-        protected void Do<T>(Func<T, Task> func, T t)
+        protected void DoTS<T>(Func<T, Task> func, T t)
                 where T : struct {
             AssertBlittable<T>();
-            Do(async () => { await func(t); });
+            DoTS(async () => { await func(t); });
         }
-        protected void Do<T, U>(Func<T, U, Task> func, T t, U u)
+        protected void DoTS<T, U>(Func<T, U, Task> func, T t, U u)
                 where T : struct
                 where U : struct {
             AssertBlittable<T, U>();
-            Do(async () => { await func(t, u); });
+            DoTS(async () => { await func(t, u); });
         }
-        protected void Do<T, U, V>(Func<T, U, V, Task> func, T t, U u, V v)
+        protected void DoTS<T, U, V>(Func<T, U, V, Task> func, T t, U u, V v)
                 where T : struct
                 where U : struct
                 where V : struct {
             AssertBlittable<T, U, V>();
-            Do(async () => { await func(t, u, v); });
+            DoTS(async () => { await func(t, u, v); });
         }
-        protected void Do<T, U, V, W>(Func<T, U, V, W, Task> func, T t, U u, V v, W w)
+        protected void DoTS<T, U, V, W>(Func<T, U, V, W, Task> func, T t, U u, V v, W w)
                 where T : struct
                 where U : struct
                 where V : struct
                 where W : struct {
             AssertBlittable<T, U, V, W>();
-            Do(async () => { await func(t, u, v, w); });
+            DoTS(async () => { await func(t, u, v, w); });
         }
 
         // DoIn
 
-        protected void DoIn(int delayMs, Action func) {
-            Do(async () => {
+        protected void DoInTS(int delayMs, Action func) {
+            DoTS(async () => {
                 await InterfaceManager.Delay(delayMs);
                 func();
             });
         }
-        protected void DoIn<T>(int delayMs, Action<T> func, T t)
+        protected void DoInTS<T>(int delayMs, Action<T> func, T t)
                 where T : struct {
-            Do(async () => {
+            DoTS(async () => {
                 await InterfaceManager.Delay(delayMs);
                 func(t);
             });
         }
-        protected void DoIn<T, U>(int delayMs, Action<T, U> func, T t, U u)
+        protected void DoInTS<T, U>(int delayMs, Action<T, U> func, T t, U u)
                 where T : struct
                 where U : struct {
-            Do(async () => {
+            DoTS(async () => {
                 await InterfaceManager.Delay(delayMs);
                 func(t, u);
             });
         }
-        protected void DoIn<T, U, V>(int delayMs, Action<T, U, V> func, T t, U u, V v)
+        protected void DoInTS<T, U, V>(int delayMs, Action<T, U, V> func, T t, U u, V v)
                 where T : struct
                 where U : struct
                 where V : struct {
-            Do(async () => {
+            DoTS(async () => {
                 await InterfaceManager.Delay(delayMs);
                 func(t, u, v);
             });
         }
-        protected void DoIn<T, U, V, W>(int delayMs, Action<T, U, V, W> func, T t, U u, V v, W w)
+        protected void DoInTS<T, U, V, W>(int delayMs, Action<T, U, V, W> func, T t, U u, V v, W w)
                 where T : struct
                 where U : struct
                 where V : struct
                 where W : struct {
-            Do(async () => {
+            DoTS(async () => {
                 await InterfaceManager.Delay(delayMs);
                 func(t, u, v, w);
             });
         }
 
-        protected void DoIn(int delayMs, Func<Task> func) {
-            Do(async () => {
+        protected void DoInTS(int delayMs, Func<Task> func) {
+            DoTS(async () => {
                 await InterfaceManager.Delay(delayMs);
                 await func();
             });
         }
-        protected void DoIn<T>(int delayMs, Func<T, Task> func, T t)
+        protected void DoInTS<T>(int delayMs, Func<T, Task> func, T t)
                 where T : struct {
-            Do(async () => {
+            DoTS(async () => {
                 await InterfaceManager.Delay(delayMs);
                 await func(t);
             });
         }
-        protected void DoIn<T, U>(int delayMs, Func<T, U, Task> func, T t, U u)
+        protected void DoInTS<T, U>(int delayMs, Func<T, U, Task> func, T t, U u)
                 where T : struct
                 where U : struct {
-            Do(async () => {
+            DoTS(async () => {
                 await InterfaceManager.Delay(delayMs);
                 await func(t, u);
             });
         }
-        protected void DoIn<T, U, V>(int delayMs, Func<T, U, V, Task> func, T t, U u, V v)
+        protected void DoInTS<T, U, V>(int delayMs, Func<T, U, V, Task> func, T t, U u, V v)
                 where T : struct
                 where U : struct
                 where V : struct {
-            Do(async () => {
+            DoTS(async () => {
                 await InterfaceManager.Delay(delayMs);
                 await func(t, u, v);
             });
         }
-        protected void DoIn<T, U, V, W>(int delayMs, Func<T, U, V, W, Task> func, T t, U u, V v, W w)
+        protected void DoInTS<T, U, V, W>(int delayMs, Func<T, U, V, W, Task> func, T t, U u, V v, W w)
                 where T : struct
                 where U : struct
                 where V : struct
                 where W : struct {
-            Do(async () => {
+            DoTS(async () => {
                 await InterfaceManager.Delay(delayMs);
                 await func(t, u, v, w);
             });
@@ -234,12 +234,12 @@ namespace UnityEPL {
 
         // DoRepeating
 
-        protected CancellationTokenSource DoRepeating(int delayMs, int intervalMs, uint? iterations, Action func) {
+        protected CancellationTokenSource DoRepeatingTS(int delayMs, int intervalMs, uint? iterations, Action func) {
             if (intervalMs <= 0) {
                 throw new ArgumentOutOfRangeException($"intervalMs <= 0 ({intervalMs})");
             }
             CancellationTokenSource cts = new();
-            Do(async () => {
+            DoTS(async () => {
                 await InterfaceManager.Delay(delayMs);
 
                 uint totalIterations = iterations ?? uint.MaxValue;
@@ -253,11 +253,11 @@ namespace UnityEPL {
             });
             return cts;
         }
-        protected CancellationTokenSource DoRepeating<T>(int delayMs, int intervalMs, uint? iterations, Action<T> func, T t)
+        protected CancellationTokenSource DoRepeatingTS<T>(int delayMs, int intervalMs, uint? iterations, Action<T> func, T t)
                 where T : struct {
             if (intervalMs <= 0) { throw new ArgumentOutOfRangeException($"intervalMs <= 0 ({intervalMs})"); }
             CancellationTokenSource cts = new();
-            Do(async (t) => {
+            DoTS(async (t) => {
                 await InterfaceManager.Delay(delayMs);
 
                 uint totalIterations = iterations ?? uint.MaxValue;
@@ -271,12 +271,12 @@ namespace UnityEPL {
             }, t);
             return cts;
         }
-        protected CancellationTokenSource DoRepeating<T, U>(int delayMs, int intervalMs, uint? iterations, Action<T, U> func, T t, U u)
+        protected CancellationTokenSource DoRepeatingTS<T, U>(int delayMs, int intervalMs, uint? iterations, Action<T, U> func, T t, U u)
                 where T : struct
                 where U : struct {
             if (intervalMs <= 0) { throw new ArgumentOutOfRangeException($"intervalMs <= 0 ({intervalMs})"); }
             CancellationTokenSource cts = new();
-            Do(async (t, u) => {
+            DoTS(async (t, u) => {
                 await InterfaceManager.Delay(delayMs);
 
                 uint totalIterations = iterations ?? uint.MaxValue;
@@ -290,13 +290,13 @@ namespace UnityEPL {
             }, t, u);
             return cts;
         }
-        protected CancellationTokenSource DoRepeating<T, U, V>(int delayMs, int intervalMs, uint? iterations, Action<T, U, V> func, T t, U u, V v)
+        protected CancellationTokenSource DoRepeatingTS<T, U, V>(int delayMs, int intervalMs, uint? iterations, Action<T, U, V> func, T t, U u, V v)
                 where T : struct
                 where U : struct
                 where V : struct {
             if (intervalMs <= 0) { throw new ArgumentOutOfRangeException($"intervalMs <= 0 ({intervalMs})"); }
             CancellationTokenSource cts = new();
-            Do(async (t, u, v) => {
+            DoTS(async (t, u, v) => {
                 await InterfaceManager.Delay(delayMs);
 
                 uint totalIterations = iterations ?? uint.MaxValue;
@@ -310,14 +310,14 @@ namespace UnityEPL {
             }, t, u, v);
             return cts;
         }
-        protected CancellationTokenSource DoRepeating<T, U, V, W>(int delayMs, int intervalMs, uint? iterations, Action<T, U, V, W> func, T t, U u, V v, W w)
+        protected CancellationTokenSource DoRepeatingTS<T, U, V, W>(int delayMs, int intervalMs, uint? iterations, Action<T, U, V, W> func, T t, U u, V v, W w)
                 where T : struct
                 where U : struct
                 where V : struct
                 where W : struct {
             if (intervalMs <= 0) { throw new ArgumentOutOfRangeException($"intervalMs <= 0 ({intervalMs})"); }
             CancellationTokenSource cts = new();
-            Do(async (t, u, v, w) => {
+            DoTS(async (t, u, v, w) => {
                 await InterfaceManager.Delay(delayMs);
 
                 uint totalIterations = iterations ?? uint.MaxValue;
@@ -332,12 +332,12 @@ namespace UnityEPL {
             return cts;
         }
 
-        protected CancellationTokenSource DoRepeating(int delayMs, int intervalMs, uint? iterations, Func<Task> func) {
+        protected CancellationTokenSource DoRepeatingTS(int delayMs, int intervalMs, uint? iterations, Func<Task> func) {
             if (intervalMs <= 0) {
                 throw new ArgumentOutOfRangeException($"intervalMs <= 0 ({intervalMs})");
             }
             CancellationTokenSource cts = new();
-            Do(async () => {
+            DoTS(async () => {
                 await InterfaceManager.Delay(delayMs);
 
                 uint totalIterations = iterations ?? uint.MaxValue;
@@ -351,11 +351,11 @@ namespace UnityEPL {
             });
             return cts;
         }
-        protected CancellationTokenSource DoRepeating<T>(int delayMs, int intervalMs, uint? iterations, Func<T, Task> func, T t)
+        protected CancellationTokenSource DoRepeatingTS<T>(int delayMs, int intervalMs, uint? iterations, Func<T, Task> func, T t)
                 where T : struct {
             if (intervalMs <= 0) { throw new ArgumentOutOfRangeException($"intervalMs <= 0 ({intervalMs})"); }
             CancellationTokenSource cts = new();
-            Do(async (t) => {
+            DoTS(async (t) => {
                 await InterfaceManager.Delay(delayMs);
 
                 uint totalIterations = iterations ?? uint.MaxValue;
@@ -369,12 +369,12 @@ namespace UnityEPL {
             }, t);
             return cts;
         }
-        protected CancellationTokenSource DoRepeating<T, U>(int delayMs, int intervalMs, uint? iterations, Func<T, U, Task> func, T t, U u)
+        protected CancellationTokenSource DoRepeatingTS<T, U>(int delayMs, int intervalMs, uint? iterations, Func<T, U, Task> func, T t, U u)
                 where T : struct
                 where U : struct {
             if (intervalMs <= 0) { throw new ArgumentOutOfRangeException($"intervalMs <= 0 ({intervalMs})"); }
             CancellationTokenSource cts = new();
-            Do(async (t, u) => {
+            DoTS(async (t, u) => {
                 await InterfaceManager.Delay(delayMs);
 
                 uint totalIterations = iterations ?? uint.MaxValue;
@@ -388,13 +388,13 @@ namespace UnityEPL {
             }, t, u);
             return cts;
         }
-        protected CancellationTokenSource DoRepeating<T, U, V>(int delayMs, int intervalMs, uint? iterations, Func<T, U, V, Task> func, T t, U u, V v)
+        protected CancellationTokenSource DoRepeatingTS<T, U, V>(int delayMs, int intervalMs, uint? iterations, Func<T, U, V, Task> func, T t, U u, V v)
                 where T : struct
                 where U : struct
                 where V : struct {
             if (intervalMs <= 0) { throw new ArgumentOutOfRangeException($"intervalMs <= 0 ({intervalMs})"); }
             CancellationTokenSource cts = new();
-            Do(async (t, u, v) => {
+            DoTS(async (t, u, v) => {
                 await InterfaceManager.Delay(delayMs);
 
                 uint totalIterations = iterations ?? uint.MaxValue;
@@ -408,14 +408,14 @@ namespace UnityEPL {
             }, t, u, v);
             return cts;
         }
-        protected CancellationTokenSource DoRepeating<T, U, V, W>(int delayMs, int intervalMs, uint? iterations, Func<T, U, V, W, Task> func, T t, U u, V v, W w)
+        protected CancellationTokenSource DoRepeatingTS<T, U, V, W>(int delayMs, int intervalMs, uint? iterations, Func<T, U, V, W, Task> func, T t, U u, V v, W w)
                 where T : struct
                 where U : struct
                 where V : struct
                 where W : struct {
             if (intervalMs <= 0) { throw new ArgumentOutOfRangeException($"intervalMs <= 0 ({intervalMs})"); }
             CancellationTokenSource cts = new();
-            Do(async (t, u, v, w) => {
+            DoTS(async (t, u, v, w) => {
                 await InterfaceManager.Delay(delayMs);
 
                 uint totalIterations = iterations ?? uint.MaxValue;
@@ -432,144 +432,144 @@ namespace UnityEPL {
 
         // DoWaitFor
 
-        protected Task DoWaitFor(Action func) {
+        protected Task DoWaitForTS(Action func) {
             if (cts.IsCancellationRequested) {
                 throw new OperationCanceledException("EventLoop has been stopped already.");
             }
             return StartTask(func);
         }
-        protected Task DoWaitFor<T>(Action<T> func, T t)
+        protected Task DoWaitForTS<T>(Action<T> func, T t)
                 where T : struct {
             AssertBlittable<T>();
-            return DoWaitFor(() => { func(t); });
+            return DoWaitForTS(() => { func(t); });
         }
-        protected Task DoWaitFor<T, U>(Action<T, U> func, T t, U u)
+        protected Task DoWaitForTS<T, U>(Action<T, U> func, T t, U u)
                 where T : struct
                 where U : struct {
             AssertBlittable<T, U>();
-            return DoWaitFor(() => { func(t, u); });
+            return DoWaitForTS(() => { func(t, u); });
         }
-        protected Task DoWaitFor<T, U, V>(Action<T, U, V> func, T t, U u, V v)
+        protected Task DoWaitForTS<T, U, V>(Action<T, U, V> func, T t, U u, V v)
                 where T : struct
                 where U : struct
                 where V : struct {
             AssertBlittable<T, U, V>();
-            return DoWaitFor(() => { func(t, u, v); });
+            return DoWaitForTS(() => { func(t, u, v); });
         }
-        protected Task DoWaitFor<T, U, V, W>(Action<T, U, V, W> func, T t, U u, V v, W w)
+        protected Task DoWaitForTS<T, U, V, W>(Action<T, U, V, W> func, T t, U u, V v, W w)
                 where T : struct
                 where U : struct
                 where V : struct
                 where W : struct {
             AssertBlittable<T, U, V, W>();
-            return DoWaitFor(() => { func(t, u, v, w); });
+            return DoWaitForTS(() => { func(t, u, v, w); });
         }
 
-        protected async Task DoWaitFor(Func<Task> func) {
+        protected async Task DoWaitForTS(Func<Task> func) {
             if (cts.IsCancellationRequested) {
                 throw new OperationCanceledException("EventLoop has been stopped already.");
             }
             await await StartTask(func);
         }
-        protected Task DoWaitFor<T>(Func<T, Task> func, T t)
+        protected Task DoWaitForTS<T>(Func<T, Task> func, T t)
                 where T : struct {
             AssertBlittable<T>();
-            return DoWaitFor(async () => { await func(t); });
+            return DoWaitForTS(async () => { await func(t); });
         }
-        protected Task DoWaitFor<T, U>(Func<T, U, Task> func, T t, U u)
+        protected Task DoWaitForTS<T, U>(Func<T, U, Task> func, T t, U u)
                 where T : struct
                 where U : struct {
             AssertBlittable<T, U>();
-            return DoWaitFor(async () => { await func(t, u); });
+            return DoWaitForTS(async () => { await func(t, u); });
         }
-        protected Task DoWaitFor<T, U, V>(Func<T, U, V, Task> func, T t, U u, V v)
+        protected Task DoWaitForTS<T, U, V>(Func<T, U, V, Task> func, T t, U u, V v)
                 where T : struct
                 where U : struct
                 where V : struct {
             AssertBlittable<T, U, V>();
-            return DoWaitFor(async () => { await func(t, u, v); });
+            return DoWaitForTS(async () => { await func(t, u, v); });
         }
-        protected Task DoWaitFor<T, U, V, W>(Func<T, U, V, W, Task> func, T t, U u, V v, W w)
+        protected Task DoWaitForTS<T, U, V, W>(Func<T, U, V, W, Task> func, T t, U u, V v, W w)
                 where T : struct
                 where U : struct
                 where V : struct
                 where W : struct {
             AssertBlittable<T, U, V, W>();
-            return DoWaitFor(async () => { await func(t, u, v, w); });
+            return DoWaitForTS(async () => { await func(t, u, v, w); });
         }
 
         // DoGet
 
-        protected Task<Z> DoGet<Z>(Func<Z> func)
+        protected Task<Z> DoGetTS<Z>(Func<Z> func)
                 where Z : struct {
             AssertBlittable<Z>();
             return StartTask<Z>(func);
         }
-        protected Task<Z> DoGet<T, Z>(Func<T, Z> func, T t)
+        protected Task<Z> DoGetTS<T, Z>(Func<T, Z> func, T t)
                 where T : struct
                 where Z : struct {
             AssertBlittable<T>();
-            return DoGet(() => { return func(t); });
+            return DoGetTS(() => { return func(t); });
         }
-        protected Task<Z> DoGet<T, U, Z>(Func<T, U, Z> func, T t, U u)
+        protected Task<Z> DoGetTS<T, U, Z>(Func<T, U, Z> func, T t, U u)
                 where T : struct
                 where U : struct
                 where Z : struct {
             AssertBlittable<T, U>();
-            return DoGet(() => { return func(t, u); });
+            return DoGetTS(() => { return func(t, u); });
         }
-        protected Task<Z> DoGet<T, U, V, Z>(Func<T, U, V, Z> func, T t, U u, V v)
+        protected Task<Z> DoGetTS<T, U, V, Z>(Func<T, U, V, Z> func, T t, U u, V v)
                 where T : struct
                 where U : struct
                 where V : struct
                 where Z : struct {
             AssertBlittable<T, U, V>();
-            return DoGet(() => { return func(t, u, v); });
+            return DoGetTS(() => { return func(t, u, v); });
         }
-        protected Task<Z> DoGet<T, U, V, W, Z>(Func<T, U, V, W, Z> func, T t, U u, V v, W w)
+        protected Task<Z> DoGetTS<T, U, V, W, Z>(Func<T, U, V, W, Z> func, T t, U u, V v, W w)
                 where T : struct
                 where U : struct
                 where V : struct
                 where W : struct
                 where Z : struct {
             AssertBlittable<T, U, V, W>();
-            return DoGet(() => { return func(t, u, v, w); });
+            return DoGetTS(() => { return func(t, u, v, w); });
         }
 
-        protected async Task<Z> DoGet<Z>(Func<Task<Z>> func)
+        protected async Task<Z> DoGetTS<Z>(Func<Task<Z>> func)
                 where Z : struct {
             AssertBlittable<Z>();
             return await await StartTask(func);
         }
-        protected Task<Z> DoGet<T, Z>(Func<T, Task<Z>> func, T t)
+        protected Task<Z> DoGetTS<T, Z>(Func<T, Task<Z>> func, T t)
                 where T : struct
                 where Z : struct {
             AssertBlittable<T>();
-            return DoGet(async () => { return await func(t); });
+            return DoGetTS(async () => { return await func(t); });
         }
-        protected Task<Z> DoGet<T, U, Z>(Func<T, U, Task<Z>> func, T t, U u)
+        protected Task<Z> DoGetTS<T, U, Z>(Func<T, U, Task<Z>> func, T t, U u)
                 where T : struct
                 where U : struct
                 where Z : struct {
             AssertBlittable<T, U>();
-            return DoGet(async () => { return await func(t, u); });
+            return DoGetTS(async () => { return await func(t, u); });
         }
-        protected Task<Z> DoGet<T, U, V, Z>(Func<T, U, V, Task<Z>> func, T t, U u, V v)
+        protected Task<Z> DoGetTS<T, U, V, Z>(Func<T, U, V, Task<Z>> func, T t, U u, V v)
                 where T : struct
                 where U : struct
                 where V : struct
                 where Z : struct {
             AssertBlittable<T, U, V>();
-            return DoGet(async () => { return await func(t, u, v); });
+            return DoGetTS(async () => { return await func(t, u, v); });
         }
-        protected Task<Z> DoGet<T, U, V, W, Z>(Func<T, U, V, W, Task<Z>> func, T t, U u, V v, W w)
+        protected Task<Z> DoGetTS<T, U, V, W, Z>(Func<T, U, V, W, Task<Z>> func, T t, U u, V v, W w)
                 where T : struct
                 where U : struct
                 where V : struct
                 where W : struct
                 where Z : struct {
             AssertBlittable<T, U, V, W>();
-            return DoGet(async () => { return await func(t, u, v, w); });
+            return DoGetTS(async () => { return await func(t, u, v, w); });
         }
 
 
@@ -578,21 +578,21 @@ namespace UnityEPL {
         // TODO: JPB: (needed) Figure out how to handle non-blittable return types in DoGet
         //            And add tests for these
 
-        protected Task<Z> DoGetRelaxed<Z>(Func<Z> func) {
+        protected Task<Z> DoGetRelaxedTS<Z>(Func<Z> func) {
             return StartTask<Z>(func);
         }
-        protected Task<Z> DoGetRelaxed<T, Z>(Func<T, Z> func, T t)
+        protected Task<Z> DoGetRelaxedTS<T, Z>(Func<T, Z> func, T t)
                 where T : struct {
-            return DoGetRelaxed(() => { return func(t); });
+            return DoGetRelaxedTS(() => { return func(t); });
         }
 
-        protected async Task<Z> DoGetRelaxed<Z>(Func<Task<Z>> func) {
+        protected async Task<Z> DoGetRelaxedTS<Z>(Func<Task<Z>> func) {
             return await await StartTask(func);
         }
-        protected Task<Z> DoGetRelaxed<T, Z>(Func<T, Task<Z>> func, T t)
+        protected Task<Z> DoGetRelaxedTS<T, Z>(Func<T, Task<Z>> func, T t)
                 where T : struct {
             AssertBlittable<T>();
-            return DoGetRelaxed(async () => { return await func(t); });
+            return DoGetRelaxedTS(async () => { return await func(t); });
         }
 
 
@@ -603,7 +603,7 @@ namespace UnityEPL {
                 try {
                     func();
                 } catch (Exception e) {
-                    ErrorNotifier.Error(e);
+                    ErrorNotifier.ErrorTS(e);
                     throw e;
                 }
             };
@@ -613,7 +613,7 @@ namespace UnityEPL {
                 try {
                     await func();
                 } catch (Exception e) {
-                    ErrorNotifier.Error(e);
+                    ErrorNotifier.ErrorTS(e);
                     throw e;
                 }
             };
@@ -624,7 +624,7 @@ namespace UnityEPL {
                     var ret = await func();
                     return ret;
                 } catch (Exception e) {
-                    ErrorNotifier.Error(e);
+                    ErrorNotifier.ErrorTS(e);
                     throw e;
                 }
             };
@@ -635,7 +635,7 @@ namespace UnityEPL {
                     var ret = func();
                     return ret;
                 } catch (Exception e) {
-                    ErrorNotifier.Error(e);
+                    ErrorNotifier.ErrorTS(e);
                     throw e;
                 }
             };

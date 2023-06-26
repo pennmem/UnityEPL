@@ -71,7 +71,7 @@ namespace UnityEPL {
         }
         protected DataPoint[] ReadDataPointsHelper(int count) {
             if (eventQueue.Count < count) {
-                ErrorNotifier.Error(
+                ErrorNotifier.ErrorTS(
                     new UnityException("Not enough data points! Check UnreadDataPointCount first."));
             }
 

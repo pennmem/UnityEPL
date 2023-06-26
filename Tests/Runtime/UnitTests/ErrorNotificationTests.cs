@@ -42,7 +42,7 @@ namespace UnityEPLTests {
             var inputText = "TESTING";
 
             Assert.Throws<Exception>(() => {
-                ErrorNotifier.Error(new Exception(inputText));
+                ErrorNotifier.ErrorTS(new Exception(inputText));
             });
 
             yield return null; // Wait for next frame
@@ -57,7 +57,7 @@ namespace UnityEPLTests {
         public IEnumerator MakeWarningNotification() {
             var inputText = "TESTING";
 
-            ErrorNotifier.Warning(new Exception(inputText));
+            ErrorNotifier.WarningTS(new Exception(inputText));
 
             yield return null; // Wait for next frame
             var actualText = ErrorNotifier.Instance.transform
