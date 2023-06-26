@@ -110,6 +110,19 @@ namespace UnityEPL {
         }
     }
 
+    public static class EnumeratorExtensions {
+        /// <summary>
+        /// Convert an IEnumerator to an IEnumerable
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="enumerator"></param>
+        /// <returns></returns>
+        public static IEnumerable<T> ToEnumerable<T>(this IEnumerator<T> enumerator) {
+            while (enumerator.MoveNext())
+                yield return enumerator.Current;
+        }
+    }
+
     public static class TaskExtensions {
         /// <summary>
         /// Convert awaitable task to an IEnumerator

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace UnityEPL {
 
     [Serializable]
-    public class Timeline<T> : IList<T> { //: IDeserializationCallback {
+    public class Timeline<T> : IList<T> {
         protected List<T> items = new List<T>();
         protected bool reset_on_load;
         public virtual bool IsReadOnly { get { return false; } }
@@ -39,14 +39,6 @@ namespace UnityEPL {
                 return false;
             }
         }
-
-        // void IDeserializationCallback.OnDeserialization(Object sender)
-        // {
-        //     // if reset is set, reset when the object is deserialized
-        //     if(reset_on_load) {
-        //         index = 0;
-        //     }
-        // }
 
         public virtual T this[int i] {
             get { return items[i]; }
