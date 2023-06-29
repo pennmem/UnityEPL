@@ -13,6 +13,8 @@ namespace UnityEPL {
         private static readonly long _maxIdleTime = TimeSpan.FromSeconds(10).Ticks;
         private const long TicksMultiplier = 1000 * TimeSpan.TicksPerMillisecond;
 
+        // TODO: JPB: (bug) Make these use a lock instead of a thread local
+        //            Check if I already did this in InterfaceManager with Timestamp
         private static readonly ThreadLocal<DateTime> _startTime =
             new ThreadLocal<DateTime>(() => DateTime.UtcNow, false);
 

@@ -28,24 +28,24 @@ namespace UnityEPL {
             STOP_STIM,
         }
 
-        protected abstract Task DoLatencyCheck();
-        protected abstract CancellationTokenSource DoHeartbeatsForever();
+        protected abstract Task DoLatencyCheckTS();
+        protected abstract CancellationTokenSource DoHeartbeatsForeverTS();
 
-        public abstract Task Configure();
-        public abstract Task Quit();
+        public abstract Task ConfigureTS();
+        public abstract Task QuitTS();
 
-        public abstract Task SendMathMsg(string problem, string response, int responseTimeMs, bool correct);
-        public abstract Task SendStimSelectMsg(string tag);
-        public abstract Task SendStimMsg();
-        public abstract Task SendCLMsg(CLMsg type, uint classifyMs);
-        public abstract Task SendCCLStartMsg(int durationS);
-        public abstract Task SendCCLMsg(CCLMsg type);
-        public abstract Task SendSessionMsg(int session);
-        public abstract Task SendStateMsg(StateMsg state, Dictionary<string, object> extraData = null);
-        public abstract Task SendTrialMsg(int trial, bool stim);
-        public abstract Task SendWordMsg(string word, int serialPos, bool stim, Dictionary<string, object> extraData = null);
-        public abstract Task SendExitMsg();
-        public abstract Task SendLogMsg(string type, Dictionary<string, object> data = null);
+        public abstract Task SendMathMsgTS(string problem, string response, int responseTimeMs, bool correct);
+        public abstract Task SendStimSelectMsgTS(string tag);
+        public abstract Task SendStimMsgTS();
+        public abstract Task SendCLMsgTS(CLMsg type, uint classifyMs);
+        public abstract Task SendCCLStartMsgTS(int durationS);
+        public abstract Task SendCCLMsgTS(CCLMsg type);
+        public abstract Task SendSessionMsgTS(int session);
+        public abstract Task SendStateMsgTS(StateMsg state, Dictionary<string, object> extraData = null);
+        public abstract Task SendTrialMsgTS(int trial, bool stim);
+        public abstract Task SendWordMsgTS(string word, int serialPos, bool stim, Dictionary<string, object> extraData = null);
+        public abstract Task SendExitMsgTS();
+        public abstract Task SendLogMsgTS(string type, Dictionary<string, object> data = null);
     }
 
 }

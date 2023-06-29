@@ -11,12 +11,12 @@ namespace UnityEPL {
     public class ElememInterface : HostPC {
         public ElememInterface() { }
 
-        public override Task Configure() {
+        public override Task ConfigureTS() {
             return DoWaitForTS(ConfigureHelper);
         }
         protected async Task ConfigureHelper() {
             // Configure Elemem
-            await SendAndReceive("CONNECTED", "CONNECTED_OK");
+            await SendAndReceiveTS("CONNECTED", "CONNECTED_OK");
 
             Dictionary<string, object> configDict = new() {
                 { "stim_mode", Config.stimMode },
@@ -27,22 +27,22 @@ namespace UnityEPL {
             await SendAndReceive("CONFIGURE", configDict, "CONFIGURE_OK");
 
             // Latency Check
-            await DoLatencyCheck();
+            await DoLatencyCheckTS();
 
             // Start Heartbeats
-            DoHeartbeatsForever();
+            DoHeartbeatsForeverTS();
 
             // Start Elemem
-            await Send("READY");
+            await SendTS("READY");
         }
 
-        public override async Task Quit() {
-            await SendExitMsg();
-            Disconnect();
+        public override async Task QuitTS() {
+            await SendExitMsgTS();
+            DisconnectTS();
         }
 
         private uint heartbeatCount = 0;
-        protected override CancellationTokenSource DoHeartbeatsForever() {
+        protected override CancellationTokenSource DoHeartbeatsForeverTS() {
             return DoRepeatingTS(0, Config.elememHeartbeatInterval, null, DoHeartbeatHelper);
         }
         protected async Task DoHeartbeatHelper() {
@@ -55,7 +55,7 @@ namespace UnityEPL {
 
         protected readonly static double maxSingleTimeMs = 20;
         protected readonly static double meanSingleTimeMs = 5;
-        protected override Task DoLatencyCheck() {
+        protected override Task DoLatencyCheckTS() {
             return DoWaitForTS(DoLatencyCheckHelper);
         }
         protected async Task DoLatencyCheckHelper() {
@@ -95,88 +95,88 @@ namespace UnityEPL {
             UnityEngine.Debug.Log(string.Join(Environment.NewLine, dict));
         }
 
-        protected override async Task<JObject> Receive(string type) {
-            var json = await ReceiveJson(type);
+        protected override async Task<JObject> ReceiveTS(string type) {
+            var json = await ReceiveJsonTS(type);
             var msgType = json.GetValue("type").Value<string>();
             if (msgType == "EXIT") {
-                Disconnect();
+                DisconnectTS();
                 throw new InvalidOperationException("Elemem exited and ended it's connection");
             }
             return json;
         }
 
-        public override Task SendMathMsg(string problem, string response, int responseTimeMs, bool correct) {
+        public override Task SendMathMsgTS(string problem, string response, int responseTimeMs, bool correct) {
             Dictionary<string, object> data = new() {
                 { "problem", problem },
                 { "response", response },
                 { "response_time_ms", responseTimeMs },
                 { "correct", correct },
             };
-            return Send("MATH", data);
+            return SendTS("MATH", data);
         }
 
-        public override Task SendStimSelectMsg(string tag) {
+        public override Task SendStimSelectMsgTS(string tag) {
             Dictionary<string, object> data = new() {
                 { "stimtag", tag },
             };
-            return Send("STIMSELECT", data);
+            return SendTS("STIMSELECT", data);
         }
 
-        public override Task SendStimMsg() {
-            return Send("STIM");
+        public override Task SendStimMsgTS() {
+            return SendTS("STIM");
         }
 
-        public override Task SendCLMsg(CLMsg type, uint classifyMs) {
+        public override Task SendCLMsgTS(CLMsg type, uint classifyMs) {
             Dictionary<string, object> data = new() {
                 { "classifyms", classifyMs },
             };
-            return Send(Enum.GetName(typeof(CLMsg), type), data);
+            return SendTS(Enum.GetName(typeof(CLMsg), type), data);
         }
 
-        public override Task SendCCLStartMsg(int durationS) {
+        public override Task SendCCLStartMsgTS(int durationS) {
             Dictionary <string, object> data = new() {
                 { "duration", durationS}
             };
-            return Send("CCLSTARTSTIM", data);
+            return SendTS("CCLSTARTSTIM", data);
         }
 
-        public override Task SendCCLMsg(CCLMsg type) {
-            return Send(Enum.GetName(typeof(CCLMsg), type));
+        public override Task SendCCLMsgTS(CCLMsg type) {
+            return SendTS(Enum.GetName(typeof(CCLMsg), type));
         }
 
-        public override Task SendSessionMsg(int session) {
+        public override Task SendSessionMsgTS(int session) {
             Dictionary<string, object> data = new() {
                 { "session", session },
             };
-            return Send("SESSION", data);
+            return SendTS("SESSION", data);
         }
 
-        public override Task SendStateMsg(StateMsg state, Dictionary<string, object> extraData = null) {
-            return Send(Enum.GetName(typeof(StateMsg), state), extraData);
+        public override Task SendStateMsgTS(StateMsg state, Dictionary<string, object> extraData = null) {
+            return SendTS(Enum.GetName(typeof(StateMsg), state), extraData);
         }
 
-        public override Task SendTrialMsg(int trial, bool stim) {
+        public override Task SendTrialMsgTS(int trial, bool stim) {
             Dictionary<string, object> data = new() {
                 { "trial", trial },
                 { "stim", stim },
             };
-            return Send("TRIAL", data);
+            return SendTS("TRIAL", data);
         }
 
-        public override Task SendWordMsg(string word, int serialPos, bool stim, Dictionary<string, object> extraData = null) {
+        public override Task SendWordMsgTS(string word, int serialPos, bool stim, Dictionary<string, object> extraData = null) {
             var data = (extraData != null) ? new Dictionary<string, object>(extraData) : new();
             data["word"] = word;
             data["serialPos"] = serialPos;
             data["stim"] = stim;  
-            return Send("WORD", data);
+            return SendTS("WORD", data);
         }
 
-        public override Task SendExitMsg() {
-            return Send("EXIT");
+        public override Task SendExitMsgTS() {
+            return SendTS("EXIT");
         }
 
-        public override Task SendLogMsg(string type, Dictionary<string, object> data = null) {
-            return Send(type, data);
+        public override Task SendLogMsgTS(string type, Dictionary<string, object> data = null) {
+            return SendTS(type, data);
         }
     }
 

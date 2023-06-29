@@ -29,14 +29,14 @@ namespace UnityEPL {
             DisconnectHelper();
         }
 
-        public async Task<bool> IsConnected() {
+        public async Task<bool> IsConnectedTS() {
             return await DoGetTS<Bool>(IsConnectedHelper);
         }
         private Bool IsConnectedHelper() {
             return tcpClient.Connected;
         }
 
-        public Task Connect() {
+        public Task ConnectTS() {
             return DoWaitForTS(ConnectHelper);
         }
         private async Task ConnectHelper() {
@@ -55,7 +55,7 @@ namespace UnityEPL {
             DoListenerForever();
         }
 
-        protected void Disconnect() {
+        protected void DisconnectTS() {
             DoTS(DisconnectHelper);
         }
         private void DisconnectHelper() {
@@ -101,7 +101,7 @@ namespace UnityEPL {
                     
                     // Report the message and send it to the waiting tasks
                     var msgType = json.GetValue("type").Value<string>();
-                    ReportNetworkMessage(msgType, message, Clock.UtcNow, false);
+                    ReportNetworkMessageTS(msgType, message, Clock.UtcNow, false);
                     for (int i = receiveRequests.Count - 1; i >= 0; i--) {
                         var (type, tcs) = receiveRequests[i];
                         if (type == msgType) {
@@ -117,16 +117,16 @@ namespace UnityEPL {
 
                     // Handle network exit messge
                     if (msgType == "EXIT") {
-                        Disconnect();
+                        DisconnectTS();
                     }
                 }
             }
         }
 
-        protected virtual Task<JObject> Receive(string type) {
-            return ReceiveJson(type);
+        protected virtual Task<JObject> ReceiveTS(string type) {
+            return ReceiveJsonTS(type);
         }
-        protected Task<JObject> ReceiveJson(string type) {
+        protected Task<JObject> ReceiveJsonTS(string type) {
             return DoGetRelaxedTS(ReceiveJsonHelper, type.ToNativeText());
         }
         private Task<JObject> ReceiveJsonHelper(NativeText type) {
@@ -138,10 +138,10 @@ namespace UnityEPL {
         }
 
         // TODO: JPB: (needed) Make NetworkInterface::Send use Mutex
-        protected virtual Task Send(string type, Dictionary<string, object> data = null) {
-            return SendJson(type, data);
+        protected virtual Task SendTS(string type, Dictionary<string, object> data = null) {
+            return SendJsonTS(type, data);
         }
-        protected Task SendJson(string type, Dictionary<string, object> data = null) {
+        protected Task SendJsonTS(string type, Dictionary<string, object> data = null) {
             return DoWaitForTS(() => { SendJsonHelper(type, data); });
         }
         private Task SendJsonHelper(string type, Dictionary<string, object> data = null) {
@@ -158,20 +158,20 @@ namespace UnityEPL {
                 throw new IOException($"The network interface {name} closed before the {type} message could be sent");
             }
 
-            ReportNetworkMessage(type, message, point.time, true);
+            ReportNetworkMessageTS(type, message, point.time, true);
             return TimeoutTask(sendTask, 1000, timeoutMessage);
         }
 
-        protected Task<JObject> SendAndReceive(string sendType, string receiveType) {
+        protected Task<JObject> SendAndReceiveTS(string sendType, string receiveType) {
             return SendAndReceive(sendType, null, receiveType);
         }
         protected async Task<JObject> SendAndReceive(string sendType, Dictionary<string, object> sendData, string receiveType) {
-            var recvTask = Receive(receiveType);
-            await Send(sendType, sendData);
+            var recvTask = ReceiveTS(receiveType);
+            await SendTS(sendType, sendData);
             return await recvTask;
         }
 
-        protected void ReportNetworkMessage(string type, string message, DateTime time, bool sent) {
+        protected void ReportNetworkMessageTS(string type, string message, DateTime time, bool sent) {
             Dictionary<string, object> dict = new() {
                 { "message", message },
                 { "ip", ((IPEndPoint)tcpClient.Client.RemoteEndPoint).Address.ToString() },

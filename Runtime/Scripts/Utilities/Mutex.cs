@@ -35,13 +35,14 @@ namespace UnityEPL {
     }
 
     public ref struct ReadOnly<T> {
-        T val;
+        private T val;
 
         public ReadOnly(T val) {
             this.val = val;
         }
 
         public static implicit operator T(ReadOnly<T> ro) {
+            // TODO: JPB: (bug) Use Wait to check against Mutex
             return ro.val;
         }
     }

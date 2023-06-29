@@ -332,7 +332,7 @@ namespace UnityEPL {
         protected void LaunchLauncher() {
             // Reset external hardware state if exiting task
             //syncBox.StopPulse();
-            hostPC?.SendExitMsg();
+            hostPC?.SendExitMsgTS();
 
             //mainEvents.Pause(true);
             for (int i = 0; i < SceneManager.sceneCount; ++i) {
@@ -353,7 +353,7 @@ namespace UnityEPL {
 
         public void QuitTS() {
             ramulator?.SendExitMsg();
-            hostPC?.Quit();
+            hostPC?.QuitTS();
             DoWaitForTS(QuitHelper);
         }
         protected async Task QuitHelper() {
@@ -398,8 +398,8 @@ namespace UnityEPL {
                     ramulator = new RamulatorWrapper(this);
                     yield return ramulator.BeginNewSession();
                 }
-                yield return hostPC?.Connect().ToEnumerator();
-                yield return hostPC?.Configure().ToEnumerator();
+                yield return hostPC?.ConnectTS().ToEnumerator();
+                yield return hostPC?.ConfigureTS().ToEnumerator();
 
                 SceneManager.sceneLoaded += onExperimentSceneLoaded;
                 SceneManager.LoadScene(Config.experimentScene);
