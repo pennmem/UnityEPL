@@ -13,16 +13,19 @@ namespace UnityEPL {
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="list"></param>
-        public static IList<T> Shuffle<T>(this IList<T> list) {
+        public static IList<T> Shuffle<T>(this IList<T> list, System.Random rnd) {
             var shuf = new List<T>(list);
             for (int i = shuf.Count - 1; i > 0; i--) {
-                int j = InterfaceManager.rnd.Value.Next(i + 1);
+                int j = rnd.Next(i + 1);
                 T tmp = shuf[i];
                 shuf[i] = shuf[j];
                 shuf[j] = tmp;
             }
 
             return shuf;
+        }
+        public static IList<T> Shuffle<T>(this IList<T> list) {
+            return list.Shuffle(InterfaceManager.rnd.Value);
         }
 
         /// <summary>
@@ -31,10 +34,10 @@ namespace UnityEPL {
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="list"></param>
-        public static List<T> Shuffle<T>(this List<T> list) {
+        public static List<T> Shuffle<T>(this List<T> list, System.Random rnd) {
             var shuf = new List<T>(list);
             for (int i = shuf.Count - 1; i > 0; i--) {
-                int j = InterfaceManager.rnd.Value.Next(i + 1);
+                int j = rnd.Next(i + 1);
                 T tmp = shuf[i];
                 shuf[i] = shuf[j];
                 shuf[j] = tmp;
@@ -42,21 +45,8 @@ namespace UnityEPL {
 
             return shuf;
         }
-
-        /// <summary>
-        /// Knuth (Fisher-Yates) Shuffle
-        /// Shuffles the element order of the specified list.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        public static IList<T> ShuffleInPlace<T>(this IList<T> list) {
-            var count = list.Count;
-            for (int i = 0; i < count; ++i) {
-                int r = InterfaceManager.rnd.Value.Next(i, count);
-                T tmp = list[i];
-                list[i] = list[r];
-                list[r] = tmp;
-            }
-            return list;
+        public static List<T> Shuffle<T>(this List<T> list) {
+            return list.Shuffle(InterfaceManager.rnd.Value);
         }
 
         /// <summary>
@@ -64,15 +54,37 @@ namespace UnityEPL {
         /// Shuffles the element order of the specified list.
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        public static List<T> ShuffleInPlace<T>(this List<T> list) {
+        public static IList<T> ShuffleInPlace<T>(this IList<T> list, System.Random rnd) {
             var count = list.Count;
             for (int i = 0; i < count; ++i) {
-                int r = InterfaceManager.rnd.Value.Next(i, count);
+                int r = rnd.Next(i, count);
                 T tmp = list[i];
                 list[i] = list[r];
                 list[r] = tmp;
             }
             return list;
+        }
+        public static IList<T> ShuffleInPlace<T>(this IList<T> list) {
+            return list.ShuffleInPlace(InterfaceManager.rnd.Value);
+        }
+
+        /// <summary>
+        /// Knuth (Fisher-Yates) Shuffle
+        /// Shuffles the element order of the specified list.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        public static List<T> ShuffleInPlace<T>(this List<T> list, System.Random rnd) {
+            var count = list.Count;
+            for (int i = 0; i < count; ++i) {
+                int r = rnd.Next(i, count);
+                T tmp = list[i];
+                list[i] = list[r];
+                list[r] = tmp;
+            }
+            return list;
+        }
+        public static List<T> ShuffleInPlace<T>(this List<T> list) {
+            return list.ShuffleInPlace(InterfaceManager.rnd.Value);
         }
     }
 
@@ -82,16 +94,19 @@ namespace UnityEPL {
         /// Shuffles the element order of the specified array.
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        public static T[] ShuffleInPlace<T>(this T[] array) {
+        public static T[] ShuffleInPlace<T>(this T[] array, System.Random rnd) {
             int n = array.Length;
             while (n > 1) {
-                _ = InterfaceManager.rnd.Value.Next(2);
-                int k = InterfaceManager.rnd.Value.Next(n--);
+                _ = rnd.Next(2);
+                int k = rnd.Next(n--);
                 T temp = array[n];
                 array[n] = array[k];
                 array[k] = temp;
             }
             return array;
+        }
+        public static T[] ShuffleInPlace<T>(this T[] array) {
+            return array.ShuffleInPlace(InterfaceManager.rnd.Value);
         }
     }
 

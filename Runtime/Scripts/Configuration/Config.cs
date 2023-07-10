@@ -78,14 +78,7 @@ namespace UnityEPL {
         public static string prefix { get { return Config.GetSetting<string>("prefix"); } }
 
         // ExperimentBase.cs
-        public static int micTestDuration { get { return Config.GetSetting<int>("micTestDuration"); } }
-        public static int distractorDuration { get { return Config.GetSetting<int>("distractorDuration"); } }
-        public static int[] orientationDuration { get { return Config.GetSetting<int[]>("orientationDuration"); } }
-        public static int recStimulusInterval { get { return Config.GetSetting<int>("recStimulusInterval"); } }
-        public static int stimulusDuration { get { return Config.GetSetting<int>("stimulusDuration"); } }
-        public static int recallDuration { get { return Config.GetSetting<int>("recallDuration"); } }
-        public static int recallPromptDuration { get { return Config.GetSetting<int>("recallPromptDuration"); } }
-        public static int finalRecallDuration { get { return Config.GetSetting<int>("finalRecallDuration"); } }
+        // none
 
         // ElememInterface.cs
         public static string stimMode { get { return Config.GetSetting<string>("stimMode"); } }
