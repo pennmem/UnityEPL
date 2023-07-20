@@ -155,7 +155,7 @@ namespace UnityEPL {
             string configPath = fileManager.ConfigPath();
             string[] configs = Directory.GetFiles(configPath, "*.json");
             if (configs.Length < 2) {
-                ErrorNotifier.ErrorTS(new Exception("Configuration File Error"));
+                ErrorNotifier.ErrorTS(new Exception("Configuration File Error. Missing system or experiment configuration file in configs folder"));
             }
             return configs;
         }

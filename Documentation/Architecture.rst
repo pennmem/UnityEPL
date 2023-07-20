@@ -35,7 +35,7 @@ Events/Tasks
 Events are async functions that run on an EventLoop or EventMonoBehavior thread.
 
 The *EventLoop* is the default base class for classes that want to run events.
-They sets up a thread that, when any Do is called, runs the specified function on that thread.
+They set up a thread that, when any Do is called, runs the specified function on that thread.
 
 Each thread only runs one event at a time in the order that they are initiated. 
 In other words, it time-multiplexes.
