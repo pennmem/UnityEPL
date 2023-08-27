@@ -88,3 +88,8 @@ See the FAQ Document
 Authors
 *************
 James Bruska, Connor Keane, Ryan Colyer
+
+*************
+UnityEPL v1.0 Authors
+*************
+Henry Solberg, Jesse Pazdera
