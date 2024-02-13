@@ -126,22 +126,12 @@ namespace UnityEPL {
             return SendTS("STIM");
         }
 
-        public override Task SendCLMsgTS(CLMsg type, uint classifyMs) {
-            Dictionary<string, object> data = new() {
-                { "classifyms", classifyMs },
-            };
-            return SendTS(Enum.GetName(typeof(CLMsg), type), data);
+        public override Task SendCLMsgTS(HostPcClMsg type) {
+            return SendTS(type.name, type.dict);
         }
 
-        public override Task SendCCLStartMsgTS(int durationS) {
-            Dictionary <string, object> data = new() {
-                { "duration", durationS}
-            };
-            return SendTS("CCLSTARTSTIM", data);
-        }
-
-        public override Task SendCCLMsgTS(CCLMsg type) {
-            return SendTS(Enum.GetName(typeof(CCLMsg), type));
+        public override Task SendCCLMsgTS(HostPcCclMsg type) {
+            return SendTS(type.name, type.dict);
         }
 
         public override Task SendSessionMsgTS(int session) {
@@ -151,8 +141,12 @@ namespace UnityEPL {
             return SendTS("SESSION", data);
         }
 
-        public override Task SendStateMsgTS(StateMsg state, Dictionary<string, object> extraData = null) {
-            return SendTS(Enum.GetName(typeof(StateMsg), state), extraData);
+        public override Task SendStateMsgTS(HostPcStateMsg state, Dictionary<string, object> extraData = null) {
+            var dict = (extraData != null) ? new Dictionary<string, object>(extraData) : new();
+            foreach (var item in state.dict) {
+                dict.Add(item.Key, item.Value);
+            }
+            return SendTS(state.name, dict);
         }
 
         public override Task SendTrialMsgTS(int trial, bool stim) {

@@ -273,7 +273,7 @@ namespace UnityEPL {
             return DoGetTS(PressAnyKeyHelper, description.ToNativeText(), displayTitle.ToNativeText(), displayText.ToNativeText());
         }
         protected async Task<KeyCode> PressAnyKeyHelper(NativeText description, NativeText displayTitle, NativeText displayText) {
-            _ = manager.hostPC?.SendStateMsgTS(HostPC.StateMsg.WAITING);
+            _ = manager.hostPC?.SendStateMsgTS(HostPcStateMsg.WAITING());
             // TODO: JPB: (needed) Add Ramulator to match this
             Display($"{description.ToString()} (press any key prompt)", displayTitle.ToString(), displayText.ToString());
             var keyCode = await InputManager.Instance.GetKeyTS();

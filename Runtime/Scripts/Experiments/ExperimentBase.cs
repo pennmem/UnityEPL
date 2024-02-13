@@ -57,6 +57,7 @@ namespace UnityEPL {
         private bool endPracticeTrials = false;
         protected uint trialNum { get; private set; } = 0;
         protected uint practiceTrialNum { get; private set; } = 0;
+        protected bool inPracticeTrials { get; private set; } = false;
 
         protected abstract Task PreTrialStates();
         protected abstract Task PracticeTrialStates();
@@ -71,14 +72,16 @@ namespace UnityEPL {
         }
 
         protected async void Run() {
-            await DoWaitForTS(RunHelper);
+            await DoWaitFor(RunHelper);
         }
         protected async Task RunHelper() {
             await PreTrialStates();
+            inPracticeTrials = true;
             while (!endPracticeTrials) {
                 practiceTrialNum++;
                 await PracticeTrialStates();
             }
+            inPracticeTrials = false;
             while (!endTrials) {
                 trialNum++;
                 await TrialStates();
@@ -98,30 +101,93 @@ namespace UnityEPL {
                 { "session", Config.sessionNum },
             };
 
-            manager.eventReporter.LogTS("session start", versionsData);
+            eventReporter.LogTS("session start", versionsData);
         }
 
-        protected async Task RepeatUntilNo(Func<Task> func, string description, string displayText) {
+        // Wrapper/Replacement Functions
+        protected bool IsNumericKeyCode(KeyCode keyCode) {
+            bool isAlphaNum = keyCode >= KeyCode.Alpha0 && keyCode <= KeyCode.Alpha9;
+            bool isKeypadNum = keyCode >= KeyCode.Keypad0 && keyCode <= KeyCode.Keypad9;
+            return isAlphaNum || isKeypadNum;
+        }
+        protected virtual void SendRamulatorStateMsg(HostPcStateMsg state, bool stateToggle, Dictionary<string, object> extraData = null) {
+            // Do nothing by default
+        }
+        protected new async Task RepeatUntilYes(Func<Task> func, string description, string displayText) {
             var repeat = true;
             while (repeat) {
                 await func();
 
+                SendRamulatorStateMsg(HostPcStateMsg.WAITING(), true);
                 textDisplayer.Display(description, "", displayText);
-                var keyCode = await inputManager.GetKeyTS(new() { KeyCode.Y, KeyCode.N });
-                repeat = keyCode == KeyCode.N;
+                var keyCode = await inputManager.GetKeyTS(new List<KeyCode>() { KeyCode.Y, KeyCode.N });
+                repeat = keyCode != KeyCode.Y;
+                SendRamulatorStateMsg(HostPcStateMsg.WAITING(), false);
             }
         }
-
-        protected async Task RepeatUntilYes(Func<Task> func, string description, string displayText) {
+        protected new async Task RepeatUntilNo(Func<Task> func, string description, string displayText) {
             var repeat = true;
             while (repeat) {
                 await func();
 
+                SendRamulatorStateMsg(HostPcStateMsg.WAITING(), true);
                 textDisplayer.Display(description, "", displayText);
-                var keyCode = await inputManager.GetKeyTS(new() { KeyCode.Y, KeyCode.N });
-                repeat = keyCode == KeyCode.Y;
+                var keyCode = await inputManager.GetKeyTS(new List<KeyCode>() { KeyCode.Y, KeyCode.N });
+                repeat = keyCode != KeyCode.N;
+                SendRamulatorStateMsg(HostPcStateMsg.WAITING(), false);
             }
+        }
+
+        // Pre-Trial States
+        protected async Task Introduction() {
+            await RepeatUntilYes(async () => {
+                await textDisplayer.PressAnyKey("show instruction video", "Press any key to show instruction video");
+
+                manager.videoControl.SetVideo(Config.introductionVideo, true);
+                await manager.videoControl.PlayVideo();
+            }, "repeat introduction video", "Press Y to continue to practice list, \n Press N to replay instructional video.");
+        }
+        protected async Task MicrophoneTest() {
+            await RepeatUntilYes(async () => {
+                await textDisplayer.PressAnyKey("microphone test prompt", "Microphone Test", "Press any key to record a sound after the beep.");
+
+                string wavPath = System.IO.Path.Combine(manager.fileManager.SessionPath(), "microphone_test_"
+                        + Clock.UtcNow.ToString("yyyy-MM-dd_HH_mm_ss") + ".wav");
+
+                manager.lowBeep.Play();
+                await DoWaitWhile(() => manager.lowBeep.isPlaying);
+                await InterfaceManager.Delay(100); // This is needed so you don't hear the end of the beep
+
+                manager.recorder.StartRecording(wavPath);
+                textDisplayer.DisplayText("microphone test recording", "<color=red>Recording...</color>");
+                await InterfaceManager.Delay(Config.micTestDuration);
+                var clip = manager.recorder.StopRecording();
+
+                textDisplayer.DisplayText("microphone test playing", "<color=green>Playing...</color>");
+                manager.playback.Play(clip);
+                await InterfaceManager.Delay(Config.micTestDuration);
+            }, "repeat mic test", "Did you hear the recording ? \n(Y = Continue / N = Try Again).");
+        }
+        protected async Task QuitPrompt() {
+            SendRamulatorStateMsg(HostPcStateMsg.WAITING(), true);
+            manager.hostPC?.SendStateMsgTS(HostPcStateMsg.WAITING());
+
+            textDisplayer.Display("subject/session confirmation", "",
+                $"Running {Config.subject} in session {Config.sessionNum} of {Config.experimentName}." +
+                "\nPress Y to continue, N to quit.");
+            var keyCode = await inputManager.GetKeyTS(new List<KeyCode>() { KeyCode.Y, KeyCode.N });
+
+            SendRamulatorStateMsg(HostPcStateMsg.WAITING(), false);
+
+            if (keyCode == KeyCode.N) {
+                manager.QuitTS();
+            }
+        }
+        protected async Task ConfirmStart() {
+            await textDisplayer.PressAnyKey("confirm start",
+                "Please let the experimenter know if you have any questions about what you just did.\n\n" +
+                "If you think you understand, please explain the task to the experimenter in your own words.\n\n" +
+                "Press any key to continue to the first list.");
         }
     }
-
 }

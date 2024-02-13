@@ -35,7 +35,7 @@ namespace UnityEPL {
 
             if (reportTo) {
                 // TODO: JPB: (needed) (bug) Figure out why DataReporter::OnEnable crashes when I call AddReporterMB
-                //reportTo.AddReporter(this);
+                reportTo.AddReporter(this);
             }
         }
 

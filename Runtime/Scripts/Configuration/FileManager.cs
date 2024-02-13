@@ -23,14 +23,21 @@ namespace UnityEPL {
         public virtual string ExperimentRoot() {
 
 #if UNITY_EDITOR
-            return System.Environment.GetFolderPath(System.Environment.SpecialFolder.Desktop);
+            return Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
 #else
-            return System.IO.Path.GetFullPath(".");
+            return Path.GetFullPath(".");
 #endif
         }
 
+        public string DataPath() {
+            try {
+                return Config.dataPath;
+            } catch {
+                return Path.Combine(ExperimentRoot(), "data");
+            }
+        }
+
         public string ExperimentPath() {
-            string root = ExperimentRoot();
             string experiment;
 
             try {
@@ -40,17 +47,12 @@ namespace UnityEPL {
                 return null;
             }
 
-            string dir = System.IO.Path.Combine(root, "data", experiment);
-            try {
-                return Config.dataPath;
-            } catch {
-                return dir;
-            }
+            return Path.Combine(DataPath(), experiment);
         }
 
         public string ParticipantPath(string participant) {
             string dir = ExperimentPath();
-            dir = System.IO.Path.Combine(dir, participant);
+            dir = Path.Combine(dir, participant);
             return dir;
         }
 
@@ -65,13 +67,13 @@ namespace UnityEPL {
                 return null;
             }
 
-            dir = System.IO.Path.Combine(dir, participant);
+            dir = Path.Combine(dir, participant);
             return dir;
         }
 
         public string SessionPath(string participant, int session) {
             string dir = ParticipantPath(participant);
-            dir = System.IO.Path.Combine(dir, "session_" + session.ToString());
+            dir = Path.Combine(dir, "session_" + session.ToString());
             return dir;
         }
 
@@ -84,7 +86,7 @@ namespace UnityEPL {
             }
 
             string dir = ParticipantPath();
-            dir = System.IO.Path.Combine(dir, "session_" + session);
+            dir = Path.Combine(dir, "session_" + session);
             return dir;
         }
 
@@ -127,13 +129,13 @@ namespace UnityEPL {
 
         public string ConfigPath() {
             string root = ExperimentRoot();
-            return System.IO.Path.Combine(root, "configs");
+            return Path.Combine(root, "configs");
         }
 
         public int CurrentSession(string participant) {
             int nextSessionNumber = 0;
             Debug.Log(SessionPath(participant, nextSessionNumber));
-            while (System.IO.Directory.Exists(SessionPath(participant, nextSessionNumber))) {
+            while (Directory.Exists(SessionPath(participant, nextSessionNumber))) {
                 nextSessionNumber++;
             }
             return nextSessionNumber;

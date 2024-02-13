@@ -8,7 +8,9 @@ using UnityEngine;
 namespace UnityEPL {
 
     [AddComponentMenu("UnityEPL/Reporters/Input Reporter")]
-    public class InputReporter : DataReporter<InputReporter> {
+    public class InputReporter : SingletonEventMonoBehaviour<InputReporter> {
+        protected override void AwakeOverride() { }
+
         public bool reportKeyStrokes = true;
         public bool reportMouseClicks = false;
         public bool reportMousePosition = false;
@@ -26,13 +28,11 @@ namespace UnityEPL {
         }
 
         /// <summary>
-        /// Collects the key events.  Except in MacOS, this includes mouse events, which are part of Unity's KeyCode enum.
-        /// 
-        /// On MacOS, UnityEPL uses a native plugin to achieve higher accuracy timestamping.
+        /// Collects the key events.  This includes mouse events, which are part of Unity's KeyCode enum.
         /// </summary>
 
         private void CollectKeyEvents() {
-            foreach (KeyCode keyCode in System.Enum.GetValues(typeof(KeyCode))) {
+            foreach (KeyCode keyCode in Enum.GetValues(typeof(KeyCode))) {
                 if (Input.GetKeyDown(keyCode)) {
                     ReportKey((int)keyCode, true);
                 }
@@ -49,14 +49,14 @@ namespace UnityEPL {
                 { "is pressed", pressed },
             };
             var label = "key/mouse press/release";
-            eventQueue.Enqueue(new DataPoint(label, dataDict));
+            manager.eventReporter.LogTS(label, dataDict);
         }
 
         private void CollectMousePosition() {
             Dictionary<string, object> dataDict = new() {
                 { "position", Input.mousePosition },
             };
-            eventQueue.Enqueue(new DataPoint("mouse position", dataDict));
+            manager.eventReporter.LogTS("mouse position", dataDict);
             lastMousePositionReportFrame = Time.frameCount;
         }
     }

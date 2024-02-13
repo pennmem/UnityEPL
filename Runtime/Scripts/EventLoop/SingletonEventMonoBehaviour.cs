@@ -25,7 +25,7 @@ namespace UnityEPL {
 
         protected new void Awake() {
             if (IsInstatiated) {
-                ErrorNotifier.ErrorTS(new InvalidOperationException($"Cannot create multiple {typeof(SingletonEventMonoBehaviour<T>).Name} Objects"));
+                ErrorNotifier.ErrorTS(new InvalidOperationException($"Cannot create multiple {typeof(T).Name} Objects"));
             }
             IsInstatiated = true;
             _Instance = (T)this;

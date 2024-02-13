@@ -28,9 +28,12 @@ namespace UnityEPL {
             ramulatorInterface.BeginNewTrial(trialNumber);
         }
 
-        public void SendStateMsg(HostPC.StateMsg state, bool stateToggle, Dictionary<string, object> data = null) {
-            data ??= new();
-            ramulatorInterface.SetState(Enum.GetName(typeof(StateMsg), state), stateToggle, data);
+        public void SendStateMsg(HostPcStateMsg state, bool stateToggle, Dictionary<string, object> data = null) {
+            var dict = (data != null) ? new Dictionary<string, object>(data) : new();
+            foreach (var item in state.dict) {
+                dict.Add(item.Key, item.Value);
+            }
+            ramulatorInterface.SetState(state.name, stateToggle, dict);
         }
 
         public void SendMathMsg(string problem, string response, int responseTimeMs, bool correct) {

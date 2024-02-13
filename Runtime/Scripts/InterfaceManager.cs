@@ -389,6 +389,9 @@ namespace UnityEPL {
                 // Create path for current participant/session
                 fileManager.CreateSession();
 
+                // Save Configs
+                Config.SaveConfigs(fileManager.SessionPath());
+
                 // Connect to HostPC
                 if (Config.elememOn) {
                     textDisplayer.Display("Elemem connetion display", "", "Waiting for Elemem connection...");
