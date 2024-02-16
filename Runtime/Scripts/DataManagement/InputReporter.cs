@@ -7,7 +7,6 @@ using UnityEngine;
 
 namespace UnityEPL {
 
-    [AddComponentMenu("UnityEPL/Reporters/Input Reporter")]
     public class InputReporter : SingletonEventMonoBehaviour<InputReporter> {
         protected override void AwakeOverride() { }
 
