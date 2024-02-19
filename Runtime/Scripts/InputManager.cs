@@ -61,7 +61,7 @@ namespace UnityEPL {
         public async Task<KeyCode?> WaitForKeyTS(TimeSpan duration) {
             try {
                 return await GetKeyTS(duration);
-            } catch (TaskCanceledException ex) {
+            } catch (TaskCanceledException) {
                 return null;
             } 
         }
@@ -71,7 +71,7 @@ namespace UnityEPL {
         public async Task<KeyCode?> WaitForKeyTS(List<KeyCode> keyCodes, TimeSpan duration) {
             try {
                 return await GetKeyTS(keyCodes, duration);
-            } catch (TaskCanceledException ex) {
+            } catch (TaskCanceledException) {
                 return null;
             } 
         }

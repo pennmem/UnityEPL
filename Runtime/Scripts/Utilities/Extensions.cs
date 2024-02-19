@@ -1,11 +1,24 @@
 using System;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
 namespace UnityEPL {
+    public static class IEnumerable {
+        // https://stackoverflow.com/a/30758270
+        public static int GetSequenceHashCode<T>(this IEnumerable<T> sequence) {
+            const int seed = 487;
+            const int modifier = 31;
 
+            unchecked {
+                return sequence.Aggregate(seed, (current, item) =>
+                    (current*modifier) + item.GetHashCode());
+            }            
+        }
+    }
+    
     public static class IListExtensions {
         /// <summary>
         /// Knuth (Fisher-Yates) Shuffle
@@ -86,6 +99,17 @@ namespace UnityEPL {
         public static List<T> ShuffleInPlace<T>(this List<T> list) {
             return list.ShuffleInPlace(InterfaceManager.rnd.Value);
         }
+
+        // https://stackoverflow.com/a/30758270
+        public static int GetSequenceHashCode<T>(this IList<T> sequence) {
+            const int seed = 487;
+            const int modifier = 31;
+
+            unchecked {
+                return sequence.Aggregate(seed, (current, item) =>
+                    (current*modifier) + item.GetHashCode());
+            }            
+        }
     }
 
     public static class ArrayExtensions {
@@ -107,6 +131,17 @@ namespace UnityEPL {
         }
         public static T[] ShuffleInPlace<T>(this T[] array) {
             return array.ShuffleInPlace(InterfaceManager.rnd.Value);
+        }
+
+        // https://stackoverflow.com/a/30758270
+        public static int GetSequenceHashCode<T>(this T[] sequence) {
+            const int seed = 487;
+            const int modifier = 31;
+
+            unchecked {
+                return sequence.Aggregate(seed, (current, item) =>
+                    (current*modifier) + item.GetHashCode());
+            }            
         }
     }
 

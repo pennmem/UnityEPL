@@ -113,7 +113,7 @@ namespace UnityEPL {
         protected virtual void SendRamulatorStateMsg(HostPcStateMsg state, bool stateToggle, Dictionary<string, object> extraData = null) {
             // Do nothing by default
         }
-        protected new async Task RepeatUntilYes(Func<Task> func, string description, string displayText) {
+        protected async Task RepeatUntilYes(Func<Task> func, string description, string displayText) {
             var repeat = true;
             while (repeat) {
                 await func();
@@ -125,7 +125,7 @@ namespace UnityEPL {
                 SendRamulatorStateMsg(HostPcStateMsg.WAITING(), false);
             }
         }
-        protected new async Task RepeatUntilNo(Func<Task> func, string description, string displayText) {
+        protected async Task RepeatUntilNo(Func<Task> func, string description, string displayText) {
             var repeat = true;
             while (repeat) {
                 await func();

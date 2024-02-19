@@ -189,6 +189,7 @@ GameObject:
   - component: {fileID: 63690050}
   - component: {fileID: 63690049}
   - component: {fileID: 63690048}
+  - component: {fileID: 63690052}
   m_Layer: 0
   m_Name: DataManager
   m_TagString: Untagged
@@ -220,8 +221,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d324ee2dd470e4bf9afbb7587283b713, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  reportingID: Object ID not set.
-  reportTo: {fileID: 0}
+  manager: {fileID: 0}
+  threadID: 0
+  awakeCompleted: 0
+  outputFormat: 0
+  filePath: 
+  extensionlessFileName: session
+  experimentPathSetup: 0
 --- !u!114 &63690050
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -234,8 +240,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 347798bcaa7664e178d0f0cc4263854d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  reportingID: Object ID not set.
-  reportTo: {fileID: 0}
   reportKeyStrokes: 1
   reportMouseClicks: 0
   reportMousePosition: 0
@@ -255,6 +259,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &63690052
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 63690047}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5034924fb05c54f1bbbd35de5338d8ba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!850595691 &199831267
 LightingSettings:
   m_ObjectHideFlags: 0

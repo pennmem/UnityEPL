@@ -6,6 +6,7 @@ using Unity.Collections;
 using UnityEngine;
 namespace UnityEPL {
 
+    [AddComponentMenu("UnityEPL/Singleton Reporters/Event Reporter")]
     public class EventReporter : DataReporter2<EventReporter> {
 
         // TODO: JPB: (needed) (bug) Make ReportScriptedEvent use a blittable type instead of Dictionary
