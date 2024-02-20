@@ -75,6 +75,7 @@ namespace UnityEPL {
         // FileManager.cs
         public static string dataPath { get { return Config.GetSetting<string>("dataPath"); } }
         public static string wordpool { get { return Config.GetSetting<string>("wordpool"); } }
+        public static string practiceWordpool { get { return Config.GetSetting<string>("practiceWordpool"); } }
         public static string prefix { get { return Config.GetSetting<string>("prefix"); } }
 
         // ExperimentBase.cs

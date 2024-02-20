@@ -115,6 +115,10 @@ namespace UnityEPL {
             string root = ExperimentRoot();
             return Path.Combine(root, Config.wordpool);
         }
+        public string GetPracticeWordList() {
+            string root = ExperimentRoot();
+            return Path.Combine(root, Config.practiceWordpool);
+        }
 
         public void CreateSession() {
             Directory.CreateDirectory(SessionPath());
