@@ -8,15 +8,22 @@ namespace UnityEPL {
 
     [AddComponentMenu("UnityEPL/Singleton Reporters/Event Reporter")]
     public class EventReporter : DataReporter2<EventReporter> {
-
-        // TODO: JPB: (needed) (bug) Make ReportScriptedEvent use a blittable type instead of Dictionary
-        //            Or at least have it use Mutex.
-        //            Even better, just make DataPoint a Native type and then use that
         public void LogTS(string type, Dictionary<string, object> data = null) {
+            manager.hostPC?.SendLogMsgTS(type, data ?? new());
             var time = Clock.UtcNow;
-            LogTS(type, time, data);
+            LogLocalTS(type, time, data);
         }
         public void LogTS(string type, DateTime time, Dictionary<string, object> data = null) {
+            manager?.hostPC.SendLogMsgTS(type, data ?? new());
+            LogLocalTS(type, time, data);
+        }
+
+        // TODO: JPB: (needed) (bug) Make LogLocalTS use a blittable type instead of Dictionary
+        //            Or at least have it use Mutex.
+        //            Even better, just make DataPoint a Native type and then use that
+
+        // Do not use this unless you don't want the message logged to the HostPC or any other location.
+        public void LogLocalTS(string type, DateTime time, Dictionary<string, object> data = null) {
             DoTS(() => {
                 LogHelper(type.ToNativeText(), time, data);
             });

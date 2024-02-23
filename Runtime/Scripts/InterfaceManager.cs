@@ -133,7 +133,7 @@ namespace UnityEPL {
                 eventsPerFrame = Config.eventsPerFrame ?? 5;
 
                 // Setup Syncbox Interface
-                if (!Config.isTest && !Config.noSyncbox) {
+                if (!Config.isTest && Config.syncboxOn) {
                     syncBox.Init();
                 }
 

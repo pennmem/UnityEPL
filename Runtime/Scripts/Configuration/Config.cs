@@ -34,7 +34,7 @@ namespace UnityEPL {
         public static int niclServerPort { get { return Config.GetSetting<int>("niclServerPort"); } }
 
         // Hardware
-        public static bool noSyncbox { get { return Config.GetSetting<bool>("noSyncbox"); } }
+        public static bool syncboxOn { get { return Config.GetSetting<bool>("syncboxOn"); } }
         public static bool ps4Controller { get { return Config.GetSetting<bool>("ps4Contoller"); } }
 
         // Programmer Conveniences

@@ -20,7 +20,7 @@ namespace UnityEPL {
 
             Dictionary<string, object> configDict = new() {
                 { "stim_mode", Config.stimMode },
-                { "experiment", Config.experimentName },
+                { "experiment", Config.experimentName + Config.stimMode },
                 { "subject", Config.subject },
                 { "session", Config.sessionNum },
             };
