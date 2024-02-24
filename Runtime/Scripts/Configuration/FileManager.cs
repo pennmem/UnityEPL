@@ -130,6 +130,9 @@ namespace UnityEPL {
         public void CreateExperiment() {
             Directory.CreateDirectory(ExperimentPath());
         }
+        public void CreateDataFolder() {
+            Directory.CreateDirectory(DataPath());
+        }
 
         public string ConfigPath() {
             string root = ExperimentRoot();

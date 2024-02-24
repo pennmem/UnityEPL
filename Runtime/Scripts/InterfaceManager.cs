@@ -130,6 +130,8 @@ namespace UnityEPL {
                 // Setup Configs
                 var configs = SetupConfigs();
                 GetExperiments(configs);
+                fileManager.CreateDataFolder();
+
                 eventsPerFrame = Config.eventsPerFrame ?? 5;
 
                 // Setup Syncbox Interface
