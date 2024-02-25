@@ -91,8 +91,11 @@ namespace UnityEPLTests {
             Task.Run(async () => {
                 var el = new EL();
                 var i = await el.GetI();
+                Debug.Log(i);
 
                 el.IncAct();
+                Debug.Log(i);
+                Debug.Log(await el.GetI());
 
                 Assert.AreEqual(i + 1, await el.GetI());
             }).Wait();
@@ -301,9 +304,11 @@ namespace UnityEPLTests {
         }
 
         public void IncAct() {
+            Debug.Log("IncAct");
             DoTS(IncActHelper);
         }
         protected void IncActHelper() {
+            Debug.Log("IncActHelper");
             i += 1;
         }
 

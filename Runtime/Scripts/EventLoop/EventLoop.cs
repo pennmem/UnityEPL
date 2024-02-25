@@ -79,11 +79,11 @@ namespace UnityEPL {
         //            This may also currently requires Roslyn https://forum.unity.com/threads/released-roslyn-c-runtime-c-compiler.651505/
         //            Intro to Source Generators: https://devblogs.microsoft.com/dotnet/introducing-c-source-generators/
 
-        protected void DoTS(Action func) {
+        protected async void DoTS(Action func) {
             if (cts.IsCancellationRequested) {
                 throw new OperationCanceledException("EventLoop has been stopped already.");
             }
-            StartTask(func);
+            await StartTask(func);
         }
         protected void DoTS<T>(Action<T> func, T t)
                 where T : struct {
@@ -112,12 +112,12 @@ namespace UnityEPL {
             DoTS(() => { func(t, u, v, w); });
         }
 
-        protected void DoTS(Func<Task> func) {
+        protected async void DoTS(Func<Task> func) {
             if (cts.IsCancellationRequested) {
                 throw new OperationCanceledException("EventLoop has been stopped already.");
             }
 
-            var t = StartTask(func);
+            var t = await StartTask(func);
             //Debug.Log($"Starting Do: {t.Id}");
             //StartTask(func);
         }
@@ -432,37 +432,37 @@ namespace UnityEPL {
 
         // DoWaitFor
 
-        protected Task DoWaitForTS(Action func) {
+        protected async Task DoWaitForTS(Action func) {
             if (cts.IsCancellationRequested) {
                 throw new OperationCanceledException("EventLoop has been stopped already.");
             }
-            return StartTask(func);
+            await StartTask(func);
         }
-        protected Task DoWaitForTS<T>(Action<T> func, T t)
+        protected async Task DoWaitForTS<T>(Action<T> func, T t)
                 where T : struct {
             AssertBlittable<T>();
-            return DoWaitForTS(() => { func(t); });
+            await DoWaitForTS(() => { func(t); });
         }
-        protected Task DoWaitForTS<T, U>(Action<T, U> func, T t, U u)
+        protected async Task DoWaitForTS<T, U>(Action<T, U> func, T t, U u)
                 where T : struct
                 where U : struct {
             AssertBlittable<T, U>();
-            return DoWaitForTS(() => { func(t, u); });
+            await DoWaitForTS(() => { func(t, u); });
         }
-        protected Task DoWaitForTS<T, U, V>(Action<T, U, V> func, T t, U u, V v)
+        protected async Task DoWaitForTS<T, U, V>(Action<T, U, V> func, T t, U u, V v)
                 where T : struct
                 where U : struct
                 where V : struct {
             AssertBlittable<T, U, V>();
-            return DoWaitForTS(() => { func(t, u, v); });
+            await DoWaitForTS(() => { func(t, u, v); });
         }
-        protected Task DoWaitForTS<T, U, V, W>(Action<T, U, V, W> func, T t, U u, V v, W w)
+        protected async Task DoWaitForTS<T, U, V, W>(Action<T, U, V, W> func, T t, U u, V v, W w)
                 where T : struct
                 where U : struct
                 where V : struct
                 where W : struct {
             AssertBlittable<T, U, V, W>();
-            return DoWaitForTS(() => { func(t, u, v, w); });
+            await DoWaitForTS(() => { func(t, u, v, w); });
         }
 
         protected async Task DoWaitForTS(Func<Task> func) {
@@ -471,69 +471,69 @@ namespace UnityEPL {
             }
             await await StartTask(func);
         }
-        protected Task DoWaitForTS<T>(Func<T, Task> func, T t)
+        protected async Task DoWaitForTS<T>(Func<T, Task> func, T t)
                 where T : struct {
             AssertBlittable<T>();
-            return DoWaitForTS(async () => { await func(t); });
+            await DoWaitForTS(async () => { await func(t); });
         }
-        protected Task DoWaitForTS<T, U>(Func<T, U, Task> func, T t, U u)
+        protected async Task DoWaitForTS<T, U>(Func<T, U, Task> func, T t, U u)
                 where T : struct
                 where U : struct {
             AssertBlittable<T, U>();
-            return DoWaitForTS(async () => { await func(t, u); });
+            await DoWaitForTS(async () => { await func(t, u); });
         }
-        protected Task DoWaitForTS<T, U, V>(Func<T, U, V, Task> func, T t, U u, V v)
+        protected async Task DoWaitForTS<T, U, V>(Func<T, U, V, Task> func, T t, U u, V v)
                 where T : struct
                 where U : struct
                 where V : struct {
             AssertBlittable<T, U, V>();
-            return DoWaitForTS(async () => { await func(t, u, v); });
+            await DoWaitForTS(async () => { await func(t, u, v); });
         }
-        protected Task DoWaitForTS<T, U, V, W>(Func<T, U, V, W, Task> func, T t, U u, V v, W w)
+        protected async Task DoWaitForTS<T, U, V, W>(Func<T, U, V, W, Task> func, T t, U u, V v, W w)
                 where T : struct
                 where U : struct
                 where V : struct
                 where W : struct {
             AssertBlittable<T, U, V, W>();
-            return DoWaitForTS(async () => { await func(t, u, v, w); });
+            await DoWaitForTS(async () => { await func(t, u, v, w); });
         }
 
         // DoGet
 
-        protected Task<Z> DoGetTS<Z>(Func<Z> func)
+        protected async Task<Z> DoGetTS<Z>(Func<Z> func)
                 where Z : struct {
             AssertBlittable<Z>();
-            return StartTask<Z>(func);
+            return await StartTask<Z>(func);
         }
-        protected Task<Z> DoGetTS<T, Z>(Func<T, Z> func, T t)
+        protected async Task<Z> DoGetTS<T, Z>(Func<T, Z> func, T t)
                 where T : struct
                 where Z : struct {
             AssertBlittable<T>();
-            return DoGetTS(() => { return func(t); });
+            return await DoGetTS(() => { return func(t); });
         }
-        protected Task<Z> DoGetTS<T, U, Z>(Func<T, U, Z> func, T t, U u)
+        protected async Task<Z> DoGetTS<T, U, Z>(Func<T, U, Z> func, T t, U u)
                 where T : struct
                 where U : struct
                 where Z : struct {
             AssertBlittable<T, U>();
-            return DoGetTS(() => { return func(t, u); });
+            return await DoGetTS(() => { return func(t, u); });
         }
-        protected Task<Z> DoGetTS<T, U, V, Z>(Func<T, U, V, Z> func, T t, U u, V v)
+        protected async Task<Z> DoGetTS<T, U, V, Z>(Func<T, U, V, Z> func, T t, U u, V v)
                 where T : struct
                 where U : struct
                 where V : struct
                 where Z : struct {
             AssertBlittable<T, U, V>();
-            return DoGetTS(() => { return func(t, u, v); });
+            return await DoGetTS(() => { return func(t, u, v); });
         }
-        protected Task<Z> DoGetTS<T, U, V, W, Z>(Func<T, U, V, W, Z> func, T t, U u, V v, W w)
+        protected async Task<Z> DoGetTS<T, U, V, W, Z>(Func<T, U, V, W, Z> func, T t, U u, V v, W w)
                 where T : struct
                 where U : struct
                 where V : struct
                 where W : struct
                 where Z : struct {
             AssertBlittable<T, U, V, W>();
-            return DoGetTS(() => { return func(t, u, v, w); });
+            return await DoGetTS(() => { return func(t, u, v, w); });
         }
 
         protected async Task<Z> DoGetTS<Z>(Func<Task<Z>> func)
@@ -541,35 +541,35 @@ namespace UnityEPL {
             AssertBlittable<Z>();
             return await await StartTask(func);
         }
-        protected Task<Z> DoGetTS<T, Z>(Func<T, Task<Z>> func, T t)
+        protected async Task<Z> DoGetTS<T, Z>(Func<T, Task<Z>> func, T t)
                 where T : struct
                 where Z : struct {
             AssertBlittable<T>();
-            return DoGetTS(async () => { return await func(t); });
+            return await DoGetTS(async () => { return await func(t); });
         }
-        protected Task<Z> DoGetTS<T, U, Z>(Func<T, U, Task<Z>> func, T t, U u)
+        protected async Task<Z> DoGetTS<T, U, Z>(Func<T, U, Task<Z>> func, T t, U u)
                 where T : struct
                 where U : struct
                 where Z : struct {
             AssertBlittable<T, U>();
-            return DoGetTS(async () => { return await func(t, u); });
+            return await DoGetTS(async () => { return await func(t, u); });
         }
-        protected Task<Z> DoGetTS<T, U, V, Z>(Func<T, U, V, Task<Z>> func, T t, U u, V v)
+        protected async Task<Z> DoGetTS<T, U, V, Z>(Func<T, U, V, Task<Z>> func, T t, U u, V v)
                 where T : struct
                 where U : struct
                 where V : struct
                 where Z : struct {
             AssertBlittable<T, U, V>();
-            return DoGetTS(async () => { return await func(t, u, v); });
+            return await DoGetTS(async () => { return await func(t, u, v); });
         }
-        protected Task<Z> DoGetTS<T, U, V, W, Z>(Func<T, U, V, W, Task<Z>> func, T t, U u, V v, W w)
+        protected async Task<Z> DoGetTS<T, U, V, W, Z>(Func<T, U, V, W, Task<Z>> func, T t, U u, V v, W w)
                 where T : struct
                 where U : struct
                 where V : struct
                 where W : struct
                 where Z : struct {
             AssertBlittable<T, U, V, W>();
-            return DoGetTS(async () => { return await func(t, u, v, w); });
+            return await DoGetTS(async () => { return await func(t, u, v, w); });
         }
 
 
@@ -578,21 +578,21 @@ namespace UnityEPL {
         // TODO: JPB: (needed) Figure out how to handle non-blittable return types in DoGet
         //            And add tests for these
 
-        protected Task<Z> DoGetRelaxedTS<Z>(Func<Z> func) {
-            return StartTask<Z>(func);
+        protected async Task<Z> DoGetRelaxedTS<Z>(Func<Z> func) {
+            return await StartTask<Z>(func);
         }
-        protected Task<Z> DoGetRelaxedTS<T, Z>(Func<T, Z> func, T t)
+        protected async Task<Z> DoGetRelaxedTS<T, Z>(Func<T, Z> func, T t)
                 where T : struct {
-            return DoGetRelaxedTS(() => { return func(t); });
+            return await DoGetRelaxedTS(() => { return func(t); });
         }
 
         protected async Task<Z> DoGetRelaxedTS<Z>(Func<Task<Z>> func) {
             return await await StartTask(func);
         }
-        protected Task<Z> DoGetRelaxedTS<T, Z>(Func<T, Task<Z>> func, T t)
+        protected async Task<Z> DoGetRelaxedTS<T, Z>(Func<T, Task<Z>> func, T t)
                 where T : struct {
             AssertBlittable<T>();
-            return DoGetRelaxedTS(async () => { return await func(t); });
+            return await DoGetRelaxedTS(async () => { return await func(t); });
         }
 
 
@@ -604,7 +604,6 @@ namespace UnityEPL {
                     func();
                 } catch (Exception e) {
                     ErrorNotifier.ErrorTS(e);
-                    throw e;
                 }
             };
         }
@@ -614,7 +613,6 @@ namespace UnityEPL {
                     await func();
                 } catch (Exception e) {
                     ErrorNotifier.ErrorTS(e);
-                    throw e;
                 }
             };
         }
@@ -625,7 +623,7 @@ namespace UnityEPL {
                     return ret;
                 } catch (Exception e) {
                     ErrorNotifier.ErrorTS(e);
-                    throw e;
+                    throw e; // never called
                 }
             };
         }
@@ -636,14 +634,14 @@ namespace UnityEPL {
                     return ret;
                 } catch (Exception e) {
                     ErrorNotifier.ErrorTS(e);
-                    throw e;
+                    throw e; // never called
                 }
             };
         }
 
 #if !UNITY_WEBGL && !UNITY_EDITOR // System.Threading
-        private Task StartTask(Action func) {
-            return Task.Factory.StartNew(TaskErrorHandler(func), cts.Token, TaskCreationOptions.DenyChildAttach, scheduler);
+        private async Task StartTask(Action func) {
+            return await Task.Factory.StartNew(TaskErrorHandler(func), cts.Token, TaskCreationOptions.DenyChildAttach, scheduler);
         }
         //private Task<Task> StartTask(Func<Task> func) {
         //    return Task.Factory.StartNew(TaskErrorHandler(func), cts.Token, TaskCreationOptions.DenyChildAttach, scheduler);
@@ -651,12 +649,12 @@ namespace UnityEPL {
         //private Task<Task<Z>> StartTask<Z>(Func<Task<Z>> func) {
         //    return Task.Factory.StartNew(TaskErrorHandler(func), cts.Token, TaskCreationOptions.DenyChildAttach, scheduler);
         //}
-        private Task<Z> StartTask<Z>(Func<Z> func) {
-            return Task.Factory.StartNew(TaskErrorHandler(func), cts.Token, TaskCreationOptions.DenyChildAttach, scheduler);
+        private async Task<Z> StartTask<Z>(Func<Z> func) {
+            return await Task.Factory.StartNew(TaskErrorHandler(func), cts.Token, TaskCreationOptions.DenyChildAttach, scheduler);
         }
 #else
-        private Task StartTask(Action func) {
-            return Task.Factory.StartNew(TaskErrorHandler(func), cts.Token, TaskCreationOptions.DenyChildAttach, scheduler);
+        private async Task StartTask(Action func) {
+            await Task.Factory.StartNew(TaskErrorHandler(func), cts.Token, TaskCreationOptions.DenyChildAttach, scheduler);
         }
         //private Task<Task> StartTask(Func<Task> func) {
         //    return Task.Factory.StartNew(TaskErrorHandler(func), cts.Token);
@@ -664,8 +662,8 @@ namespace UnityEPL {
         //private Task<Task<Z>> StartTask<Z>(Func<Task<Z>> func) {
         //    return Task.Factory.StartNew(TaskErrorHandler(func), cts.Token);
         //}
-        private Task<Z> StartTask<Z>(Func<Z> func) {
-            return Task.Factory.StartNew(TaskErrorHandler(func), cts.Token, TaskCreationOptions.DenyChildAttach, scheduler);
+        private async Task<Z> StartTask<Z>(Func<Z> func) {
+            return await Task.Factory.StartNew(TaskErrorHandler(func), cts.Token, TaskCreationOptions.DenyChildAttach, scheduler);
         }
 #endif
 

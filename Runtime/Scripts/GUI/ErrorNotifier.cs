@@ -11,20 +11,12 @@ namespace UnityEPL {
         }
 
         public static void ErrorTS(Exception exception) {
-            if (exception.StackTrace == null) {
-                try { // This is used to get the stack trace
-                    throw exception;
-                } catch (Exception e) {
-                    exception = e;
-                }
-            }
-
             if (!IsInstatiated) {
                 throw new Exception("THIS SHOULD NOT HAPPEN! ErrorNotifier was accessed before it's awake method has been called.", exception);
             }
 
             Instance.DoTS(() => { Instance.ErrorHelper(new Mutex<Exception>(exception)); });
-            throw exception;
+            throw new Exception("ErrorNotifier", exception);
         }
         protected void ErrorHelper(Mutex<Exception> exception) {
             try {
@@ -34,7 +26,7 @@ namespace UnityEPL {
                     gameObject.SetActive(true);
                     var msg = e.Message == "" ? e.GetType().Name : e.Message;
                     TextDisplayer.Instance.Display("Error", "<color=red><b>Error</b></color>", msg);
-                    Debug.Log($"Warning: {msg}\n{e.StackTrace}");
+                    Debug.Log($"Error: {msg}\n{e.StackTrace}");
                 }
                 manager.eventReporter.LogTS("Error", new() {
                     { "message", e.Message },

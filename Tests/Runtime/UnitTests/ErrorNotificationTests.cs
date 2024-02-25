@@ -46,11 +46,11 @@ namespace UnityEPLTests {
             });
 
             yield return null; // Wait for next frame
-            var actualText = ErrorNotifier.Instance.transform
+            var actualText = TextDisplayer.Instance.transform
                 .Find("Black Background").Find("Stimulus")
                 .GetComponent<Text>().text;
             Assert.AreEqual(inputText, actualText);
-            Assert.IsTrue(ErrorNotifier.Instance.isActiveAndEnabled);
+            Assert.IsTrue(TextDisplayer.Instance.isActiveAndEnabled);
         }
 
         [UnityTest]
@@ -60,11 +60,11 @@ namespace UnityEPLTests {
             ErrorNotifier.WarningTS(new Exception(inputText));
 
             yield return null; // Wait for next frame
-            var actualText = ErrorNotifier.Instance.transform
+            var actualText = TextDisplayer.Instance.transform
                 .Find("Black Background").Find("Stimulus")
                 .GetComponent<Text>().text;
             Assert.AreEqual(inputText, actualText);
-            Assert.IsTrue(ErrorNotifier.Instance.isActiveAndEnabled);
+            Assert.IsTrue(TextDisplayer.Instance.isActiveAndEnabled);
         }
 
     }

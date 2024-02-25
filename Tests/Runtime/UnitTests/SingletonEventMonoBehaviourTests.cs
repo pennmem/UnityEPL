@@ -36,20 +36,22 @@ namespace UnityEPLTests {
         // General Tests
         // -------------------------------------
 
-        [Test]
-        public void Creation() {
+        [UnityTest]
+        public IEnumerator Creation() {
             var semb = new GameObject().AddComponent<SEMB>();
             Assert.AreNotEqual(null, semb);
             GameObject.Destroy(semb);
+
+            yield break;
         }
 
         [UnityTest]
         public IEnumerator Singleton() {
-            var semb = new GameObject().AddComponent<SEMB>();
+            var semb = new GameObject().AddComponent<SEMB2>();
             Assert.AreNotEqual(null, semb);
 
             LogAssert.Expect(LogType.Exception, new Regex("InvalidOperationException: .*"));
-            var failing = new GameObject().AddComponent<SEMB>();
+            var failing = new GameObject().AddComponent<SEMB2>();
 
             GameObject.Destroy(semb);
             GameObject.Destroy(failing);
@@ -58,6 +60,10 @@ namespace UnityEPLTests {
         }
 
         class SEMB : SingletonEventMonoBehaviour<SEMB> {
+            protected override void AwakeOverride() { }
+        }
+
+        class SEMB2 : SingletonEventMonoBehaviour<SEMB2> {
             protected override void AwakeOverride() { }
         }
 

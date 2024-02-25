@@ -99,14 +99,15 @@ namespace UnityEPLTests {
             var thread = new Thread(() => {
                 try {
                     emb.GetMutexValFuncMB();
-                } catch (InvalidOperationException e) {
+                } catch (Exception e) {
                     exception = e;
                 }
             });
             thread.Start();
             thread.Join();
 
-            Assert.IsInstanceOf<InvalidOperationException>(exception);
+            Assert.IsInstanceOf<Exception>(exception);
+            Assert.IsInstanceOf<InvalidOperationException>(exception.InnerException);
 
             yield break;
         }
@@ -135,14 +136,15 @@ namespace UnityEPLTests {
             var thread = new Thread(async () => {
                 try {
                     await emb.GetMutexValTaskMB();
-                } catch (InvalidOperationException e) {
+                } catch (Exception e) {
                     exception = e;
                 }
             });
             thread.Start();
             thread.Join();
 
-            Assert.IsInstanceOf<InvalidOperationException>(exception);
+            Assert.IsInstanceOf<Exception>(exception);
+            Assert.IsInstanceOf<InvalidOperationException>(exception.InnerException);
 
             yield break;
         }
@@ -277,14 +279,15 @@ namespace UnityEPLTests {
             var thread = new Thread(() => {
                 try {
                     emb.IncActMB();
-                } catch (InvalidOperationException e) {
+                } catch (Exception e) {
                     exception = e;
                 }
             });
             thread.Start();
             thread.Join();
 
-            Assert.IsInstanceOf<InvalidOperationException>(exception);
+            Assert.IsInstanceOf<Exception>(exception);
+            Assert.IsInstanceOf<InvalidOperationException>(exception.InnerException);
 
             yield break;
         }
@@ -335,14 +338,15 @@ namespace UnityEPLTests {
                     enumerator.MoveNext();
                     enumerator = (IEnumerator)enumerator.Current;
                     while (enumerator.MoveNext()) ;
-                } catch (InvalidOperationException e) {
+                } catch (Exception e) {
                     exception = e;
                 }
             });
             thread.Start();
             thread.Join();
 
-            Assert.IsInstanceOf<InvalidOperationException>(exception);
+            Assert.IsInstanceOf<Exception>(exception);
+            Assert.IsInstanceOf<InvalidOperationException>(exception.InnerException);
 
             yield break;
         }
@@ -390,14 +394,15 @@ namespace UnityEPLTests {
             var thread = new Thread(() => {
                 try {
                     emb.IncThreeTimesActMB(500, 1000, 3);
-                } catch (InvalidOperationException e) {
+                } catch (Exception e) {
                     exception = e;
                 }
             });
             thread.Start();
             thread.Join();
 
-            Assert.IsInstanceOf<InvalidOperationException>(exception);
+            Assert.IsInstanceOf<Exception>(exception);
+            Assert.IsInstanceOf<InvalidOperationException>(exception.InnerException);
 
             yield break;
         }
@@ -424,14 +429,15 @@ namespace UnityEPLTests {
                     enumerator.MoveNext();
                     enumerator = (IEnumerator)enumerator.Current;
                     while (enumerator.MoveNext()) ;
-                } catch (InvalidOperationException e) {
+                } catch (Exception e) {
                     exception = e;
                 }
             });
             thread.Start();
             thread.Join();
 
-            Assert.IsInstanceOf<InvalidOperationException>(exception);
+            Assert.IsInstanceOf<Exception>(exception);
+            Assert.IsInstanceOf<InvalidOperationException>(exception.InnerException);
 
             yield break;
         }
@@ -464,7 +470,8 @@ namespace UnityEPLTests {
             thread.Start();
             thread.Join();
 
-            Assert.IsInstanceOf<InvalidOperationException>(exception);
+            Assert.IsInstanceOf<Exception>(exception);
+            Assert.IsInstanceOf<InvalidOperationException>(exception.InnerException);
 
             yield break;
         }

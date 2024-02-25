@@ -62,7 +62,9 @@ namespace UnityEPL {
             if (tcpClient?.Connected ?? false) {
                 stopListening = true;
                 stream.Close();
+                stream = null;
                 tcpClient.Close();
+                tcpClient = null;
             }
         }
 
@@ -130,6 +132,9 @@ namespace UnityEPL {
             return DoGetRelaxedTS(ReceiveJsonHelper, type.ToNativeText());
         }
         private Task<JObject> ReceiveJsonHelper(NativeText type) {
+            if (tcpClient == null || stream == null) { 
+                throw new Exception($"Tried to receive {this.GetType().Name} network message \"{type}\" before connecting.");
+            }
             TaskCompletionSource<JObject> tcs = new();
             receiveRequests.Add((type.ToString(), tcs));
             var timeoutMessage = $"{this.GetType().Name} didn't receive message after waiting {receiveTimeoutMs}ms";
@@ -138,13 +143,16 @@ namespace UnityEPL {
         }
 
         // TODO: JPB: (needed) Make NetworkInterface::Send use Mutex
-        protected virtual Task SendTS(string type, Dictionary<string, object> data = null) {
-            return SendJsonTS(type, data);
+        protected virtual async Task SendTS(string type, Dictionary<string, object> data = null) {
+            await SendJsonTS(type, data);
         }
-        protected Task SendJsonTS(string type, Dictionary<string, object> data = null) {
-            return DoWaitForTS(() => { SendJsonHelper(type, data); });
+        protected async Task SendJsonTS(string type, Dictionary<string, object> data = null) {
+            await DoWaitForTS(() => { SendJsonHelper(type, data); });
         }
         private Task SendJsonHelper(string type, Dictionary<string, object> data = null) {
+            // if (tcpClient == null || stream == null) { 
+            //     throw new Exception($"Tried to send {this.GetType().Name} network message \"{type}\" before connecting.");
+            // }
             DataPoint point = new DataPoint(type, data);
             string message = point.ToJSON();
 
