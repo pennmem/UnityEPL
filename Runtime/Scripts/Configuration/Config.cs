@@ -80,7 +80,8 @@ namespace UnityEPL {
         public static string prefix { get { return Config.GetSetting<string>("prefix"); } }
 
         // ExperimentBase.cs
-        // none
+        
+        public static bool quitAnytime { get { return Config.GetSetting<bool>("quitAnytime"); } }
 
         // ElememInterface.cs
         public static string stimMode { get { return Config.GetSetting<string>("stimMode"); } }

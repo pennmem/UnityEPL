@@ -14,11 +14,13 @@ namespace UnityEPL {
             public TaskCompletionSource<KeyCode> tcs;
             public List<KeyCode> keyCodes;
             public Timer timer;
+            public bool unpausable;
 
-            public KeyRequest(TaskCompletionSource<KeyCode> tcs, List<KeyCode> keyCodes, TimeSpan timeout) {
+            public KeyRequest(TaskCompletionSource<KeyCode> tcs, List<KeyCode> keyCodes, TimeSpan timeout, bool unpausable) {
                 this.tcs = tcs;
                 this.keyCodes = keyCodes;
                 this.timer = new Timer(timeout);
+                this.unpausable = unpausable;
             }
         }
 
@@ -45,7 +47,8 @@ namespace UnityEPL {
                     node = tempKeyRequests.First;
                     while (node != null) {
                         var keyReq = node.Value;
-                        if (keyReq.keyCodes.Count == 0 || keyReq.keyCodes.Exists(x => x == vKey)) {
+                        if ((keyReq.unpausable || Time.timeScale != 0) &&
+                            (keyReq.keyCodes.Count == 0 || keyReq.keyCodes.Exists(x => x == vKey))) {
                             keyReq.tcs.SetResult(vKey);
                             tempKeyRequests.Remove(node);
                         }
@@ -55,8 +58,8 @@ namespace UnityEPL {
             }
         }
 
-        public Task<KeyCode> WaitForKeyTS() {
-            return GetKeyTS(null);
+        public async Task<KeyCode> WaitForKeyTS() {
+            return await GetKeyTS(null, false);
         }
         public async Task<KeyCode?> WaitForKeyTS(TimeSpan duration) {
             try {
@@ -65,8 +68,8 @@ namespace UnityEPL {
                 return null;
             } 
         }
-        public Task<KeyCode> WaitForKeyTS(List<KeyCode> keyCodes) {
-            return GetKeyTS(keyCodes);
+        public async Task<KeyCode> WaitForKeyTS(List<KeyCode> keyCodes) {
+            return await GetKeyTS(keyCodes);
         }
         public async Task<KeyCode?> WaitForKeyTS(List<KeyCode> keyCodes, TimeSpan duration) {
             try {
@@ -77,16 +80,16 @@ namespace UnityEPL {
         }
 
         // TODO: JPB: (refactor) Make GetKeyTS protected (only use WaitForKeyTS)
-        public Task<KeyCode> GetKeyTS(TimeSpan? duration = null) {
+        public async Task<KeyCode> GetKeyTS(TimeSpan? duration = null, bool unpausable = false) {
             TimeSpan dur = duration ?? DateTime.MaxValue - Clock.UtcNow - TimeSpan.FromDays(1);
-            return DoGetManualTriggerTS<NativeArray<KeyCode>, TimeSpan, KeyCode>(GetKeyHelper, new(), dur);
+            return await DoGetManualTriggerTS<NativeArray<KeyCode>, TimeSpan, Bool, KeyCode>(GetKeyHelper, new(), dur, unpausable);
         }
-        public Task<KeyCode> GetKeyTS(List<KeyCode> keyCodes, TimeSpan? duration = null) {
+        public async Task<KeyCode> GetKeyTS(List<KeyCode> keyCodes, TimeSpan? duration = null, bool unpausable = false) {
             TimeSpan dur = duration ?? DateTime.MaxValue - Clock.UtcNow - TimeSpan.FromDays(1);
             var nativeKeyCodes = keyCodes.ToNativeArray(AllocatorManager.Persistent);
-            return DoGetManualTriggerTS<NativeArray<KeyCode>, TimeSpan, KeyCode>(GetKeyHelper, nativeKeyCodes, dur);
+            return await DoGetManualTriggerTS<NativeArray<KeyCode>, TimeSpan, Bool, KeyCode>(GetKeyHelper, nativeKeyCodes, dur, unpausable);
         }
-        protected IEnumerator GetKeyHelper(TaskCompletionSource<KeyCode> tcs, NativeArray<KeyCode> keyCodes, TimeSpan duration) {
+        protected IEnumerator GetKeyHelper(TaskCompletionSource<KeyCode> tcs, NativeArray<KeyCode> keyCodes, TimeSpan duration, Bool unpausable) {
             var keyCodesList = keyCodes.ToList();
             foreach (KeyCode vKey in System.Enum.GetValues(typeof(KeyCode))) {
                 if (Input.GetKeyDown(vKey) && (keyCodesList.Count == 0 || keyCodesList.Exists(x => x == vKey))) {
@@ -94,7 +97,7 @@ namespace UnityEPL {
                     yield break;
                 }
             }
-            tempKeyRequests.AddLast(new KeyRequest(tcs, keyCodesList, duration));
+            tempKeyRequests.AddLast(new KeyRequest(tcs, keyCodesList, duration, unpausable));
         }
     }
 

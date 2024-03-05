@@ -75,6 +75,7 @@ namespace UnityEPL {
             await DoWaitFor(RunHelper);
         }
         protected async Task RunHelper() {
+            DoTS(ExperimentQuit);
             await PreTrialStates();
             inPracticeTrials = true;
             while (!endPracticeTrials) {
@@ -102,6 +103,27 @@ namespace UnityEPL {
             };
 
             eventReporter.LogTS("session start", versionsData);
+        }
+
+        protected async void ExperimentQuit() {
+            var quitKeyCode = KeyCode.N;
+            if (Config.quitAnytime) {
+                while (quitKeyCode == KeyCode.N) {
+                    await inputManager.GetKeyTS(new List<KeyCode>() { KeyCode.Q });
+                    manager.PauseTS(true);
+                    var titleOld = textDisplayer.titleElement.text;
+                    var textOld = textDisplayer.textElement.text;
+                    textDisplayer.Display("Experiment quit", "",
+                        $"Do you want to quit" +
+                        "\nPress Y to Quit, N to Resume.");
+                    quitKeyCode = await inputManager.GetKeyTS(new List<KeyCode>() { KeyCode.Y, KeyCode.N }, unpausable: true);
+                    textDisplayer.titleElement.text = titleOld;
+                    textDisplayer.textElement.text = textOld;
+                    manager.PauseTS(false);
+                }
+                UnityEngine.Debug.Log("QUITTING!");
+                manager.QuitTS();
+            }
         }
 
         // Wrapper/Replacement Functions

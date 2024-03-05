@@ -44,6 +44,7 @@ namespace UnityEPL {
         // ???
         //////////
         public FileManager fileManager;
+        protected float pausedTimescale;
 
         //////////
         // Devices that can be accessed by managed
@@ -126,6 +127,9 @@ namespace UnityEPL {
                 eventReporter = EventReporter.Instance;
                 inputReporter = InputReporter.Instance;
                 //uiReporter = UIDataReporter.Instance;
+
+                // Setup Pausing
+                pausedTimescale = Time.timeScale;
 
                 // Setup Configs
                 var configs = SetupConfigs();
@@ -349,8 +353,12 @@ namespace UnityEPL {
         }
         protected void PauseHelper(Bool pause) {
             // TODO: JPB: (needed) Implement pause functionality correctly
-            if (pause) Time.timeScale = 0;
-            else Time.timeScale = 1;
+            if (pause) {
+                pausedTimescale = Time.timeScale;
+                Time.timeScale = 0;
+            } else {
+                Time.timeScale = pausedTimescale;
+            }
         }
 
         public void QuitTS() {
