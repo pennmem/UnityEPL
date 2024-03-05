@@ -25,9 +25,10 @@ namespace UnityEPL {
         public static string experimentConfigName = null;
 
         // System Settings
+        public static bool logNetworkMessages { get { return Config.GetSetting<bool>("logNetworkMessages"); } }
         public static bool elememOn { get { return Config.GetSetting<bool>("elememOn"); } }
-        public static string elememServerIP { get { return Config.GetSetting<string>("elememServerIP"); } }
-        public static int elememServerPort { get { return Config.GetSetting<int>("elememServerPort"); } }
+        public static string hostServerIP { get { return Config.GetSetting<string>("hostServerIP"); } }
+        public static int hostServerPort { get { return Config.GetSetting<int>("hostServerPort"); } }
         public static int elememHeartbeatInterval { get { return Config.GetSetting<int>("elememHeartbeatInterval"); } }
         public static bool ramulatorOn { get { return Config.GetSetting<bool>("ramulatorOn"); } }
         public static string niclServerIP { get { return Config.GetSetting<string>("niclServerIP"); } }
@@ -38,14 +39,14 @@ namespace UnityEPL {
         public static bool ps4Controller { get { return Config.GetSetting<bool>("ps4Contoller"); } }
 
         // Programmer Conveniences
-        public static bool lessTrials { get { return (bool)Config.GetSetting<bool>("lessTrials"); } }
+        public static bool lessTrials { get { return Config.GetSetting<bool>("lessTrials"); } }
         public static bool showFps { get { return Config.GetSetting<bool>("showFps"); } }
 
         // Game Section Skips
-        //public static bool skipIntros { get { return (bool)Config.GetSetting("skipIntros"); } }
-        //public static bool skipTownLearning { get { return (bool)Config.GetSetting("skipTownLearning"); } }
-        //public static bool skipNewEfrKeypressCheck { get { return (bool)Config.GetSetting("skipNewEfrKeypressCheck"); } }
-        //public static bool skipNewEfrKeypressPractice { get { return (bool)Config.GetSetting("skipNewEfrKeypressPractice"); } }
+        //public static bool skipIntros { get { return Config.GetSetting<bool>("skipIntros"); } }
+        //public static bool skipTownLearning { get { return Config.GetSetting<bool>("skipTownLearning"); } }
+        //public static bool skipNewEfrKeypressCheck { get { return Config.GetSetting<bool>("skipNewEfrKeypressCheck"); } }
+        //public static bool skipNewEfrKeypressPractice { get { return Config.GetSetting<bool>("skipNewEfrKeypressPractice"); } }
 
         // Local variables
         public static string subject {

@@ -11,15 +11,26 @@ namespace UnityEPL {
     public class ElememInterface : HostPC {
         public ElememInterface() { }
 
-        public override Task ConfigureTS() {
-            return DoWaitForTS(ConfigureHelper);
+        public override async Task ConnectTS() {
+            await ConnectTS(Config.hostServerIP, Config.hostServerPort);
+        }
+
+        public override async Task ConfigureTS() {
+            await DoWaitForTS(ConfigureHelper);
         }
         protected async Task ConfigureHelper() {
             // Configure Elemem
             await SendAndReceiveTS("CONNECTED", "CONNECTED_OK");
 
+            string stimMode = Config.stimMode switch {
+                "ReadOnly" => "none",
+                "OpenLoop" => "open",
+                "ClosedLoop" => "closed",
+                _ => "ERROR"
+            };
+
             Dictionary<string, object> configDict = new() {
-                { "stim_mode", Config.stimMode },
+                { "stim_mode", stimMode },
                 { "experiment", Config.experimentName + Config.stimMode },
                 { "subject", Config.subject },
                 { "session", Config.sessionNum },
@@ -55,8 +66,8 @@ namespace UnityEPL {
 
         protected readonly static double maxSingleTimeMs = 20;
         protected readonly static double meanSingleTimeMs = 5;
-        protected override Task DoLatencyCheckTS() {
-            return DoWaitForTS(DoLatencyCheckHelper);
+        protected override async Task DoLatencyCheckTS() {
+            await DoWaitForTS(DoLatencyCheckHelper);
         }
         protected async Task DoLatencyCheckHelper() {
             DateTime startTime;
@@ -95,82 +106,100 @@ namespace UnityEPL {
             UnityEngine.Debug.Log(string.Join(Environment.NewLine, dict));
         }
 
+        protected override async Task SendTS(string type, Dictionary<string, object> data = null) {
+            await base.SendTS(type, data);
+        }
+
         protected override async Task<JObject> ReceiveTS(string type) {
+            // Task norm = ReceiveJsonTS(type);
+            // Task error = ReceiveJsonTS("ERROR");
+            // var json = await await Task.WhenAny(task, timeoutTask);
+
             var json = await ReceiveJsonTS(type);
             var msgType = json.GetValue("type").Value<string>();
+
             if (msgType == "EXIT") {
                 DisconnectTS();
                 throw new InvalidOperationException("Elemem exited and ended it's connection");
+            } else if (msgType.Contains("ERROR")) {
+                throw new InvalidOperationException($"Error received from {this.GetType().Name} is {msgType}: {json.GetValue("data")}");
             }
             return json;
         }
 
-        public override Task SendMathMsgTS(string problem, string response, int responseTimeMs, bool correct) {
+        public override async Task SendMathMsgTS(string problem, string response, int responseTimeMs, bool correct) {
             Dictionary<string, object> data = new() {
                 { "problem", problem },
                 { "response", response },
                 { "response_time_ms", responseTimeMs },
                 { "correct", correct },
             };
-            return SendTS("MATH", data);
+            await SendTS("MATH", data);
         }
 
-        public override Task SendStimSelectMsgTS(string tag) {
+        public override async Task SendStimSelectMsgTS(string tag) {
             Dictionary<string, object> data = new() {
                 { "stimtag", tag },
             };
-            return SendTS("STIMSELECT", data);
+            await SendTS("STIMSELECT", data);
         }
 
-        public override Task SendStimMsgTS() {
-            return SendTS("STIM");
+        public override async Task SendStimMsgTS() {
+            UnityEngine.Debug.Log("Sending STIM");
+            await SendTS("STIM");
         }
 
-        public override Task SendCLMsgTS(HostPcClMsg type) {
-            return SendTS(type.name, type.dict);
+        public override async Task SendCLMsgTS(HostPcClMsg type) {
+            await SendTS(type.name, type.dict);
         }
 
-        public override Task SendCCLMsgTS(HostPcCclMsg type) {
-            return SendTS(type.name, type.dict);
+        public override async Task SendCCLMsgTS(HostPcCclMsg type) {
+            await SendTS(type.name, type.dict);
         }
 
-        public override Task SendSessionMsgTS(int session) {
+        public override async Task SendSessionMsgTS(int session) {
             Dictionary<string, object> data = new() {
                 { "session", session },
             };
-            return SendTS("SESSION", data);
+            await SendTS("SESSION", data);
         }
 
-        public override Task SendStateMsgTS(HostPcStateMsg state, Dictionary<string, object> extraData = null) {
+        public override async Task SendStateMsgTS(HostPcStateMsg state, Dictionary<string, object> extraData = null) {
             var dict = (extraData != null) ? new Dictionary<string, object>(extraData) : new();
             foreach (var item in state.dict) {
                 dict.Add(item.Key, item.Value);
             }
-            return SendTS(state.name, dict);
+            await SendTS(state.name, dict);
         }
 
-        public override Task SendTrialMsgTS(int trial, bool stim) {
+        public override async Task SendTrialMsgTS(int trial, bool stim) {
             Dictionary<string, object> data = new() {
                 { "trial", trial },
                 { "stim", stim },
             };
-            return SendTS("TRIAL", data);
+            await SendTS("TRIAL", data);
         }
 
-        public override Task SendWordMsgTS(string word, int serialPos, bool stim, Dictionary<string, object> extraData = null) {
+        public override async Task SendWordMsgTS(string word, int serialPos, bool stim, Dictionary<string, object> extraData = null) {
             var data = (extraData != null) ? new Dictionary<string, object>(extraData) : new();
             data["word"] = word;
             data["serialPos"] = serialPos;
             data["stim"] = stim;  
-            return SendTS("WORD", data);
+            await SendTS("WORD", data);
         }
 
-        public override Task SendExitMsgTS() {
-            return SendTS("EXIT");
+        public override async Task SendExitMsgTS() {
+            await SendTS("EXIT");
         }
 
-        public override Task SendLogMsgTS(string type, Dictionary<string, object> data = null) {
-            return SendTS(type, data);
+        public override async Task SendLogMsgTS(string type, Dictionary<string, object> data = null) {
+            await SendTS(type, data);
+        }
+
+        public override async Task SendUncheckedLogMsgTS(string type, Dictionary<string, object> data = null) {
+            if (IsConnectedUnchecked()) {
+                await SendTS(type, data);
+            }
         }
     }
 

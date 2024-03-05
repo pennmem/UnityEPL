@@ -9,12 +9,12 @@ namespace UnityEPL {
     [AddComponentMenu("UnityEPL/Singleton Reporters/Event Reporter")]
     public class EventReporter : DataReporter2<EventReporter> {
         public void LogTS(string type, Dictionary<string, object> data = null) {
-            manager.hostPC?.SendLogMsgTS(type, data ?? new());
+            manager.hostPC?.SendUncheckedLogMsgTS(type, data ?? new());
             var time = Clock.UtcNow;
             LogLocalTS(type, time, data);
         }
         public void LogTS(string type, DateTime time, Dictionary<string, object> data = null) {
-            manager?.hostPC.SendLogMsgTS(type, data ?? new());
+            manager?.hostPC.SendUncheckedLogMsgTS(type, data ?? new());
             LogLocalTS(type, time, data);
         }
 

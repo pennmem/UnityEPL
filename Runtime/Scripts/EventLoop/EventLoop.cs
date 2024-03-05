@@ -53,14 +53,18 @@ namespace UnityEPL {
 
         protected async Task TimeoutTask(Task task, int timeoutMs, string timeoutMessage = null) {
             Task timeoutTask = InterfaceManager.Delay(timeoutMs, cts.Token);
-            if (await Task.WhenAny(task, timeoutTask) == timeoutTask) {
+            var completedTask = await Task.WhenAny(task, timeoutTask);
+            await completedTask;
+            if (completedTask == timeoutTask) {
                 var msg = timeoutMessage ?? $"Task Timed out after {timeoutMs}ms";
                 throw new TimeoutException(timeoutMessage);
             }
         }
         protected async Task<Z> TimeoutTask<Z>(Task<Z> task, int timeoutMs, string timeoutMessage = null) {
             Task timeoutTask = InterfaceManager.Delay(timeoutMs, cts.Token);
-            if (await Task.WhenAny(task, timeoutTask) == timeoutTask) {
+            var completedTask = await Task.WhenAny(task, timeoutTask);
+            await completedTask;
+            if (completedTask == timeoutTask) {
                 var msg = timeoutMessage ?? $"Task Timed out after {timeoutMs}ms";
                 throw new TimeoutException(timeoutMessage);
             }
@@ -83,6 +87,7 @@ namespace UnityEPL {
             if (cts.IsCancellationRequested) {
                 throw new OperationCanceledException("EventLoop has been stopped already.");
             }
+            
             await StartTask(func);
         }
         protected void DoTS<T>(Action<T> func, T t)
@@ -116,8 +121,8 @@ namespace UnityEPL {
             if (cts.IsCancellationRequested) {
                 throw new OperationCanceledException("EventLoop has been stopped already.");
             }
-
-            var t = await StartTask(func);
+            
+            await StartTask(func);
             //Debug.Log($"Starting Do: {t.Id}");
             //StartTask(func);
         }
@@ -641,6 +646,7 @@ namespace UnityEPL {
 
 #if !UNITY_WEBGL && !UNITY_EDITOR // System.Threading
         private async Task StartTask(Action func) {
+            cts.Token.ThrowIfCancellationRequested();
             return await Task.Factory.StartNew(TaskErrorHandler(func), cts.Token, TaskCreationOptions.DenyChildAttach, scheduler);
         }
         //private Task<Task> StartTask(Func<Task> func) {
@@ -650,10 +656,12 @@ namespace UnityEPL {
         //    return Task.Factory.StartNew(TaskErrorHandler(func), cts.Token, TaskCreationOptions.DenyChildAttach, scheduler);
         //}
         private async Task<Z> StartTask<Z>(Func<Z> func) {
+            cts.Token.ThrowIfCancellationRequested();
             return await Task.Factory.StartNew(TaskErrorHandler(func), cts.Token, TaskCreationOptions.DenyChildAttach, scheduler);
         }
 #else
         private async Task StartTask(Action func) {
+            cts.Token.ThrowIfCancellationRequested();
             await Task.Factory.StartNew(TaskErrorHandler(func), cts.Token, TaskCreationOptions.DenyChildAttach, scheduler);
         }
         //private Task<Task> StartTask(Func<Task> func) {
@@ -663,6 +671,7 @@ namespace UnityEPL {
         //    return Task.Factory.StartNew(TaskErrorHandler(func), cts.Token);
         //}
         private async Task<Z> StartTask<Z>(Func<Z> func) {
+            cts.Token.ThrowIfCancellationRequested();
             return await Task.Factory.StartNew(TaskErrorHandler(func), cts.Token, TaskCreationOptions.DenyChildAttach, scheduler);
         }
 #endif

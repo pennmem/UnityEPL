@@ -145,7 +145,7 @@ namespace UnityEPL {
 
                 manager.videoControl.SetVideo(Config.introductionVideo, true);
                 await manager.videoControl.PlayVideo();
-            }, "repeat introduction video", "Press Y to continue to practice list, \n Press N to replay instructional video.");
+            }, "repeat introduction video", "Press Y to continue, \n Press N to replay instructional video.");
         }
         protected async Task MicrophoneTest() {
             await RepeatUntilYes(async () => {

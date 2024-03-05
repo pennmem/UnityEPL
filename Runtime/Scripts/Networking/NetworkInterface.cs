@@ -8,6 +8,7 @@ using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Unity.Collections;
 using UnityEngine;
@@ -33,24 +34,29 @@ namespace UnityEPL {
             return await DoGetTS<Bool>(IsConnectedHelper);
         }
         private Bool IsConnectedHelper() {
-            return tcpClient.Connected;
+            return tcpClient?.Connected ?? false;
+        }
+        protected bool IsConnectedUnchecked() {
+            return IsConnectedHelper();
         }
 
-        public Task ConnectTS() {
-            return DoWaitForTS(ConnectHelper);
+        public async Task ConnectTS(string ip, int port) {
+            await DoWaitForTS(ConnectHelper, ip.ToNativeText(), port);
         }
-        private async Task ConnectHelper() {
+        private async Task ConnectHelper(NativeText ip, int port) {
             tcpClient = new TcpClient();
             tcpClient.SendTimeout = sendTimeoutMs;
 
             // TODO: JPB: (needed) (bug) NetworkInterface always uses Elemem IP
-            Task connectTask = tcpClient.ConnectAsync(Config.elememServerIP, Config.elememServerPort);
+            Task connectTask = tcpClient.ConnectAsync(ip.ToString(), port);
+            ip.Dispose();
             var timeoutMessage = $"{this.GetType().Name} connection attempt timed out after {connectionTimeoutMs}ms";
-            await TimeoutTask(connectTask, connectionTimeoutMs, timeoutMessage);
-            if (connectTask.IsFaulted) {
-                throw new OperationCanceledException($"{this.GetType().Name} connection attempt failed", connectTask.Exception);
+            try {
+                await TimeoutTask(connectTask, connectionTimeoutMs, timeoutMessage);
+                stream = tcpClient.GetStream();
+            } catch (Exception e) {
+                throw new Exception($"{this.GetType().Name} connection attempt failed with \"{e.Message}\"", e);
             }
-            stream = tcpClient.GetStream();
 
             DoListenerForever();
         }
@@ -114,7 +120,7 @@ namespace UnityEPL {
 
                     // Handle network error messages
                     if (msgType.Contains("ERROR")) {
-                        throw new Exception($"Error received from {this.GetType().Name}");
+                        ErrorNotifier.ErrorTS(new Exception($"Error received from {this.GetType().Name} is {msgType}: {json.GetValue("data").Value<string>("error")}"));
                     }
 
                     // Handle network exit messge
@@ -150,9 +156,9 @@ namespace UnityEPL {
             await DoWaitForTS(() => { SendJsonHelper(type, data); });
         }
         private Task SendJsonHelper(string type, Dictionary<string, object> data = null) {
-            // if (tcpClient == null || stream == null) { 
-            //     throw new Exception($"Tried to send {this.GetType().Name} network message \"{type}\" before connecting.");
-            // }
+            if (tcpClient == null || stream == null) { 
+                ErrorNotifier.ErrorTS(new Exception($"Tried to send {this.GetType().Name} network message \"{type}\" before connecting."));
+            }
             DataPoint point = new DataPoint(type, data);
             string message = point.ToJSON();
 
@@ -181,6 +187,7 @@ namespace UnityEPL {
 
         protected void ReportNetworkMessageTS(string type, string message, DateTime time, bool sent) {
             Dictionary<string, object> dict = new() {
+                { "interface", this.GetType().Name },
                 { "message", message },
                 { "ip", ((IPEndPoint)tcpClient.Client.RemoteEndPoint).Address.ToString() },
                 { "sent", sent },
@@ -191,7 +198,9 @@ namespace UnityEPL {
             UnityEngine.Debug.Log($"{this.GetType().Name} {sendStr} Network Message: {type}\n{string.Join(Environment.NewLine, message)}");
 #endif // NETWORKINTERFACE_DEBUG_MESSAGES
 
-            manager.eventReporter.LogLocalTS("network", time, dict);
+            if (Config.logNetworkMessages) {
+                manager.eventReporter.LogLocalTS("network", time, dict);
+            }
         }
     }
 

@@ -182,6 +182,7 @@ namespace UnityEPL {
         public static IEnumerator ToEnumerator(this Task task) {
             while(!task.IsCompleted) { yield return null; }
             if (task.IsFaulted) { ErrorNotifier.ErrorTS(task.Exception.InnerException); }
+            else if (task.IsCanceled) { ErrorNotifier.ErrorTS(new OperationCanceledException("ToEnumerator")); }
         }
 
         /// <summary>
@@ -193,6 +194,7 @@ namespace UnityEPL {
         public static IEnumerator ToEnumerator<T>(this Task<T> task) {
             while (!task.IsCompleted) { yield return null; }
             if (task.IsFaulted) { ErrorNotifier.ErrorTS(task.Exception.InnerException); }
+            else if (task.IsCanceled) { ErrorNotifier.ErrorTS(new OperationCanceledException("ToEnumerator")); }
         }
     }
 

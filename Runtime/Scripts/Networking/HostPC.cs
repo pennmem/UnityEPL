@@ -82,6 +82,7 @@ namespace UnityEPL {
         protected abstract Task DoLatencyCheckTS();
         protected abstract CancellationTokenSource DoHeartbeatsForeverTS();
 
+        public abstract Task ConnectTS();
         public abstract Task ConfigureTS();
         public abstract Task QuitTS();
 
@@ -96,6 +97,7 @@ namespace UnityEPL {
         public abstract Task SendWordMsgTS(string word, int serialPos, bool stim, Dictionary<string, object> extraData = null);
         public abstract Task SendExitMsgTS();
         public abstract Task SendLogMsgTS(string type, Dictionary<string, object> data = null);
+        public abstract Task SendUncheckedLogMsgTS(string type, Dictionary<string, object> data = null);
     }
 
 }
