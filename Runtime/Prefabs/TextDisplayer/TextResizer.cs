@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 namespace UnityEPL {
 
@@ -13,7 +14,7 @@ namespace UnityEPL {
     public class TextResizer : EventMonoBehaviour {
         protected override void AwakeOverride() { }
 
-        public Text textElement;
+        public TextMeshProUGUI textElement;
 
         private Vector2 originalAnchorMin;
         private Vector2 originalAnchorMax;
@@ -31,11 +32,11 @@ namespace UnityEPL {
 
         void OnText(string text) {
             if (text.Length > 0 && text[text.Length - 1].Equals('.')) {
-                textElement.resizeTextMaxSize = SIZE_WHEN_SENTENCE;
+                textElement.fontSizeMax = SIZE_WHEN_SENTENCE;
                 textElement.rectTransform.anchorMin = new Vector2(0, 0);
                 textElement.rectTransform.anchorMax = new Vector2(1, 1);
             } else {
-                textElement.resizeTextMaxSize = SIZE_WHEN_NOT;
+                textElement.fontSizeMax = SIZE_WHEN_NOT;
                 textElement.rectTransform.anchorMin = originalAnchorMin;
                 textElement.rectTransform.anchorMax = originalAnchorMax;
             }

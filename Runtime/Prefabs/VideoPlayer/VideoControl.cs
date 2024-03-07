@@ -97,8 +97,6 @@ namespace UnityEPL {
             return DoWaitForTS(PlayVideoHelper);
         }
         protected async Task PlayVideoHelper() {
-            Debug.Log("PlayVideoHelper");
-
             videoFinished = new();
 
             gameObject.SetActive(true);
@@ -107,6 +105,7 @@ namespace UnityEPL {
 
             videoPlayer.Play();
             await videoFinished.Task;
+            gameObject.SetActive(false);
         }
 
         public bool IsPlaying() {

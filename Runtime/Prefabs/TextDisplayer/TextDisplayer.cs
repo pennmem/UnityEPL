@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Unity.Collections;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 namespace UnityEPL {
 
@@ -31,8 +32,8 @@ namespace UnityEPL {
         /// <summary>
         /// These text elements will all be updated when this monobehaviors public methods are used.
         /// </summary>
-        public Text textElement;
-        public Text titleElement;
+        public TextMeshProUGUI textElement;
+        public TextMeshProUGUI titleElement;
 
         private Color[] originalColors;
 
@@ -46,6 +47,7 @@ namespace UnityEPL {
         /// Hides the Text display by deactivating it
         /// </summary>
         public void Hide() {
+
             Do(HideHelper);
         }
         public void HideTS() {
@@ -190,6 +192,19 @@ namespace UnityEPL {
                 eventReporter.LogTS("title display cleared", new());
         }
 
+        public void ClearOnly() {
+            Do(ClearOnlyHelper);
+        }
+        public void ClearOnlyTS() {
+            DoTS(ClearOnlyHelper);
+        }
+        protected void ClearOnlyHelper() {
+            titleElement.text = "";
+            textElement.text = "";
+            if (eventReporter != null)
+                eventReporter.LogTS("title display cleared", new());
+        }
+
         public void Clear() {
             Do(ClearHelper);
         }
@@ -197,21 +212,8 @@ namespace UnityEPL {
             DoTS(ClearHelper);
         }
         protected void ClearHelper() {
-            titleElement.text = "";
-            textElement.text = "";
-            if (eventReporter != null)
-                eventReporter.LogTS("title display cleared", new());
-        }
-
-        public void ClearAndHide() {
-            Do(ClearAndHideHelper);
-        }
-        public void ClearAndHideTS() {
-            DoTS(ClearAndHideHelper);
-        }
-        protected void ClearAndHideHelper() {
-            Hide();
-            Clear();
+            ClearOnlyHelper();
+            HideHelper();
         }
 
         /// <summary>
@@ -277,7 +279,7 @@ namespace UnityEPL {
             // TODO: JPB: (needed) Add Ramulator to match this
             Display($"{description.ToString()} (press any key prompt)", displayTitle.ToString(), displayText.ToString());
             var keyCode = await InputManager.Instance.GetKeyTS();
-            ClearText();
+            Clear();
             description.Dispose();
             displayTitle.Dispose();
             displayText.Dispose();
